@@ -1,17 +1,17 @@
 {
- "genere_le": "2026-11-06T11:56:16Z",
+ "genere_le": "2026-11-06T13:17:44Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
   "couples_valides": 0,
-  "couples_total": 322,
-  "competitions": 46,
+  "couples_total": 350,
+  "competitions": 50,
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 251,
+  "lignes": 268,
   "anomalies": [],
-  "derniere_empreinte": "d6e61f35e12ecb8a4a97fc063b1701fcd6650f795e5ce78af7ce2589170f0632"
+  "derniere_empreinte": "e93bd8cd4f2640f59813b7c309abbbfc3ac21f21d531b7628e963a8e109dd8ed"
  },
  "performance": {
   "matchs_termines": 1,
@@ -1363,6 +1363,352 @@
     ]
    },
    "statut": "en_cours_ou_resultat_attendu",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "99dqswtbamrc3rfzvgqfqo55g",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T15:00:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Septemvri",
+   "exterieur": "Lokomotiv Sf",
+   "p1_original": {
+    "dom": 0.42856589503663506,
+    "nul": 0.2569171192765043,
+    "ext": 0.3145169856868606,
+    "o15": 0.7479175023904516,
+    "o25": 0.5017717433654596,
+    "o35": 0.28177883058721437,
+    "btts": 0.5411065591830851
+   },
+   "p1_calibre": {
+    "dom": 0.42856589503663506,
+    "nul": 0.2569171192765043,
+    "ext": 0.3145169856868606,
+    "o15": 0.7479175023904516,
+    "o25": 0.5017717433654596,
+    "o35": 0.28177883058721437,
+    "btts": 0.5411065591830851
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.4642928724018702,
+    "buts_attendus_ext": 1.216958841822163,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 13,
+    "matchs_anterieurs_ext": 80,
+    "fd_dom": "Septemvri",
+    "fd_ext": "Lokomotiv Sf"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "1ee3951bb680829cd79ed63d56f2e6656d3340433bf56eb14ddda6b840aed46c",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Septemvri ou match nul",
+     "p1": 0.6854830143131394,
+     "cote": 1.58,
+     "valeur": 0.08306316261476021
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Septemvri",
+      "p1": 0.42856589503663506,
+      "cote": 3.04,
+      "valeur": 0.3028403209113706
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2569171192765043,
+      "cote": 3.38,
+      "valeur": -0.13162013684541551
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Lokomotiv Sf",
+      "p1": 0.3145169856868606,
+      "cote": 2.2,
+      "valeur": -0.30806263148890667
+     },
+     {
+      "cle": "1N",
+      "libelle": "Septemvri ou match nul",
+      "p1": 0.6854830143131394,
+      "cote": 1.58,
+      "valeur": 0.08306316261476021
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Lokomotiv Sf",
+      "p1": 0.5714341049633649,
+      "cote": 1.34,
+      "valeur": -0.23427829934909106
+     },
+     {
+      "cle": "12",
+      "libelle": "Septemvri ou Lokomotiv Sf (pas de nul)",
+      "p1": 0.7430828807234957,
+      "cote": 1.3,
+      "valeur": -0.03399225505945558
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7479175023904516,
+      "cote": 1.24,
+      "valeur": -0.07258229703583996
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2520824976095484,
+      "cote": 3.62,
+      "valeur": -0.08746135865343485
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5017717433654596,
+      "cote": 1.8,
+      "valeur": -0.0968108619421727
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4982282566345404,
+      "cote": 1.9,
+      "valeur": -0.05336631239437328
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.28177883058721437,
+      "cote": 2.95,
+      "valeur": -0.16875244976771753
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7182211694127856,
+      "cote": 1.35,
+      "valeur": -0.030401421292739372
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5411065591830851,
+      "cote": 1.63,
+      "valeur": -0.11799630853157128
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.45889344081691485,
+      "cote": 2.05,
+      "valeur": -0.059268446325324575
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.04,
+    "N": 3.38,
+    "2": 2.2,
+    "1N": 1.58,
+    "N2": 1.34,
+    "12": 1.3,
+    "o15+": 1.24,
+    "o15-": 3.62,
+    "o25+": 1.8,
+    "o25-": 1.9,
+    "o35+": 2.95,
+    "o35-": 1.35,
+    "btts+": 1.63,
+    "btts-": 2.05
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-11",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Botev Plovdiv",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Botev Vratsa",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-18",
+      "adversaire": "Arda Kardzha",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-09-20",
+      "adversaire": "Spartak Varna",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Cherno More",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-17",
+      "adversaire": "Arda Kardzha",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Slavia Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-21",
+      "adversaire": "Botev Plovdiv",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Arda Kardzha",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Cherno More",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-14",
+      "adversaire": "Ludogorets",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Slavia Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-17",
+      "adversaire": "Spartak Varna",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Botev Plovdiv",
+      "marques": 2,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Botev Vratsa",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-16",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Ludogorets",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Levski Sofia",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "h2h": []
+   },
+   "statut": "a_venir",
    "resultat": null,
    "evaluation": null
   },
@@ -2861,6 +3207,371 @@
       "domicile": true,
       "marques": 2,
       "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "97t017qqnldmtqpdsu82ctf6c",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T17:15:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Botev Plovdiv",
+   "exterieur": "Dunav",
+   "p1_original": {
+    "dom": 0.606430736057928,
+    "nul": 0.20933768642921066,
+    "ext": 0.1842315775128613,
+    "o15": 0.8097790697973658,
+    "o25": 0.5903361139190847,
+    "o35": 0.36643128803291614,
+    "btts": 0.557961289187166
+   },
+   "p1_calibre": {
+    "dom": 0.606430736057928,
+    "nul": 0.20933768642921066,
+    "ext": 0.1842315775128613,
+    "o15": 0.8097790697973658,
+    "o25": 0.5903361139190847,
+    "o35": 0.36643128803291614,
+    "btts": 0.557961289187166
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 2.0339477281224947,
+    "buts_attendus_ext": 1.0270504022120528,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 145,
+    "matchs_anterieurs_ext": 44,
+    "fd_dom": "Botev Plovdiv",
+    "fd_ext": "Dunav"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "dd8163289fbf5b20066209bfc913bfc48bc2aa6de696091e235ca76e0a6d9ff4",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "o25+",
+     "libelle": "Plus de 2,5 buts",
+     "p1": 0.5903361139190847,
+     "cote": 1.7,
+     "valeur": 0.003571393662443967
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Botev Plovdiv",
+      "p1": 0.606430736057928,
+      "cote": 1.39,
+      "valeur": -0.15706127687948024
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.20933768642921066,
+      "cote": 4.72,
+      "valeur": -0.011926120054125744
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Dunav",
+      "p1": 0.1842315775128613,
+      "cote": 6.75,
+      "valeur": 0.24356314821181368
+     },
+     {
+      "cle": "1N",
+      "libelle": "Botev Plovdiv ou match nul",
+      "p1": 0.8157684224871387,
+      "cote": 1.11,
+      "valeur": -0.09449705103927597
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Dunav",
+      "p1": 0.3935692639420719,
+      "cote": 2.5,
+      "valeur": -0.016076840144820137
+     },
+     {
+      "cle": "12",
+      "libelle": "Botev Plovdiv ou Dunav (pas de nul)",
+      "p1": 0.7906623135707893,
+      "cote": 1.18,
+      "valeur": -0.06701846998646865
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8097790697973658,
+      "cote": 1.22,
+      "valeur": -0.012069534847213736
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.1902209302026342,
+      "cote": 3.88,
+      "valeur": -0.26194279081377936
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5903361139190847,
+      "cote": 1.7,
+      "valeur": 0.003571393662443967
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4096638860809153,
+      "cote": 2.04,
+      "valeur": -0.16428567239493275
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.36643128803291614,
+      "cote": 2.75,
+      "valeur": 0.007686042090519374
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6335687119670839,
+      "cote": 1.4,
+      "valeur": -0.11300380324608261
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.557961289187166,
+      "cote": 1.9,
+      "valeur": 0.060126449455615516
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.44203871081283397,
+      "cote": 1.74,
+      "valeur": -0.2308526431856689
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.39,
+    "N": 4.72,
+    "2": 6.75,
+    "1N": 1.11,
+    "N2": 2.5,
+    "12": 1.18,
+    "o15+": 1.22,
+    "o15-": 3.88,
+    "o25+": 1.7,
+    "o25-": 2.04,
+    "o35+": 2.75,
+    "o35-": 1.4,
+    "btts+": 1.9,
+    "btts-": 1.74
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-10",
+      "adversaire": "Slavia Sofia",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Loko Plovdiv",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Levski Sofia",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Spartak Varna",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Cherno More",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-21",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-11",
+      "adversaire": "Septemvri",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Cherno More",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Loko Plovdiv",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-02",
+      "adversaire": "Cska Sofia",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Levski Sofia",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 5,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Cska 1948",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Septemvri",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Arda Kardzha",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-24",
+      "adversaire": "Botev Vratsa",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Ludogorets",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-27",
+      "adversaire": "Cska Sofia",
+      "marques": 2,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Spartak Varna",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Botev Vratsa",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-07",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Arda Kardzha",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-27",
+      "adversaire": "Ludogorets",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2020-07-03",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2019-11-06",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2019-07-21",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 1
      }
     ]
    },
@@ -4950,6 +5661,688 @@
       "domicile": false,
       "marques": 2,
       "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2b8jmxa8wilsejg2pgoj5wd0",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T18:30:00Z",
+   "competition": "Suisse : Challenge Ligue",
+   "division": "CH2",
+   "domicile": "Kriens",
+   "exterieur": "Rapperswil",
+   "p1_original": {
+    "dom": 0.5523853018412759,
+    "nul": 0.20920512290862137,
+    "ext": 0.23840957525010295,
+    "o15": 0.8566711236193556,
+    "o25": 0.6662604483077668,
+    "o35": 0.4484745064129876,
+    "btts": 0.6453164927639705
+   },
+   "p1_calibre": {
+    "dom": 0.5523853018412759,
+    "nul": 0.20920512290862137,
+    "ext": 0.23840957525010295,
+    "o15": 0.8566711236193556,
+    "o25": 0.6662604483077668,
+    "o35": 0.4484745064129876,
+    "btts": 0.6453164927639705
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 2.103094652349729,
+    "buts_attendus_ext": 1.328214146987175,
+    "k": 10,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 84,
+    "matchs_anterieurs_ext": 12,
+    "fd_dom": "Kriens",
+    "fd_ext": "Rapperswil"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "b1f4dd8a6102c5213549a46d80e7467c227dbd0aec8b05991d40276e1e3b3018",
+   "mode": "parallele",
+   "n_historique_competition": 600,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Kriens ou match nul",
+     "p1": 0.7615904247498972,
+     "cote": 1.37,
+     "valeur": 0.04337888190735928
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Kriens",
+      "p1": 0.5523853018412759,
+      "cote": 2.11,
+      "valeur": 0.1655329868850921
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.20920512290862137,
+      "cote": 3.85,
+      "valeur": -0.19456027680180776
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Rapperswil",
+      "p1": 0.23840957525010295,
+      "cote": 2.89,
+      "valeur": -0.3109963275272024
+     },
+     {
+      "cle": "1N",
+      "libelle": "Kriens ou match nul",
+      "p1": 0.7615904247498972,
+      "cote": 1.37,
+      "valeur": 0.04337888190735928
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Rapperswil",
+      "p1": 0.44761469815872434,
+      "cote": 1.62,
+      "valeur": -0.27486418898286646
+     },
+     {
+      "cle": "12",
+      "libelle": "Kriens ou Rapperswil (pas de nul)",
+      "p1": 0.7907948770913789,
+      "cote": 1.25,
+      "valeur": -0.011506403635776374
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8566711236193556,
+      "cote": 1.1,
+      "valeur": -0.057661764018708817
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.1433288763806444,
+      "cote": 5.89,
+      "valeur": -0.15579291811800455
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.6662604483077668,
+      "cote": 1.38,
+      "valeur": -0.08056058133528199
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.33373955169223324,
+      "cote": 2.8,
+      "valeur": -0.06552925526174702
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.4484745064129876,
+      "cote": 1.95,
+      "valeur": -0.12547471249467423
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.5515254935870124,
+      "cote": 1.76,
+      "valeur": -0.029315131286858143
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6453164927639705,
+      "cote": 1.34,
+      "valeur": -0.1352758996962794
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.3546835072360295,
+      "cote": 2.84,
+      "valeur": 0.007301160550323704
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.11,
+    "N": 3.85,
+    "2": 2.89,
+    "1N": 1.37,
+    "N2": 1.62,
+    "12": 1.25,
+    "o15+": 1.1,
+    "o15-": 5.89,
+    "o25+": 1.38,
+    "o25-": 2.8,
+    "o35+": 1.95,
+    "o35-": 1.76,
+    "btts+": 1.34,
+    "btts-": 2.84
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-09",
+      "adversaire": "Wil",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Etoile Carouge",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Nyon",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Yverdon",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Winterthur",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-23",
+      "adversaire": "Wil",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Xamax",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Nyon",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Etoile Carouge",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Yverdon",
+      "marques": 2,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Rapperswil",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Wil",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Xamax",
+      "marques": 2,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Nyon",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Yverdon",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Kriens",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Wil",
+      "marques": 4,
+      "encaisses": 5
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-09-01",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "1k1c7ww7veuvtiqhigelbdhw",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T18:30:00Z",
+   "competition": "Suisse : Challenge Ligue",
+   "division": "CH2",
+   "domicile": "Nyon",
+   "exterieur": "Lausanne-Ouchy",
+   "p1_original": {
+    "dom": 0.20402738460274925,
+    "nul": 0.2316160229749634,
+    "ext": 0.5643565924222874,
+    "o15": 0.7621957067400849,
+    "o25": 0.5211957005915198,
+    "o35": 0.29939621751805534,
+    "btts": 0.5183950102396288
+   },
+   "p1_calibre": {
+    "dom": 0.20402738460274925,
+    "nul": 0.2316160229749634,
+    "ext": 0.5643565924222874,
+    "o15": 0.7621957067400849,
+    "o25": 0.5211957005915198,
+    "o35": 0.29939621751805534,
+    "btts": 0.5183950102396288
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 0.9749490483731095,
+    "buts_attendus_ext": 1.7860402970388018,
+    "k": 10,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 48,
+    "matchs_anterieurs_ext": 84,
+    "fd_dom": "Nyon",
+    "fd_ext": "Lausanne Ouchy"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "b5b6d917e83044d9b23e7b9ffd34b7441b1f11b9c45b48061b4fc9f6d485f5bc",
+   "mode": "parallele",
+   "n_historique_competition": 600,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7006037824819447,
+     "cote": 1.55,
+     "valeur": 0.08593586284701416
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Nyon",
+      "p1": 0.20402738460274925,
+      "cote": 6.33,
+      "valeur": 0.29149334453540265
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2316160229749634,
+      "cote": 4.8,
+      "valeur": 0.11175691027982415
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Lausanne-Ouchy",
+      "p1": 0.5643565924222874,
+      "cote": 1.4,
+      "valeur": -0.20990077060879764
+     },
+     {
+      "cle": "1N",
+      "libelle": "Nyon ou match nul",
+      "p1": 0.43564340757771264,
+      "cote": 2.46,
+      "valeur": 0.071682782641173
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Lausanne-Ouchy",
+      "p1": 0.7959726153972508,
+      "cote": 1.12,
+      "valeur": -0.10851067075507903
+     },
+     {
+      "cle": "12",
+      "libelle": "Nyon ou Lausanne-Ouchy (pas de nul)",
+      "p1": 0.7683839770250367,
+      "cote": 1.17,
+      "valeur": -0.10099074688070708
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7621957067400849,
+      "cote": 1.15,
+      "valeur": -0.12347493724890246
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23780429325991514,
+      "cote": 4.72,
+      "valeur": 0.12243626418679932
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5211957005915198,
+      "cote": 1.52,
+      "valeur": -0.20778253510088995
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.47880429940848024,
+      "cote": 2.37,
+      "valeur": 0.13476618959809827
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.29939621751805534,
+      "cote": 2.3,
+      "valeur": -0.3113886997084727
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7006037824819447,
+      "cote": 1.55,
+      "valeur": 0.08593586284701416
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5183950102396288,
+      "cote": 1.68,
+      "valeur": -0.12909638279742375
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.48160498976037125,
+      "cote": 1.99,
+      "valeur": -0.04160607037686126
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 6.33,
+    "N": 4.8,
+    "2": 1.4,
+    "1N": 2.46,
+    "N2": 1.12,
+    "12": 1.17,
+    "o15+": 1.15,
+    "o15-": 4.72,
+    "o25+": 1.52,
+    "o25-": 2.37,
+    "o35+": 2.3,
+    "o35-": 1.55,
+    "btts+": 1.68,
+    "btts-": 1.99
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-09",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Xamax",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Winterthur",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Etoile Carouge",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Rapperswil",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-09",
+      "adversaire": "Rapperswil",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Yverdon",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Kriens",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Winterthur",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Xamax",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Aarau",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Rapperswil",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Wil",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Yverdon",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Kriens",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Aarau",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Yverdon",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Xamax",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Wil",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Etoile Carouge",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Rapperswil",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Nyon",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-07-24",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 2
      }
     ]
    },
@@ -9589,6 +10982,401 @@
       "domicile": false,
       "marques": 1,
       "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "1xn9e2pvc7kz0vcr9q7prnro",
+   "date": "2026-11-06",
+   "coup_d_envoi_utc": "2026-11-06T19:15:00Z",
+   "competition": "Suisse : Challenge Ligue",
+   "division": "CH2",
+   "domicile": "Aarau",
+   "exterieur": "Wil",
+   "p1_original": {
+    "dom": 0.5095113036258557,
+    "nul": 0.21815257169616709,
+    "ext": 0.272336124677977,
+    "o15": 0.8504361282250926,
+    "o25": 0.6556497991410583,
+    "o35": 0.43643619606740847,
+    "btts": 0.6490202065831172
+   },
+   "p1_calibre": {
+    "dom": 0.5095113036258557,
+    "nul": 0.21815257169616709,
+    "ext": 0.272336124677977,
+    "o15": 0.8504361282250926,
+    "o25": 0.6556497991410583,
+    "o35": 0.43643619606740847,
+    "btts": 0.6490202065831172
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.9759080607216437,
+    "buts_attendus_ext": 1.4003083930379583,
+    "k": 10,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 120,
+    "matchs_anterieurs_ext": 120,
+    "fd_dom": "Aarau",
+    "fd_ext": "Wil"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "9bf2f2bbe51eeb6449af3ff9768afa7e0d25dc83b51f345792c52c1fd3633c1b",
+   "mode": "parallele",
+   "n_historique_competition": 600,
+   "pari": {
+    "retenu": {
+     "cle": "2",
+     "libelle": "Victoire Wil",
+     "p1": 0.272336124677977,
+     "cote": 3.77,
+     "valeur": 0.026707190035973438
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Aarau",
+      "p1": 0.5095113036258557,
+      "cote": 1.78,
+      "valeur": -0.09306987954597679
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.21815257169616709,
+      "cote": 3.96,
+      "valeur": -0.13611581608317835
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Wil",
+      "p1": 0.272336124677977,
+      "cote": 3.77,
+      "valeur": 0.026707190035973438
+     },
+     {
+      "cle": "1N",
+      "libelle": "Aarau ou match nul",
+      "p1": 0.7276638753220228,
+      "cote": 1.25,
+      "valeur": -0.09042015584747154
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Wil",
+      "p1": 0.4904886963741441,
+      "cote": 1.85,
+      "valeur": -0.09259591170783332
+     },
+     {
+      "cle": "12",
+      "libelle": "Aarau ou Wil (pas de nul)",
+      "p1": 0.7818474283038328,
+      "cote": 1.23,
+      "valeur": -0.038327663186285665
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8504361282250926,
+      "cote": 1.13,
+      "valeur": -0.03900717510564544
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.14956387177490738,
+      "cote": 5.11,
+      "valeur": -0.23572861523022326
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.6556497991410583,
+      "cote": 1.47,
+      "valeur": -0.03619479526264435
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.34435020085894175,
+      "cote": 2.51,
+      "valeur": -0.13568099584405624
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.43643619606740847,
+      "cote": 2.16,
+      "valeur": -0.05729781649439769
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.5635638039325915,
+      "cote": 1.62,
+      "valeur": -0.08702663762920171
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6490202065831172,
+      "cote": 1.44,
+      "valeur": -0.06541090252031123
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.3509797934168828,
+      "cote": 2.45,
+      "valeur": -0.14009950612863709
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.78,
+    "N": 3.96,
+    "2": 3.77,
+    "1N": 1.25,
+    "N2": 1.85,
+    "12": 1.23,
+    "o15+": 1.13,
+    "o15-": 5.11,
+    "o25+": 1.47,
+    "o25-": 2.51,
+    "o35+": 2.16,
+    "o35-": 1.62,
+    "btts+": 1.44,
+    "btts-": 2.45
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Kriens",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Rapperswil",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Xamax",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Nyon",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-09",
+      "adversaire": "Kriens",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Yverdon",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Rapperswil",
+      "marques": 5,
+      "encaisses": 4
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Xamax",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Nyon",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Winterthur",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Wil",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Yverdon",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Etoile Carouge",
+      "marques": 0,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-01",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Rapperswil",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Nyon",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Kriens",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Xamax",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-08-31",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-05-17",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2024-02-23",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-12-10",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-09-29",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-04-20",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 7
+     },
+     {
+      "date": "2021-03-13",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-01-23",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2020-09-19",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2020-06-23",
+      "domicile": true,
+      "marques": 4,
+      "encaisses": 1
      }
     ]
    },
@@ -19826,6 +21614,626 @@
    "evaluation": null
   },
   {
+   "match_id": "1ec8yfi9jeq42qaa3ltxo0o44",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T11:00:00Z",
+   "competition": "Ukraine : Première Ligue",
+   "division": "UA1",
+   "domicile": "FC Kharkiv",
+   "exterieur": "Karpaty Lviv",
+   "p1_original": {
+    "dom": 0.45804876364695923,
+    "nul": 0.2541485799794315,
+    "ext": 0.28780265637360936,
+    "o15": 0.7476473635877657,
+    "o25": 0.5014096871135743,
+    "o35": 0.28145533046459814,
+    "btts": 0.5358270938976154
+   },
+   "p1_calibre": {
+    "dom": 0.45804876364695923,
+    "nul": 0.2541485799794315,
+    "ext": 0.28780265637360936,
+    "o15": 0.7476473635877657,
+    "o25": 0.5014096871135743,
+    "o35": 0.28145533046459814,
+    "btts": 0.5358270938976154
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.5250358907339114,
+    "buts_attendus_ext": 1.1547452028636374,
+    "k": 5,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 9,
+    "matchs_anterieurs_ext": 41,
+    "fd_dom": "Fc Kharkiv",
+    "fd_ext": "Karpaty Lviv"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "9e94de5976e09ade012786ac6d38a08ba98bda0137dd854cdb3c3574c270f982",
+   "mode": "parallele",
+   "n_historique_competition": 743,
+   "pari": {
+    "retenu": null,
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire FC Kharkiv",
+      "p1": 0.45804876364695923,
+      "cote": 2.02,
+      "valeur": -0.07474149743314229
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2541485799794315,
+      "cote": 3.42,
+      "valeur": -0.1308118564703442
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Karpaty Lviv",
+      "p1": 0.28780265637360936,
+      "cote": 3.42,
+      "valeur": -0.015714915202255986
+     },
+     {
+      "cle": "1N",
+      "libelle": "FC Kharkiv ou match nul",
+      "p1": 0.7121973436263908,
+      "cote": 1.29,
+      "valeur": -0.08126542672195591
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Karpaty Lviv",
+      "p1": 0.5419512363530409,
+      "cote": 1.67,
+      "valeur": -0.09494143529042176
+     },
+     {
+      "cle": "12",
+      "libelle": "FC Kharkiv ou Karpaty Lviv (pas de nul)",
+      "p1": 0.7458514200205686,
+      "cote": 1.29,
+      "valeur": -0.037851668173466524
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7476473635877657,
+      "cote": 1.26,
+      "valeur": -0.05796432187941514
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.25235263641223427,
+      "cote": 3.47,
+      "valeur": -0.12433635164954704
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5014096871135743,
+      "cote": 1.86,
+      "valeur": -0.06737798196875189
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.49859031288642575,
+      "cote": 1.84,
+      "valeur": -0.08259382428897655
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.28145533046459814,
+      "cote": 3.14,
+      "valeur": -0.11623026234116185
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7185446695354019,
+      "cote": 1.31,
+      "valeur": -0.05870648290862357
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5358270938976154,
+      "cote": 1.71,
+      "valeur": -0.08373566943507771
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4641729061023846,
+      "cote": 1.98,
+      "valeur": -0.08093764591727848
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.02,
+    "N": 3.42,
+    "2": 3.42,
+    "1N": 1.29,
+    "N2": 1.67,
+    "12": 1.29,
+    "o15+": 1.26,
+    "o15-": 3.47,
+    "o25+": 1.86,
+    "o25-": 1.84,
+    "o35+": 3.14,
+    "o35-": 1.31,
+    "btts+": 1.71,
+    "btts-": 1.98
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-19",
+      "adversaire": "Livyi Bereh",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Bukovyna",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Obolon Kyiv",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Shakhtar",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Veres Rivne",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-25",
+      "adversaire": "Tchernomorets",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Dynamo Kiev",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Kolos",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Livyi Bereh",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Kryvbas",
+      "marques": 4,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Epitsentr D.",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Tchernomorets",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Zorya",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Polessya",
+      "marques": 1,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Kudrivka",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Epitsentr D.",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Veres Rivne",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Shakhtar",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Bukovyna",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 3,
+      "encaisses": 0
+     }
+    ],
+    "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "1dd5gh1p17wc3p4yezbbeaihg",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T11:00:00Z",
+   "competition": "Ukraine : Première Ligue",
+   "division": "UA1",
+   "domicile": "Kudrivka",
+   "exterieur": "Tchernomorets",
+   "p1_original": {
+    "dom": 0.33550793680404545,
+    "nul": 0.25143239368000647,
+    "ext": 0.41305966951594825,
+    "o15": 0.7699844272751203,
+    "o25": 0.5320357068774478,
+    "o35": 0.30945421472103857,
+    "btts": 0.5669709393623396
+   },
+   "p1_calibre": {
+    "dom": 0.33550793680404545,
+    "nul": 0.25143239368000647,
+    "ext": 0.41305966951594825,
+    "o15": 0.7699844272751203,
+    "o25": 0.5320357068774478,
+    "o35": 0.30945421472103857,
+    "btts": 0.5669709393623396
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.3174446972360783,
+    "buts_attendus_ext": 1.4888090004230563,
+    "k": 5,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 11,
+    "matchs_anterieurs_ext": 70,
+    "fd_dom": "Kudrivka",
+    "fd_ext": "Tchernomorets"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "1eebe88a78fc0944ee3355aea1be9c0242e15d76d0ed418eb6a2fedb8f2c429e",
+   "mode": "parallele",
+   "n_historique_competition": 743,
+   "pari": {
+    "retenu": {
+     "cle": "o15+",
+     "libelle": "Plus de 1,5 but",
+     "p1": 0.7699844272751203,
+     "cote": 1.3,
+     "valeur": 0.0009797554576564949
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Kudrivka",
+      "p1": 0.33550793680404545,
+      "cote": 2.56,
+      "valeur": -0.14109968178164367
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25143239368000647,
+      "cote": 3.34,
+      "valeur": -0.16021580510877842
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Tchernomorets",
+      "p1": 0.41305966951594825,
+      "cote": 2.56,
+      "valeur": 0.057432753960827476
+     },
+     {
+      "cle": "1N",
+      "libelle": "Kudrivka ou match nul",
+      "p1": 0.5869403304840519,
+      "cote": 1.44,
+      "valeur": -0.15480592410296523
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Tchernomorets",
+      "p1": 0.6644920631959548,
+      "cote": 1.45,
+      "valeur": -0.036486508365865644
+     },
+     {
+      "cle": "12",
+      "libelle": "Kudrivka ou Tchernomorets (pas de nul)",
+      "p1": 0.7485676063199938,
+      "cote": 1.31,
+      "valeur": -0.01937643572080816
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7699844272751203,
+      "cote": 1.3,
+      "valeur": 0.0009797554576564949
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2300155727248797,
+      "cote": 3.19,
+      "valeur": -0.26625032300763374
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5320357068774478,
+      "cote": 1.97,
+      "valeur": 0.04811034254857227
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.46796429312255217,
+      "cote": 1.75,
+      "valeur": -0.18106248703553374
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30945421472103857,
+      "cote": 3.44,
+      "valeur": 0.06452249864037274
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6905457852789614,
+      "cote": 1.27,
+      "valeur": -0.1230068526957191
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5669709393623396,
+      "cote": 1.76,
+      "valeur": -0.0021311467222824287
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.43302906063766045,
+      "cote": 1.92,
+      "valeur": -0.16858420357569193
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.56,
+    "N": 3.34,
+    "2": 2.56,
+    "1N": 1.44,
+    "N2": 1.45,
+    "12": 1.31,
+    "o15+": 1.3,
+    "o15-": 3.19,
+    "o25+": 1.97,
+    "o25-": 1.75,
+    "o35+": 3.44,
+    "o35-": 1.27,
+    "btts+": 1.76,
+    "btts-": 1.92
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-17",
+      "adversaire": "Bukovyna",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Kolos",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Epitsentr D.",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Obolon Kyiv",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Veres Rivne",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Zorya",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-14",
+      "adversaire": "Shakhtar",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Karpaty Lviv",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Dynamo Kiev",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Veres Rivne",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Polessya",
+      "marques": 1,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Livyi Bereh",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Shakhtar",
+      "marques": 1,
+      "encaisses": 5
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-25",
+      "adversaire": "Karpaty Lviv",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Fc Kharkiv",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Obolon Kyiv",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Livyi Bereh",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Kryvbas",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-02",
+      "adversaire": "Polessya",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "58ex3bygbjg4kx6kywbspafis",
    "date": "2026-11-07",
    "coup_d_envoi_utc": "2026-11-07T11:15:00Z",
@@ -20213,6 +22621,401 @@
       "domicile": false,
       "marques": 2,
       "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "984exeormrv30nwgr0cw3ndas",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T11:30:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Botev Vratsa",
+   "exterieur": "Loko Plovdiv",
+   "p1_original": {
+    "dom": 0.30641347833234095,
+    "nul": 0.28559253401140294,
+    "ext": 0.4079939876562561,
+    "o15": 0.6571038216541069,
+    "o25": 0.39026857512934127,
+    "o35": 0.19027286999795937,
+    "btts": 0.4523873050322562
+   },
+   "p1_calibre": {
+    "dom": 0.30641347833234095,
+    "nul": 0.28559253401140294,
+    "ext": 0.4079939876562561,
+    "o15": 0.6571038216541069,
+    "o25": 0.39026857512934127,
+    "o35": 0.19027286999795937,
+    "btts": 0.4523873050322562
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.0222414657258112,
+    "buts_attendus_ext": 1.2262887536073361,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 143,
+    "matchs_anterieurs_ext": 142,
+    "fd_dom": "Botev Vratsa",
+    "fd_ext": "Loko Plovdiv"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "6641086764d42ac82318f3849924fbb204d40228601069fe5dfc104bc1e70388",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "N2",
+     "libelle": "Match nul ou Loko Plovdiv",
+     "p1": 0.6935865216676591,
+     "cote": 1.65,
+     "valeur": 0.14441776075163748
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Botev Vratsa",
+      "p1": 0.30641347833234095,
+      "cote": 2.05,
+      "valeur": -0.37185236941870115
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.28559253401140294,
+      "cote": 3.07,
+      "valeur": -0.12323092058499296
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Loko Plovdiv",
+      "p1": 0.4079939876562561,
+      "cote": 3.74,
+      "valeur": 0.525897513834398
+     },
+     {
+      "cle": "1N",
+      "libelle": "Botev Vratsa ou match nul",
+      "p1": 0.5920060123437438,
+      "cote": 1.25,
+      "valeur": -0.2599924845703202
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Loko Plovdiv",
+      "p1": 0.6935865216676591,
+      "cote": 1.65,
+      "valeur": 0.14441776075163748
+     },
+     {
+      "cle": "12",
+      "libelle": "Botev Vratsa ou Loko Plovdiv (pas de nul)",
+      "p1": 0.7144074659885971,
+      "cote": 1.34,
+      "valeur": -0.042693995575279864
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6571038216541069,
+      "cote": 1.52,
+      "valeur": -0.0012021910857575868
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.34289617834589314,
+      "cote": 2.37,
+      "valeur": -0.18733605732023317
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.39026857512934127,
+      "cote": 2.61,
+      "valeur": 0.01860098108758068
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6097314248706587,
+      "cote": 1.44,
+      "valeur": -0.12198674818625155
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.19027286999795937,
+      "cote": 5.11,
+      "valeur": -0.027705634310427607
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8097271300020407,
+      "cote": 1.13,
+      "valeur": -0.08500834309769412
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4523873050322562,
+      "cote": 2.2,
+      "valeur": -0.004747928929036194
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5476126949677438,
+      "cote": 1.55,
+      "valeur": -0.15120032279999707
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.05,
+    "N": 3.07,
+    "2": 3.74,
+    "1N": 1.25,
+    "N2": 1.65,
+    "12": 1.34,
+    "o15+": 1.52,
+    "o15-": 2.37,
+    "o25+": 2.61,
+    "o25-": 1.44,
+    "o35+": 5.11,
+    "o35-": 1.13,
+    "btts+": 2.2,
+    "btts-": 1.55
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-10",
+      "adversaire": "Spartak Varna",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-24",
+      "adversaire": "Botev Plovdiv",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-19",
+      "adversaire": "Cherno More",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-10",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Botev Plovdiv",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Cska 1948",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Spartak Varna",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-18",
+      "adversaire": "Ludogorets",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Cherno More",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Septemvri",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Arda Kardzha",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-08-02",
+      "adversaire": "Ludogorets",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Ludogorets",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Cska Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Cherno More",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-24",
+      "adversaire": "Arda Kardzha",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Dunav",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Septemvri",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2023-11-25",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-07-31",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2021-12-10",
+      "domicile": false,
+      "marques": 4,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-08-28",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2020-12-06",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2020-08-15",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2019-11-08",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2019-07-28",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 4
      }
     ]
    },
@@ -26939,6 +29742,407 @@
       "domicile": false,
       "marques": 1,
       "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "99pe35pah7375jbr9v0b4ahas",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T14:00:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Slavia Sofia",
+   "exterieur": "Cherno More",
+   "p1_original": {
+    "dom": 0.34099006235199536,
+    "nul": 0.30920704673185595,
+    "ext": 0.34980289091614863,
+    "o15": 0.5919242357587597,
+    "o25": 0.3212576215668672,
+    "o35": 0.1415018594554896,
+    "btts": 0.3977739720572721
+   },
+   "p1_calibre": {
+    "dom": 0.34099006235199536,
+    "nul": 0.30920704673185595,
+    "ext": 0.34980289091614863,
+    "o15": 0.5919242357587597,
+    "o25": 0.3212576215668672,
+    "o35": 0.1415018594554896,
+    "btts": 0.3977739720572721
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 0.9877839326749162,
+    "buts_attendus_ext": 1.0045832750214585,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 144,
+    "matchs_anterieurs_ext": 143,
+    "fd_dom": "Slavia Sofia",
+    "fd_ext": "Cherno More"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "bece140ce846da902d156e67d8b248bb360ac5ca0856bb8ebbeedff7775c85ea",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.8584981405445105,
+     "cote": 1.18,
+     "valeur": 0.013027805842522389
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Slavia Sofia",
+      "p1": 0.34099006235199536,
+      "cote": 2.6,
+      "valeur": -0.11342583788481209
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.30920704673185595,
+      "cote": 3.08,
+      "valeur": -0.04764229606588366
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Cherno More",
+      "p1": 0.34980289091614863,
+      "cote": 2.7,
+      "valeur": -0.05553219452639857
+     },
+     {
+      "cle": "1N",
+      "libelle": "Slavia Sofia ou match nul",
+      "p1": 0.6501971090838513,
+      "cote": 1.42,
+      "valeur": -0.07672010510093119
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Cherno More",
+      "p1": 0.6590099376480045,
+      "cote": 1.43,
+      "valeur": -0.057615789163353526
+     },
+     {
+      "cle": "12",
+      "libelle": "Slavia Sofia ou Cherno More (pas de nul)",
+      "p1": 0.690792953268144,
+      "cote": 1.34,
+      "valeur": -0.07433744262068687
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.5919242357587597,
+      "cote": 1.41,
+      "valeur": -0.16538682758014878
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.40807576424124026,
+      "cote": 2.69,
+      "valeur": 0.09772380580893625
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.3212576215668672,
+      "cote": 2.3,
+      "valeur": -0.2611074703962055
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6787423784331328,
+      "cote": 1.55,
+      "valeur": 0.05205068657135592
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.1415018594554896,
+      "cote": 4.32,
+      "valeur": -0.38871196715228484
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8584981405445105,
+      "cote": 1.18,
+      "valeur": 0.013027805842522389
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.3977739720572721,
+      "cote": 1.94,
+      "valeur": -0.22831849420889216
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.6022260279427278,
+      "cote": 1.71,
+      "valeur": 0.029806507782064617
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.6,
+    "N": 3.08,
+    "2": 2.7,
+    "1N": 1.42,
+    "N2": 1.43,
+    "12": 1.34,
+    "o15+": 1.41,
+    "o15-": 2.69,
+    "o25+": 2.3,
+    "o25-": 1.55,
+    "o35+": 4.32,
+    "o35-": 1.18,
+    "btts+": 1.94,
+    "btts-": 1.71
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-09-18",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Spartak Varna",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Levski Sofia",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Septemvri",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-20",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-09-19",
+      "adversaire": "Arda Kardzha",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Loko Plovdiv",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Cska Sofia",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-14",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Botev Plovdiv",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-19",
+      "adversaire": "Botev Vratsa",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Loko Plovdiv",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Botev Plovdiv",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-07",
+      "adversaire": "Dunav",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Ludogorets",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Botev Vratsa",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Arda Kardzha",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Botev Vratsa",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Septemvri",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Dunav",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Ludogorets",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Spartak Varna",
+      "marques": 0,
+      "encaisses": 3
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2023-12-09",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2023-08-12",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 5
+     },
+     {
+      "date": "2022-05-01",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2022-03-20",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2021-10-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2020-11-27",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2020-08-09",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2019-11-23",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2019-08-02",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 0
      }
     ]
    },
@@ -42685,6 +45889,389 @@
    "evaluation": null
   },
   {
+   "match_id": "992dry48oaczowabha8m0rn6c",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T16:30:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Ludogorets",
+   "exterieur": "CSKA 1948",
+   "p1_original": {
+    "dom": 0.6527198344511165,
+    "nul": 0.19932806747735113,
+    "ext": 0.14795209807153256,
+    "o15": 0.7953172388499938,
+    "o25": 0.5685589978308365,
+    "o35": 0.34456755323574756,
+    "btts": 0.511673693086177
+   },
+   "p1_calibre": {
+    "dom": 0.6527198344511165,
+    "nul": 0.19932806747735113,
+    "ext": 0.14795209807153256,
+    "o15": 0.7953172388499938,
+    "o25": 0.5685589978308365,
+    "o35": 0.34456755323574756,
+    "btts": 0.511673693086177
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 2.08573259671577,
+    "buts_attendus_ext": 0.87766282726133,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 140,
+    "matchs_anterieurs_ext": 113,
+    "fd_dom": "Ludogorets",
+    "fd_ext": "Cska 1948"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "3eb4853f5f87a57718334368fd6cef8b67de86bdc0cada5f318bd9c078ffce96",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Ludogorets ou match nul",
+     "p1": 0.8520479019284676,
+     "cote": 1.18,
+     "valeur": 0.005416524275591694
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Ludogorets",
+      "p1": 0.6527198344511165,
+      "cote": 1.64,
+      "valeur": 0.07046052849983098
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.19932806747735113,
+      "cote": 3.8,
+      "valeur": -0.24255334358606573
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire CSKA 1948",
+      "p1": 0.14795209807153256,
+      "cote": 4.81,
+      "valeur": -0.2883504082759284
+     },
+     {
+      "cle": "1N",
+      "libelle": "Ludogorets ou match nul",
+      "p1": 0.8520479019284676,
+      "cote": 1.18,
+      "valeur": 0.005416524275591694
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou CSKA 1948",
+      "p1": 0.3472801655488837,
+      "cote": 2.0,
+      "valeur": -0.3054396689022326
+     },
+     {
+      "cle": "12",
+      "libelle": "Ludogorets ou CSKA 1948 (pas de nul)",
+      "p1": 0.800671932522649,
+      "cote": 1.25,
+      "valeur": 0.0008399156533112073
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7953172388499938,
+      "cote": 1.24,
+      "valeur": -0.013806623826007614
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.20468276115000616,
+      "cote": 3.62,
+      "valeur": -0.25904840463697765
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5685589978308365,
+      "cote": 1.8,
+      "valeur": 0.02340619609550587
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4314410021691635,
+      "cote": 1.91,
+      "valeur": -0.1759476858568978
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.34456755323574756,
+      "cote": 2.99,
+      "valeur": 0.030256984174885204
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6554324467642525,
+      "cote": 1.34,
+      "valeur": -0.12172052133590161
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.511673693086177,
+      "cote": 1.77,
+      "valeur": -0.09433756323746656
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.48832630691382295,
+      "cote": 1.87,
+      "valeur": -0.08682980607115098
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.64,
+    "N": 3.8,
+    "2": 4.81,
+    "1N": 1.18,
+    "N2": 2.0,
+    "12": 1.25,
+    "o15+": 1.24,
+    "o15-": 3.62,
+    "o25+": 1.8,
+    "o25-": 1.91,
+    "o35+": 2.99,
+    "o35-": 1.34,
+    "btts+": 1.77,
+    "btts-": 1.87
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-12",
+      "adversaire": "Arda Kardzha",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-14",
+      "adversaire": "Septemvri",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Slavia Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Botev Plovdiv",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-02",
+      "adversaire": "Botev Vratsa",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-18",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-09-18",
+      "adversaire": "Slavia Sofia",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Septemvri",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Spartak Varna",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Loko Plovdiv",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Cska Sofia",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Spartak Varna",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Cherno More",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-27",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Spartak Varna",
+      "marques": 6,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Botev Plovdiv",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Cska Sofia",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Loko Plovdiv",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-14",
+      "adversaire": "Cherno More",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Arda Kardzha",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Botev Vratsa",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2024-04-11",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2024-03-03",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-11-21",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-07-31",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-05-26",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2021-04-22",
+      "domicile": true,
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2020-11-08",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "92h9al9lrykdjfu5fi9640hsk",
    "date": "2026-11-07",
    "coup_d_envoi_utc": "2026-11-07T17:00:00Z",
@@ -43419,6 +47006,347 @@
       "domicile": true,
       "marques": 0,
       "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2oyiuxmu4zzgep0hz7o07bis",
+   "date": "2026-11-07",
+   "coup_d_envoi_utc": "2026-11-07T17:00:00Z",
+   "competition": "Suisse : Challenge Ligue",
+   "division": "CH2",
+   "domicile": "Winterthur",
+   "exterieur": "Étoile Carouge",
+   "p1_original": {
+    "dom": 0.6044196152191864,
+    "nul": 0.2184311046111789,
+    "ext": 0.17714928016963438,
+    "o15": 0.7745221193677948,
+    "o25": 0.5384331788059777,
+    "o35": 0.3154672376230026,
+    "btts": 0.5137800844121154
+   },
+   "p1_calibre": {
+    "dom": 0.6044196152191864,
+    "nul": 0.2184311046111789,
+    "ext": 0.17714928016963438,
+    "o15": 0.7745221193677948,
+    "o25": 0.5384331788059777,
+    "o35": 0.3154672376230026,
+    "btts": 0.5137800844121154
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.9089281379868803,
+    "buts_attendus_ext": 0.9243169176991676,
+    "k": 10,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 84,
+    "matchs_anterieurs_ext": 12,
+    "fd_dom": "Winterthur",
+    "fd_ext": "Etoile Carouge"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "4be0502efd238f2b436550954ae69789a6987ead8473f08650593715bbec6091",
+   "mode": "parallele",
+   "n_historique_competition": 600,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6845327623769975,
+     "cote": 1.64,
+     "valeur": 0.12263373029827584
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Winterthur",
+      "p1": 0.6044196152191864,
+      "cote": 1.52,
+      "valeur": -0.0812821848668367
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2184311046111789,
+      "cote": 4.52,
+      "valeur": -0.012691407157471413
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Étoile Carouge",
+      "p1": 0.17714928016963438,
+      "cote": 5.0,
+      "valeur": -0.11425359915182809
+     },
+     {
+      "cle": "1N",
+      "libelle": "Winterthur ou match nul",
+      "p1": 0.8228507198303653,
+      "cote": 1.17,
+      "valeur": -0.037264657798472656
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Étoile Carouge",
+      "p1": 0.39558038478081325,
+      "cote": 2.21,
+      "valeur": -0.12576734963440273
+     },
+     {
+      "cle": "12",
+      "libelle": "Winterthur ou Étoile Carouge (pas de nul)",
+      "p1": 0.7815688953888208,
+      "cote": 1.19,
+      "valeur": -0.06993301448730327
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7745221193677948,
+      "cote": 1.12,
+      "valeur": -0.1325352263080697
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2254778806322052,
+      "cote": 5.31,
+      "valeur": 0.1972875461570096
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5384331788059777,
+      "cote": 1.45,
+      "valeur": -0.21927189073133235
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.46156682119402226,
+      "cote": 2.55,
+      "valeur": 0.17699539404475662
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.3154672376230026,
+      "cote": 2.13,
+      "valeur": -0.32805478386300446
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6845327623769975,
+      "cote": 1.64,
+      "valeur": 0.12263373029827584
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5137800844121154,
+      "cote": 1.52,
+      "valeur": -0.2190542716935846
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4862199155878846,
+      "cote": 2.26,
+      "valeur": 0.09885700922861895
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.52,
+    "N": 4.52,
+    "2": 5.0,
+    "1N": 1.17,
+    "N2": 2.21,
+    "12": 1.19,
+    "o15+": 1.12,
+    "o15-": 5.31,
+    "o25+": 1.45,
+    "o25-": 2.55,
+    "o35+": 2.13,
+    "o35-": 1.64,
+    "btts+": 1.52,
+    "btts-": 2.26
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-23",
+      "adversaire": "Nyon",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Xamax",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Wil",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Yverdon",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Kriens",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Nyon",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Yverdon",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-01",
+      "adversaire": "Wil",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Xamax",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Nyon",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Rapperswil",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Kriens",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Kriens",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Yverdon",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Wil",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Rapperswil",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Xamax",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Aarau",
+      "marques": 3,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-09-11",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 0
      }
     ]
    },
@@ -70806,6 +74734,651 @@
    "evaluation": null
   },
   {
+   "match_id": "1d1l63woubscmiuxbspzpuzv8",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T11:00:00Z",
+   "competition": "Ukraine : Première Ligue",
+   "division": "UA1",
+   "domicile": "Bukovyna",
+   "exterieur": "Kolos",
+   "p1_original": {
+    "dom": 0.3118572600413479,
+    "nul": 0.3151700102771281,
+    "ext": 0.37297272968152406,
+    "o15": 0.5727995156019311,
+    "o25": 0.3025385959519978,
+    "o35": 0.1292859630131924,
+    "btts": 0.38030798416581
+   },
+   "p1_calibre": {
+    "dom": 0.3118572600413479,
+    "nul": 0.3151700102771281,
+    "ext": 0.37297272968152406,
+    "o15": 0.5727995156019311,
+    "o25": 0.3025385959519978,
+    "o35": 0.1292859630131924,
+    "btts": 0.38030798416581
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 0.9041330442311334,
+    "buts_attendus_ext": 1.0190377178962724,
+    "k": 5,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 10,
+    "matchs_anterieurs_ext": 95,
+    "fd_dom": "Bukovyna",
+    "fd_ext": "Kolos"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "dab6675b78f70c49e2f72b9d0d9648976fc5e142e6a757d191a417025920c362",
+   "mode": "parallele",
+   "n_historique_competition": 743,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.8707140369868076,
+     "cote": 1.36,
+     "valeur": 0.18417109030205836
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Bukovyna",
+      "p1": 0.3118572600413479,
+      "cote": 2.16,
+      "valeur": -0.3263883183106885
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.3151700102771281,
+      "cote": 3.36,
+      "valeur": 0.058971234531150385
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Kolos",
+      "p1": 0.37297272968152406,
+      "cote": 3.12,
+      "valeur": 0.16367491660635514
+     },
+     {
+      "cle": "1N",
+      "libelle": "Bukovyna ou match nul",
+      "p1": 0.627027270318476,
+      "cote": 1.33,
+      "valeur": -0.1660537304764268
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Kolos",
+      "p1": 0.6881427399586522,
+      "cote": 1.59,
+      "valeur": 0.09414695653425698
+     },
+     {
+      "cle": "12",
+      "libelle": "Bukovyna ou Kolos (pas de nul)",
+      "p1": 0.684829989722872,
+      "cote": 1.3,
+      "valeur": -0.1097210133602664
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.5727995156019311,
+      "cote": 1.23,
+      "valeur": -0.2954565958096248
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.4272004843980689,
+      "cote": 3.72,
+      "valeur": 0.5891858019608165
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.3025385959519978,
+      "cote": 1.78,
+      "valeur": -0.4614812992054439
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6974614040480023,
+      "cote": 1.93,
+      "valeur": 0.3461005098126444
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.1292859630131924,
+      "cote": 2.89,
+      "valeur": -0.6263635668918739
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8707140369868076,
+      "cote": 1.36,
+      "valeur": 0.18417109030205836
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.38030798416581,
+      "cote": 1.63,
+      "valeur": -0.38009798580972975
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.61969201583419,
+      "cote": 2.1,
+      "valeur": 0.30135323325179897
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.16,
+    "N": 3.36,
+    "2": 3.12,
+    "1N": 1.33,
+    "N2": 1.59,
+    "12": 1.3,
+    "o15+": 1.23,
+    "o15-": 3.72,
+    "o25+": 1.78,
+    "o25-": 1.93,
+    "o35+": 2.89,
+    "o35-": 1.36,
+    "btts+": 1.63,
+    "btts-": 2.1
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-25",
+      "adversaire": "Kryvbas",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Polessya",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Zorya",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Dynamo Kiev",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Obolon Kyiv",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-23",
+      "adversaire": "Veres Rivne",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Shakhtar",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Kudrivka",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Kryvbas",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Dynamo Kiev",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Zorya",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-17",
+      "adversaire": "Kudrivka",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Fc Kharkiv",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Epitsentr D.",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Karpaty Lviv",
+      "marques": 0,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-10",
+      "adversaire": "Epitsentr D.",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Karpaty Lviv",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Obolon Kyiv",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "1enp6zz1fv2x80zo06qr07ims",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T11:00:00Z",
+   "competition": "Ukraine : Première Ligue",
+   "division": "UA1",
+   "domicile": "Zorya",
+   "exterieur": "LNZ Cherkasy",
+   "p1_original": {
+    "dom": 0.39735909626698357,
+    "nul": 0.30668008536132213,
+    "ext": 0.2959608183716943,
+    "o15": 0.5934350115220703,
+    "o25": 0.3227647336534376,
+    "o35": 0.14250416494910575,
+    "btts": 0.39563330272777797
+   },
+   "p1_calibre": {
+    "dom": 0.39735909626698357,
+    "nul": 0.30668008536132213,
+    "ext": 0.2959608183716943,
+    "o15": 0.5934350115220703,
+    "o25": 0.3227647336534376,
+    "o35": 0.14250416494910575,
+    "btts": 0.39563330272777797
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.0959004530351137,
+    "buts_attendus_ext": 0.9020348591510985,
+    "k": 5,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 97,
+    "matchs_anterieurs_ext": 70,
+    "fd_dom": "Zorya",
+    "fd_ext": "Lnz Cherkasy"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "e93bd8cd4f2640f59813b7c309abbbfc3ac21f21d531b7628e963a8e109dd8ed",
+   "mode": "parallele",
+   "n_historique_competition": 743,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.8574958350508942,
+     "cote": 1.23,
+     "valeur": 0.054719877112599846
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Zorya",
+      "p1": 0.39735909626698357,
+      "cote": 2.99,
+      "valeur": 0.18810369783828085
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.30668008536132213,
+      "cote": 3.18,
+      "valeur": -0.02475732855099555
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire LNZ Cherkasy",
+      "p1": 0.2959608183716943,
+      "cote": 2.32,
+      "valeur": -0.3133709013776693
+     },
+     {
+      "cle": "1N",
+      "libelle": "Zorya ou match nul",
+      "p1": 0.7040391816283057,
+      "cote": 1.52,
+      "valeur": 0.07013955607502464
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou LNZ Cherkasy",
+      "p1": 0.6026409037330165,
+      "cote": 1.35,
+      "valeur": -0.18643477996042768
+     },
+     {
+      "cle": "12",
+      "libelle": "Zorya ou LNZ Cherkasy (pas de nul)",
+      "p1": 0.6933199146386779,
+      "cote": 1.32,
+      "valeur": -0.08481771267694505
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.5934350115220703,
+      "cote": 1.35,
+      "valeur": -0.19886273444520497
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.40656498847792966,
+      "cote": 2.94,
+      "valeur": 0.1953010661251131
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.3227647336534376,
+      "cote": 2.11,
+      "valeur": -0.31896641199124665
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6772352663465624,
+      "cote": 1.65,
+      "valeur": 0.11743818947182794
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.14250416494910575,
+      "cote": 3.78,
+      "valeur": -0.46133425649238025
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8574958350508942,
+      "cote": 1.23,
+      "valeur": 0.054719877112599846
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.39563330272777797,
+      "cote": 1.84,
+      "valeur": -0.2720347229808885
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.604366697272222,
+      "cote": 1.82,
+      "valeur": 0.09994738903544409
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.99,
+    "N": 3.18,
+    "2": 2.32,
+    "1N": 1.52,
+    "N2": 1.35,
+    "12": 1.32,
+    "o15+": 1.35,
+    "o15-": 2.94,
+    "o25+": 2.11,
+    "o25-": 1.65,
+    "o35+": 3.78,
+    "o35-": 1.23,
+    "btts+": 1.84,
+    "btts-": 1.82
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Epitsentr D.",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Tchernomorets",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Dynamo Kiev",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Fc Kharkiv",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Kryvbas",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Kolos",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Livyi Bereh",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Kryvbas",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Shakhtar",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Dynamo Kiev",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Karpaty Lviv",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Bukovyna",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Shakhtar",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Livyi Bereh",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Bukovyna",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Veres Rivne",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-17",
+      "adversaire": "Polessya",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-11",
+      "adversaire": "Kudrivka",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Obolon Kyiv",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Veres Rivne",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Tchernomorets",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2025-05-04",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-11-04",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-05-19",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2023-11-12",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "dvd83a4fzj80atupg65f80g7o",
    "date": "2026-11-08",
    "coup_d_envoi_utc": "2026-11-08T11:15:00Z",
@@ -71542,6 +76115,352 @@
       "encaisses": 3
      }
     ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "98frnf2swtvjagohluodops0k",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T12:00:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Spartak Varna",
+   "exterieur": "Arda Kardzha",
+   "p1_original": {
+    "dom": 0.32480389934793225,
+    "nul": 0.26565955414612613,
+    "ext": 0.4095365465059418,
+    "o15": 0.7227136098661401,
+    "o25": 0.4688240735666274,
+    "o35": 0.2530589678240038,
+    "btts": 0.5168681871316408
+   },
+   "p1_calibre": {
+    "dom": 0.32480389934793225,
+    "nul": 0.26565955414612613,
+    "ext": 0.4095365465059418,
+    "o15": 0.7227136098661401,
+    "o25": 0.4688240735666274,
+    "o35": 0.2530589678240038,
+    "btts": 0.5168681871316408
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.184985928758696,
+    "buts_attendus_ext": 1.3645296072587432,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 13,
+    "matchs_anterieurs_ext": 143,
+    "fd_dom": "Spartak Varna",
+    "fd_ext": "Arda Kardzha"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "7186c72934e011d01df3f7f13ff7c4ff46042c92227dfa2b93908c6546d585fc",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Spartak Varna ou match nul",
+     "p1": 0.5904634534940584,
+     "cote": 1.71,
+     "valeur": 0.009692505474839797
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Spartak Varna",
+      "p1": 0.32480389934793225,
+      "cote": 3.76,
+      "valeur": 0.22126266154822516
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26565955414612613,
+      "cote": 3.28,
+      "valeur": -0.12863666240070637
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Arda Kardzha",
+      "p1": 0.4095365465059418,
+      "cote": 1.97,
+      "valeur": -0.19321300338329472
+     },
+     {
+      "cle": "1N",
+      "libelle": "Spartak Varna ou match nul",
+      "p1": 0.5904634534940584,
+      "cote": 1.71,
+      "valeur": 0.009692505474839797
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Arda Kardzha",
+      "p1": 0.6751961006520679,
+      "cote": 1.25,
+      "valeur": -0.15600487418491515
+     },
+     {
+      "cle": "12",
+      "libelle": "Spartak Varna ou Arda Kardzha (pas de nul)",
+      "p1": 0.734340445853874,
+      "cote": 1.31,
+      "valeur": -0.03801401593142495
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7227136098661401,
+      "cote": 1.36,
+      "valeur": -0.01710949058204947
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2772863901338599,
+      "cote": 2.91,
+      "valeur": -0.19309660471046763
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4688240735666274,
+      "cote": 2.13,
+      "valeur": -0.0014047233030836104
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5311759264333726,
+      "cote": 1.64,
+      "valeur": -0.1288714806492689
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2530589678240038,
+      "cote": 3.81,
+      "valeur": -0.035845332590545564
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7469410321759962,
+      "cote": 1.22,
+      "valeur": -0.08873194074528468
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5168681871316408,
+      "cote": 1.89,
+      "valeur": -0.023119126321198835
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.48313181286835916,
+      "cote": 1.75,
+      "valeur": -0.15451932748037145
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.76,
+    "N": 3.28,
+    "2": 1.97,
+    "1N": 1.71,
+    "N2": 1.25,
+    "12": 1.31,
+    "o15+": 1.36,
+    "o15-": 2.91,
+    "o25+": 2.13,
+    "o25-": 1.64,
+    "o35+": 3.81,
+    "o35-": 1.22,
+    "btts+": 1.89,
+    "btts-": 1.75
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-09-20",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Cska Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Ludogorets",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-17",
+      "adversaire": "Septemvri",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Cska 1948",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-12",
+      "adversaire": "Ludogorets",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Cska Sofia",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-08-24",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-18",
+      "adversaire": "Septemvri",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 6
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Dunav",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Botev Vratsa",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Levski Sofia",
+      "marques": 0,
+      "encaisses": 6
+     },
+     {
+      "date": "2026-08-10",
+      "adversaire": "Botev Plovdiv",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Cherno More",
+      "marques": 3,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Septemvri",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Levski Sofia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Cherno More",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Botev Plovdiv",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Botev Vratsa",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-17",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Slavia Sofia",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "h2h": []
    },
    "statut": "a_venir",
    "resultat": null,
@@ -81582,6 +86501,407 @@
    "evaluation": null
   },
   {
+   "match_id": "98qzqr3ec5ongkl88w7ozb5zo",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T15:00:00Z",
+   "competition": "Bulgarie : Parva Liga",
+   "division": "BG1",
+   "domicile": "Levski Sofia",
+   "exterieur": "CSKA Sofia",
+   "p1_original": {
+    "dom": 0.41684979311390397,
+    "nul": 0.29370878289107355,
+    "ext": 0.28944142399502254,
+    "o15": 0.6285920843604937,
+    "o25": 0.35905185985317273,
+    "o35": 0.16748196394964662,
+    "btts": 0.42446446586513525
+   },
+   "p1_calibre": {
+    "dom": 0.41684979311390397,
+    "nul": 0.29370878289107355,
+    "ext": 0.28944142399502254,
+    "o15": 0.6285920843604937,
+    "o25": 0.35905185985317273,
+    "o35": 0.16748196394964662,
+    "btts": 0.42446446586513525
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.1913601369960396,
+    "buts_attendus_ext": 0.9408251008884401,
+    "k": 5,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 141,
+    "matchs_anterieurs_ext": 142,
+    "fd_dom": "Levski Sofia",
+    "fd_ext": "Cska Sofia"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "4e7602fe73ec0be07bece9369a5e546ceadcc398bd121364bb2550b5d565315e",
+   "mode": "parallele",
+   "n_historique_competition": 1033,
+   "pari": {
+    "retenu": {
+     "cle": "o25-",
+     "libelle": "Moins de 2,5 buts",
+     "p1": 0.6409481401468273,
+     "cote": 1.58,
+     "valeur": 0.012698061431987151
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Levski Sofia",
+      "p1": 0.41684979311390397,
+      "cote": 2.11,
+      "valeur": -0.12044693652966265
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.29370878289107355,
+      "cote": 3.24,
+      "valeur": -0.048383543432921616
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire CSKA Sofia",
+      "p1": 0.28944142399502254,
+      "cote": 3.38,
+      "valeur": -0.02168798689682383
+     },
+     {
+      "cle": "1N",
+      "libelle": "Levski Sofia ou match nul",
+      "p1": 0.7105585760049775,
+      "cote": 1.29,
+      "valeur": -0.08337943695357897
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou CSKA Sofia",
+      "p1": 0.5831502068860961,
+      "cote": 1.62,
+      "valeur": -0.055296664844524224
+     },
+     {
+      "cle": "12",
+      "libelle": "Levski Sofia ou CSKA Sofia (pas de nul)",
+      "p1": 0.7062912171089265,
+      "cote": 1.32,
+      "valeur": -0.067695593416217
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6285920843604937,
+      "cote": 1.4,
+      "valeur": -0.1199710818953088
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.37140791563950626,
+      "cote": 2.75,
+      "valeur": 0.021371768008642267
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.35905185985317273,
+      "cote": 2.23,
+      "valeur": -0.1993143525274248
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6409481401468273,
+      "cote": 1.58,
+      "valeur": 0.012698061431987151
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.16748196394964662,
+      "cote": 4.11,
+      "valeur": -0.31164912816695234
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8325180360503533,
+      "cote": 1.19,
+      "valeur": -0.009303537100079584
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.42446446586513525,
+      "cote": 1.94,
+      "valeur": -0.17653893622163763
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5755355341348647,
+      "cote": 1.71,
+      "valeur": -0.015834236629381437
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.11,
+    "N": 3.24,
+    "2": 3.38,
+    "1N": 1.29,
+    "N2": 1.62,
+    "12": 1.32,
+    "o15+": 1.4,
+    "o15-": 2.75,
+    "o25+": 2.23,
+    "o25-": 1.58,
+    "o35+": 4.11,
+    "o35-": 1.19,
+    "btts+": 1.94,
+    "btts-": 1.71
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-09-05",
+      "adversaire": "Cska 1948",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Spartak Varna",
+      "marques": 6,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Loko Plovdiv",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-01",
+      "adversaire": "Septemvri",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-11",
+      "adversaire": "Cska 1948",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Loko Plovdiv",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-16",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Spartak Varna",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Septemvri",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-20",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Dunav",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Arda Kardzha",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Cherno More",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Botev Vratsa",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Slavia Sofia",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Botev Plovdiv",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Lokomotiv Sf",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Slavia Sofia",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Ludogorets",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Arda Kardzha",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Cherno More",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Botev Vratsa",
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-02",
+      "adversaire": "Dunav",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-27",
+      "adversaire": "Botev Plovdiv",
+      "marques": 3,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2024-04-27",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2024-04-07",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2023-10-07",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2022-04-17",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-03-06",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-09-26",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-04-25",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2020-12-18",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2020-06-20",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2020-02-15",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "6eerr1gucn9ah3r7fdlj8e238",
    "date": "2026-11-08",
    "coup_d_envoi_utc": "2026-11-08T15:00:00Z",
@@ -84332,6 +89652,347 @@
    "evaluation": null
   },
   {
+   "match_id": "32ky6086v1orj7er9h7rmgwk",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T15:30:00Z",
+   "competition": "Suisse : Challenge Ligue",
+   "division": "CH2",
+   "domicile": "Yverdon",
+   "exterieur": "Xamax",
+   "p1_original": {
+    "dom": 0.5665622925995035,
+    "nul": 0.22156964734310547,
+    "ext": 0.21186806005739106,
+    "o15": 0.7996375200488078,
+    "o25": 0.5749910568949467,
+    "o35": 0.35095168023308554,
+    "btts": 0.563247223600686
+   },
+   "p1_calibre": {
+    "dom": 0.5665622925995035,
+    "nul": 0.22156964734310547,
+    "ext": 0.21186806005739106,
+    "o15": 0.7996375200488078,
+    "o25": 0.5749910568949467,
+    "o35": 0.35095168023308554,
+    "btts": 0.563247223600686
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.9095353627688394,
+    "buts_attendus_ext": 1.0823574119918609,
+    "k": 10,
+    "demi_vie_jours": 730,
+    "matchs_anterieurs_dom": 12,
+    "matchs_anterieurs_ext": 84,
+    "fd_dom": "Yverdon",
+    "fd_ext": "Xamax"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "6ca7772a5d1e26a2237c8689188a296859545dd83ff9fd05670fbf352cc8e065",
+   "mode": "parallele",
+   "n_historique_competition": 600,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6490483197669145,
+     "cote": 1.58,
+     "valeur": 0.02549634523172495
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Yverdon",
+      "p1": 0.5665622925995035,
+      "cote": 1.63,
+      "valeur": -0.07650346306280931
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.22156964734310547,
+      "cote": 4.13,
+      "valeur": -0.08491735647297438
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Xamax",
+      "p1": 0.21186806005739106,
+      "cote": 4.42,
+      "valeur": -0.06354317454633152
+     },
+     {
+      "cle": "1N",
+      "libelle": "Yverdon ou match nul",
+      "p1": 0.788131939942609,
+      "cote": 1.2,
+      "valeur": -0.05424167206886921
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Xamax",
+      "p1": 0.43343770740049653,
+      "cote": 2.01,
+      "valeur": -0.12879020812500208
+     },
+     {
+      "cle": "12",
+      "libelle": "Yverdon ou Xamax (pas de nul)",
+      "p1": 0.7784303526568945,
+      "cote": 1.22,
+      "valeur": -0.050314969758588735
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7996375200488078,
+      "cote": 1.14,
+      "valeur": -0.08841322714435917
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.20036247995119216,
+      "cote": 4.92,
+      "valeur": -0.014216598640134581
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5749910568949467,
+      "cote": 1.5,
+      "valeur": -0.13751341465758005
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4250089431050533,
+      "cote": 2.41,
+      "valeur": 0.024271552883178504
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.35095168023308554,
+      "cote": 2.24,
+      "valeur": -0.2138682362778883
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6490483197669145,
+      "cote": 1.58,
+      "valeur": 0.02549634523172495
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.563247223600686,
+      "cote": 1.52,
+      "valeur": -0.1438642201269572
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.436752776399314,
+      "cote": 2.26,
+      "valeur": -0.012938725337550472
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.63,
+    "N": 4.13,
+    "2": 4.42,
+    "1N": 1.2,
+    "N2": 2.01,
+    "12": 1.22,
+    "o15+": 1.14,
+    "o15-": 4.92,
+    "o25+": 1.5,
+    "o25-": 2.41,
+    "o35+": 2.24,
+    "o35-": 1.58,
+    "btts+": 1.52,
+    "btts-": 2.26
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-25",
+      "adversaire": "Kriens",
+      "marques": 5,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Nyon",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Wil",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Aarau",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-23",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Nyon",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-04",
+      "adversaire": "Winterthur",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Aarau",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Etoile Carouge",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Wil",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Etoile Carouge",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-11",
+      "adversaire": "Rapperswil",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Xamax",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-07",
+      "adversaire": "Kriens",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Winterthur",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Aarau",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Winterthur",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-18",
+      "adversaire": "Rapperswil",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Yverdon",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "Lausanne Ouchy",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-24",
+      "adversaire": "Kriens",
+      "marques": 3,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-09-01",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "26iv9zat4bnthumhoqghxlyc4",
    "date": "2026-11-08",
    "coup_d_envoi_utc": "2026-11-08T15:30:00Z",
@@ -86603,6 +92264,359 @@
       "date": "2019-08-04",
       "domicile": true,
       "marques": 4,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "1e0x9xyisog6evtjf17waegpg",
+   "date": "2026-11-08",
+   "coup_d_envoi_utc": "2026-11-08T16:00:00Z",
+   "competition": "Ukraine : Première Ligue",
+   "division": "UA1",
+   "domicile": "Shakhtar",
+   "exterieur": "Dynamo Kiev",
+   "p1_original": {
+    "dom": 0.47799065997499596,
+    "nul": 0.26057841775361124,
+    "ext": 0.2614309222713927,
+    "o15": 0.7155856978323848,
+    "o25": 0.4598010297536055,
+    "o35": 0.24544414761645747,
+    "btts": 0.4968601963826139
+   },
+   "p1_calibre": {
+    "dom": 0.47799065997499596,
+    "nul": 0.26057841775361124,
+    "ext": 0.2614309222713927,
+    "o15": 0.7155856978323848,
+    "o25": 0.4598010297536055,
+    "o35": 0.24544414761645747,
+    "btts": 0.4968601963826139
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.486883033605273,
+    "buts_attendus_ext": 1.0272263977441627,
+    "k": 5,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 97,
+    "matchs_anterieurs_ext": 96,
+    "fd_dom": "Shakhtar",
+    "fd_ext": "Dynamo Kiev"
+   },
+   "gele_le": "2026-11-06T13:17:41Z",
+   "empreinte": "f44170ff912ea3e9edbeb4df83d35fcaad8a7aacc51b8e10eb9cb0f2d1545627",
+   "mode": "parallele",
+   "n_historique_competition": 743,
+   "pari": {
+    "retenu": {
+     "cle": "2",
+     "libelle": "Victoire Dynamo Kiev",
+     "p1": 0.2614309222713927,
+     "cote": 4.42,
+     "valeur": 0.1555246764395557
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Shakhtar",
+      "p1": 0.47799065997499596,
+      "cote": 1.75,
+      "valeur": -0.16351634504375712
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.26057841775361124,
+      "cote": 3.55,
+      "valeur": -0.07494661697468019
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Dynamo Kiev",
+      "p1": 0.2614309222713927,
+      "cote": 4.42,
+      "valeur": 0.1555246764395557
+     },
+     {
+      "cle": "1N",
+      "libelle": "Shakhtar ou match nul",
+      "p1": 0.7385690777286071,
+      "cote": 1.2,
+      "valeur": -0.11371710672567148
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Dynamo Kiev",
+      "p1": 0.5220093400250039,
+      "cote": 1.88,
+      "valeur": -0.018622440752992797
+     },
+     {
+      "cle": "12",
+      "libelle": "Shakhtar ou Dynamo Kiev (pas de nul)",
+      "p1": 0.7394215822463887,
+      "cote": 1.27,
+      "valeur": -0.06093459054708639
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7155856978323848,
+      "cote": 1.31,
+      "valeur": -0.06258273583957585
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2844143021676152,
+      "cote": 3.14,
+      "valeur": -0.10693909119368816
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4598010297536055,
+      "cote": 2.01,
+      "valeur": -0.0757999301952531
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5401989702463945,
+      "cote": 1.72,
+      "valeur": -0.0708577711762014
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.24544414761645747,
+      "cote": 3.53,
+      "valeur": -0.13358215891390512
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7545558523835425,
+      "cote": 1.26,
+      "valeur": -0.04925962599673639
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4968601963826139,
+      "cote": 1.9,
+      "valeur": -0.055965626873033636
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5031398036173861,
+      "cote": 1.77,
+      "valeur": -0.1094425475972266
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.75,
+    "N": 3.55,
+    "2": 4.42,
+    "1N": 1.2,
+    "N2": 1.88,
+    "12": 1.27,
+    "o15+": 1.31,
+    "o15-": 3.14,
+    "o25+": 2.01,
+    "o25-": 1.72,
+    "o35+": 3.53,
+    "o35-": 1.26,
+    "btts+": 1.9,
+    "btts-": 1.77
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Obolon Kyiv",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Zorya",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Kolos",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-14",
+      "adversaire": "Tchernomorets",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Polessya",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-03",
+      "adversaire": "Kudrivka",
+      "marques": 5,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Kryvbas",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Polessya",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Zorya",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Bukovyna",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Veres Rivne",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-09",
+      "adversaire": "Veres Rivne",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Karpaty Lviv",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Fc Kharkiv",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Epitsentr D.",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-23",
+      "adversaire": "Kudrivka",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Karpaty Lviv",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-14",
+      "adversaire": "Epitsentr D.",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Lnz Cherkasy",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Kolos",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2025-04-27",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-10-27",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-05-11",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-11-03",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2021-04-17",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2020-11-08",
+      "domicile": false,
+      "marques": 3,
       "encaisses": 0
      }
     ]
