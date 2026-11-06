@@ -6,7 +6,8 @@ import datetime, json, os
 from moteur_dc import donnees as D
 
 COMPETITIONS_MED = {"N2": "pays-bas : eerste divisie", "PT2": "portugal : liga portugal 2", "AU1": "australie : a-ligue", "DE3": "allemagne : ligue 3",
-                    "HU1": "hongrie : nb i", "HR1": "croatie : hnl", "CZ1": "république tchèque : ligue tchèque", "RS1": "serbie : super ligue"}      # code interne P1 -> championnat Matchendirect (minuscules)
+                    "HU1": "hongrie : nb i", "HR1": "croatie : hnl", "CZ1": "république tchèque : ligue tchèque", "RS1": "serbie : super ligue",
+                    "BG1": "bulgarie : parva liga", "UA1": "ukraine : première ligue", "CH2": "suisse : challenge ligue", "KE1": "kenya : première ligue"}      # code interne P1 -> championnat Matchendirect (minuscules)
 _NORMALISE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "football_data", "normalized")
 _DOSSIER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 _FICHIERS = {"N2": os.path.join(_DOSSIER, "eerste_divisie", "matchs.json")}      # les autres : data/historique_med/<CODE>.json

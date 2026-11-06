@@ -6,8 +6,8 @@ CFG = cp.charger()
 def _fx(code="E0"):
     h = ic.historique(code); j = h[-1][0] + 1; return h, (j, h[-1][2], h[-1][3])
 
-def test_config_46_competitions_7_marches():      # 38 divisions Football-Data + 8 championnats Matchendirect (p1_source_med)
-    assert len(CFG["competitions"]) == 38 + len(ic.pm.COMPETITIONS_MED) == 46 and all(set(ic.MARCHES) <= set(v) and "p1" in v for v in CFG["competitions"].values())
+def test_config_competitions_fd_plus_matchendirect_7_marches():      # 38 divisions Football-Data + 8 championnats Matchendirect (p1_source_med)
+    assert len(CFG["competitions"]) == 38 + len(ic.pm.COMPETITIONS_MED) and all(set(ic.MARCHES) <= set(v) and "p1" in v for v in CFG["competitions"].values())
 
 def test_p1_futur_independant_du_score_fictif_et_des_autres_matchs_du_jour():
     h, f = _fx(); cfg = CFG["competitions"]["E0"]["p1"]
