@@ -2,12 +2,22 @@
 Football-Data ne publie pas l'Eerste Divisie. P1 la lit donc dans l'assemblage Matchendirect (data/assemblage/equipes.json), la meme source que
 les moteurs Gamma, Omega et DC pour ce championnat. Identites des equipes = celles du chargeur de l'assemblage (moteur_dc.donnees.Ligues, lecture seule).
 Sortie au meme format que integration_calibration.historique : (jour ordinal, saison, domicile, exterieur, buts dom, buts ext)."""
-import datetime, os
+import datetime, json, os
 from moteur_dc import donnees as D
 
 COMPETITIONS_MED = {"N2": "pays-bas : eerste divisie"}      # code interne P1 -> championnat Matchendirect (minuscules)
 _NORMALISE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "football_data", "normalized")
+_PASSEES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "eerste_divisie", "matchs.json")
 _cache = {}
+MATCHS_PAR_SAISON = {"N2": 380}      # 20 equipes, aller-retour : une saison n'est utilisee que si elle est complete
+
+def saisons_passees(code):
+    """{etiquette: [(jour ordinal, dom, ext, buts dom, buts ext)]} des saisons passees COMPLETES (data/eerste_divisie/matchs.json). Une saison incomplete est ecartee."""
+    if code not in MATCHS_PAR_SAISON: return {}
+    if "passees" not in _cache:
+        with open(_PASSEES, encoding="utf-8") as f: _cache["passees"] = json.load(f)["saisons"]
+    return {s: [(datetime.date.fromisoformat(d).toordinal(), a, b, int(x), int(y)) for d, a, b, x, y in ms]
+            for s, ms in sorted(_cache["passees"].items()) if len(ms) == MATCHS_PAR_SAISON[code]}
 
 def _ligues(doc=None):
     if doc is not None: return D.Ligues(doc)
@@ -19,11 +29,13 @@ def saison_courante():
     return max(os.listdir(_NORMALISE))
 
 def historique(code, doc=None, saison=None):
-    """Matchs joues du championnat (assemblage Matchendirect, une ligne par match), tries par date. [] si le code n'est pas servi par Matchendirect."""
+    """Saisons passees completes + saison en cours (assemblage Matchendirect, une ligne par match), tries par date. [] si le code n'est pas servi par Matchendirect.
+    La saison en cours est partielle : elle n'alimente que l'historique, jamais le choix des parametres (voir calibrer_p1_med)."""
     comp = COMPETITIONS_MED.get(code)
     if comp is None: return []
     saison = saison or saison_courante()
-    return [(datetime.date.fromisoformat(m["date"]).toordinal(), saison, m["dom_nom"], m["ext_nom"], int(m["h"]), int(m["a"])) for m in _ligues(doc).matchs.get(comp, [])]
+    passees = [(j, s, a, b, x, y) for s, ms in saisons_passees(code).items() if s != saison for j, a, b, x, y in ms]
+    return sorted(passees + [(datetime.date.fromisoformat(m["date"]).toordinal(), saison, m["dom_nom"], m["ext_nom"], int(m["h"]), int(m["a"])) for m in _ligues(doc).matchs.get(comp, [])], key=lambda r: r[0])
 
 def division_et_noms(competition, cle_dom, cle_ext, doc=None):
     """(code, nom domicile, nom exterieur) si le match est d'un championnat servi par Matchendirect et que les deux equipes y sont identifiees ; sinon None."""
