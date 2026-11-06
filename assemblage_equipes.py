@@ -145,6 +145,7 @@ def construit_correspondances(fd, med):
     votes = defaultdict(Counter)            # (division, nom_fd) -> Counter(nom_med)
     sim_max = defaultdict(float)            # ((division, nom_fd), nom_med) -> meilleure similarité vue
     competitions = defaultdict(Counter)     # division -> Counter(competition matchendirect)
+    comp_preuve = defaultdict(Counter)      # ((division, nom_fd), nom_med) -> Counter(competition matchendirect de la preuve)
     for m in fd:
         d = _date(m["date"])
         score = (m["full_time_home_goals"], m["full_time_away_goals"])
@@ -160,13 +161,24 @@ def construit_correspondances(fd, med):
                     votes[(div, nom_fd)][nom_med] += 1
                     cle = ((div, nom_fd), nom_med)
                     sim_max[cle] = max(sim_max[cle], sim)
+                    comp_preuve[cle][n["competition"]] += 1
                 competitions[div][n["competition"]] += 1
 
     retenus, ambigus, non_resolus = {}, [], []
     for cle, c in votes.items():
-        (meilleur, n1), *reste = c.most_common()
+        (meilleur, n1), *reste = sorted(c.items(), key=lambda kv: (-kv[1], -sim_max[(cle, kv[0])], kv[0]))      # a égalité de votes : le nom le plus semblable d'abord
         n2 = reste[0][1] if reste else 0
-        if (n1 >= 2 and n1 >= 2 * n2) or (n1 == 1 and n2 == 0 and sim_max[(cle, meilleur)] >= SIMILARITE_UNE_PREUVE):
+        # CORRECTIF 06/11/2026 : dans un match prouvé, l'adversaire dont le nom ne ressemble pas reçoit lui aussi un vote. Avec une seule preuve, ces
+        # votes d'adversaires empêchaient (n2 > 0) de relier « Bodo/Glimt » à « Bodo/Glimt ». Une concurrente dont le nom n'est pas clairement semblable
+        # (similarité sous SIMILARITE_PREUVE) n'est qu'un adversaire : elle ne compte plus contre une candidate aux noms presque identiques.
+        # Garde-fou : la preuve doit venir du championnat Matchendirect dominant de la division (« Annan Athletic » ne doit pas se relier à « Athletic Club »,
+        # preuve d'un match espagnol).
+        top = competitions[cle[0]].most_common(2)      # championnat dominant seulement s'il a strictement plus de preuves que le suivant (sinon inconnu)
+        comp_div = top[0][0] if top and (len(top) == 1 or top[0][1] > top[1][1]) else None
+        une_preuve = (n1 == 1 and sim_max[(cle, meilleur)] >= SIMILARITE_UNE_PREUVE
+                      and all(sim_max[(cle, nom)] < SIMILARITE_PREUVE for nom, _ in reste)
+                      and (n2 == 0 or comp_div in comp_preuve[(cle, meilleur)]))
+        if (n1 >= 2 and n1 >= 2 * n2) or une_preuve:
             retenus[cle] = (meilleur, n1)
         else:
             non_resolus.append({"division": cle[0], "football_data": cle[1], "candidats": dict(c.most_common(3))})

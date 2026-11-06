@@ -263,3 +263,46 @@ def test_pas_de_majorite_nette_rejetees():
 def test_minoritaire_a_une_preuve_et_majoritaire_a_une_preuve_rejetees():
     div, amb, _ = ae.construit_correspondances(*_deux_graphies(1, 1))
     assert not {"Sheffield United", "Sheffield Utd"} & set(div.get("E1", {}).get("equipes", {})) and len(amb) == 2
+
+
+# --- CORRECTIF 06/11/2026 : une preuve + concurrentes qui ne sont que des adversaires (Bodo/Glimt, Aalesund…) --------------
+NOR_C = "Norvège : Eliteserien"
+def _bodo(inverse=False):
+    fds = [fd("2026-09-12", "Aalesund", "Molde", 2, 0, "NOR"), fd("2026-09-13", "Rosenborg", "Viking", 3, 1, "NOR")]
+    meds = [med("2026-09-12", "Aalesund", "Qwerty", 2, 0, NOR_C), med("2026-09-12", "Altrincham", "Molde", 2, 0, "Angleterre : Ligue Nationale"), med("2026-09-13", "Rosenborg", "Viking", 3, 1, NOR_C)]
+    return fds, (meds[::-1] if inverse else meds)
+
+def test_une_preuve_concurrente_simple_adversaire_relie_nom_identique():
+    div, _, _ = ae.construit_correspondances(*_bodo())
+    assert div["NOR"]["equipes"]["Aalesund"]["matchendirect"] == "Aalesund"
+
+def test_une_preuve_resultat_independant_de_l_ordre_des_matchs():
+    assert ae.construit_correspondances(*_bodo())[0] == ae.construit_correspondances(*_bodo(inverse=True))[0]
+
+def test_une_preuve_bon_choix_meme_si_la_concurrente_vient_en_premier():
+    fds, meds = _bodo(); div, _, _ = ae.construit_correspondances(fds, [meds[1], meds[0], meds[2]])
+    assert div["NOR"]["equipes"]["Aalesund"]["matchendirect"] == "Aalesund" and "Altrincham" not in str(div["NOR"]["equipes"]["Aalesund"])
+
+def test_une_preuve_concurrente_au_nom_assez_semblable_reste_non_resolue():
+    fds = [fd("2026-09-12", "Molde", "Brann", 1, 0, "NOR")]
+    meds = [med("2026-09-12", "Molde", "Zzz", 1, 0, NOR_C), med("2026-09-12", "Fylde", "Brann", 1, 0, "Angleterre : Ligue Nationale")]
+    div, _, nr = ae.construit_correspondances(fds, meds)
+    assert "Molde" not in div.get("NOR", {}).get("equipes", {}) and any(x["football_data"] == "Molde" for x in nr)
+
+def test_une_preuve_noms_presque_identiques_hors_championnat_dominant_non_relie():
+    fds = [fd("2026-09-12", "Annan Athletic", "Edinburgh City", 0, 0, "SC3"), fd("2026-09-19", "Dumbarton", "Edinburgh City", 2, 1, "SC3")]
+    meds = [med("2026-09-12", "Athletic Club", "Rival", 0, 0, "Espagne : LaLiga"), med("2026-09-12", "Dundee FC", "Edinburgh City", 0, 0, "Écosse : Ligue 2"),
+            med("2026-09-19", "Dumbarton", "Edinburgh City", 2, 1, "Écosse : Ligue 2")]
+    div, _, nr = ae.construit_correspondances(fds, meds)
+    assert "Annan Athletic" not in div.get("SC3", {}).get("equipes", {}) and any(x["football_data"] == "Annan Athletic" for x in nr)
+
+def test_une_preuve_candidate_peu_semblable_jamais_acceptee():
+    div, _, nr = ae.construit_correspondances([fd("2026-09-12", "Brann", "Molde", 1, 0, "NOR")], [med("2026-09-12", "Zzz", "Molde", 1, 0, NOR_C), med("2026-09-12", "Yyy", "Wxx", 1, 0, NOR_C)])
+    assert "Brann" not in div.get("NOR", {}).get("equipes", {})
+
+def test_une_preuve_championnats_a_egalite_dominant_inconnu_non_relie():
+    fds = [fd("2026-09-12", "Aalesund", "Molde", 2, 0, "NOR")]
+    meds = [med("2026-09-12", "Aalesund", "Qwerty", 2, 0, NOR_C), med("2026-09-12", "Altrincham", "Molde", 2, 0, "Angleterre : Ligue Nationale")]
+    for ordre in (meds, meds[::-1]):
+        div, _, nr = ae.construit_correspondances(fds, ordre)
+        assert "Aalesund" not in div.get("NOR", {}).get("equipes", {}) and any(x["football_data"] == "Aalesund" for x in nr)

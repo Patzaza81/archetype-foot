@@ -1,13 +1,13 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-11-06 07:48 UTC",
+ "genere_le": "2026-11-06 13:00 UTC",
  "pivot": "matchendirect",
  "methode": "même score, date à ± 1 jour, au moins un nom clairement semblable ; ≥ 2 preuves et 2× la suivante, ou 1 preuve avec noms presque identiques ; noms revendiqués deux fois rejetés",
  "bilan": {
-  "equipes_reliees": 596,
+  "equipes_reliees": 603,
   "divisions_reliees": 35,
   "ambigues": 2,
-  "non_resolues": 47
+  "non_resolues": 40
  },
  "divisions": {
   "ARG": {
@@ -2203,10 +2203,30 @@
   "NOR": {
    "competition_matchendirect": "Norvège : Eliteserien",
    "equipes": {
+    "Aalesund": {
+     "matchendirect": "Aalesund",
+     "preuves": 1,
+     "similarite_nom": 1.0
+    },
+    "Bodo/Glimt": {
+     "matchendirect": "Bodo/Glimt",
+     "preuves": 1,
+     "similarite_nom": 1.0
+    },
+    "Fredrikstad": {
+     "matchendirect": "Fredrikstad",
+     "preuves": 1,
+     "similarite_nom": 1.0
+    },
     "KFUM Oslo": {
      "matchendirect": "KFUM",
      "preuves": 1,
      "similarite_nom": 0.9
+    },
+    "Rosenborg": {
+     "matchendirect": "Rosenborg",
+     "preuves": 1,
+     "similarite_nom": 1.0
     },
     "Sandefjord": {
      "matchendirect": "Sandefjord",
@@ -2217,6 +2237,11 @@
      "matchendirect": "Sarpsborg",
      "preuves": 1,
      "similarite_nom": 0.9
+    },
+    "Viking": {
+     "matchendirect": "Viking",
+     "preuves": 1,
+     "similarite_nom": 1.0
     }
    }
   },
@@ -2843,6 +2868,16 @@
      "preuves": 1,
      "similarite_nom": 1.0
     },
+    "Halmstad": {
+     "matchendirect": "Halmstads BK",
+     "preuves": 1,
+     "similarite_nom": 0.941
+    },
+    "Hammarby": {
+     "matchendirect": "Hammarby",
+     "preuves": 1,
+     "similarite_nom": 1.0
+    },
     "Vasteras SK": {
      "matchendirect": "Västerås",
      "preuves": 1,
@@ -3241,36 +3276,11 @@
   },
   {
    "division": "NOR",
-   "football_data": "Aalesund",
-   "candidats": {
-    "Aalesund": 1,
-    "Altrincham": 1
-   }
-  },
-  {
-   "division": "NOR",
-   "football_data": "Bodo/Glimt",
-   "candidats": {
-    "Bodo/Glimt": 1,
-    "E. Rio Cuarto": 1,
-    "O. Ljubljana": 1
-   }
-  },
-  {
-   "division": "NOR",
    "football_data": "Brann",
    "candidats": {
     "Brann": 1,
     "ÍBV": 1,
     "Tchernomorets": 1
-   }
-  },
-  {
-   "division": "NOR",
-   "football_data": "Fredrikstad",
-   "candidats": {
-    "Fredrikstad": 1,
-    "Cerezo": 1
    }
   },
   {
@@ -3307,14 +3317,6 @@
   },
   {
    "division": "NOR",
-   "football_data": "Rosenborg",
-   "candidats": {
-    "Rosenborg": 1,
-    "Fluminense": 1
-   }
-  },
-  {
-   "division": "NOR",
    "football_data": "Start",
    "candidats": {
     "IK Start": 1,
@@ -3337,14 +3339,6 @@
     "Vålerenga": 1,
     "Troyes": 1,
     "V-Varen": 1
-   }
-  },
-  {
-   "division": "NOR",
-   "football_data": "Viking",
-   "candidats": {
-    "Viking": 1,
-    "Aris": 1
    }
   },
   {
@@ -3517,22 +3511,6 @@
     "IFK Göteborg": 1,
     "Linfield": 1,
     "Peterborough": 1
-   }
-  },
-  {
-   "division": "SWE",
-   "football_data": "Halmstad",
-   "candidats": {
-    "Sabadell": 1,
-    "Halmstads BK": 1
-   }
-  },
-  {
-   "division": "SWE",
-   "football_data": "Hammarby",
-   "candidats": {
-    "Hammarby": 1,
-    "Inter Toronto": 1
    }
   },
   {
