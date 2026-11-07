@@ -16,9 +16,13 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const FAMILLES = [["buts", "Marchés de buts"], ["equipes", "Marchés d'équipes"], ["combos", "Marchés combos"]];
-const NB_VISIBLES = 3;
+const ONGLETS_PAGE = [["tous", "Tous"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire" };
+const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
+let ONGLET = "tous", DONNEES = null;
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
+const paris = (m, onglet) => (onglet === "tous" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : (m.paris && m.paris[onglet]) || []);
+const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT";
@@ -27,13 +31,15 @@ function ligne(p, fini) {
     `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span> ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
-function familles(m) {
-  const fini = m.statut === "termine";
-  return FAMILLES.map(([k, titre]) => {
+function resume(m, onglet) {            // carte repliée : UN SEUL pari, le mieux classé de l'onglet
+  const p = meilleur(paris(m, onglet)); if (!p) return "";
+  return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${onglet === "tous" ? "Meilleur pari du match" : "Meilleur : " + TITRES[onglet].toLowerCase()}</div>${ligne(p, m.statut === "termine")}</div>`;
+}
+function listes(m, onglet) {            // carte dépliée : tous les paris de l'onglet, du plus au moins réussi
+  const fini = m.statut === "termine", cles = onglet === "tous" ? ORDRE_FAMILLES : [onglet];
+  return cles.map((k) => {
     const L = (m.paris && m.paris[k]) || []; if (!L.length) return "";
-    const vis = L.slice(0, NB_VISIBLES).map((p) => ligne(p, fini)).join(""), reste = L.slice(NB_VISIBLES);
-    return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${titre} (${L.length})</div>${vis}` +
-      (reste.length ? `<details class="vf-reste"><summary>Voir les ${reste.length} autre${reste.length > 1 ? "s" : ""}</summary>${reste.map((p) => ligne(p, fini)).join("")}</details>` : "") + `</div>`;
+    return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES[k]} (${L.length}) · du plus au moins réussi</div>${L.map((p) => ligne(p, fini)).join("")}</div>`;
   }).join("");
 }
 function tableau(m) {
@@ -74,13 +80,13 @@ function derniers(m) {
   const ensExt = { dom: li(L("ext_dom"), true), ext: li(L("ext"), false), h2h: h2h.map((x) => ({ date: x.date, adv: m.domicile, marques: x.encaisses, encaisses: x.marques, dom: !x.domicile })) };
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">${eq(m.domicile, "dom", ensDom)}${eq(m.exterieur, "ext", ensExt)}</div></div>`;
 }
-function carte(m) {
+function carte(m, onglet) {
   const h = horaire(m.coup_d_envoi_utc), fin = m.statut === "termine" && m.resultat;
   const section = document.createElement("section"); section.className = "ax-carte ax-replie"; section.setAttribute("aria-expanded", "false");
-  let corps = familles(m); if (m.statut === "en_cours_ou_resultat_attendu") corps += `<div class="om-info">Coup d'envoi passé : résultat pas encore enregistré.</div>`;
+  let corps = resume(m, onglet); if (m.statut === "en_cours_ou_resultat_attendu") corps += `<div class="om-info">Coup d'envoi passé : résultat pas encore enregistré.</div>`;
   section.innerHTML = `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${e(m.domicile)}</span><div class="ax-horaire"><strong>${fin ? e(m.resultat.buts_dom + " - " + m.resultat.buts_ext) : e(h.heure)}</strong><span>${e(h.date)}</span></div><span class="ax-equipe ax-ext">${e(m.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${e(String(m.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
-    `<div class="om-corps">${corps}</div><details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${tableau(m)}${derniers(m)}</div></details>`;
+    `<div class="om-corps">${corps}</div><details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${listes(m, onglet)}${tableau(m)}${derniers(m)}</div></details>`;
   section.addEventListener("click", (ev2) => {
     const bo = ev2.target.closest(".om-onglet");
     if (bo) {
@@ -99,7 +105,16 @@ function carte(m) {
 }
 function liste(id, L, vide) {
   const el = document.getElementById(id); if (!el) return; el.innerHTML = "";
-  if (L.length) L.forEach((m) => el.appendChild(carte(m))); else el.innerHTML = `<p class="om-vide">${e(vide)}</p>`;
+  if (L.length) L.forEach((m) => el.appendChild(carte(m, ONGLET))); else el.innerHTML = `<p class="om-vide">${e(vide)}</p>`;
+}
+function barreOnglets(d) {
+  const n = (o) => (d.matchs || []).filter((m) => paris(m, o).length).length;
+  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>`;
+}
+function rendu(d) {
+  const L = (d.matchs || []).filter((m) => paris(m, ONGLET).length), av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
+  document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
+  liste("om-avenir", av, "Aucun match à venir pour cet onglet."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");
 }
 function bilan(d) {
   const B = d.bilan || {}, cles = Object.keys(B);
@@ -109,9 +124,9 @@ function bilan(d) {
     ordre.filter((k) => B[k]).map((k) => `<tr><td style="text-align:left">${e(maj1(k.toLowerCase()))}</td><td>${e(B[k].paris)}</td><td>${e(B[k].reussis)}</td><td>${Math.round(B[k].taux_reel * 100)} %</td></tr>`).join("") + `</table>`;
 }
 function affiche(d) {
-  const L = d.matchs || [], av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
-  document.getElementById("vf-bilan").innerHTML = bilan(d);
-  liste("om-avenir", av, "Aucun match à venir avec un pari qui passe les filtres."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");
+  const L = d.matchs || []; DONNEES = d;
+  document.getElementById("vf-bilan").innerHTML = bilan(d); rendu(d);
+  document.getElementById("vf-onglets").addEventListener("click", (ev) => { const b = ev.target.closest("[data-vf]"); if (!b) return; ONGLET = b.dataset.vf; rendu(DONNEES); });
   const g = d.genere_le ? new Date(d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime()) ? `Données du ${g.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" })} (heure du Cameroun) · ${L.length} match(s) · cote minimale ${fr(d.cote_min)} · au moins ${e(d.minimum_matchs_meme_lieu)} matchs au même lieu par équipe` : "";
 }

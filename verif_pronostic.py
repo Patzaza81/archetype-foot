@@ -406,10 +406,13 @@ def repli_combo(x, marche, cote, cfg=None, n=3):
 PAGE = os.path.join(DOSSIER, "page_verif.json")
 NB_DERNIERS = 10
 
+VICTOIRE = ("1", "N", "2", "1N", "N2", "12")
+
 def groupe(marche):
-    """Famille du pari : marches de buts / marches d'equipes / combos."""
+    """Famille du pari (onglets de la page) : combos / buts / victoire (resultat et double chance) / equipes (buts d'une equipe, cage inviolee)."""
     if "&" in marche: return "combos"
-    return "buts" if marche.startswith(("total_", "btts_")) else "equipes"
+    if marche.startswith(("total_", "btts_")): return "buts"
+    return "victoire" if marche in VICTOIRE else "equipes"
 
 def derniers_matchs(x):
     """Historique des deux equipes (saison en cours, avant le match), du plus recent au plus ancien : A a domicile, A a l'exterieur, B a l'exterieur, B a domicile, face-a-face."""
@@ -427,7 +430,7 @@ def fiche_match(x, maintenant, cfg):
     SA, SB = saison_complete(x, "equipe_dom"), saison_complete(x, "equipe_ext"); champ = moyenne_championnat(x.get("competition"), (x.get("assemblage") or {}).get("saison_football_data"))
     xa = xg_attendus(SA, SB, champ); sc = (x.get("score") or {}); fini = sc.get("buts_dom") is not None and sc.get("buts_ext") is not None
     statut = "termine" if fini else "en_cours_ou_resultat_attendu" if (x.get("coup_d_envoi_utc") or "9") <= maintenant else "a_venir"
-    G = {"buts": [], "equipes": [], "combos": []}
+    G = {"buts": [], "equipes": [], "victoire": [], "combos": []}
     for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
         r = constat(x, m, c, cfg)
         if r["verdict"] not in ("TIENT", "TIENT AVEC RÉSERVE"): continue
