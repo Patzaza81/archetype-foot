@@ -124,6 +124,17 @@ class LectureXG(unittest.TestCase):
     def test_ligne_limite(self):                  # exemple Galatasaray plus de 1,5 avec 1,6 but attendu : sous les 2 buts qu'il faut
         for val, X, sens in [(1.6, 1.5, "plus"), (2.9, 2.5, "plus"), (1.4, 1.5, "moins"), (3.1, 3.5, "moins")]: self.assertEqual(v._ligne(val, X, sens), "limite")
         self.assertEqual(v._lecture("dom_plus_1.5", 1.61, 1.63), "limite")
+    def test_avantage_du_terrain(self):           # xG quasi egaux (Galatasaray 1,61 contre 1,63) : sans avantage la victoire est contredite, avec l'avantage du championnat elle est confirmee
+        self.assertFalse(v._lecture("1", 1.61, 1.63)); self.assertTrue(v._lecture("1", 1.61, 1.63, 0.47)); self.assertTrue(v._lecture("1", 1.6, 1.5, 0.35))
+        self.assertFalse(v._lecture("1", 1.0, 1.5, 0.35)); self.assertFalse(v._lecture("1", 1.2, 1.9, 0.47)); self.assertTrue(v._lecture("2", 1.0, 1.5, 0.35))
+    def test_total_inchange_par_avantage(self):
+        for av in (0.0, 0.5, 0.9): self.assertEqual(v._lecture("total_plus_2.5", 1.6, 1.4, av), True); self.assertEqual(v._lecture("total_moins_1.5", 1.0, 1.0, av), False)
+    def test_ajuster_remonte(self):               # Birmingham : frequences 3/7 des deux cotes mais buts attendus et xG confirment
+        for lb, lx in [(True, True), (True, None)]: self.assertEqual(v._ajuster("NE TIENT PAS", lb, lx), "TIENT AVEC RÉSERVE")
+    def test_ajuster_ne_remonte_pas(self):
+        for lb, lx in [(False, True), (None, True), (True, False), (True, "limite"), ("limite", True)]: self.assertEqual(v._ajuster("NE TIENT PAS", lb, lx), "NE TIENT PAS", (lb, lx))
+    def test_ajuster_baisse(self):
+        self.assertEqual(v._ajuster("TIENT", True, False), "TIENT AVEC RÉSERVE"); self.assertEqual(v._ajuster("TIENT AVEC RÉSERVE", True, False), "NE TIENT PAS"); self.assertEqual(v._ajuster("TIENT", True, "limite"), "TIENT AVEC RÉSERVE"); self.assertEqual(v._ajuster("TIENT", True, True), "TIENT")
     def test_non_lisible(self):
         self.assertIsNone(v._lecture("1", None, 1.0)); self.assertIsNone(v._lecture("N", 1.0, 1.0)); self.assertIsNone(v._lecture("12", 1.0, 1.0))
     def test_attendus(self):
