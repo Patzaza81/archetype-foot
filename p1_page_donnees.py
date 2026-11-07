@@ -4,6 +4,7 @@ une donnee absente reste null. Les performances ne portent que sur des matchs te
 import datetime, glob, gzip, json, math, os
 import integration_calibration as ic
 import p1_paris
+import apprentissage_p1 as ap
 
 SORTIE = os.path.join(ic.RACINE, "data", "calibration_p1", "page_p1.json")
 MARCHES = ic.MARCHES
@@ -68,8 +69,9 @@ def derniers_matchs(hist, fd_dom, fd_ext, jour):
     return {"dom": f(fd_dom, True), "ext": f(fd_ext, False), "dom_ext": f(fd_dom, False), "ext_dom": f(fd_ext, True),
             "h2h": [{"date": datetime.date.fromordinal(h[0]).isoformat(), "domicile": h[2] == fd_dom, "marques": h[4] if h[2] == fd_dom else h[5], "encaisses": h[5] if h[2] == fd_dom else h[4]} for h in confront]}
 
-def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
+def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None, etat=None):
     import calibration_p1 as cp
+    etat = etat if etat is not None else ap.charger_etat()
     config = config or cp.charger(); maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     import pouvoir_predictif as pp
     J = ic.lire_journal(dossier); S = scores(flux); matchs, termines = [], []; H = {}
@@ -82,6 +84,7 @@ def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
         m.update(statut=st, resultat=sc if st == "termine" else None, evaluation=evaluer(r, sc) if st == "termine" else None)
         if st == "termine" and (r.get("pari") or {}).get("retenu"):
             pr = r["pari"]["retenu"]; g = p1_paris.gagne(pr["cle"], sc["buts_dom"], sc["buts_ext"]); m["evaluation"]["pari"] = {"cle": pr["cle"], "gagne": g, "gain": pr["cote"] - 1 if g else -1.0}
+        if st == "a_venir" and etat and etat.get("corrections_validees"): m["p1_appris"] = ap.corriger(etat, r["p1_calibre"])
         matchs.append(m); termines += [m] if st == "termine" else []
     matchs.sort(key=lambda m: (m["coup_d_envoi_utc"], m["competition"], m["domicile"]))
     valides = [(c, mk) for c, v in config["competitions"].items() for mk in MARCHES if v[mk]["statut"] == "CORRECTION VALIDEE"]
@@ -89,6 +92,7 @@ def construire(maintenant=None, dossier=ic.DOSSIER, flux=ic.FLUX, config=None):
             "calibration": {"couples_valides": len(valides), "couples_total": sum(len(MARCHES) for _ in config["competitions"]), "competitions": len(config["competitions"]),
                             "texte": "Aucune correction validee : P1 calibre = P1 original." if not valides else "Corrections validees (voir methode par marche) : " + ", ".join(f"{c}/{m}" for c, m in valides)},
             "journal": {"lignes": len(J), "anomalies": ic.verifier_journal(dossier), "derniere_empreinte": J[-1]["empreinte"] if J else None},
+            "apprentissage": None if not etat else {k: etat.get(k) for k in ("matchs_termines", "periode", "corrections_validees", "texte")},
             "performance": performance(termines), "performance_paris": performance_paris(termines), "matchs": matchs}
 
 def ecrire(donnees=None, chemin=None):
