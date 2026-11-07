@@ -16,22 +16,38 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const ONGLETS_PAGE = [["tous", "Tous"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
 const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire" };
+const COTE_TOP = 1.34;
 const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
 let ONGLET = "tous", DONNEES = null;
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
-const paris = (m, onglet) => (onglet === "tous" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : (m.paris && m.paris[onglet]) || []);
+let TOP = new Map();
+const paris = (m, onglet) => (onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : (m.paris && m.paris[onglet]) || []);
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
-function ligne(p, fini) {
+function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
   return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}</small></span>` +
-    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span> ${badge}</span></div>` +
+    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
-function resume(m, onglet) {            // carte repliée : UN SEUL pari, le mieux classé de l'onglet
+function top20(d) {   // les 20 meilleurs paris de chaque journée, toutes familles, cote >= 1,34, un pari (le mieux classé) par match
+  const jours = {};
+  (d.matchs || []).forEach((m) => {
+    const p = meilleur(paris(m, "tous").filter((x) => Number(x.cote) >= COTE_TOP)); if (!p) return;
+    (jours[horaire(m.coup_d_envoi_utc).date] = jours[horaire(m.coup_d_envoi_utc).date] || []).push({ m, p });
+  });
+  const sortie = new Map();
+  Object.values(jours).forEach((L) => L.sort((a, b) => b.p.taux - a.p.taux || Number(b.p.cote) - Number(a.p.cote)).slice(0, 20).forEach((x, i) => sortie.set(x.m.match_id, { p: x.p, rang: i + 1, nb: Math.min(20, L.length) })));
+  return sortie;
+}
+function resume(m, onglet) {
+  if (onglet === "top20") {
+    const t = TOP.get(m.match_id); if (!t) return "";
+    return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Top 20 du jour · n° ${t.rang}</div>${ligne(t.p, m.statut === "termine", true)}</div>`;
+  }            // carte repliée : UN SEUL pari, le mieux classé de l'onglet
   const p = meilleur(paris(m, onglet)); if (!p) return "";
   return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${onglet === "tous" ? "Meilleur pari du match" : "Meilleur : " + TITRES[onglet].toLowerCase()}</div>${ligne(p, m.statut === "termine")}</div>`;
 }
@@ -108,11 +124,14 @@ function liste(id, L, vide) {
   if (L.length) L.forEach((m) => el.appendChild(carte(m, ONGLET))); else el.innerHTML = `<p class="om-vide">${e(vide)}</p>`;
 }
 function barreOnglets(d) {
-  const n = (o) => (d.matchs || []).filter((m) => paris(m, o).length).length;
+  const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => paris(m, o).length).length;
   return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>`;
 }
 function rendu(d) {
-  const L = (d.matchs || []).filter((m) => paris(m, ONGLET).length), av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
+  TOP = top20(d);
+  let L = (d.matchs || []).filter((m) => paris(m, ONGLET).length);
+  if (ONGLET === "top20") L = L.filter((m) => TOP.has(m.match_id)).sort((a, b) => String(a.coup_d_envoi_utc).slice(0, 10) === String(b.coup_d_envoi_utc).slice(0, 10) && 0 || (horaire(a.coup_d_envoi_utc).date === horaire(b.coup_d_envoi_utc).date ? TOP.get(a.match_id).rang - TOP.get(b.match_id).rang : String(a.coup_d_envoi_utc).localeCompare(b.coup_d_envoi_utc)));
+  const av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
   document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
   liste("om-avenir", av, "Aucun match à venir pour cet onglet."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");
 }
