@@ -9,7 +9,7 @@ Pour un pari sur A (domicile) - B (exterieur) :
   5. si l'attaque contre la defense confirme (buts et xG) alors que les frequences disent non, le verdict remonte d'un cran ; si le xG contredit, il baisse d'un cran ;
   6. verdicts geles AVANT le coup d'envoi (journal infalsifiable) puis bilan chaque soir sur les resultats reels.
 Aucune constante inventee : la cote minimale vient de l'utilisateur, les moyennes viennent des matchs du championnat.
-Commandes : geler | bilan | coupon <fichier.json> [jour] | analyse <domicile> <exterieur> [jour]
+Commandes : geler | bilan | page | coupon <fichier.json> [jour] | analyse <domicile> <exterieur> [jour]
 """
 import datetime, glob, gzip, json, math, os, sys
 import numpy as np
@@ -377,12 +377,77 @@ def repli_combo(x, marche, cote, cfg=None, n=3):
         if r["verdict"] == "TIENT": R.append({"marche": m, **r})
     R.sort(key=lambda r: -r["force"]); return R[:n]
 
+# ---------------------------------------------------------------- page dediee (data/verif_pronostics/page_verif.json)
+PAGE = os.path.join(DOSSIER, "page_verif.json")
+NB_DERNIERS = 10
+
+def groupe(marche):
+    """Famille du pari : marches de buts / marches d'equipes / combos."""
+    if "&" in marche: return "combos"
+    return "buts" if marche.startswith(("total_", "btts_")) else "equipes"
+
+def derniers_matchs(x):
+    """Historique des deux equipes (saison en cours, avant le match), du plus recent au plus ancien : A a domicile, A a l'exterieur, B a l'exterieur, B a domicile, face-a-face."""
+    a = x.get("assemblage") or {}; saison = a.get("saison_football_data")
+    def liste(eq, dom, nb=NB_DERNIERS, tous=False):
+        M = [m for m in (a.get(eq) or {}).get("matchs") or [] if m.get("date") and m["date"] < x["date"] and m.get("buts_marques") is not None and m.get("buts_encaisses") is not None and (tous or (m.get("domicile") is dom and de_la_saison(m, saison)))]
+        M.sort(key=lambda m: m["date"], reverse=True); return M if tous else M[:nb]
+    f = lambda L: [{"date": m["date"], "adversaire": m.get("adversaire"), "marques": m["buts_marques"], "encaisses": m["buts_encaisses"]} for m in L]
+    h2h = [m for m in liste("equipe_dom", None, tous=True) if m.get("adversaire") == x["exterieur"]][:NB_DERNIERS]
+    return {"dom": f(liste("equipe_dom", True)), "dom_ext": f(liste("equipe_dom", False)), "ext": f(liste("equipe_ext", False)), "ext_dom": f(liste("equipe_ext", True)),
+            "h2h": [{"date": m["date"], "domicile": m.get("domicile"), "marques": m["buts_marques"], "encaisses": m["buts_encaisses"]} for m in h2h]}
+
+def fiche_match(x, maintenant, cfg):
+    """Un match pour la page : tableau des equipes, xG (reel ou estime), paris qui passent les filtres classes par reussite observee decroissante dans chaque famille, historique."""
+    SA, SB = saison_complete(x, "equipe_dom"), saison_complete(x, "equipe_ext"); champ = moyenne_championnat(x.get("competition"), (x.get("assemblage") or {}).get("saison_football_data"))
+    xa = xg_attendus(SA, SB, champ); sc = (x.get("score") or {}); fini = sc.get("buts_dom") is not None and sc.get("buts_ext") is not None
+    statut = "termine" if fini else "en_cours_ou_resultat_attendu" if (x.get("coup_d_envoi_utc") or "9") <= maintenant else "a_venir"
+    G = {"buts": [], "equipes": [], "combos": []}
+    for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
+        r = constat(x, m, c, cfg)
+        if r["verdict"] not in ("TIENT", "TIENT AVEC RÉSERVE"): continue
+        A, B = r["A"], r["B"]; taux = (A["reussi"] + B["reussi"]) / (A["n"] + B["n"])
+        e = {"marche": m, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round(taux, 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"]}
+        if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[m]])
+        G[groupe(m)].append(e)
+    for L in G.values(): L.sort(key=lambda e: (-e["taux"], ORDRE.index(e["verdict"]), -(e["reussite_dom"][1] + e["reussite_ext"][1])))
+    arr = lambda u: None if u is None else round(u, 3)
+    av = champ["avantage_dom"]
+    return {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x["domicile"], "exterieur": x["exterieur"], "statut": statut,
+            "resultat": {"buts_dom": sc["buts_dom"], "buts_ext": sc["buts_ext"]} if fini else None,
+            "xg_source": xa[2], "buts_attendus": None if xa[0] is None else [arr(xa[0] + av / 2), arr(xa[1] - av / 2)],
+            "equipes": {"dom": {k: arr(SA[k]) if isinstance(SA[k], float) else SA[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg")},
+                        "ext": {k: arr(SB[k]) if isinstance(SB[k], float) else SB[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg")},
+                        "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "avantage_dom": arr(av), "matchs": champ["n"]}},
+            "paris": G, "derniers_matchs": derniers_matchs(x)}
+
+def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
+    """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
+    maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"); cfg = cfg or config()
+    depuis = (datetime.date.fromisoformat(maintenant[:10]) - datetime.timedelta(days=jours_passes)).isoformat(); M = []
+    for f in sorted(glob.glob(os.path.join(flux, "*.json.gz"))):
+        if os.path.basename(f)[:10] < depuis: continue
+        for x in json.load(gzip.open(f)).values():
+            if not x.get("cotes_betpawa"): continue
+            fm = fiche_match(x, maintenant, cfg)
+            if any(fm["paris"].values()): M.append(fm)
+    M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
+    try: b = bilan()
+    except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
+    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "matchs": M}
+
+def ecrire_page(d=None, chemin=PAGE):
+    d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    json.dump(d, open(chemin, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":")); return d
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "geler":
         print(json.dumps({"lignes_ajoutees": geler(), "anomalies": verifier_journal()}, ensure_ascii=False))
     elif cmd == "bilan":
         b = ecrire_bilan(); print(json.dumps({k: {x: round(y, 3) if isinstance(y, float) else y for x, y in v.items()} for k, v in b["par_verdict"].items()}, ensure_ascii=False))
+    elif cmd == "page":
+        d = ecrire_page(); print(json.dumps({"matchs": d["nb_matchs"], "octets": os.path.getsize(PAGE)}, ensure_ascii=False))
     elif cmd == "analyse":
         x = trouver(sys.argv[2], sys.argv[3], [sys.argv[4]] if len(sys.argv) > 4 else None); print(analyse(x) if x else "Match absent du flux commun.")
     elif cmd == "coupon":

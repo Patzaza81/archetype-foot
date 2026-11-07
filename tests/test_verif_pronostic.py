@@ -125,6 +125,30 @@ class XGEstime(unittest.TestCase):
     def test_saison_matchendirect_comptee(self):
         for m, ok_ in [({"saison": None, "source": "matchendirect"}, True), ({"saison": "2627", "source": "football-data"}, True), ({"saison": "2526", "source": "football-data"}, False), ({"saison": None, "source": "football-data"}, False), ({"saison": "2526", "source": "matchendirect"}, False)]: self.assertEqual(v.de_la_saison(m, "2627"), ok_, m)
 
+class PageDonnees(unittest.TestCase):
+    def test_groupes(self):
+        for m, g in [("total_plus_2.5", "buts"), ("btts_oui", "buts"), ("1N&total_moins_4.5", "combos"), ("N2&btts_non", "combos"), ("dom_plus_0.5", "equipes"), ("1N", "equipes"), ("cage_ext_non", "equipes")]: self.assertEqual(v.groupe(m), g, m)
+    def test_groupes_faux(self):
+        for m, g in [("total_plus_2.5", "combos"), ("1N&total_moins_4.5", "buts"), ("btts_oui", "equipes"), ("dom_plus_0.5", "buts")]: self.assertNotEqual(v.groupe(m), g, m)
+    def _x(self):
+        x = MATCH([(2, 1)] * 6, [(1, 2)] * 6); x["match_id"] = "z"; x["competition"] = "Test : Ligue"; x["coup_d_envoi_utc"] = "2026-11-07T15:00:00Z"
+        x["cotes_betpawa"] = {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}, "over_under_2.5": {"plus": 1.6, "moins": 2.2}, "dc_total_4.5": {"1N|moins": 1.5, "N2|moins": 3.0}}; return x
+    def test_fiche_classee_par_reussite_decroissante(self):
+        f = v.fiche_match(self._x(), "2026-11-07T09:00:00Z", CFG); self.assertEqual(f["statut"], "a_venir")
+        for L in f["paris"].values(): self.assertEqual([e["taux"] for e in L], sorted([e["taux"] for e in L], reverse=True))
+        self.assertTrue(f["paris"]["buts"] and f["paris"]["equipes"] and f["paris"]["combos"]); self.assertTrue(all(e["cote"] >= 1.26 for L in f["paris"].values() for e in L))
+    def test_statuts(self):
+        x = self._x(); self.assertEqual(v.fiche_match(x, "2026-11-07T16:00:00Z", CFG)["statut"], "en_cours_ou_resultat_attendu")
+        x["score"] = {"buts_dom": 2, "buts_ext": 1}; f = v.fiche_match(x, "2026-11-07T20:00:00Z", CFG); self.assertEqual(f["statut"], "termine"); self.assertEqual(f["resultat"], {"buts_dom": 2, "buts_ext": 1})
+        self.assertTrue(all("gagne" in e for L in f["paris"].values() for e in L)); self.assertTrue(next(e for e in f["paris"]["equipes"] if e["marche"] == "1")["gagne"])
+    def test_historique_recent_en_premier_et_bon_lieu(self):
+        d = v.derniers_matchs(self._x()); self.assertEqual(len(d["dom"]), 6); self.assertEqual(len(d["ext"]), 6); self.assertEqual([m["date"] for m in d["dom"]], sorted([m["date"] for m in d["dom"]], reverse=True)); self.assertEqual(d["dom_ext"], [])
+    def test_page_html_et_navigation(self):
+        racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); h = open(os.path.join(racine, "pronostics_verif.html"), encoding="utf-8").read()
+        self.assertIn('href="pronostics_verif.html" aria-current="page"', h); self.assertIn("archetype_verif.js", h)
+        for f in ("archetype_verif.js", "af-verif.css", "af-date-navigation.js", "drapeaux.js"): self.assertTrue(os.path.exists(os.path.join(racine, f)), f)
+        for page in ("index.html", "pronostics_p1.html", "pronostics_v3.html", "journal.html"): self.assertIn("pronostics_verif.html", open(os.path.join(racine, page), encoding="utf-8").read(), page)
+
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
         lo, hi = v.wilson(50, 100); self.assertAlmostEqual(lo, 0.404, 2); self.assertAlmostEqual(hi, 0.596, 2)

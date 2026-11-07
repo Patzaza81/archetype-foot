@@ -1,0 +1,16 @@
+/* Page « Vérification des pronostics » : compléments aux styles om-* (déjà chargés avec la page P1). Présentation seule. */
+.vf-pari{padding:6px 0;border-top:1px solid rgba(23,20,27,.07)}
+.vf-pari:first-of-type{border-top:0}
+.vf-droite{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto}
+.vf-verdict{display:inline-block;padding:2px 9px;border-radius:999px;font:700 11.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;white-space:nowrap}
+.vf-tient{background:#D7F0EA;color:#06645F}
+.vf-reserve{background:#F6E7C8;color:#7A5A12}
+.theme-nuit .vf-tient{background:#12423D;color:#7FE3D6}
+.theme-nuit .vf-reserve{background:#4A3A14;color:#F0CF80}
+.vf-taux{display:flex;align-items:center;gap:8px}
+.vf-taux .om-jauge{flex:1 1 auto;margin:4px 0 2px}
+.vf-taux span{flex:0 0 auto;font-size:11px;font-weight:700;opacity:.8;font-variant-numeric:tabular-nums}
+.vf-famille{margin-top:10px}
+.vf-reste summary{cursor:pointer;font-size:12px;font-weight:700;padding:6px 0;color:#087F78}
+.theme-nuit .vf-reste summary{color:#4FD1C5}
+.vf-pari .om-ligne small.om-sous{display:block}

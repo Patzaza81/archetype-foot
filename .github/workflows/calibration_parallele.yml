@@ -43,6 +43,7 @@ jobs:
         run: |
           python verif_pronostic.py geler
           python verif_pronostic.py bilan
+          python verif_pronostic.py page
       - name: Commit du journal parallèle (dossier dédié seulement)
         run: |
           git config user.name "github-actions"; git config user.email "actions@github.com"
