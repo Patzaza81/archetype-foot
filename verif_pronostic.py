@@ -305,7 +305,7 @@ def evaluer_coupon(picks, jour=None):
     for p in picks:
         x = trouver(p["dom"], p["ext"], [jour] if jour else None)
         if not x: out.append({**p, "verdict": "NON ÉVALUABLE", "phrase": "Match absent du flux commun : échantillons à fournir à la main.", "force": 0}); continue
-        out.append({**p, **constat(x, p["marche"], p.get("cote"), cfg), "heure": x.get("heure_cameroun")})
+        r = constat(x, p["marche"], p.get("cote"), cfg); out.append({**p, **r, "heure": x.get("heure_cameroun"), "repli": repli_combo(x, p["marche"], p.get("cote"), cfg)})
     out.sort(key=lambda e: (ORDRE.index(e["verdict"]), -(e.get("force") or 0))); return out
 
 def alternatives(x, cfg=None, exclure=None, n=3):
@@ -344,6 +344,22 @@ def analyse(x, cfg=None):
     L += ["", f"Le xG vient de la saison en cours ; cote minimale {str(cfg['cote_min']).replace('.', ',')}."]
     return "\n".join(L)
 
+COMBOS = ("1N&total_plus_", "1N&total_moins_", "N2&total_plus_", "N2&total_moins_", "12&total_plus_", "12&total_moins_")
+
+def repli_combo(x, marche, cote, cfg=None, n=3):
+    """Regle de l'utilisateur (07/11) : un pari sous la cote minimale mais TRES SOLIDE (verdict TIENT sans tenir compte de la cote) est remplace par ses combos
+    double chance + plus de buts / double chance + moins de buts, retenus seulement s'ils passent tous les filtres (cote >= minimum, verdict TIENT). -> liste, du plus au moins fiable."""
+    cfg = cfg or config()
+    if cote is None or cote >= cfg["cote_min"]: return []
+    base = constat(x, marche, None, cfg)
+    if base["verdict"] != "TIENT": return []
+    R = []
+    for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
+        if not m.startswith(COMBOS) or c < cfg["cote_min"]: continue
+        r = constat(x, m, c, cfg)
+        if r["verdict"] == "TIENT": R.append({"marche": m, **r})
+    R.sort(key=lambda r: -r["force"]); return R[:n]
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "geler":
@@ -353,5 +369,7 @@ if __name__ == "__main__":
     elif cmd == "analyse":
         x = trouver(sys.argv[2], sys.argv[3], [sys.argv[4]] if len(sys.argv) > 4 else None); print(analyse(x) if x else "Match absent du flux commun.")
     elif cmd == "coupon":
-        for e in evaluer_coupon(json.load(open(sys.argv[2], encoding="utf-8")), sys.argv[3] if len(sys.argv) > 3 else None): print(f"{e['verdict']} | {e.get('libelle', e.get('marche'))} {e.get('cote')} | {e['phrase']}")
+        for e in evaluer_coupon(json.load(open(sys.argv[2], encoding="utf-8")), sys.argv[3] if len(sys.argv) > 3 else None):
+            print(f"{e['verdict']} | {e.get('libelle', e.get('marche'))} {e.get('cote')} | {e['phrase']}")
+            for r in e.get("repli") or []: print(f"   RETENU (repli combo) : {r['libelle']} {r['cote']} | {r['verdict']}")
     else: print(__doc__)

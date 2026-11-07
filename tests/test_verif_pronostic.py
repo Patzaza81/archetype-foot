@@ -91,6 +91,26 @@ class Presentation(unittest.TestCase):
         T = v.analyse(self._x([(2, 0)] * 6, [(0, 2)] * 6, {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}}), CFG)
         for mot in ("xG créés par match", "Buts marqués par match", "Écart xG", "Moyenne du championnat", "Constats"): self.assertIn(mot, T)
 
+class Repli(unittest.TestCase):
+    def _x(self, A, B, cotes):
+        x = MATCH(A, B); x["cotes_betpawa"] = cotes; return x
+    COT = {"1x2": {"1": 1.2, "N": 6.0, "2": 9.0}, "dc_total_4.5": {"1N|moins": 1.5, "N2|moins": 3.0}, "dc_total_2.5": {"1N|plus": 1.3, "N2|plus": 4.0}}
+    def test_retenu(self):                          # pari 1 a 1,20 tres solide : ses combos double chance a cote >= 1,26 qui tiennent sont retenus
+        R = v.repli_combo(self._x([(2, 1)] * 6, [(1, 2)] * 6, self.COT), "1", 1.2, CFG); m = [r["marche"] for r in R]
+        self.assertIn("1N&total_moins_4.5", m); self.assertIn("1N&total_plus_2.5", m); self.assertTrue(all(r["verdict"] == "TIENT" and r["cote"] >= 1.26 for r in R))
+    def test_pas_de_repli_si_cote_suffisante(self):
+        for c in (1.26, 1.4, 2.0): self.assertEqual(v.repli_combo(self._x([(2, 0)] * 6, [(0, 2)] * 6, self.COT), "1", c, CFG), [])
+    def test_pas_de_repli_si_pari_pas_solide(self):  # A perd chez lui : le pari « 1 » ne tient pas, donc pas de repli
+        for A, B in (([(0, 2)] * 6, [(2, 0)] * 6), ([(2, 0)] * 6, [(1, 1)] * 6), ([(0, 0)] * 6, [(0, 0)] * 6)): self.assertEqual(v.repli_combo(self._x(A, B, self.COT), "1", 1.2, CFG), [])
+    def test_combo_sous_le_minimum_ecarte(self):
+        cot = {**self.COT, "dc_total_4.5": {"1N|moins": 1.2, "N2|moins": 3.0}}
+        self.assertNotIn("1N&total_moins_4.5", [r["marche"] for r in v.repli_combo(self._x([(2, 0)] * 6, [(0, 2)] * 6, cot), "1", 1.2, CFG)])
+    def test_combo_qui_ne_tient_pas_ecarte(self):    # le combo « Moins de 1,5 » ne tient pas quand tout finit 2-0
+        cot = {**self.COT, "dc_total_1.5": {"1N|moins": 3.0, "N2|moins": 4.0}}
+        self.assertNotIn("1N&total_moins_1.5", [r["marche"] for r in v.repli_combo(self._x([(2, 0)] * 6, [(0, 2)] * 6, cot), "1", 1.2, CFG)])
+    def test_sans_donnees(self):
+        self.assertEqual(v.repli_combo(self._x([], [], self.COT), "1", 1.2, CFG), [])
+
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
         lo, hi = v.wilson(50, 100); self.assertAlmostEqual(lo, 0.404, 2); self.assertAlmostEqual(hi, 0.596, 2)
