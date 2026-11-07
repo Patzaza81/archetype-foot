@@ -112,5 +112,15 @@ class Journal(unittest.TestCase):
         L = open(j).read().splitlines(); r = json.loads(L[0]); r["cote"] = 9.99; L[0] = json.dumps(r); open(j, "w").write("\n".join(L) + "\n")
         with self.assertRaises(RuntimeError): v.bilan(j, t)
 
+class LectureXG(unittest.TestCase):
+    def test_confirme(self):
+        for m, la, lb in [("1", 2.0, 1.0), ("total_plus_2.5", 1.6, 1.4), ("btts_oui", 1.5, 1.2), ("N2&total_moins_4.5", 1.0, 1.4), ("1&total_moins_4.5", 2.0, 0.8)]: self.assertTrue(v._lecture(m, la, lb), (m, la, lb))
+    def test_contredit(self):
+        for m, la, lb in [("1", 1.0, 1.5), ("total_plus_2.5", 1.0, 1.2), ("btts_oui", 2.0, 0.6), ("N2&total_moins_4.5", 2.0, 0.8), ("total_moins_1.5", 1.0, 1.0)]: self.assertFalse(v._lecture(m, la, lb), (m, la, lb))
+    def test_non_lisible(self):
+        self.assertIsNone(v._lecture("1", None, 1.0)); self.assertIsNone(v._lecture("N", 1.0, 1.0)); self.assertIsNone(v._lecture("12", 1.0, 1.0))
+    def test_attendus(self):
+        A = {"xg_cree": 2.0, "xg_concede": 0.5}; B = {"xg_cree": 1.0, "xg_concede": 1.5}; self.assertEqual(v._attendus(A, B, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")), (1.75, 0.75))
+
 if __name__ == "__main__":
     unittest.main()

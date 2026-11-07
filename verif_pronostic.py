@@ -257,6 +257,76 @@ def evaluer_coupon(picks, jour=None):
     out.sort(key=lambda e: (ordre.get(e["verdict"], 9), -(e.get("borne_basse") or 0))); return out
 
 
+# ---------------------------------------------------------------- constat simple (buts reels + xG du championnat), sans calibration
+def _moy(L):
+    L = [v for v in L if v is not None]
+    return (sum(L) / len(L), len(L)) if L else (None, 0)
+
+def _attendus(A, B, cle_a, cle_b):
+    """Buts attendus de A et de B : moyenne de ce que l'attaque de l'un marque et de ce que la defense de l'autre concede (memes champs pour buts et xG)."""
+    p = lambda u, w: None if u is None or w is None else (u + w) / 2
+    return p(A[cle_a[0]], B[cle_b[1]]), p(B[cle_b[0]], A[cle_a[1]])
+
+def _lecture(marche, la, lb):
+    """Le marche est-il confirme par les buts attendus (la = domicile, lb = exterieur) ? -> True / False / None (non lisible). Chaque element du marche est lu a part."""
+    if la is None or lb is None: return None
+    reps = []
+    for el in marche.split("&"):
+        if el in ("1", "2"): reps.append(la > lb if el == "1" else lb > la)
+        elif el == "1N": reps.append(la >= lb)
+        elif el == "N2": reps.append(lb >= la)
+        elif el.startswith("total_"): _, sens, X = el.split("_"); reps.append((la + lb > float(X)) if sens == "plus" else (la + lb < float(X)))
+        elif el in ("dom_plus_0.5", "dom_plus_1.5", "dom_plus_2.5", "dom_moins_0.5", "dom_moins_1.5", "dom_moins_2.5") or el.startswith("ext_"):
+            q, sens, X = el.split("_"); l = la if q == "dom" else lb; reps.append((l > float(X)) if sens == "plus" else (l < float(X)))
+        elif el == "btts_oui": reps.append(min(la, lb) >= 1.0)
+        elif el == "btts_non": reps.append(min(la, lb) < 1.0)
+        elif el in ("cage_dom_oui", "cage_ext_oui"): reps.append((lb if el == "cage_dom_oui" else la) < 0.5)
+        elif el in ("cage_dom_non", "cage_ext_non"): reps.append((lb if el == "cage_dom_non" else la) >= 0.5)
+        else: return None
+    return all(reps)
+
+def constat(x, marche, cote=None, cfg=None):
+    """Constat lisible : ce que chaque equipe a fait dans le role du match (A a domicile, B a l'exterieur), saison en cours, avant le match.
+    Pour chaque equipe : buts marques / encaisses et xG cree / concede (moyennes), et combien de fois le pari serait passe.
+    Regle : le pari tient si, des deux cotes, il serait passe plus souvent que rate ; reserve si d'un seul cote ; ne tient pas sinon.
+    Le xG signale une tendance cachee : xG cree > buts marques = attaque qui peut mieux faire ; xG concede > buts encaisses = defense chanceuse."""
+    cfg = cfg or config(); a = x.get("assemblage") or {}; saison = a.get("saison_football_data"); jour = x["date"]
+    if cote is not None and cote < cfg["cote_min"]: return {"verdict": "REFUSÉ", "phrase": f"Cote {cote} sous le minimum {cfg['cote_min']}."}
+    def pris(eq, dom):
+        M = [m for m in (a.get(eq) or {}).get("matchs") or [] if m.get("domicile") is dom and m.get("date") and m["date"] < jour and m.get("buts_marques") is not None and m.get("buts_encaisses") is not None]
+        S = [m for m in M if m.get("saison") == saison] if saison else M
+        return S if S or not saison else M
+    k = IDX[marche]; res = {}
+    for cle, eq, dom in (("A", "equipe_dom", True), ("B", "equipe_ext", False)):
+        M = pris(eq, dom); n = len(M)
+        # orientation (home, away) : pour B a l'exterieur, home = son adversaire
+        sc = [(m["buts_marques"], m["buts_encaisses"]) if dom else (m["buts_encaisses"], m["buts_marques"]) for m in M]
+        ok_ = sum(1 for h, aw in sc if TABLE[min(h, CAP), min(aw, CAP), k])
+        gm, _ = _moy([m["buts_marques"] for m in M]); ge, _ = _moy([m["buts_encaisses"] for m in M])
+        xm, nx = _moy([m.get("xg") for m in M]); xe, _ = _moy([m.get("xg_concede") for m in M])
+        res[cle] = {"n": n, "reussi": ok_, "buts_marques": gm, "buts_encaisses": ge, "xg_cree": xm, "xg_concede": xe, "n_xg": nx}
+    A, B = res["A"], res["B"]
+    if A["n"] < NMIN or B["n"] < NMIN: return {"verdict": "NON ÉVALUABLE", "phrase": f"Pas assez de matchs ({A['n']} / {B['n']}).", "A": A, "B": B}
+    pa, pb = A["reussi"] / A["n"] > 0.5, B["reussi"] / B["n"] > 0.5
+    verdict = "TIENT" if pa and pb else "TIENT AVEC RÉSERVE" if pa or pb else "NE TIENT PAS"
+    f = lambda v: "?" if v is None else f"{v:.1f}"
+    def tendance(e, nom):
+        t = []
+        if e["n_xg"] >= NMIN:
+            if e["xg_cree"] is not None and e["buts_marques"] is not None and e["xg_cree"] - e["buts_marques"] >= 0.3: t.append(f"{nom} crée plus qu'il ne marque (xG {f(e['xg_cree'])} pour {f(e['buts_marques'])} buts)")
+            if e["xg_concede"] is not None and e["buts_encaisses"] is not None and e["xg_concede"] - e["buts_encaisses"] >= 0.3: t.append(f"défense de {nom} chanceuse (xG concédé {f(e['xg_concede'])} pour {f(e['buts_encaisses'])} encaissés)")
+        return t
+    tend = tendance(A, x["domicile"]) + tendance(B, x["exterieur"])
+    bm = _attendus(A, B, ("buts_marques", "buts_encaisses"), ("buts_marques", "buts_encaisses")); lect_b = _lecture(marche, *bm)
+    xa = _attendus(A, B, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")) if min(A["n_xg"], B["n_xg"]) >= NMIN else (None, None); lect_x = _lecture(marche, *xa)
+    ordre = ["NE TIENT PAS", "TIENT AVEC RÉSERVE", "TIENT"]
+    if lect_x is False and verdict in ("TIENT", "TIENT AVEC RÉSERVE"): verdict = "TIENT AVEC RÉSERVE" if verdict == "TIENT" else "NE TIENT PAS"
+    lecture_xg = "xG indisponible pour une des deux équipes" if lect_x is None else ("le xG confirme" if lect_x else "le xG contredit")
+    phrase = (f"{x['domicile']} à domicile : {f(A['buts_marques'])} buts marqués, {f(A['buts_encaisses'])} encaissés (xG {f(A['xg_cree'])}/{f(A['xg_concede'])}), pari passé {A['reussi']} fois sur {A['n']}. "
+              f"{x['exterieur']} à l'extérieur : {f(B['buts_marques'])} marqués, {f(B['buts_encaisses'])} encaissés (xG {f(B['xg_cree'])}/{f(B['xg_concede'])}), pari passé {B['reussi']} fois sur {B['n']}.")
+    return {"verdict": verdict, "libelle": libelle(marche, x["domicile"], x["exterieur"]), "cote": cote, "phrase": phrase, "tendances_xg": tend, "buts_attendus": bm, "xg_attendus": xa, "lecture_xg": lecture_xg, "A": A, "B": B}
+
+
 # ---------------------------------------------------------------- journal gele (verdicts figes AVANT le coup d'envoi) et bilan sur resultats reels
 JOURNAL = os.path.join(DOSSIER, "journal.jsonl"); BILAN = os.path.join(DOSSIER, "bilan.json")
 import hashlib
