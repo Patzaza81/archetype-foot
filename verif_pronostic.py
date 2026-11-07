@@ -406,10 +406,10 @@ def repli_combo(x, marche, cote, cfg=None, n=3):
 PAGE = os.path.join(DOSSIER, "page_verif.json")
 NB_DERNIERS = 10
 
-VICTOIRE = ("1", "N", "2", "1N", "N2", "12")
+VICTOIRE = ("1", "2")   # victoire d'une equipe uniquement ; nul et double chance restent dans "equipes"
 
 def groupe(marche):
-    """Famille du pari (onglets de la page) : combos / buts / victoire (resultat et double chance) / equipes (buts d'une equipe, cage inviolee)."""
+    """Famille du pari (onglets de la page) : combos / buts / victoire (une equipe gagne : 1 ou 2) / equipes (le reste : buts d'une equipe, cage inviolee, nul, double chance)."""
     if "&" in marche: return "combos"
     if marche.startswith(("total_", "btts_")): return "buts"
     return "victoire" if marche in VICTOIRE else "equipes"
