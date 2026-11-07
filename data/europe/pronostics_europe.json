@@ -1,24 +1,24 @@
 {
  "moteur": "moteur_europe",
- "genere_le": "2026-11-05T13:34:15Z",
+ "genere_le": "2026-11-07T12:00:24Z",
  "calibration": {
   "prete": true,
-  "observations": 3656,
-  "matchs": 54,
+  "observations": 5655,
+  "matchs": 81,
   "minimum_observations": 300,
   "minimum_matchs": 50,
   "raison": "OK"
  },
  "bilan": {
-  "genere_le": "2026-11-05",
-  "matchs_a_venir": 75,
-  "evalues": 44,
-  "selections": 9,
+  "genere_le": "2026-11-07",
+  "matchs_a_venir": 31,
+  "evalues": 17,
+  "selections": 5,
   "calibration": {
    "prete": true,
    "raison": "OK",
-   "observations": 3656,
-   "matchs": 54
+   "observations": 5655,
+   "matchs": 81
   }
  },
  "signaux": [
@@ -40,10 +40,10 @@
       "marche": "over_under_total_3.5_under",
       "marche_moteur": "under_3_5",
       "libelle": null,
-      "probabilite": 0.8035,
+      "probabilite": 0.8202,
       "cote": 1.57,
-      "edge": 0.16660267893440495,
-      "edv": 0.262,
+      "edge": 0.18321572408320175,
+      "edv": 0.28800000000000003,
       "niveau": "V3_ECHANTILLON_UTILISABLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -111,7 +111,7 @@
       },
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +26,2 % · 5 matchs au même lieu.",
+       "resume": "Probabilité calibrée 82 % contre 64 % selon la cote 1,57 · marge +28,8 % · 5 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -123,14 +123,130 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 26.2,
-         "texte": "Le prix proposé laisse 26,2 % de marge par rapport à l'estimation calibrée."
+         "valeur": 28.8,
+         "texte": "Le prix proposé laisse 28,8 % de marge par rapport à l'estimation calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 26.2
+        "ev_percentage": 28.8
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "5iboyejh2fwvr81900e5h2tck",
+   "date": "2026-10-14",
+   "heure_cameroun": "20:00",
+   "competition": "Europe : Ligue des Champions Phase de Ligue",
+   "domicile": "Rome",
+   "exterieur": "Real Madrid",
+   "moteur_utilise": "moteur_europe",
+   "moteur_europe": {
+    "statut": "OK",
+    "moteur": "moteur_europe",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {
+     "P1": {
+      "marche": "handicap3_domicile_2_1",
+      "marche_moteur": "handicap_-2_1",
+      "libelle": "Handicap 3 choix Rome +2 (1) : Rome ne perd pas par 2 buts ou plus",
+      "probabilite": 0.8435,
+      "cote": 1.3,
+      "edge": 0.07429760193198987,
+      "edv": 0.09699999999999999,
+      "niveau": "V3_ECHANTILLON_FAIBLE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal.",
+       "Moins de 5 matchs au même lieu pour une des deux équipes."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": false,
+      "indice_performance": {
+       "version": 4,
+       "indice": 4,
+       "sur": 4,
+       "niveau": "SUR",
+       "libelle": "Sûr",
+       "phrase": "Validé dans 4 scénarios sur 4.",
+       "moyenne_domicile": {
+        "marque": 1.625,
+        "encaisse": 0.9
+       },
+       "moyenne_exterieur": {
+        "marque": 1.75,
+        "encaisse": 1.917
+       },
+       "pire_domicile": {
+        "marque": 1.0,
+        "encaisse": 2.0
+       },
+       "pire_exterieur": {
+        "marque": 3.0,
+        "encaisse": 2.0
+       },
+       "scenarios": [
+        {
+         "domicile": "moyen",
+         "exterieur": "moyen",
+         "buts_domicile": 1.771,
+         "buts_exterieur": 1.325,
+         "marge": 1.946,
+         "valide": true
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "moyen",
+         "buts_domicile": 1.458,
+         "buts_exterieur": 1.875,
+         "marge": 1.083,
+         "valide": true
+        },
+        {
+         "domicile": "moyen",
+         "exterieur": "pire",
+         "buts_domicile": 2.312,
+         "buts_exterieur": 2.45,
+         "marge": 1.362,
+         "valide": true
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "pire",
+         "buts_domicile": 1.5,
+         "buts_exterieur": 2.5,
+         "marge": 0.5,
+         "valide": true
+        }
+       ]
+      },
+      "alternatives_indice": [],
+      "justification": {
+       "resume": "Probabilité calibrée 84 % contre 77 % selon la cote 1,30 · marge +9,7 % · 4 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "Rome perd par 2 buts ou plus dans 0% de ses matchs à ce lieu ; Real Madrid gagne par 2 buts ou plus dans 0% de ses matchs à son lieu ; écart de buts attendu en faveur de Real Madrid (moyennes simples) : -1,00"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "Rome : 0 défaite par 2 buts ou plus sur ses 6 derniers ; Real Madrid : 1 victoire par 2 buts ou plus sur ses 6 derniers"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 9.7,
+         "texte": "Le prix proposé laisse 9,7 % de marge par rapport à l'estimation calibrée."
+        }
+       ],
+       "explication": null,
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 9.7
        }
       }
      }
@@ -155,10 +271,10 @@
       "marche": "encaisse_exterieur",
       "marche_moteur": "clean_away_no",
       "libelle": null,
-      "probabilite": 0.8035,
+      "probabilite": 0.8187,
       "cote": 1.44,
-      "edge": 0.10907916132997042,
-      "edv": 0.157,
+      "edge": 0.12427885051440468,
+      "edv": 0.179,
       "niveau": "V3_ECHANTILLON_UTILISABLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -207,7 +323,7 @@
       },
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité calibrée 80 % contre 69 % selon la cote 1,44 · marge +15,7 % · 6 matchs au même lieu.",
+       "resume": "Probabilité calibrée 82 % contre 69 % selon la cote 1,44 · marge +17,9 % · 6 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -219,14 +335,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 15.7,
-         "texte": "Le prix proposé laisse 15,7 % de marge par rapport à l'estimation calibrée."
+         "valeur": 17.9,
+         "texte": "Le prix proposé laisse 17,9 % de marge par rapport à l'estimation calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 15.7
+        "ev_percentage": 17.9
        }
       }
      }
@@ -251,10 +367,10 @@
       "marche": "encaisse_exterieur",
       "marche_moteur": "clean_away_no",
       "libelle": null,
-      "probabilite": 0.8456,
+      "probabilite": 0.8625,
       "cote": 1.55,
-      "edge": 0.2004271367633873,
-      "edv": 0.311,
+      "edge": 0.2173524170377482,
+      "edv": 0.337,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -304,7 +420,7 @@
       },
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité calibrée 85 % contre 65 % selon la cote 1,55 · marge +31,1 % · 4 matchs au même lieu.",
+       "resume": "Probabilité calibrée 86 % contre 65 % selon la cote 1,55 · marge +33,7 % · 4 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -316,14 +432,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 31.1,
-         "texte": "Le prix proposé laisse 31,1 % de marge par rapport à l'estimation calibrée."
+         "valeur": 33.7,
+         "texte": "Le prix proposé laisse 33,7 % de marge par rapport à l'estimation calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 31.1
+        "ev_percentage": 33.7
        }
       }
      }
@@ -348,10 +464,10 @@
       "marche": "encaisse_domicile",
       "marche_moteur": "clean_home_no",
       "libelle": null,
-      "probabilite": 0.8033,
+      "probabilite": 0.8063,
       "cote": 1.61,
-      "edge": 0.1822168667335421,
-      "edv": 0.293,
+      "edge": 0.18515179701223428,
+      "edv": 0.298,
       "niveau": "V3_ECHANTILLON_FAIBLE",
       "robustesse": null,
       "points_de_vigilance": [
@@ -401,7 +517,7 @@
       },
       "alternatives_indice": [],
       "justification": {
-       "resume": "Probabilité calibrée 80 % contre 62 % selon la cote 1,61 · marge +29,3 % · 3 matchs au même lieu.",
+       "resume": "Probabilité calibrée 81 % contre 62 % selon la cote 1,61 · marge +29,8 % · 3 matchs au même lieu.",
        "preuves": [
         {
          "type": "v3_controle_saison",
@@ -413,533 +529,14 @@
         },
         {
          "type": "ev_percentage",
-         "valeur": 29.3,
-         "texte": "Le prix proposé laisse 29,3 % de marge par rapport à l'estimation calibrée."
+         "valeur": 29.8,
+         "texte": "Le prix proposé laisse 29,8 % de marge par rapport à l'estimation calibrée."
         }
        ],
        "explication": null,
        "donnees_suffisantes": true,
        "bibliotheque": {
-        "ev_percentage": 29.3
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "5sd3mtbev6bvpnd9oi9klkmxg",
-   "date": "2026-11-04",
-   "heure_cameroun": "18:45",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "AEK",
-   "exterieur": "Real Madrid",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "encaisse_exterieur",
-      "marche_moteur": "clean_away_no",
-      "libelle": null,
-      "probabilite": 0.8569,
-      "cote": 1.59,
-      "edge": 0.22792407303883466,
-      "edv": 0.36200000000000004,
-      "niveau": "V3_ECHANTILLON_UTILISABLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 4,
-       "indice": 1,
-       "sur": 2,
-       "niveau": "ATTENTION",
-       "libelle": "Attention",
-       "phrase": "Tient en moyenne, mais pas dans le pire match.",
-       "moyenne_domicile": {
-        "marque": 2.4,
-        "encaisse": 0.8
-       },
-       "moyenne_exterieur": {
-        "marque": 2.417,
-        "encaisse": 2.1
-       },
-       "pire_domicile": {
-        "marque": 0.0,
-        "encaisse": 2.0
-       },
-       "pire_exterieur": null,
-       "scenarios": [
-        {
-         "domicile": "moyen",
-         "exterieur": null,
-         "buts_domicile": 2.4,
-         "buts_exterieur": null,
-         "marge": 1.9,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": null,
-         "buts_domicile": 0.0,
-         "buts_exterieur": null,
-         "marge": -0.5,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 86 % contre 63 % selon la cote 1,59 · marge +36,2 % · 6 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "AEK marque plus de 0,5 but dans 100% de ses matchs à ce lieu ; Real Madrid encaisse plus de 0,5 but dans 83% de ses matchs à son lieu ; AEK marque plus de 0,5 but dans 92% de ses matchs de la saison ; buts attendus de AEK (moyennes simples) : 2,58"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "AEK marque plus de 0,5 but dans 5 de ses 6 derniers ; Real Madrid encaisse plus de 0,5 but dans 4 de ses 6 derniers"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 36.2,
-         "texte": "Le prix proposé laisse 36,2 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 36.2
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "e7py71bqecwysa69f0hgc1a8k",
-   "date": "2026-11-05",
-   "heure_cameroun": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Celta Vigo",
-   "exterieur": "Union SG",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "double_chance_X2",
-      "marche_moteur": "dc_X2",
-      "libelle": null,
-      "probabilite": 0.6777,
-      "cote": 1.62,
-      "edge": 0.060425676617788304,
-      "edv": 0.098,
-      "niveau": "V3_ECHANTILLON_UTILISABLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 4,
-       "indice": 1,
-       "sur": 4,
-       "niveau": "RISQUE",
-       "libelle": "Risqué",
-       "phrase": "Validé dans 1 scénario sur 4.",
-       "moyenne_domicile": {
-        "marque": 1.267,
-        "encaisse": 1.35
-       },
-       "moyenne_exterieur": {
-        "marque": 1.87,
-        "encaisse": 1.04
-       },
-       "pire_domicile": {
-        "marque": 5.0,
-        "encaisse": 0.0
-       },
-       "pire_exterieur": {
-        "marque": 0.0,
-        "encaisse": 2.0
-       },
-       "scenarios": [
-        {
-         "domicile": "moyen",
-         "exterieur": "moyen",
-         "buts_domicile": 1.153,
-         "buts_exterieur": 1.61,
-         "marge": 0.957,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "moyen",
-         "buts_domicile": 3.02,
-         "buts_exterieur": 0.935,
-         "marge": -1.585,
-         "valide": false
-        },
-        {
-         "domicile": "moyen",
-         "exterieur": "pire",
-         "buts_domicile": 2.133,
-         "buts_exterieur": 1.175,
-         "marge": -0.458,
-         "valide": false
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "pire",
-         "buts_domicile": 3.5,
-         "buts_exterieur": 0.0,
-         "marge": -3.0,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 68 % contre 62 % selon la cote 1,62 · marge +9,8 % · 5 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "Union SG invaincu 100% à ce lieu (5) ; Union SG prend 2,50 pt/match sur la saison ; Celta Vigo gagne 33% à son lieu ; Union SG marque 2,6 contre 1,5 pour Celta Vigo, chacun à son lieu"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "Union SG invaincu 6 fois sur ses 6 derniers ; Celta Vigo : 2 victoires sur ses 6 derniers"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 9.8,
-         "texte": "Le prix proposé laisse 9,8 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 9.8
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "cuzphy0acku09w7rrbyls16ac",
-   "date": "2026-11-05",
-   "heure_cameroun": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Copenhague",
-   "exterieur": "Iberia",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "over_under_total_4.5_under",
-      "marche_moteur": "under_4_5",
-      "libelle": null,
-      "probabilite": 0.8042,
-      "cote": 1.31,
-      "edge": 0.04086479714772884,
-      "edv": 0.054000000000000006,
-      "niveau": "V3_ECHANTILLON_UTILISABLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 4,
-       "indice": 3,
-       "sur": 4,
-       "niveau": "RECOMMANDE",
-       "libelle": "Recommandé",
-       "phrase": "Validé dans 3 scénarios sur 4.",
-       "moyenne_domicile": {
-        "marque": 2.7,
-        "encaisse": 0.95
-       },
-       "moyenne_exterieur": {
-        "marque": 0.767,
-        "encaisse": 1.417
-       },
-       "pire_domicile": {
-        "marque": 5.0,
-        "encaisse": 1.0
-       },
-       "pire_exterieur": {
-        "marque": 3.0,
-        "encaisse": 2.0
-       },
-       "scenarios": [
-        {
-         "domicile": "moyen",
-         "exterieur": "moyen",
-         "buts_domicile": 2.058,
-         "buts_exterieur": 0.858,
-         "marge": 1.583,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "moyen",
-         "buts_domicile": 3.208,
-         "buts_exterieur": 0.883,
-         "marge": 0.408,
-         "valide": true
-        },
-        {
-         "domicile": "moyen",
-         "exterieur": "pire",
-         "buts_domicile": 2.35,
-         "buts_exterieur": 1.975,
-         "marge": 0.175,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": "pire",
-         "buts_domicile": 3.5,
-         "buts_exterieur": 2.0,
-         "marge": -1.0,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 80 % contre 76 % selon la cote 1,31 · marge +5,4 % · 6 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "-4,5 chacun à son lieu : 86% / 100% ; total attendu (moyennes simples) : 2,35 buts"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "sous de la ligne sur les 6 derniers : 6 (Copenhague) / 5 (Iberia)"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 5.4,
-         "texte": "Le prix proposé laisse 5,4 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 5.4
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "cwmgmjze7np2zwvrz1me1etjo",
-   "date": "2026-11-05",
-   "heure_cameroun": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Panathinaikos",
-   "exterieur": "CSKA Sofia",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "encaisse_domicile",
-      "marche_moteur": "clean_home_no",
-      "libelle": null,
-      "probabilite": 0.7261,
-      "cote": 1.61,
-      "edge": 0.10498741384675936,
-      "edv": 0.16899999999999998,
-      "niveau": "V3_ECHANTILLON_FAIBLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal.",
-       "Moins de 5 matchs au même lieu pour une des deux équipes."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 4,
-       "indice": 1,
-       "sur": 2,
-       "niveau": "ATTENTION",
-       "libelle": "Attention",
-       "phrase": "Tient en moyenne, mais pas dans le pire match.",
-       "moyenne_domicile": {
-        "marque": 2.067,
-        "encaisse": 1.183
-       },
-       "moyenne_exterieur": {
-        "marque": 1.725,
-        "encaisse": 0.725
-       },
-       "pire_domicile": null,
-       "pire_exterieur": {
-        "marque": 0.0,
-        "encaisse": 0.0
-       },
-       "scenarios": [
-        {
-         "domicile": null,
-         "exterieur": "moyen",
-         "buts_domicile": null,
-         "buts_exterieur": 1.725,
-         "marge": 1.225,
-         "valide": true
-        },
-        {
-         "domicile": null,
-         "exterieur": "pire",
-         "buts_domicile": null,
-         "buts_exterieur": 0.0,
-         "marge": -0.5,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 73 % contre 62 % selon la cote 1,61 · marge +16,9 % · 4 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "CSKA Sofia marque plus de 0,5 but dans 100% de ses matchs à ce lieu ; Panathinaikos encaisse plus de 0,5 but dans 71% de ses matchs à son lieu ; CSKA Sofia marque plus de 0,5 but dans 83% de ses matchs de la saison ; buts attendus de CSKA Sofia (moyennes simples) : 1,33"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "CSKA Sofia marque plus de 0,5 but dans 5 de ses 6 derniers ; Panathinaikos encaisse plus de 0,5 but dans 4 de ses 6 derniers"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 16.9,
-         "texte": "Le prix proposé laisse 16,9 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 16.9
-       }
-      }
-     }
-    }
-   }
-  },
-  {
-   "match_id": "e81abe2b47hei8vu096ldq0ic",
-   "date": "2026-11-05",
-   "heure_cameroun": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Sturm Graz",
-   "exterieur": "NK Celje",
-   "moteur_utilise": "moteur_europe",
-   "moteur_europe": {
-    "statut": "OK",
-    "moteur": "moteur_europe",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {
-     "P1": {
-      "marche": "buts_equipe_domicile_2.5_under",
-      "marche_moteur": "home_under_2_5",
-      "libelle": null,
-      "probabilite": 0.8041,
-      "cote": 1.46,
-      "edge": 0.11916834449802383,
-      "edv": 0.174,
-      "niveau": "V3_ECHANTILLON_UTILISABLE",
-      "robustesse": null,
-      "points_de_vigilance": [
-       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
-      ],
-      "rang": "P1",
-      "apercu_non_calibre": false,
-      "indice_performance": {
-       "version": 4,
-       "indice": 1,
-       "sur": 2,
-       "niveau": "ATTENTION",
-       "libelle": "Attention",
-       "phrase": "Tient en moyenne, mais pas dans le pire match.",
-       "moyenne_domicile": {
-        "marque": 1.4,
-        "encaisse": 0.483
-       },
-       "moyenne_exterieur": {
-        "marque": 1.417,
-        "encaisse": 1.517
-       },
-       "pire_domicile": {
-        "marque": 6.0,
-        "encaisse": 1.0
-       },
-       "pire_exterieur": null,
-       "scenarios": [
-        {
-         "domicile": "moyen",
-         "exterieur": null,
-         "buts_domicile": 1.4,
-         "buts_exterieur": null,
-         "marge": 1.1,
-         "valide": true
-        },
-        {
-         "domicile": "pire",
-         "exterieur": null,
-         "buts_domicile": 6.0,
-         "buts_exterieur": null,
-         "marge": -3.5,
-         "valide": false
-        }
-       ]
-      },
-      "alternatives_indice": [],
-      "justification": {
-       "resume": "Probabilité calibrée 80 % contre 68 % selon la cote 1,46 · marge +17,4 % · 6 matchs au même lieu.",
-       "preuves": [
-        {
-         "type": "v3_controle_saison",
-         "texte": "Sturm Graz marque moins de 2,5 buts dans 86% de ses matchs à ce lieu ; NK Celje encaisse moins de 2,5 buts dans 86% de ses matchs à son lieu ; Sturm Graz marque moins de 2,5 buts dans 92% de ses matchs de la saison ; buts attendus de Sturm Graz (moyennes simples) : 1,57"
-        },
-        {
-         "type": "v3_forme_recente",
-         "texte": "Sturm Graz marque moins de 2,5 buts dans 5 de ses 6 derniers ; NK Celje encaisse moins de 2,5 buts dans 5 de ses 6 derniers"
-        },
-        {
-         "type": "ev_percentage",
-         "valeur": 17.4,
-         "texte": "Le prix proposé laisse 17,4 % de marge par rapport à l'estimation calibrée."
-        }
-       ],
-       "explication": null,
-       "donnees_suffisantes": true,
-       "bibliotheque": {
-        "ev_percentage": 17.4
+        "ev_percentage": 29.8
        }
       }
      }
@@ -982,9 +579,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.501 – 1.322",
-    "Domicile marque moins de 2,5 buts · cote 1,39 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,43 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,42 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Domicile marque moins de 2,5 buts · cote 1,39 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,43 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,42 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -998,23 +595,8 @@
    "lignes": [
     "Buts attendus : 1.537 – 1.231",
     "Double chance 12 · cote 1,3 · probabilité 73 % · refusé : marge insuffisante",
-    "Domicile encaisse au moins un but · cote 1,32 · probabilité 67 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Extérieur marque plus de 0,5 but · cote 1,31 · probabilité 67 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "5iboyejh2fwvr81900e5h2tck",
-   "date": "2026-10-14",
-   "heure": "20:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Rome",
-   "exterieur": "Real Madrid",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.74 – 1.33",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,3 · probabilité 81 % · refusé : 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,3 · probabilité 81 % · refusé : 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Extérieur marque moins de 2,5 buts · cote 1,37 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Domicile encaisse au moins un but · cote 1,32 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Extérieur marque plus de 0,5 but · cote 1,31 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1027,9 +609,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.297 – 1.183",
-    "Moins de 3,5 buts · cote 1,37 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 12 · cote 1,33 · probabilité 71 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Extérieur encaisse au moins un but · cote 1,28 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
+    "Moins de 3,5 buts · cote 1,37 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Double chance 12 · cote 1,33 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Extérieur encaisse au moins un but · cote 1,28 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1042,9 +624,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.348 – 1.065",
-    "Moins de 4,5 buts · cote 1,28 · probabilité 87 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Domicile marque moins de 2,5 buts · cote 1,71 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Moins de 3,5 buts · cote 1,68 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Moins de 4,5 buts · cote 1,28 · probabilité 88 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Domicile marque moins de 2,5 buts · cote 1,71 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Moins de 3,5 buts · cote 1,68 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
    ]
   },
   {
@@ -1083,9 +665,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.666 – 1.413",
-    "Double chance 12 · cote 1,3 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Domicile encaisse au moins un but · cote 1,27 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 1X · cote 1,38 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
+    "Double chance 12 · cote 1,3 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Domicile encaisse au moins un but · cote 1,27 · probabilité 74 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
+    "Double chance 1X · cote 1,38 · probabilité 68 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1098,9 +680,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.593 – 1.769",
-    "Domicile marque moins de 2,5 buts · cote 1,56 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Plus de 2,5 buts · cote 1,66 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats irréguliers et probabilité sous 67 %",
-    "Moins de 3,5 buts · cote 1,49 · probabilité 59 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
+    "Domicile marque moins de 2,5 buts · cote 1,56 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 2,5 buts · cote 1,66 · probabilité 66 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats irréguliers et probabilité sous 67 %",
+    "Moins de 3,5 buts · cote 1,49 · probabilité 56 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
    ]
   },
   {
@@ -1113,9 +695,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.762 – 1.045",
-    "Double chance 1X · cote 1,27 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Plus de 1,5 buts · cote 1,32 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Double chance 12 · cote 1,32 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
+    "Double chance 1X · cote 1,27 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "Plus de 1,5 buts · cote 1,32 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
+    "Double chance 12 · cote 1,32 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
    ]
   },
   {
@@ -1177,9 +759,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.519 – 1.333",
-    "Domicile marque plus de 0,5 but · cote 1,42 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Extérieur encaisse au moins un but · cote 1,42 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Plus de 1,5 buts · cote 1,36 · probabilité 76 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
+    "Domicile marque plus de 0,5 but · cote 1,42 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Extérieur encaisse au moins un but · cote 1,42 · probabilité 78 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Plus de 1,5 buts · cote 1,36 · probabilité 77 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
    ]
   },
   {
@@ -1253,9 +835,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.379 – 1.138",
-    "Plus de 0,5 buts · cote 1,3 · probabilité 88 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Double chance 12 · cote 1,57 · probabilité 71 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Double chance 1X · cote 1,52 · probabilité 65 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
+    "Plus de 0,5 buts · cote 1,3 · probabilité 90 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Double chance 12 · cote 1,57 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
+    "Double chance 1X · cote 1,52 · probabilité 69 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
    ]
   },
   {
@@ -1268,9 +850,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.45 – 1.011",
-    "Moins de 3,5 buts · cote 1,32 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Domicile marque plus de 0,5 but · cote 1,3 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Extérieur encaisse au moins un but · cote 1,27 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
+    "Moins de 3,5 buts · cote 1,32 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Domicile marque plus de 0,5 but · cote 1,3 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Extérieur encaisse au moins un but · cote 1,27 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1283,9 +865,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.246 – 1.36",
-    "Extérieur marque moins de 2,5 buts · cote 1,32 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,44 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,43 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
+    "Extérieur marque moins de 2,5 buts · cote 1,32 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,44 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,43 · probabilité 83 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   },
   {
@@ -1310,551 +892,9 @@
    "etat": "Évalué : aucun marché ne passe tous les filtres",
    "lignes": [
     "Buts attendus : 1.491 – 1.75",
-    "Double chance 12 · cote 1,31 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Double chance X2 · cote 1,42 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Extérieur +0,5 : Extérieur ne perd pas · cote 1,39 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "e4jbx4zj8tned8gnvay3pajh0",
-   "date": "2026-11-04",
-   "heure": "16:30",
-   "competition": "Europe : Ligue Europa Phase de Ligue - des équipes Françaises",
-   "domicile": "Rennes",
-   "exterieur": "Olympiakos",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Rennes : 1 match européen à domicile (3 minimum)",
-    "Olympiakos : 1 match européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "5sofq8ccd5mboopwnsotin02c",
-   "date": "2026-11-04",
-   "heure": "18:45",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Fenerbahce",
-   "exterieur": "Liverpool",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.46 – 1.69",
-    "Moins de 4,5 buts · cote 1,36 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,66 · probabilité 74 % · refusé : résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,66 · probabilité 74 % · refusé : résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "5tm3svtbj9aqmmjflcnt2re38",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Dortmund",
-   "exterieur": "Real Betis",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.823 – 1.137",
-    "Domicile marque moins de 2,5 buts · cote 1,41 · probabilité 70 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,4 · probabilité 66 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats irréguliers et probabilité sous 67 %",
-    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,4 · probabilité 66 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats irréguliers et probabilité sous 67 %"
-   ]
-  },
-  {
-   "match_id": "5uuv8o6rf0dwb2hqo2rbqlc0k",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "FC Porto",
-   "exterieur": "Naples",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.941 – 1.026",
-    "Double chance 1X · cote 1,3 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Handicap 3 choix Domicile +1 (1) : Domicile ne perd pas · cote 1,27 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Handicap Domicile +0,5 : Domicile ne perd pas · cote 1,26 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "5szo9wm9whynb03e6biito26s",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Leipzig",
-   "exterieur": "Man City",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Leipzig : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "5u8fdyqfg1o22cw8hax0ril1w",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "PSV Eindhoven",
-   "exterieur": "Club Bruges",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 2.434 – 1.784",
-    "Plus de 2,5 buts · cote 1,32 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Les deux équipes marquent · cote 1,33 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 1X · cote 1,37 · probabilité 69 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "5tauwmjztaqll27tytrytw1sk",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue - des équipes Françaises",
-   "domicile": "RC Lens",
-   "exterieur": "Côme",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "RC Lens : 0 match européen à domicile (3 minimum)",
-    "Côme : 0 match européen à l'extérieur (3 minimum)",
-    "RC Lens : 0 match de championnat à domicile (3 minimum)",
-    "Côme : 0 match de championnat à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "5txb3hezipnihbbofmxictono",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Slavia Prague",
-   "exterieur": "Arsenal",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.125 – 1.591",
-    "Extérieur marque moins de 3,5 buts · cote 1,26 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Moins de 3,5 buts · cote 1,58 · probabilité 68 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Plus de 2,5 buts · cote 1,53 · probabilité 51 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; probabilité sous 60 % ; résultats irréguliers et probabilité sous 67 %"
-   ]
-  },
-  {
-   "match_id": "5ujnxszfqaw867eaj7k9w2n84",
-   "date": "2026-11-04",
-   "heure": "21:00",
-   "competition": "Europe : Ligue des Champions Phase de Ligue",
-   "domicile": "Viking",
-   "exterieur": "Sabah",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 2.139 – 1.376",
-    "Domicile marque moins de 3,5 buts · cote 1,28 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Domicile encaisse au moins un but · cote 1,4 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Extérieur marque plus de 0,5 but · cote 1,39 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "crq26x5ympzmcbargtwe7jvo4",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "AGF",
-   "exterieur": "Braga",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.36 – 1.409",
-    "Plus de 1,5 buts · cote 1,3 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Double chance 12 · cote 1,33 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Extérieur encaisse au moins un but · cote 1,42 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
-   ]
-  },
-  {
-   "match_id": "e3wj0ux2f995p2lfzwy557g2c",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Anderlecht",
-   "exterieur": "Salzbourg",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.722 – 1.19",
-    "Double chance 12 · cote 1,28 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Domicile marque moins de 2,5 buts · cote 1,3 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 1X · cote 1,3 · probabilité 71 % · refusé : marge insuffisante"
-   ]
-  },
-  {
-   "match_id": "cs1qwjbqpypsmnijodsi833tg",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Atalanta",
-   "exterieur": "K. Almaty",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.589 – 1.47",
-    "Domicile marque moins de 3,5 buts · cote 1,39 · probabilité 89 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Moins de 4,5 buts · cote 1,33 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Plus de 2,5 buts · cote 1,39 · probabilité 62 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats irréguliers et probabilité sous 67 %"
-   ]
-  },
-  {
-   "match_id": "e5thryye42ldo6i41pqgcwg7o",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Crystal Palace",
-   "exterieur": "Hoffenheim",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Hoffenheim : 1 match européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "ctcu6p90eq5d134s3jjz9vyms",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Kuopion",
-   "exterieur": "KAA Gent",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.039 – 1.23",
-    "Extérieur marque moins de 2,5 buts · cote 1,27 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,39 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,39 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "e56d87vsmvvd3534m5a331j4k",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Levski Sofia",
-   "exterieur": "J. Bialystok",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.324 – 0.913",
-    "Moins de 3,5 buts · cote 1,38 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Extérieur marque moins de 1,5 but · cote 1,38 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Double chance 1X · cote 1,3 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "e5hqcbg9vp9o781ar46cjt5w4",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Lillestrøm",
-   "exterieur": "V. Plzeň",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Lillestrøm : 2 matchs européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "ctojizz46gn6dkvom6bg58p3o",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Lincoln Red",
-   "exterieur": "Hajduk Split",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.481 – 1.444",
-    "Handicap 3 choix Domicile +2 (1) : Domicile ne perd pas par 2 buts ou plus · cote 1,71 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Domicile +1,5 : Domicile ne perd pas par 2 buts ou plus · cote 1,71 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Extérieur marque moins de 2,5 buts · cote 1,48 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "csdmpam06qd3m4clf13x9j0gk",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Midtjylland",
-   "exterieur": "Ajax Amsterdam",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.479 – 1.742",
-    "Moins de 4,5 buts · cote 1,26 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance 12 · cote 1,29 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance X2 · cote 1,47 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "e64ut8qw4eckzlr4vbm0ln3f8",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Milan",
-   "exterieur": "Ferencvaros",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Milan : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "cu09nlbqexyvr5ruxrjad35zo",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Mjällby",
-   "exterieur": "Borac BL",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.415 – 1.469",
-    "Plus de 1,5 buts · cote 1,34 · probabilité 78 % · refusé : marge insuffisante ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Domicile encaisse au moins un but · cote 1,41 · probabilité 73 % · refusé : marge insuffisante ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Extérieur marque plus de 0,5 but · cote 1,4 · probabilité 73 % · refusé : marge insuffisante ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
-   ]
-  },
-  {
-   "match_id": "e6g9snrjmgvmn4ufzt4ea5n2s",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "NEC Nimègue",
-   "exterieur": "Omónia Nicosie",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "NEC Nimègue : 1 match européen à domicile (3 minimum)",
-    "Omónia Nicosie : 1 match européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "e47ydrzpqxgvywdgculj20qvo",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue - des équipes Françaises",
-   "domicile": "Real Sociedad",
-   "exterieur": "Lyon",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Real Sociedad : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "e4uxu5mnnp9tyh1gz12v9p444",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Sparta Prague",
-   "exterieur": "Bournemouth",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Bournemouth : 1 match européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "csperpnzh1wddzwtaeg5u7b4k",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Thoune",
-   "exterieur": "Hearts",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Thoune : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "cubxh97n2dsts3idc2ukpgnx0",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Trabzonspor",
-   "exterieur": "Fribourg",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Trabzonspor : 2 matchs européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "ct15kaqhsg9d63qbqmwqmxel0",
-   "date": "2026-11-05",
-   "heure": "18:45",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Étoile Rouge",
-   "exterieur": "Inter Escaldes",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Étoile Rouge : 0 match européen à domicile (3 minimum)",
-    "Inter Escaldes : 1 match européen à l'extérieur (3 minimum)",
-    "Étoile Rouge : 0 match de championnat à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "cunu9eqlzep6mqpj26izorkt0",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "AS Monaco",
-   "exterieur": "Nordsjaelland",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.466 – 1.184",
-    "Moins de 4,5 buts · cote 1,3 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Domicile marque moins de 2,5 buts · cote 1,62 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,66 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "e9aopvmg5ddp2vs5bxu8gdafo",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "AZ Alkmaar",
-   "exterieur": "Juventus",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.801 – 1.179",
-    "Extérieur encaisse au moins un but · cote 1,37 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Domicile marque plus de 0,5 but · cote 1,36 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Double chance 12 · cote 1,3 · probabilité 73 % · refusé : marge insuffisante"
-   ]
-  },
-  {
-   "match_id": "e7eju8iws7iri0o4tf4ofqn10",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Benfica",
-   "exterieur": "Lech Poznan",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 2.117 – 1.638",
-    "Domicile marque moins de 3,5 buts · cote 1,49 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Plus de 2,5 buts · cote 1,29 · probabilité 70 % · refusé : marge insuffisante",
-    "Moins de 4,5 buts · cote 1,45 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification"
-   ]
-  },
-  {
-   "match_id": "e8nxbl4x1bx2c11dwu79zbbis",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Celtic Glasgow",
-   "exterieur": "Besiktas",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.483 – 1.746",
-    "Double chance 12 · cote 1,29 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Extérieur marque moins de 2,5 buts · cote 1,27 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification",
-    "Double chance X2 · cote 1,38 · probabilité 64 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; résultats irréguliers et probabilité sous 67 %"
-   ]
-  },
-  {
-   "match_id": "cvyrajvqzfrtpz91ofcl2yi38",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Getafe",
-   "exterieur": "Brighton",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Getafe : 2 matchs européen à domicile (3 minimum)",
-    "Brighton : 2 matchs européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "e6rnpkb4moysa5ehvk2d43xuc",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "H Be'er Sheva",
-   "exterieur": "OFI",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "OFI : 1 match européen à l'extérieur (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "cvbfydggeke7vtzhrp1lquf4k",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Lugano",
-   "exterieur": "Kauno Žalgiris",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.911 – 1.058",
-    "Domicile marque moins de 3,5 buts · cote 1,41 · probabilité 81 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Moins de 4,5 buts · cote 1,38 · probabilité 80 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Plus de 2,5 buts · cote 1,34 · probabilité 60 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; probabilité sous 60 % ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "cwyc0cidrepmkfl8fyqjv2s5w",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Riga FC",
-   "exterieur": "Jablonec",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.769 – 1.096",
-    "Plus de 1,5 buts · cote 1,27 · probabilité 77 % · refusé : marge insuffisante ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Double chance 12 · cote 1,33 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé",
-    "Double chance 1X · cote 1,4 · probabilité 73 % · refusé : marge insuffisante ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé"
-   ]
-  },
-  {
-   "match_id": "cwajjjznfn9lbh11mmxry96ac",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "St. Truidense",
-   "exterieur": "Brann",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "St. Truidense : 2 matchs européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "e8clizq1ahqx4a6iwiiv1vtw4",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Sunderland",
-   "exterieur": "D. Zagreb",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Sunderland : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "e8zbj9l3l0aulbrmgvdckgs2c",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Europa Phase de Ligue",
-   "domicile": "Torreense",
-   "exterieur": "Ararat-Armenia",
-   "etat": "Non évalué : historique insuffisant",
-   "lignes": [
-    "Torreense : 1 match européen à domicile (3 minimum)"
-   ]
-  },
-  {
-   "match_id": "cvn5135wi1svlw5g6wnizytqs",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Twente",
-   "exterieur": "Pafos",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.663 – 0.938",
-    "Moins de 4,5 buts · cote 1,29 · probabilité 82 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
-    "Domicile marque moins de 2,5 buts · cote 1,74 · probabilité 73 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)",
-    "Moins de 3,5 buts · cote 1,7 · probabilité 71 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification ; résultats trop irréguliers (dispersion > 1,50)"
-   ]
-  },
-  {
-   "match_id": "cxa6n6uiels6jzsbwi5rqmwwk",
-   "date": "2026-11-05",
-   "heure": "21:00",
-   "competition": "Europe : Ligue Conférence Phase de Ligue",
-   "domicile": "Univ. Craiova",
-   "exterieur": "Egnatia",
-   "etat": "Évalué : aucun marché ne passe tous les filtres",
-   "lignes": [
-    "Buts attendus : 1.594 – 1.104",
-    "Domicile marque moins de 2,5 buts · cote 1,42 · probabilité 79 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap Extérieur +1,5 : Extérieur ne perd pas par 2 buts ou plus · cote 1,6 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification",
-    "Handicap 3 choix Domicile −2 (2) : Extérieur ne perd pas par 2 buts ou plus · cote 1,6 · probabilité 72 % · refusé : double contrôle non passé ou marché non couvert ; pas de justification"
+    "Double chance 12 · cote 1,31 · probabilité 75 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Double chance X2 · cote 1,42 · probabilité 68 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)",
+    "Handicap Extérieur +0,5 : Extérieur ne perd pas · cote 1,39 · probabilité 68 % · refusé : double contrôle non passé ou marché non couvert ; marge insuffisante ; pas de justification ; 3 ou 4 matchs au même lieu : contrôle renforcé non passé ; résultats trop irréguliers (dispersion > 1,50)"
    ]
   }
  ]
