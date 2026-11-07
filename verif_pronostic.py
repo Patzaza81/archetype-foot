@@ -144,7 +144,20 @@ def _lecture(marche, la, lb, avantage=0.0):
     if any(r is False for r in reps): return False
     return "limite" if any(r == "limite" for r in reps) else True
 
+def de_la_saison(m, saison):
+    """Match de la saison en cours : etiquete comme tel (Football-Data) ou sans etiquette (Matchendirect : le flux ne garde que la saison en cours pour ces championnats)."""
+    return m.get("saison") == saison or (m.get("saison") is None and m.get("source") == "matchendirect")
+
 _CHAMP = {}
+def xg_attendus(SA, SB, champ):
+    """Buts attendus de chaque equipe d'apres le xG de la saison ; si le xG manque, xG ESTIME a partir des buts de la saison (donnees Matchendirect) et de la moyenne du championnat :
+    attaque de A (buts marques) x defense de B (buts encaisses) / moyenne du championnat, et inversement. -> (domicile, exterieur, source) ; source = 'xG', 'estimé' ou None."""
+    if min(SA["n_xg"], SB["n_xg"]) >= NMIN: return (*_attendus(SA, SB, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")), "xG")
+    m = champ.get("buts")
+    if min(SA["n"], SB["n"]) >= NMIN and m and None not in (SA["buts_marques"], SA["buts_encaisses"], SB["buts_marques"], SB["buts_encaisses"]):
+        return SA["buts_marques"] * SB["buts_encaisses"] / m, SB["buts_marques"] * SA["buts_encaisses"] / m, "estimé"
+    return None, None, None
+
 def _ajuster(verdict, lect_b, lect_x):
     """Verdict des frequences, corrige par la comparaison attaque / defense (buts attendus et xG).
     - NE TIENT PAS remonte a TIENT AVEC RÉSERVE si les buts attendus ET le xG (quand il existe) confirment : l'attaque contre la defense dit oui meme si les frequences disent non.
@@ -164,7 +177,7 @@ def moyenne_championnat(competition, saison):
             for eq, nom in (("equipe_dom", y.get("domicile")), ("equipe_ext", y.get("exterieur"))):
                 for m in ((y.get("assemblage") or {}).get(eq) or {}).get("matchs") or []:
                     cle = (nom, m.get("date"))
-                    if cle in vus or m.get("saison") != saison: continue
+                    if cle in vus or not de_la_saison(m, saison) or m.get("buts_marques") is None: continue
                     vus.add(cle); B.append(m["buts_marques"]); (BD if m.get("domicile") else BE).append(m["buts_marques"])
                     if m.get("xg") is not None: X.append(m["xg"])
     mo = lambda L: sum(L) / len(L) if L else None
@@ -174,7 +187,7 @@ def moyenne_championnat(competition, saison):
 def saison_complete(x, eq):
     """Toute la saison en cours (domicile et exterieur), avant le match : moyennes buts et xG, comme dans la comparaison avec les xG du championnat."""
     a = x.get("assemblage") or {}; saison = a.get("saison_football_data")
-    M = [m for m in (a.get(eq) or {}).get("matchs") or [] if m.get("date") and m["date"] < x["date"] and m.get("saison") == saison and m.get("buts_marques") is not None]
+    M = [m for m in (a.get(eq) or {}).get("matchs") or [] if m.get("date") and m["date"] < x["date"] and de_la_saison(m, saison) and m.get("buts_marques") is not None]
     g = lambda c: _moy([m.get(c) for m in M])
     (bm, n), (be, _), (xc, nx), (xd, _) = g("buts_marques"), g("buts_encaisses"), g("xg"), g("xg_concede")
     return {"n": n, "buts_marques": bm, "buts_encaisses": be, "xg_cree": xc, "xg_concede": xd, "n_xg": nx,
@@ -215,15 +228,17 @@ def constat(x, marche, cote=None, cfg=None):
     tend = tendance(A, x["domicile"]) + tendance(B, x["exterieur"])
     bm = _attendus(A, B, ("buts_marques", "buts_encaisses"), ("buts_marques", "buts_encaisses")); lect_b = None
     SA, SB = saison_complete(x, "equipe_dom"), saison_complete(x, "equipe_ext")   # xG sur toute la saison : l'echantillon domicile/exterieur seul est trop petit
-    xa = _attendus(SA, SB, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")) if min(SA["n_xg"], SB["n_xg"]) >= NMIN else (None, None); champ = moyenne_championnat(x.get("competition"), a.get("saison_football_data")); lect_x = _lecture(marche, *xa, champ["avantage_dom"]); lect_b = _lecture(marche, *bm, champ["avantage_dom"])
+    champ = moyenne_championnat(x.get("competition"), a.get("saison_football_data")); xa = xg_attendus(SA, SB, champ)[:2]; src = xg_attendus(SA, SB, champ)[2]
+    lect_x = _lecture(marche, *xa, champ["avantage_dom"]); lect_b = _lecture(marche, *bm, champ["avantage_dom"])
     ordre = ["NE TIENT PAS", "TIENT AVEC RÉSERVE", "TIENT"]
     verdict = _ajuster(verdict, lect_b, lect_x)
-    lecture_xg = {None: "xG indisponible pour une des deux équipes" if xa[0] is None else "pari non lisible avec le xG", True: "le xG confirme", False: "le xG contredit", "limite": "le xG est à la limite de la ligne"}[lect_x]
+    nom_xg = "xG estimé" if src == "estimé" else "xG"
+    lecture_xg = {None: "xG indisponible (trop peu de matchs)" if xa[0] is None else f"pari non lisible avec le {nom_xg}", True: f"le {nom_xg} confirme", False: f"le {nom_xg} contredit", "limite": f"le {nom_xg} est à la limite de la ligne"}[lect_x]
     phrase = (f"{x['domicile']} à domicile : {f(A['buts_marques'])} buts marqués, {f(A['buts_encaisses'])} encaissés (xG {f(A['xg_cree'])}/{f(A['xg_concede'])}), pari passé {A['reussi']} fois sur {A['n']}. "
               f"{x['exterieur']} à l'extérieur : {f(B['buts_marques'])} marqués, {f(B['buts_encaisses'])} encaissés (xG {f(B['xg_cree'])}/{f(B['xg_concede'])}), pari passé {B['reussi']} fois sur {B['n']}.")
     ch = lambda e: ("?" if e["xg_cree"] is None else f"xG {e['xg_cree']:.2f} créés / {e['xg_concede']:.2f} concédés (écart {e['ecart_xg']:+.2f}), buts {f(e['buts_marques'])} / {f(e['buts_encaisses'])}")
     phrase += f" Saison entière (xG) : {x['domicile']} {ch(SA)} ; {x['exterieur']} {ch(SB)}. Moyenne du championnat : {f(champ['buts'])} but par équipe et par match."
-    return {"verdict": verdict, "force": (A["reussi"] / A["n"] + B["reussi"] / B["n"]) / 2, "libelle": libelle(marche, x["domicile"], x["exterieur"]), "cote": cote, "phrase": phrase, "tendances_xg": tend, "buts_attendus": bm, "xg_attendus": xa, "lecture_xg": lecture_xg, "saison_A": SA, "saison_B": SB, "championnat": champ, "A": A, "B": B}
+    return {"verdict": verdict, "force": (A["reussi"] / A["n"] + B["reussi"] / B["n"]) / 2, "libelle": libelle(marche, x["domicile"], x["exterieur"]), "cote": cote, "phrase": phrase, "tendances_xg": tend, "buts_attendus": bm, "xg_attendus": xa, "xg_source": src, "lecture_xg": lecture_xg, "saison_A": SA, "saison_B": SB, "championnat": champ, "A": A, "B": B}
 
 
 # ---------------------------------------------------------------- journal gele (verdicts figes AVANT le coup d'envoi) et bilan sur resultats reels
@@ -325,9 +340,11 @@ def analyse(x, cfg=None):
     f = lambda u, k=2: "non disponible" if u is None else f"{u:.{k}f}".replace(".", ","); sg = lambda u: "non disponible" if u is None else f"{u:+.2f}".replace(".", ",")
     L = [f"**{d} – {e}** ({x.get('competition', '')}, {x.get('heure_cameroun', '')} heure du Cameroun). Saison entière, sans séparer domicile et extérieur : {SA['n']} matchs pour {d}, {SB['n']} pour {e}.", "",
          f"| | {d} | {e} | Moyenne du championnat |", "|---|---|---|---|",
-         f"| xG créés par match | {f(SA['xg_cree'])} | {f(SB['xg_cree'])} | {f(champ['xg'])} |", f"| xG concédés par match | {f(SA['xg_concede'])} | {f(SB['xg_concede'])} | non indiqué |",
+         f"| xG créés par match | {f(SA['xg_cree'])} | {f(SB['xg_cree'])} | {f(champ['xg']) if champ['xg'] is not None else f(champ['buts']) + ' (estimé : buts de la saison)'} |", f"| xG concédés par match | {f(SA['xg_concede'])} | {f(SB['xg_concede'])} | non indiqué |",
          f"| Buts marqués par match | {f(SA['buts_marques'], 1)} | {f(SB['buts_marques'], 1)} | {f(champ['buts'], 1)} |", f"| Buts encaissés par match | {f(SA['buts_encaisses'], 1)} | {f(SB['buts_encaisses'], 1)} | {f(champ['buts'], 1)} |",
          f"| Écart xG (créés moins concédés) | **{sg(SA['ecart_xg'])}** | **{sg(SB['ecart_xg'])}** | |", ""]
+    xa = xg_attendus(SA, SB, champ)
+    if xa[2] == "estimé": L += [f"xG manquant pour ce championnat : xG estimé avec les buts de la saison (Matchendirect) et la moyenne du championnat ({f(champ['buts'])} but par équipe) : {d} {f(xa[0] + champ['avantage_dom'] / 2, 1)} – {f(xa[1] - champ['avantage_dom'] / 2, 1)} {e}, terrain compris.", ""]
     R = []
     for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
         r = constat(x, m, c, cfg)

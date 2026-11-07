@@ -111,6 +111,20 @@ class Repli(unittest.TestCase):
     def test_sans_donnees(self):
         self.assertEqual(v.repli_combo(self._x([], [], self.COT), "1", 1.2, CFG), [])
 
+class XGEstime(unittest.TestCase):
+    S = lambda self, n, bm, be, nx=0, xc=None, xd=None: {"n": n, "buts_marques": bm, "buts_encaisses": be, "n_xg": nx, "xg_cree": xc, "xg_concede": xd}
+    def test_xg_present_utilise(self):
+        r = v.xg_attendus(self.S(8, 2.0, 1.0, 8, 2.0, 1.0), self.S(8, 1.0, 2.0, 8, 1.0, 2.0), {"buts": 1.5}); self.assertEqual(r[2], "xG"); self.assertEqual(r[:2], (2.0, 1.0))
+    def test_estime_quand_xg_manque(self):         # attaque A 1,5 x defense B 1,5 / moyenne 1,5 = 1,5 ; B : 1,5 x 1,5 / 1,5
+        r = v.xg_attendus(self.S(6, 1.5, 1.5), self.S(6, 1.5, 1.5), {"buts": 1.5}); self.assertEqual(r[2], "estimé"); self.assertAlmostEqual(r[0], 1.5); self.assertAlmostEqual(r[1], 1.5)
+        r = v.xg_attendus(self.S(5, 3.0, 0.5), self.S(5, 1.0, 2.0), {"buts": 1.5}); self.assertAlmostEqual(r[0], 3.0 * 2.0 / 1.5); self.assertAlmostEqual(r[1], 1.0 * 0.5 / 1.5)
+        r = v.xg_attendus(self.S(4, 1.2, 1.2, 2), self.S(4, 1.2, 1.2, 2), {"buts": 1.2}); self.assertEqual(r[2], "estimé")    # xG sur 2 matchs seulement : insuffisant
+    def test_rien_si_pas_assez_de_matchs_ou_pas_de_moyenne(self):
+        for A, B, ch in [(self.S(3, 1.0, 1.0), self.S(6, 1.0, 1.0), {"buts": 1.2}), (self.S(6, 1.0, 1.0), self.S(6, 1.0, 1.0), {"buts": None}), (self.S(6, 1.0, 1.0), self.S(2, 1.0, 1.0), {"buts": 1.2}), (self.S(0, None, None), self.S(0, None, None), {"buts": 1.2})]:
+            self.assertEqual(v.xg_attendus(A, B, ch), (None, None, None))
+    def test_saison_matchendirect_comptee(self):
+        for m, ok_ in [({"saison": None, "source": "matchendirect"}, True), ({"saison": "2627", "source": "football-data"}, True), ({"saison": "2526", "source": "football-data"}, False), ({"saison": None, "source": "football-data"}, False), ({"saison": "2526", "source": "matchendirect"}, False)]: self.assertEqual(v.de_la_saison(m, "2627"), ok_, m)
+
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
         lo, hi = v.wilson(50, 100); self.assertAlmostEqual(lo, 0.404, 2); self.assertAlmostEqual(hi, 0.596, 2)
