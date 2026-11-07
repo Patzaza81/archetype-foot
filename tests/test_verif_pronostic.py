@@ -117,6 +117,13 @@ class LectureXG(unittest.TestCase):
         for m, la, lb in [("1", 2.0, 1.0), ("total_plus_2.5", 1.6, 1.4), ("btts_oui", 1.5, 1.2), ("N2&total_moins_4.5", 1.0, 1.4), ("1&total_moins_4.5", 2.0, 0.8)]: self.assertTrue(v._lecture(m, la, lb), (m, la, lb))
     def test_contredit(self):
         for m, la, lb in [("1", 1.0, 1.5), ("total_plus_2.5", 1.0, 1.2), ("btts_oui", 2.0, 0.6), ("N2&total_moins_4.5", 2.0, 0.8), ("total_moins_1.5", 1.0, 1.0)]: self.assertFalse(v._lecture(m, la, lb), (m, la, lb))
+    def test_ligne_franche(self):
+        for val, X, sens in [(2.0, 1.5, "plus"), (3.0, 2.5, "plus"), (1.0, 1.5, "moins"), (2.5, 3.5, "moins")]: self.assertIs(v._ligne(val, X, sens), True)
+    def test_ligne_mauvais_cote(self):
+        for val, X, sens in [(1.4, 1.5, "plus"), (2.0, 2.5, "plus"), (1.6, 1.5, "moins"), (3.6, 3.5, "moins")]: self.assertIs(v._ligne(val, X, sens), False)
+    def test_ligne_limite(self):                  # exemple Galatasaray plus de 1,5 avec 1,6 but attendu : sous les 2 buts qu'il faut
+        for val, X, sens in [(1.6, 1.5, "plus"), (2.9, 2.5, "plus"), (1.4, 1.5, "moins"), (3.1, 3.5, "moins")]: self.assertEqual(v._ligne(val, X, sens), "limite")
+        self.assertEqual(v._lecture("dom_plus_1.5", 1.61, 1.63), "limite")
     def test_non_lisible(self):
         self.assertIsNone(v._lecture("1", None, 1.0)); self.assertIsNone(v._lecture("N", 1.0, 1.0)); self.assertIsNone(v._lecture("12", 1.0, 1.0))
     def test_attendus(self):
