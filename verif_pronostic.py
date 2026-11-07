@@ -9,7 +9,7 @@ Pour un pari sur A (domicile) - B (exterieur) :
   5. si l'attaque contre la defense confirme (buts et xG) alors que les frequences disent non, le verdict remonte d'un cran ; si le xG contredit, il baisse d'un cran ;
   6. verdicts geles AVANT le coup d'envoi (journal infalsifiable) puis bilan chaque soir sur les resultats reels.
 Aucune constante inventee : la cote minimale vient de l'utilisateur, les moyennes viennent des matchs du championnat.
-Commandes : geler | bilan | coupon <fichier.json> [jour]
+Commandes : geler | bilan | coupon <fichier.json> [jour] | analyse <domicile> <exterieur> [jour]
 """
 import datetime, glob, gzip, json, math, os, sys
 import numpy as np
@@ -217,7 +217,7 @@ def constat(x, marche, cote=None, cfg=None):
     xa = _attendus(SA, SB, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")) if min(SA["n_xg"], SB["n_xg"]) >= NMIN else (None, None); champ = moyenne_championnat(x.get("competition"), a.get("saison_football_data")); lect_x = _lecture(marche, *xa, champ["avantage_dom"]); lect_b = _lecture(marche, *bm, champ["avantage_dom"])
     ordre = ["NE TIENT PAS", "TIENT AVEC RÉSERVE", "TIENT"]
     verdict = _ajuster(verdict, lect_b, lect_x)
-    lecture_xg = {None: "xG indisponible pour une des deux équipes", True: "le xG confirme", False: "le xG contredit", "limite": "le xG est à la limite de la ligne"}[lect_x]
+    lecture_xg = {None: "xG indisponible pour une des deux équipes" if xa[0] is None else "pari non lisible avec le xG", True: "le xG confirme", False: "le xG contredit", "limite": "le xG est à la limite de la ligne"}[lect_x]
     phrase = (f"{x['domicile']} à domicile : {f(A['buts_marques'])} buts marqués, {f(A['buts_encaisses'])} encaissés (xG {f(A['xg_cree'])}/{f(A['xg_concede'])}), pari passé {A['reussi']} fois sur {A['n']}. "
               f"{x['exterieur']} à l'extérieur : {f(B['buts_marques'])} marqués, {f(B['buts_encaisses'])} encaissés (xG {f(B['xg_cree'])}/{f(B['xg_concede'])}), pari passé {B['reussi']} fois sur {B['n']}.")
     ch = lambda e: ("?" if e["xg_cree"] is None else f"xG {e['xg_cree']:.2f} créés / {e['xg_concede']:.2f} concédés (écart {e['ecart_xg']:+.2f}), buts {f(e['buts_marques'])} / {f(e['buts_encaisses'])}")
@@ -316,12 +316,41 @@ def alternatives(x, cfg=None, exclure=None, n=3):
         if r["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE"): R.append({"marche": m, **r})
     R.sort(key=lambda e: (ORDRE.index(e["verdict"]), -e["force"])); return R[:n]
 
+def analyse(x, cfg=None):
+    """Presentation complete d'UN match, comme dans nos echanges : tableau des equipes (xG, buts, ecart, moyenne du championnat), tous les paris Betpawa qui passent les filtres
+    (cote >= minimum, assez de matchs, TIENT ou TIENT AVEC RÉSERVE) du plus fiable au moins fiable, constats, classement. -> texte (Markdown)."""
+    cfg = cfg or config(); d, e = x["domicile"], x["exterieur"]; SA, SB = saison_complete(x, "equipe_dom"), saison_complete(x, "equipe_ext")
+    champ = moyenne_championnat(x.get("competition"), (x.get("assemblage") or {}).get("saison_football_data"))
+    f = lambda u, k=2: "non disponible" if u is None else f"{u:.{k}f}".replace(".", ","); sg = lambda u: "non disponible" if u is None else f"{u:+.2f}".replace(".", ",")
+    L = [f"**{d} – {e}** ({x.get('competition', '')}, {x.get('heure_cameroun', '')} heure du Cameroun). Saison entière, sans séparer domicile et extérieur : {SA['n']} matchs pour {d}, {SB['n']} pour {e}.", "",
+         f"| | {d} | {e} | Moyenne du championnat |", "|---|---|---|---|",
+         f"| xG créés par match | {f(SA['xg_cree'])} | {f(SB['xg_cree'])} | {f(champ['xg'])} |", f"| xG concédés par match | {f(SA['xg_concede'])} | {f(SB['xg_concede'])} | non indiqué |",
+         f"| Buts marqués par match | {f(SA['buts_marques'], 1)} | {f(SB['buts_marques'], 1)} | {f(champ['buts'], 1)} |", f"| Buts encaissés par match | {f(SA['buts_encaisses'], 1)} | {f(SB['buts_encaisses'], 1)} | {f(champ['buts'], 1)} |",
+         f"| Écart xG (créés moins concédés) | **{sg(SA['ecart_xg'])}** | **{sg(SB['ecart_xg'])}** | |", ""]
+    R = []
+    for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
+        r = constat(x, m, c, cfg)
+        if r["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE"): R.append({"marche": m, **r})
+    R.sort(key=lambda r: (ORDRE.index(r["verdict"]), -r["force"]))
+    L += ["**Tous les paris qui passent les filtres, du plus fiable au moins fiable**", "", "| # | Pari | Cote | Résultats | xG | Verdict |", "|---|---|---|---|---|---|"]
+    for i, r in enumerate(R, 1):
+        xa = r["xg_attendus"]; av = champ["avantage_dom"]; att = "" if xa[0] is None else f" ({f(xa[0] + av / 2, 1)} – {f(xa[1] - av / 2, 1)} buts attendus, terrain compris)"; lec = r["lecture_xg"]; lec = lec[0].upper() + lec[1:]
+        L.append(f"| {i} | {r['libelle']} | {str(r['cote']).replace('.', ',')} | {r['A']['reussi']} sur {r['A']['n']} et {r['B']['reussi']} sur {r['B']['n']} | {lec}{att} | **{r['verdict'].capitalize()}** |")
+    if not R: L.append("| | Aucun pari ne passe les filtres | | | | |")
+    L += ["", "**Constats**"]
+    for nom, S in ((d, SA), (e, SB)):
+        if S["surperformance"] is not None: L.append(f"- **{nom}** marque {f(S['buts_marques'], 1)} buts par match pour {f(S['xg_cree'])} xG, soit {f(abs(S['surperformance']), 2)} de {'plus' if S['surperformance'] >= 0 else 'moins'} qu'attendu ; il encaisse {f(S['buts_encaisses'], 1)} pour {f(S['xg_concede'])} xG concédé.")
+    L += ["", f"Le xG vient de la saison en cours ; cote minimale {str(cfg['cote_min']).replace('.', ',')}."]
+    return "\n".join(L)
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "geler":
         print(json.dumps({"lignes_ajoutees": geler(), "anomalies": verifier_journal()}, ensure_ascii=False))
     elif cmd == "bilan":
         b = ecrire_bilan(); print(json.dumps({k: {x: round(y, 3) if isinstance(y, float) else y for x, y in v.items()} for k, v in b["par_verdict"].items()}, ensure_ascii=False))
+    elif cmd == "analyse":
+        x = trouver(sys.argv[2], sys.argv[3], [sys.argv[4]] if len(sys.argv) > 4 else None); print(analyse(x) if x else "Match absent du flux commun.")
     elif cmd == "coupon":
         for e in evaluer_coupon(json.load(open(sys.argv[2], encoding="utf-8")), sys.argv[3] if len(sys.argv) > 3 else None): print(f"{e['verdict']} | {e.get('libelle', e.get('marche'))} {e.get('cote')} | {e['phrase']}")
     else: print(__doc__)

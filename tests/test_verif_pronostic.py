@@ -76,6 +76,21 @@ class Rang(unittest.TestCase):
         x = MATCH([(2, 0)] * 6, [(0, 2)] * 6); x["cotes_betpawa"] = {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}}
         A = v.alternatives(x, CFG, exclure="1"); self.assertNotIn("1", [a["marche"] for a in A]); self.assertTrue(all(a["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE") and a["cote"] >= 1.26 for a in A))
 
+class Presentation(unittest.TestCase):
+    def _x(self, A, B, cotes):
+        x = MATCH(A, B); x["cotes_betpawa"] = cotes; x["heure_cameroun"] = "17:00"; return x
+    def test_ordre_du_plus_au_moins_fiable(self):
+        T = v.analyse(self._x([(2, 0)] * 6, [(0, 2)] * 6, {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}}), CFG)
+        lignes = [l for l in T.splitlines() if l.startswith("| ") and "**" in l and l[2].isdigit()]; verdicts = [("Tient avec réserve" in l) for l in lignes]
+        self.assertTrue(lignes); self.assertEqual(verdicts, sorted(verdicts)); self.assertIn("A gagne", lignes[0])
+    def test_cote_sous_le_minimum_absente(self):
+        T = v.analyse(self._x([(2, 0)] * 6, [(0, 2)] * 6, {"1x2": {"1": 1.25, "N": 4.0, "2": 6.0}}), CFG); self.assertNotIn("A gagne", T); self.assertIn("Aucun pari ne passe les filtres", T)
+    def test_pari_qui_ne_tient_pas_absent(self):
+        T = v.analyse(self._x([(0, 2)] * 6, [(2, 0)] * 6, {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}}), CFG); self.assertNotIn("A gagne", T)
+    def test_tableau_des_equipes(self):
+        T = v.analyse(self._x([(2, 0)] * 6, [(0, 2)] * 6, {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}}), CFG)
+        for mot in ("xG créés par match", "Buts marqués par match", "Écart xG", "Moyenne du championnat", "Constats"): self.assertIn(mot, T)
+
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
         lo, hi = v.wilson(50, 100); self.assertAlmostEqual(lo, 0.404, 2); self.assertAlmostEqual(hi, 0.596, 2)
