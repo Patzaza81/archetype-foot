@@ -5,9 +5,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import verif_pronostic as v
 
 def ok(m, h, a): return bool(v.CATALOGUE[m](h, a))
-CAL = {"n_min": 3, "z_seuil": 1.645, "marches": {
-    "1": {"score": "pool", "lissage": 0, "valide": True, "taux_base": 0.45, "blocs": [[0.0, 0.3, 0.30, 400.0], [0.3, 0.6, 0.48, 400.0], [0.6, 0.8, 0.52, 40.0], [0.8, 1.0, 0.70, 400.0]]},
-    "total_plus_2.5": {"score": "min", "lissage": 0, "valide": False, "taux_base": 0.5, "blocs": [[0.0, 1.0, 0.5, 100.0]]}}}
 CFG = {"cote_min": 1.26}
 
 class Catalogue(unittest.TestCase):
@@ -27,74 +24,68 @@ class Cotes(unittest.TestCase):
     def test_vide_ou_invalide(self):
         self.assertEqual(v.cotes_betpawa(None), {}); self.assertEqual(v.cotes_betpawa({"1x2": {"1": None, "N": 0, "2": 1.0}}), {})
 
+
+def MATCH(A, B, jour="2026-11-07", saison="2627", extra_a=(), extra_b=()):
+    """Match synthetique : A = scores (marques, encaisses) de A a domicile ; B = scores (marques, encaisses) de B a l'exterieur."""
+    ea = [{"domicile": True, "date": f"2026-10-{i+1:02d}", "saison": saison, "buts_marques": h, "buts_encaisses": a} for i, (h, a) in enumerate(A)] + list(extra_a)
+    eb = [{"domicile": False, "date": f"2026-10-{i+1:02d}", "saison": saison, "buts_marques": h, "buts_encaisses": a} for i, (h, a) in enumerate(B)] + list(extra_b)
+    return {"date": jour, "domicile": "A", "exterieur": "B", "competition": "Test", "assemblage": {"saison_football_data": saison, "equipe_dom": {"matchs": ea}, "equipe_ext": {"matchs": eb}}}
+
 class GardeFou(unittest.TestCase):
     def test_refuse(self):
-        for c in (1.12, 1.20, 1.25): self.assertEqual(v.evaluer([(1, 0)] * 6, [(1, 0)] * 6, "1", c, CAL, CFG)["verdict"], "REFUSÉ")
+        for c in (1.12, 1.20, 1.25): self.assertEqual(v.constat(MATCH([(1, 0)] * 6, [(0, 1)] * 6), "1", c, CFG)["verdict"], "REFUSÉ")
     def test_accepte(self):
-        for c in (1.26, 1.3, 1.5, 2.0): self.assertNotEqual(v.evaluer([(1, 0)] * 6, [(1, 0)] * 6, "1", c, CAL, CFG)["verdict"], "REFUSÉ")
+        for c in (1.26, 1.3, 1.5, 2.0): self.assertNotEqual(v.constat(MATCH([(1, 0)] * 6, [(0, 1)] * 6), "1", c, CFG)["verdict"], "REFUSÉ")
     def test_echantillon_trop_petit(self):
-        for a, b in (([(1, 0)] * 2, [(1, 0)] * 6), ([(1, 0)] * 6, [(1, 0)] * 2), ([], [])): self.assertEqual(v.evaluer(a, b, "1", 1.5, CAL, CFG)["verdict"], "NON ÉVALUABLE")
+        for a, b in (([(1, 0)] * 2, [(0, 1)] * 6), ([(1, 0)] * 6, [(0, 1)] * 2), ([], [])): self.assertEqual(v.constat(MATCH(a, b), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
     def test_assez_de_matchs(self):
-        for n in (3, 4, 6): self.assertNotEqual(v.evaluer([(1, 0)] * n, [(1, 0)] * n, "1", 1.5, CAL, CFG)["verdict"], "NON ÉVALUABLE")
+        for n in (3, 4, 6): self.assertNotEqual(v.constat(MATCH([(1, 0)] * n, [(0, 1)] * n), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
 
 class Verdict(unittest.TestCase):
-    def test_tient(self):                         # 6/6 des deux cotes -> indicateur 1.0 -> bloc 0.70 sur 400 matchs : borne basse > 0.5
-        self.assertEqual(v.evaluer([(1, 0)] * 6, [(1, 0)] * 6, "1", 1.5, CAL, CFG)["verdict"], "TIENT")
-    def test_reserve(self):                       # indicateur 0.5 -> bloc 0.48 ... non : on cible le bloc 0.52 sur 40 matchs (borne basse < 0.5)
-        r = v.evaluer([(1, 0)] * 4 + [(0, 0)] * 2, [(1, 0)] * 4 + [(0, 0)] * 2, "1", 1.5, CAL, CFG); self.assertEqual(r["verdict"], "TIENT AVEC RÉSERVE")
-    def test_fragile(self):                       # indicateur 0.5 -> bloc 0.48 : estimation < 0.5 mais borne haute > 0.5
-        r = v.evaluer([(1, 0)] * 3 + [(0, 0)] * 3, [(1, 0)] * 3 + [(0, 0)] * 3, "1", 1.5, CAL, CFG); self.assertEqual(r["verdict"], "FRAGILE")
-    def test_ne_tient_pas(self):                  # indicateur 0 -> bloc 0.30 sur 400 : borne haute < 0.5
-        self.assertEqual(v.evaluer([(0, 1)] * 6, [(0, 1)] * 6, "1", 1.5, CAL, CFG)["verdict"], "NE TIENT PAS")
-    def test_sans_signal(self):                   # marche dont l'indicateur n'a pas prouve son pouvoir
-        self.assertEqual(v.evaluer([(2, 1)] * 6, [(2, 1)] * 6, "total_plus_2.5", 1.5, CAL, CFG)["verdict"], "SANS SIGNAL")
-    def test_marche_inconnu(self):
-        self.assertEqual(v.evaluer([(1, 0)] * 6, [(1, 0)] * 6, "1&xx", 1.5, {"marches": {}}, CFG)["verdict"], "NON ÉVALUABLE") if "1&xx" in v.IDX else None
+    def test_tient(self):                          # A gagne toujours chez lui, B perd toujours dehors
+        self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT")
+        self.assertEqual(v.constat(MATCH([(2, 1)] * 5, [(1, 2)] * 5), "total_plus_2.5", 1.5, CFG)["verdict"], "TIENT")
+        self.assertEqual(v.constat(MATCH([(1, 1)] * 4, [(1, 1)] * 4), "btts_oui", 1.5, CFG)["verdict"], "TIENT")
+    def test_reserve(self):                        # d'un seul cote le pari passe plus souvent que rate
+        self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(1, 1)] * 6), "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
+        self.assertEqual(v.constat(MATCH([(0, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
+    def test_ne_tient_pas(self):                   # ni l'un ni l'autre : A perd chez lui, B gagne dehors
+        self.assertEqual(v.constat(MATCH([(0, 2)] * 6, [(2, 0)] * 6), "1", 1.5, CFG)["verdict"], "NE TIENT PAS")
+        self.assertEqual(v.constat(MATCH([(0, 0)] * 6, [(0, 0)] * 6), "total_plus_2.5", 1.5, CFG)["verdict"], "NE TIENT PAS")
+        self.assertEqual(v.constat(MATCH([(3, 3)] * 6, [(3, 3)] * 6), "total_moins_1.5", 1.5, CFG)["verdict"], "NE TIENT PAS")
+    def test_ordre_du_pari_conserve_orientation(self):   # B a l'exterieur : ses buts marques sont ceux de l'exterieur
+        self.assertEqual(v.constat(MATCH([(1, 0)] * 6, [(3, 0)] * 6), "2", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
+
+class Fuite(unittest.TestCase):
+    def test_match_du_jour_ou_futur_ignore(self):
+        for jour in ("2026-11-07", "2026-11-08", "2027-01-01"):
+            ex = [{"domicile": True, "date": jour, "saison": "2627", "buts_marques": 9, "buts_encaisses": 9}]
+            r = v.constat(MATCH([(1, 0)] * 4, [(0, 1)] * 4, extra_a=ex), "1", 1.5, CFG); self.assertEqual(r["A"]["n"], 4)
+    def test_autre_saison_ignoree(self):
+        ex = [{"domicile": True, "date": "2000-01-01", "saison": "9900", "buts_marques": 8, "buts_encaisses": 8}]
+        self.assertEqual(v.constat(MATCH([(1, 0)] * 4, [(0, 1)] * 4, extra_a=ex), "1", 1.5, CFG)["A"]["n"], 4)
+    def test_mauvais_cote_ignore(self):             # un match de A a l'exterieur ne compte pas dans « A a domicile »
+        ex = [{"domicile": False, "date": "2026-10-20", "saison": "2627", "buts_marques": 7, "buts_encaisses": 7}]
+        self.assertEqual(v.constat(MATCH([(1, 0)] * 4, [(0, 1)] * 4, extra_a=ex), "1", 1.5, CFG)["A"]["n"], 4)
+
+class Rang(unittest.TestCase):
+    def test_choix_a_geler(self):
+        x = MATCH([(2, 0)] * 6, [(0, 2)] * 6); x["cotes_betpawa"] = {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}}
+        E = v.choix_a_geler(x, CFG); self.assertEqual(E[0]["marche"], "1"); self.assertEqual(E[0]["verdict"], "TIENT"); self.assertTrue(all(e["cote"] >= 1.26 for e in E)); self.assertEqual(E[-1]["verdict"], "NE TIENT PAS")
+    def test_alternatives(self):
+        x = MATCH([(2, 0)] * 6, [(0, 2)] * 6); x["cotes_betpawa"] = {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}}
+        A = v.alternatives(x, CFG, exclure="1"); self.assertNotIn("1", [a["marche"] for a in A]); self.assertTrue(all(a["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE") and a["cote"] >= 1.26 for a in A))
 
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
         lo, hi = v.wilson(50, 100); self.assertAlmostEqual(lo, 0.404, 2); self.assertAlmostEqual(hi, 0.596, 2)
         lo, hi = v.wilson(0, 10); self.assertEqual(lo, 0.0) if False else self.assertLess(lo, 1e-9); lo, hi = v.wilson(10, 10); self.assertGreater(lo, 0.69); self.assertEqual(v.wilson(0, 0), (0.0, 1.0))
-    def test_pav_croissant(self):
-        B = v.pav([1, 2, 3, 4], [0.5, 0.2, 0.6, 0.9], [10, 10, 10, 10]); taux = [b[2] for b in B]; self.assertEqual(taux, sorted(taux)); self.assertAlmostEqual(taux[0], 0.35)
-    def test_pav_deja_croissant(self):
-        B = v.pav([1, 2, 3], [0.1, 0.5, 0.9], [5, 5, 5]); self.assertEqual(len(B), 3)
-
-class Echantillons(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.x = None
-        f = os.path.join(v.FLUX, "2026-11-07.json.gz")
-        if os.path.exists(f):
-            for x in json.load(gzip.open(f)).values():
-                if x["domicile"] == "Rome" and x["exterieur"] == "Sassuolo": cls.x = x
-    def test_rome_sassuolo(self):
-        if self.x is None: self.skipTest("flux absent")
-        A, B = v.echantillons(self.x); self.assertTrue(len(A) >= 3 and len(B) >= 3)
-        eq = self.x["assemblage"]["equipe_dom"]["matchs"]; att = [(m["buts_marques"], m["buts_encaisses"]) for m in eq if m["domicile"] and m["date"] < self.x["date"] and m["saison"] == self.x["assemblage"]["saison_football_data"]]
-        self.assertEqual(A, att)                                   # domicile de A, orientation (home, away)
-        ee = self.x["assemblage"]["equipe_ext"]["matchs"]; self.assertEqual(B, [(m["buts_encaisses"], m["buts_marques"]) for m in ee if not m["domicile"] and m["date"] < self.x["date"] and m["saison"] == self.x["assemblage"]["saison_football_data"]])
-    def test_aucun_match_du_jour_ni_futur(self):
-        if self.x is None: self.skipTest("flux absent")
-        x = json.loads(json.dumps(self.x)); x["assemblage"]["equipe_dom"]["matchs"].append({"domicile": True, "date": x["date"], "saison": x["assemblage"]["saison_football_data"], "buts_marques": 9, "buts_encaisses": 9})
-        A, _ = v.echantillons(x); self.assertNotIn((9, 9), A)      # un match du jour meme n'est jamais utilise
-    def test_autre_saison_ecartee(self):
-        if self.x is None: self.skipTest("flux absent")
-        x = json.loads(json.dumps(self.x)); x["assemblage"]["equipe_dom"]["matchs"].append({"domicile": True, "date": "2000-01-01", "saison": "9900", "buts_marques": 8, "buts_encaisses": 8})
-        A, _ = v.echantillons(x); self.assertNotIn((8, 8), A)
-
-class Historique(unittest.TestCase):
-    def test_pas_de_fuite(self):
-        D = v.lignes_historique(["E0"]); self.assertGreater(len(D["nA"]), 1000); self.assertTrue((D["nA"] >= 1).all() and (D["nB"] >= 1).all())
-        self.assertTrue((D["nA"] <= 19).all())           # 19 matchs a domicile par saison au maximum : jamais le match lui-meme ni une autre saison
-    def test_deterministe(self):
-        D = v.lignes_historique(["E0"]); a = v.calibrer(D); b = v.calibrer(D); self.assertEqual(json.dumps(a, sort_keys=True), json.dumps(b, sort_keys=True))
 
 class Journal(unittest.TestCase):
     def _flux(self, d, kick):
         os.makedirs(d, exist_ok=True)
         ed = {"matchs": [{"domicile": True, "date": "2026-10-01", "saison": "2627", "buts_marques": 2, "buts_encaisses": 0}] * 5}
-        x = {"match_id": "m1", "date": "2026-11-07", "domicile": "A", "exterieur": "B", "coup_d_envoi_utc": kick, "score": None, "cotes_betpawa": {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}},
+        x = {"match_id": "m1", "competition": "Test", "date": "2026-11-07", "domicile": "A", "exterieur": "B", "coup_d_envoi_utc": kick, "score": None, "cotes_betpawa": {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}},
              "assemblage": {"saison_football_data": "2627", "equipe_dom": ed, "equipe_ext": {"matchs": [{"domicile": False, "date": "2026-10-01", "saison": "2627", "buts_marques": 0, "buts_encaisses": 2}] * 5}}}
         with gzip.open(os.path.join(d, "2026-11-07.json.gz"), "wt") as f: json.dump({"m1": x}, f)
     def test_gel_chaine_et_alteration(self):

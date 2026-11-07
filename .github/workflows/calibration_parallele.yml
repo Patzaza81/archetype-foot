@@ -39,9 +39,8 @@ jobs:
         run: python derniers_onglets.py
       - name: Données de la page P1 (lecture du journal gelé et des scores du flux)
         run: python p1_page_donnees.py
-      - name: Vérification des pronostics (calibration si absente, gel avant coup d'envoi, bilan sur résultats réels)
+      - name: Vérification des pronostics (constat simple, gel avant coup d'envoi, bilan sur résultats réels)
         run: |
-          [ -f data/verif_pronostics/calibration.json ] || python verif_pronostic.py calibrer
           python verif_pronostic.py geler
           python verif_pronostic.py bilan
       - name: Commit du journal parallèle (dossier dédié seulement)
