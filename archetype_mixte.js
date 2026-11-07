@@ -34,7 +34,7 @@ function mxCarte(f) {
     `<div class="ax-horaire"><strong>${mxE(h.heure)}</strong><span>${mxE(h.date)}</span></div><span class="ax-equipe ax-ext">${mxE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mxE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
     `<div class="om-corps"><div class="om-info"><b>Marchés les plus probables</b> (probabilité du modèle)</div>${haut}</div>` +
-    `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps"><div class="om-corps">${reste}` +
+    `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${(window.AFDerniers && window.AFDerniers.bloc(f)) || ""}<div class="om-corps">${reste}` +
     `<div class="om-info">${mxE(mxModele(f.modele))}. Le pourcentage est la probabilité calculée par le modèle, sans correction.</div></div></div></details>`;
   section.addEventListener("click", (e) => {
     if (e.target.closest("button, a, summary")) return;
@@ -84,7 +84,7 @@ function mxTheme() {
 }
 mxTheme();
 if (document.getElementById("om-avenir")) {
-  fetch(`data/gamma/mixte.json?_=${Date.now()}`)
+  (window.afAttend || ((p) => p))(fetch(`data/gamma/mixte.json?_=${Date.now()}`))
     .then((r) => { if (!r.ok) throw new Error(`données introuvables (${r.status}) : le calcul n'a pas encore tourné`); return r.json(); })
     .then(mxAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });

@@ -151,7 +151,7 @@ function mvCarte(l, mode) {
       mvChance(p) + mvPourquoi(l) + blocAlertes + blocAutres + mvDetailsTechniques(l) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Derniers scores</summary><div class="ax-details-corps">` +
-      (histo || `<p class="mv-vide">Derniers scores indisponibles pour ce pronostic.</p>`) +
+      ((window.AFDerniers && window.AFDerniers.bloc(l)) || histo || `<p class="mv-vide">Derniers scores indisponibles pour ce pronostic.</p>`) +
     `</div></details>`;
   section.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher la déplie ou la replie
     if (e.target.closest("button, a, summary")) return;
@@ -247,7 +247,7 @@ function mvThemeNuit() {
 }
 mvThemeNuit();
 if (document.getElementById("mv-avenir")) {
-  fetch(`data/v/pronostics_v.json?_=${Date.now()}`)
+  (window.afAttend || ((p) => p))(fetch(`data/v/pronostics_v.json?_=${Date.now()}`))
     .then((r) => { if (!r.ok) throw new Error(`données v introuvables (${r.status}) : le moteur n'a pas encore tourné`); return r.json(); })
     .then(mvAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });

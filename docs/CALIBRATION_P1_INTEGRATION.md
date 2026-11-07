@@ -56,3 +56,10 @@ Le premier journal avait été gelé avec une heure de test fixée à 12:00Z : c
 - Effet : `page_p1.json` porte la clé `apprentissage` ; un match à venir reçoit `p1_appris` seulement si une correction est validée. Aucun affichage ajouté sur la page.
 - Limites : avec ~40 matchs/jour, la première correction possible demande plusieurs semaines ; un apprentissage par championnat n'est pas fait (trop peu de matchs par division). Le 07/11/2026 : 1 match terminé au journal, tous marchés « EN OBSERVATION ».
 - Tests : `pytest tests/test_apprentissage_p1.py` (3 biais nets validés, 3+ cas calibrés/bruit/un jour/un match/résultats identiques non validés, absence de fuite recalculée à la main, journal altéré refusé).
+
+## Derniers matchs à trois onglets pour tous les moteurs (07/11/2026, demande de Patrick)
+- Chaque carte affiche, pour chaque équipe, les onglets « À domicile / À l'extérieur / H2H » comme la page P1 (matchs réels de la saison en cours, strictement avant le match ; H2H : 10 dernières confrontations au plus).
+- Données communes : `derniers_onglets.py` -> `data/derniers_onglets.json` (clé = `match_id` du flux commun, format compact, 3 derniers jours + à venir), recalculées chaque nuit par `calibration_parallele.yml`. Même calcul que P1 (`p1_page_donnees.derniers_matchs`). `integration_calibration.lire_flux(..., tous=True)` lit aussi les matchs terminés (défaut inchangé).
+- Affichage : `af-derniers-onglets.js` / `.css` (classes `afd-*`), chargés avant le script de chaque moteur : Omega, Gamma, DC, Mixte, V, V2R, V3, V2 (`archetype.html`), alpha (`pronostics_comportement.html`). Les pages attendent le chargement via `afAttend` ; sans donnée pour un match, la page garde son affichage actuel (rien n'est inventé).
+- Non couverts : matchs dont les deux équipes ne sont pas reliées à un championnat suivi (coupes, Europe, petits championnats sans historique) ; page Europe inchangée (aucun de ses matchs n'est couvert). La page alpha remplit ses détails au dépliage.
+- Tests : `pytest tests/test_derniers_onglets.py`.

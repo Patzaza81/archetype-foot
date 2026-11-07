@@ -149,7 +149,7 @@ function v2rCarte(l, mode) {
       v2rBlocModere(l, mode) +
     `</div>` +
     `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Derniers scores</summary><div class="ax-details-corps">` +
-      (histo || `<p class="v2r-vide">Derniers scores indisponibles pour ce pari (écrit avant l'ajout de cette rubrique).</p>`) +
+      ((window.AFDerniers && window.AFDerniers.bloc(l)) || histo || `<p class="v2r-vide">Derniers scores indisponibles pour ce pari (écrit avant l'ajout de cette rubrique).</p>`) +
       v2rDonneesMatch(l) +
     `</div></details>`;
   // Comme les autres moteurs : carte repliée au départ ; toucher la carte la déplie (derniers scores visibles) ou la replie.
@@ -212,7 +212,7 @@ function v2rThemeNuit() {
 }
 v2rThemeNuit();
 if (document.getElementById("v2r-avenir")) {
-  fetch(`data/v2r/pronostics_v2r.json?_=${Date.now()}`)
+  (window.afAttend || ((p) => p))(fetch(`data/v2r/pronostics_v2r.json?_=${Date.now()}`))
     .then((r) => { if (!r.ok) throw new Error(`données v2r introuvables (${r.status}) : le moteur n'a pas encore tourné`); return r.json(); })
     .then(v2rAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });

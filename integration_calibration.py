@@ -58,14 +58,14 @@ def p1_matchs(hist, fixtures, cfg_p1, avec_mu=False):
             out[(f[0], f[1], f[2])] = r if not avec_mu else (None if r is None else (r, (float(mu[0]), float(mu[1]))))
     return out
 
-def lire_flux(jour_min, maintenant=None):
-    """Matchs a venir du flux commun (score absent, date >= jour_min, coup d'envoi futur): liste de dict (match_id, date, competition, division, dom, ext, noms FD)."""
+def lire_flux(jour_min, maintenant=None, tous=False):
+    """tous=True : aussi les matchs termines ou deja commences (usage : donnees d'affichage). Par defaut : matchs a venir du flux commun (score absent, date >= jour_min, coup d'envoi futur): liste de dict (match_id, date, competition, division, dom, ext, noms FD)."""
     res = {}
     for f in sorted(glob.glob(os.path.join(FLUX, "*.json.gz"))):
         if os.path.basename(f)[:10] < jour_min: continue
         for x in json.load(gzip.open(f)).values():
-            if x.get("score") is not None and (x["score"] or {}).get("buts_dom") is not None: continue
-            if maintenant and x.get("coup_d_envoi_utc") and x["coup_d_envoi_utc"] <= maintenant: continue
+            if not tous and x.get("score") is not None and (x["score"] or {}).get("buts_dom") is not None: continue
+            if not tous and maintenant and x.get("coup_d_envoi_utc") and x["coup_d_envoi_utc"] <= maintenant: continue
             a = x.get("assemblage") or {}; ed, ee = a.get("equipe_dom") or {}, a.get("equipe_ext") or {}
             div = ed.get("division_football_data") if ed.get("couverte_par_football_data") and ee.get("couverte_par_football_data") and ed.get("division_football_data") == ee.get("division_football_data") else None
             fd_dom, fd_ext = ed.get("nom_football_data"), ee.get("nom_football_data")

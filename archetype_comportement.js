@@ -187,9 +187,9 @@ function equipeDerniers(nom, lieu, liste, bilan, domicile) {
 function remplitDetails(details, m) {
   const h = m.historique || {};
   details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">` +
-    `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
+    ((window.AFDerniers && window.AFDerniers.bloc(m)) || (`<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
     equipeDerniers(m.domicile, "À domicile", h.domicile, h.bilan_domicile, true) +
-    equipeDerniers(m.exterieur, "À l'extérieur", h.exterieur, h.bilan_exterieur, false) + `</div></div></div>`;
+    equipeDerniers(m.exterieur, "À l'extérieur", h.exterieur, h.bilan_exterieur, false) + `</div></div>`)) + `</div>`;
 }
 
 function construitCarte(m) {
@@ -330,7 +330,7 @@ function installeThemeNuit() {
 
 installeThemeNuit();
 if (document.getElementById("matches")) {
-  fetch(`data/alpha_serie/pronostics.json?_=${Date.now()}`)
+  (window.afAttend || ((p) => p))(fetch(`data/alpha_serie/pronostics.json?_=${Date.now()}`))
     .then((r) => { if (!r.ok) throw new Error(`données introuvables (${r.status})`); return r.json(); })
     .then(afficheSelections)
     .catch((e) => { document.getElementById("maj").textContent = "Données du moteur alpha indisponibles : " + e.message; console.error(e); });

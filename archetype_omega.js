@@ -134,6 +134,7 @@ function omEquipeDerniers(nom, lieu, liste, total, domicile) {
               : `<p class="om-info">Matchs indisponibles.</p>`) + `</div>`;
 }
 function omDerniers(f) {
+  const afd = window.AFDerniers && window.AFDerniers.bloc(f); if (afd) return afd;   // trois onglets (À domicile / À l'extérieur / H2H) quand les données existent
   const d = f.derniers_matchs || {};
   if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">` +
@@ -315,7 +316,7 @@ function omTheme() {
 }
 omTheme();
 if (document.getElementById("om-avenir")) {
-  fetch(`data/omega/pronostics.json?_=${Date.now()}`)
+  (window.afAttend || ((p) => p))(fetch(`data/omega/pronostics.json?_=${Date.now()}`))
     .then((r) => { if (!r.ok) throw new Error(`données omega introuvables (${r.status}) : le moteur n'a pas encore tourné`); return r.json(); })
     .then(omAffiche)
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });

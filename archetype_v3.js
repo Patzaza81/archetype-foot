@@ -358,7 +358,7 @@ function construitDetails(selection, equipes, idDetails) {
   details.className = "details-analyse ax-details";
   details.id = idDetails;
   const blocs = RANGS.filter((r) => selection[r.cle]).map((r) => construitAnalyse(r, selection[r.cle], equipes)).join("");
-  details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">${blocs}</div>`;
+  details.innerHTML = `<summary class="ax-summary-cache" tabindex="-1">Détails de l'analyse</summary><div class="ax-details-corps">${(window.AFDerniers && window.AFDerniers.bloc(equipes)) || ""}${blocs}</div>`;
   return details;
 }
 
@@ -366,7 +366,7 @@ function construitCarte(m, options) {
   const opt = options || {};
   const id = ++compteurCartes;
   const idDetails = `ax-details-${id}`;
-  const equipes = { domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
+  const equipes = { match_id: m.match_id, domicile: m.domicile || "Équipe à domicile", exterieur: m.exterieur || "Équipe à l'extérieur" };
   const heure = m.heure_cameroun || m.heure || "—";
   const date = formatDate(m.date);
   const competition = String(m.competition || "").replace(/\s+/g, " ").trim();
@@ -556,7 +556,7 @@ function installeThemeNuit() {
 
 installeThemeNuit();
 if (document.getElementById("matches")) {
-  fetch(`data/v3/pronostics_v3.json?_=${Date.now()}`) // V3
+  (window.afAttend || ((p) => p))(fetch(`data/v3/pronostics_v3.json?_=${Date.now()}`)) // V3
     .then((r) => { if (!r.ok) throw new Error(`données V3 introuvables (${r.status}) : le pipeline n'a pas encore tourné`); return r.json(); })
     .then((d) => { CALIBRATION_V3 = d.calibration || null; afficheSelections(d.signaux || []); })
     .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
