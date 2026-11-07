@@ -38,16 +38,18 @@ function familles(m) {
 }
 function tableau(m) {
   const q = m.equipes || {}, d = q.dom || {}, x = q.ext || {}, c = q.championnat || {};
-  const estime = m.xg_source === "estimé";
-  const xgChamp = c.xg != null ? fr(c.xg) : (c.buts != null ? `${fr(c.buts)} (estimé : buts de la saison)` : "—");
+  const estime = m.xg_source === "estimé", ap = (q, v) => (v == null ? "—" : (q.xg_est ? "≈ " : "") + fr(v));
+  const xgChamp = c.xg != null ? (c.xg_est ? "≈ " : "") + fr(c.xg) : "—";
+  const signe = (q) => (q.ecart_xg == null ? "—" : (q.xg_est ? "≈ " : "") + (q.ecart_xg >= 0 ? "+" : "−") + fr(Math.abs(q.ecart_xg)));
   let h = `<div class="om-bloc"><div class="om-bloc-titre">Les deux équipes (saison entière, ${e(d.n ?? "—")} et ${e(x.n ?? "—")} matchs)</div><table class="om-table"><tr><th></th><th>${e(m.domicile)}</th><th>${e(m.exterieur)}</th><th>Moyenne du championnat</th></tr>` +
-    `<tr><td>xG créés par match</td><td>${fr(d.xg_cree)}</td><td>${fr(x.xg_cree)}</td><td>${xgChamp}</td></tr>` +
-    `<tr><td>xG concédés par match</td><td>${fr(d.xg_concede)}</td><td>${fr(x.xg_concede)}</td><td>—</td></tr>` +
+    `<tr><td>xG créés par match</td><td>${ap(d, d.xg_cree)}</td><td>${ap(x, x.xg_cree)}</td><td>${xgChamp}</td></tr>` +
+    `<tr><td>xG concédés par match</td><td>${ap(d, d.xg_concede)}</td><td>${ap(x, x.xg_concede)}</td><td>—</td></tr>` +
     `<tr><td>Buts marqués par match</td><td>${fr(d.buts_marques, 1)}</td><td>${fr(x.buts_marques, 1)}</td><td>${fr(c.buts, 1)}</td></tr>` +
     `<tr><td>Buts encaissés par match</td><td>${fr(d.buts_encaisses, 1)}</td><td>${fr(x.buts_encaisses, 1)}</td><td>${fr(c.buts, 1)}</td></tr>` +
-    `<tr><td>Écart xG (créés − concédés)</td><td><b>${d.ecart_xg == null ? "—" : (d.ecart_xg >= 0 ? "+" : "−") + fr(Math.abs(d.ecart_xg))}</b></td><td><b>${x.ecart_xg == null ? "—" : (x.ecart_xg >= 0 ? "+" : "−") + fr(Math.abs(x.ecart_xg))}</b></td><td></td></tr></table>`;
-  if (m.buts_attendus) h += `<div class="om-info">${estime ? "xG estimé avec les buts de la saison (Matchendirect) et la moyenne du championnat" : "Buts attendus d'après le xG de la saison"}, avantage du terrain compris : <b>${fr(m.buts_attendus[0], 1)} – ${fr(m.buts_attendus[1], 1)}</b>.</div>`;
+    `<tr><td>Écart xG (créés − concédés)</td><td><b>${signe(d)}</b></td><td><b>${signe(x)}</b></td><td></td></tr></table>`;
+  if (m.buts_attendus) h += `<div class="om-info">${estime ? "xG estimé avec les buts de la saison (Matchendirect), formule apprise sur Football-Data" : "Buts attendus d'après le xG de la saison"}, avantage du terrain compris : <b>${fr(m.buts_attendus[0], 1)} – ${fr(m.buts_attendus[1], 1)}</b>.</div>`;
   else h += `<div class="om-info">xG indisponible : trop peu de matchs pour l'estimer.</div>`;
+  if (estime || d.xg_est || x.xg_est) h += `<div class="om-info">≈ = xG estimé (le xG manque) : formule apprise sur les équipes Football-Data, appliquée aux buts de la saison.</div>`;
   return h + `</div>`;
 }
 const ONGLETS = [["dom", "À domicile"], ["ext", "À l'extérieur"], ["h2h", "H2H"]];

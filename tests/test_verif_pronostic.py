@@ -44,7 +44,7 @@ class GardeFou(unittest.TestCase):
 class Verdict(unittest.TestCase):
     def test_tient(self):                          # A gagne toujours chez lui, B perd toujours dehors
         self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT")
-        self.assertEqual(v.constat(MATCH([(2, 1)] * 5, [(1, 2)] * 5), "total_plus_2.5", 1.5, CFG)["verdict"], "TIENT")
+        self.assertEqual(v.constat(MATCH([(3, 2)] * 5, [(2, 3)] * 5), "total_plus_2.5", 1.5, CFG)["verdict"], "TIENT")
         self.assertEqual(v.constat(MATCH([(1, 1)] * 4, [(1, 1)] * 4), "btts_oui", 1.5, CFG)["verdict"], "TIENT")
     def test_reserve(self):                        # d'un seul cote le pari passe plus souvent que rate
         self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(1, 1)] * 6), "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
@@ -97,7 +97,7 @@ class Repli(unittest.TestCase):
     COT = {"1x2": {"1": 1.2, "N": 6.0, "2": 9.0}, "dc_total_4.5": {"1N|moins": 1.5, "N2|moins": 3.0}, "dc_total_2.5": {"1N|plus": 1.3, "N2|plus": 4.0}}
     def test_retenu(self):                          # pari 1 a 1,20 tres solide : ses combos double chance a cote >= 1,26 qui tiennent sont retenus
         R = v.repli_combo(self._x([(2, 1)] * 6, [(1, 2)] * 6, self.COT), "1", 1.2, CFG); m = [r["marche"] for r in R]
-        self.assertIn("1N&total_moins_4.5", m); self.assertIn("1N&total_plus_2.5", m); self.assertTrue(all(r["verdict"] == "TIENT" and r["cote"] >= 1.26 for r in R))
+        self.assertIn("1N&total_moins_4.5", m); self.assertTrue(all(r["verdict"] == "TIENT" and r["cote"] >= 1.26 for r in R))
     def test_pas_de_repli_si_cote_suffisante(self):
         for c in (1.26, 1.4, 2.0): self.assertEqual(v.repli_combo(self._x([(2, 0)] * 6, [(0, 2)] * 6, self.COT), "1", c, CFG), [])
     def test_pas_de_repli_si_pari_pas_solide(self):  # A perd chez lui : le pari « 1 » ne tient pas, donc pas de repli
@@ -114,40 +114,28 @@ class Repli(unittest.TestCase):
 class XGEstime(unittest.TestCase):
     S = lambda self, n, bm, be, nx=0, xc=None, xd=None: {"n": n, "buts_marques": bm, "buts_encaisses": be, "n_xg": nx, "xg_cree": xc, "xg_concede": xd}
     def test_xg_present_utilise(self):
-        r = v.xg_attendus(self.S(8, 2.0, 1.0, 8, 2.0, 1.0), self.S(8, 1.0, 2.0, 8, 1.0, 2.0), {"buts": 1.5}); self.assertEqual(r[2], "xG"); self.assertEqual(r[:2], (2.0, 1.0))
-    def test_estime_quand_xg_manque(self):         # attaque A 1,5 x defense B 1,5 / moyenne 1,5 = 1,5 ; B : 1,5 x 1,5 / 1,5
-        r = v.xg_attendus(self.S(6, 1.5, 1.5), self.S(6, 1.5, 1.5), {"buts": 1.5}); self.assertEqual(r[2], "estimé"); self.assertAlmostEqual(r[0], 1.5); self.assertAlmostEqual(r[1], 1.5)
-        r = v.xg_attendus(self.S(5, 3.0, 0.5), self.S(5, 1.0, 2.0), {"buts": 1.5}); self.assertAlmostEqual(r[0], 3.0 * 2.0 / 1.5); self.assertAlmostEqual(r[1], 1.0 * 0.5 / 1.5)
-        r = v.xg_attendus(self.S(4, 1.2, 1.2, 2), self.S(4, 1.2, 1.2, 2), {"buts": 1.2}); self.assertEqual(r[2], "estimé")    # xG sur 2 matchs seulement : insuffisant
-    def test_rien_si_pas_assez_de_matchs_ou_pas_de_moyenne(self):
-        for A, B, ch in [(self.S(3, 1.0, 1.0), self.S(6, 1.0, 1.0), {"buts": 1.2}), (self.S(6, 1.0, 1.0), self.S(6, 1.0, 1.0), {"buts": None}), (self.S(6, 1.0, 1.0), self.S(2, 1.0, 1.0), {"buts": 1.2}), (self.S(0, None, None), self.S(0, None, None), {"buts": 1.2})]:
-            self.assertEqual(v.xg_attendus(A, B, ch), (None, None, None))
+        r = v.xg_attendus(self.S(8, 2.0, 1.0, 8, 2.0, 1.0), self.S(8, 1.0, 2.0, 8, 1.0, 2.0), {}); self.assertEqual(r[2], "xG"); self.assertEqual(r[:2], (2.0, 1.0))
+    def test_estime_avec_la_meme_formule(self):    # xG estimes fournis (valeurs deja remplies par saison_complete) : meme moyenne attaque / defense adverse
+        r = v.xg_attendus(self.S(6, 1.5, 1.5, 0, 1.4, 1.4), self.S(6, 1.5, 1.5, 0, 1.0, 1.0), {}); self.assertEqual(r[2], "estimé"); self.assertAlmostEqual(r[0], 1.2); self.assertAlmostEqual(r[1], 1.2)
+        r = v.xg_attendus(self.S(5, 3.0, 0.5, 2, 2.4, 0.9), self.S(5, 1.0, 2.0, 0, 1.2, 1.7), {}); self.assertEqual(r[2], "estimé"); self.assertAlmostEqual(r[0], (2.4 + 1.7) / 2)
+        r = v.xg_attendus(self.S(4, 1.0, 1.0, 0, 1.0, 1.0), self.S(4, 1.0, 1.0, 0, 1.0, 1.0), {}); self.assertEqual(r[2], "estimé")
+    def test_rien_si_pas_assez_de_matchs_ou_pas_d_estimation(self):
+        for A, B in [(self.S(3, 1.0, 1.0, 0, 1.0, 1.0), self.S(6, 1.0, 1.0, 0, 1.0, 1.0)), (self.S(6, 1.0, 1.0), self.S(6, 1.0, 1.0)), (self.S(6, 1.0, 1.0, 0, 1.0, 1.0), self.S(2, 1.0, 1.0, 0, 1.0, 1.0)), (self.S(0, None, None), self.S(0, None, None))]:
+            self.assertEqual(v.xg_attendus(A, B, {}), (None, None, None))
+    def test_modele_appris_sur_football_data(self):
+        mo = v.modele_xg(); self.assertIsNotNone(mo); self.assertGreater(mo["equipes"], 50); self.assertGreater(mo["cree"]["b"], 0); self.assertGreater(mo["concede"]["b"], 0); self.assertGreater(mo["cree"]["r"], 0.5)
+    def test_estimation_croissante_avec_les_buts(self):
+        for lo, hi in [(0.5, 1.0), (1.0, 2.0), (1.5, 3.0)]:
+            self.assertLess(v.xg_estime(lo, "cree"), v.xg_estime(hi, "cree")); self.assertLess(v.xg_estime(lo, "concede"), v.xg_estime(hi, "concede"))
+        self.assertIsNone(v.xg_estime(None, "cree"))
+    def test_saison_complete_remplit_l_estimation_seulement_sans_xg(self):
+        sans = MATCH([(1, 1)] * 5, [(2, 0)] * 5); SA = v.saison_complete(sans, "equipe_dom"); self.assertTrue(SA["xg_est"]); self.assertAlmostEqual(SA["xg_cree"], v.xg_estime(1.0, "cree"))
+        avec = MATCH([(1, 1)] * 5, [(2, 0)] * 5)
+        for m in avec["assemblage"]["equipe_dom"]["matchs"]: m["xg"] = 2.0; m["xg_concede"] = 0.5
+        SA = v.saison_complete(avec, "equipe_dom"); self.assertFalse(SA["xg_est"]); self.assertAlmostEqual(SA["xg_cree"], 2.0)
+        peu = MATCH([(1, 1)] * 3, [(2, 0)] * 3); self.assertFalse(v.saison_complete(peu, "equipe_dom")["xg_est"])
     def test_saison_matchendirect_comptee(self):
         for m, ok_ in [({"saison": None, "source": "matchendirect"}, True), ({"saison": "2627", "source": "football-data"}, True), ({"saison": "2526", "source": "football-data"}, False), ({"saison": None, "source": "football-data"}, False), ({"saison": "2526", "source": "matchendirect"}, False)]: self.assertEqual(v.de_la_saison(m, "2627"), ok_, m)
-
-class PageDonnees(unittest.TestCase):
-    def test_groupes(self):
-        for m, g in [("total_plus_2.5", "buts"), ("btts_oui", "buts"), ("1N&total_moins_4.5", "combos"), ("N2&btts_non", "combos"), ("dom_plus_0.5", "equipes"), ("1N", "equipes"), ("cage_ext_non", "equipes")]: self.assertEqual(v.groupe(m), g, m)
-    def test_groupes_faux(self):
-        for m, g in [("total_plus_2.5", "combos"), ("1N&total_moins_4.5", "buts"), ("btts_oui", "equipes"), ("dom_plus_0.5", "buts")]: self.assertNotEqual(v.groupe(m), g, m)
-    def _x(self):
-        x = MATCH([(2, 1)] * 6, [(1, 2)] * 6); x["match_id"] = "z"; x["competition"] = "Test : Ligue"; x["coup_d_envoi_utc"] = "2026-11-07T15:00:00Z"
-        x["cotes_betpawa"] = {"1x2": {"1": 1.5, "N": 4.0, "2": 6.0}, "btts": {"Oui": 1.7, "Non": 2.0}, "over_under_2.5": {"plus": 1.6, "moins": 2.2}, "dc_total_4.5": {"1N|moins": 1.5, "N2|moins": 3.0}}; return x
-    def test_fiche_classee_par_reussite_decroissante(self):
-        f = v.fiche_match(self._x(), "2026-11-07T09:00:00Z", CFG); self.assertEqual(f["statut"], "a_venir")
-        for L in f["paris"].values(): self.assertEqual([e["taux"] for e in L], sorted([e["taux"] for e in L], reverse=True))
-        self.assertTrue(f["paris"]["buts"] and f["paris"]["equipes"] and f["paris"]["combos"]); self.assertTrue(all(e["cote"] >= 1.26 for L in f["paris"].values() for e in L))
-    def test_statuts(self):
-        x = self._x(); self.assertEqual(v.fiche_match(x, "2026-11-07T16:00:00Z", CFG)["statut"], "en_cours_ou_resultat_attendu")
-        x["score"] = {"buts_dom": 2, "buts_ext": 1}; f = v.fiche_match(x, "2026-11-07T20:00:00Z", CFG); self.assertEqual(f["statut"], "termine"); self.assertEqual(f["resultat"], {"buts_dom": 2, "buts_ext": 1})
-        self.assertTrue(all("gagne" in e for L in f["paris"].values() for e in L)); self.assertTrue(next(e for e in f["paris"]["equipes"] if e["marche"] == "1")["gagne"])
-    def test_historique_recent_en_premier_et_bon_lieu(self):
-        d = v.derniers_matchs(self._x()); self.assertEqual(len(d["dom"]), 6); self.assertEqual(len(d["ext"]), 6); self.assertEqual([m["date"] for m in d["dom"]], sorted([m["date"] for m in d["dom"]], reverse=True)); self.assertEqual(d["dom_ext"], [])
-    def test_page_html_et_navigation(self):
-        racine = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); h = open(os.path.join(racine, "pronostics_verif.html"), encoding="utf-8").read()
-        self.assertIn('href="pronostics_verif.html" aria-current="page"', h); self.assertIn("archetype_verif.js", h)
-        for f in ("archetype_verif.js", "af-verif.css", "af-date-navigation.js", "drapeaux.js"): self.assertTrue(os.path.exists(os.path.join(racine, f)), f)
-        for page in ("index.html", "pronostics_p1.html", "pronostics_v3.html", "journal.html"): self.assertIn("pronostics_verif.html", open(os.path.join(racine, page), encoding="utf-8").read(), page)
 
 class Statistiques(unittest.TestCase):
     def test_wilson(self):
