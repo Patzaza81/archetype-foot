@@ -1,7 +1,7 @@
 """Verification d'un pronostic par les resultats REELS des deux equipes (methode « logigramme »), simple et lisible.
 
 Pour un pari sur A (domicile) - B (exterieur) :
-  1. cote du pari >= config/verif_pronostic.json (1,26, regle de l'utilisateur) et au moins 3 matchs de la saison de chaque cote ;
+  1. cote du pari >= config/verif_pronostic.json (1,26, regle de l'utilisateur) et au moins 4 matchs de la saison de chaque cote, AU MEME LIEU (A a domicile, B a l'exterieur) : moins de 4 -> rejete ;
   2. on prend les matchs de A A DOMICILE et ceux de B A L'EXTERIEUR, cette saison, avant le match ;
   3. on compte combien de fois le pari serait passe dans chacun : si c'est plus souvent passe que rate des DEUX cotes -> TIENT ; d'un seul cote -> TIENT AVEC RESERVE ; sinon NE TIENT PAS ;
   4. buts attendus de chaque equipe = moyenne de ce que son attaque marque et de ce que la defense adverse encaisse (avantage du terrain du championnat remis) ;
@@ -20,7 +20,7 @@ DOSSIER = os.path.join(RACINE, "data", "verif_pronostics")
 FLUX = os.path.join(RACINE, "data", "archive_test")
 Z95 = 1.96
 CAP = 10             # buts au-dela de CAP : sans effet sur aucun marche (seuils <= 5,5)
-NMIN = 3                           # plus petit echantillon par cote pour lequel un indicateur existe ; le bruit des petits echantillons est traite par le lissage ci-dessous
+NMIN = 4                           # regle de l'utilisateur (07/11) : au moins 4 matchs au meme lieu pour chaque equipe, sinon pari rejete ; sert aussi de minimum pour lire le xG
 
 # ---------------------------------------------------------------- catalogue des marches (condition sur le score home/away)
 def _catalogue():
@@ -201,7 +201,8 @@ def constat(x, marche, cote=None, cfg=None):
         xm, nx = _moy([m.get("xg") for m in M]); xe, _ = _moy([m.get("xg_concede") for m in M])
         res[cle] = {"n": n, "reussi": ok_, "buts_marques": gm, "buts_encaisses": ge, "xg_cree": xm, "xg_concede": xe, "n_xg": nx}
     A, B = res["A"], res["B"]
-    if A["n"] < NMIN or B["n"] < NMIN: return {"verdict": "NON ÉVALUABLE", "phrase": f"Pas assez de matchs ({A['n']} / {B['n']}).", "A": A, "B": B}
+    d_, e_ = x["domicile"], x["exterieur"]
+    if A["n"] < NMIN or B["n"] < NMIN: return {"verdict": "NON ÉVALUABLE", "phrase": f"Rejeté : moins de {NMIN} matchs au même lieu ({d_} à domicile {A['n']}, {e_} à l'extérieur {B['n']}).", "A": A, "B": B}
     pa, pb = A["reussi"] / A["n"] > 0.5, B["reussi"] / B["n"] > 0.5
     verdict = "TIENT" if pa and pb else "TIENT AVEC RÉSERVE" if pa or pb else "NE TIENT PAS"
     f = lambda v: "?" if v is None else f"{v:.1f}"

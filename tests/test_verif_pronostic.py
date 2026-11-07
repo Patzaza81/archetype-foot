@@ -37,9 +37,9 @@ class GardeFou(unittest.TestCase):
     def test_accepte(self):
         for c in (1.26, 1.3, 1.5, 2.0): self.assertNotEqual(v.constat(MATCH([(1, 0)] * 6, [(0, 1)] * 6), "1", c, CFG)["verdict"], "REFUSÉ")
     def test_echantillon_trop_petit(self):
-        for a, b in (([(1, 0)] * 2, [(0, 1)] * 6), ([(1, 0)] * 6, [(0, 1)] * 2), ([], [])): self.assertEqual(v.constat(MATCH(a, b), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
+        for a, b in (([(1, 0)] * 3, [(0, 1)] * 6), ([(1, 0)] * 6, [(0, 1)] * 3), ([(1, 0)] * 2, [(0, 1)] * 2), ([], [])): self.assertEqual(v.constat(MATCH(a, b), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
     def test_assez_de_matchs(self):
-        for n in (3, 4, 6): self.assertNotEqual(v.constat(MATCH([(1, 0)] * n, [(0, 1)] * n), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
+        for n in (4, 5, 6): self.assertNotEqual(v.constat(MATCH([(1, 0)] * n, [(0, 1)] * n), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
 
 class Verdict(unittest.TestCase):
     def test_tient(self):                          # A gagne toujours chez lui, B perd toujours dehors
