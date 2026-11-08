@@ -363,6 +363,8 @@ def main():
         json.dump(doc, f, ensure_ascii=False, indent=1)
     print(f"[A3] {nb} équipes reliées dans {len(divisions)} divisions ; {len(ambigus)} ambiguës, {len(non_resolus)} non résolues.")
     print(f"[A4 bis] {bilan}")
+    import historique_permanent as HP
+    n, plus = HP.archiver(doc); print(f"[Historique permanent] {n} équipes archivées (+{plus}) : l'assemblage du jour ne contient que les équipes à venir.")
 
 
 if __name__ == "__main__":

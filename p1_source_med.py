@@ -32,7 +32,9 @@ def saisons_passees(code):
 
 def _ligues(doc=None):
     if doc is not None: return D.Ligues(doc)
-    if "ligues" not in _cache: _cache["ligues"] = D.charger_ligues()
+    if "ligues" not in _cache:      # moteur_dc reste intact (garde-fou) : l'historique permanent est rendu ici
+        import historique_permanent as HP
+        _cache["ligues"] = D.Ligues(HP.completer(json.loads(D.ASSEMBLAGE.read_text(encoding="utf-8"))))
     return _cache["ligues"]
 
 def saison_courante():

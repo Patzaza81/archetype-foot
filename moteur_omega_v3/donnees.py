@@ -156,7 +156,11 @@ class Ligues:
 
 
 def charger_ligues(chemin: Path = ASSEMBLAGE) -> Ligues:
-    return Ligues(json.loads(Path(chemin).read_text(encoding="utf-8")))
+    doc = json.loads(Path(chemin).read_text(encoding="utf-8"))
+    if Path(chemin) == Path(ASSEMBLAGE):      # l'assemblage du jour ne garde que les equipes a venir : on lui rend l'historique permanent (championnats hors Football-Data)
+        import historique_permanent
+        doc = historique_permanent.completer(doc)
+    return Ligues(doc)
 
 
 # --- Matchs à pronostiquer (archive) ------------------------------------------------------------------------------
