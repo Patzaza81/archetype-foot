@@ -77,7 +77,9 @@ def test_derniers_matchs_reels_sans_fuite():
     for m in d["matchs"][:12]:
         h = ic.historique(m["division"]); jour = pp._date(m["date"]); fd = m["detail"]
         for cote, equipe, dom in (("dom", fd["fd_dom"], True), ("ext", fd["fd_ext"], False)):
-            L = m["derniers_matchs"][cote]; saison = max(t[1] for t in h)
+            # La fonction est rejouée sur l'historique d'AUJOURD'HUI : le fichier de page est regénéré après la suite de tests, et l'assemblage
+            # (reconstruit chaque nuit) peut avoir changé entre-temps ; comparer le fichier à l'historique du jour rendait la suite instable.
+            L = pd.derniers_matchs(h, fd["fd_dom"], fd["fd_ext"], jour)[cote]; saison = max(t[1] for t in h)
             assert len(L) == len([t for t in h if t[1] == saison and t[0] < jour and t[2 if dom else 3] == equipe]) and [x["date"] for x in L] == sorted((x["date"] for x in L), reverse=True)   # du plus récent au plus ancien
             for x in L:
                 j = pp._date(x["date"]); assert j < jour                                        # jamais le match lui-meme ni le futur

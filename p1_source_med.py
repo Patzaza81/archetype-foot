@@ -39,14 +39,22 @@ def saison_courante():
     """Etiquette de la saison en cours = la plus recente des donnees Football-Data normalisees (ex. « 2627 »)."""
     return max(os.listdir(_NORMALISE))
 
+# Meme club ecrit autrement dans les fichiers des saisons passees (certain : ce ne sont pas des clubs voisins).
+ALIAS = {"AFC Leopards": "Leopards", "Kenya Police FC": "Police", "Mara Sugar FC": "Mara Sugar", "Shabana FC": "Shabana", "Tusker FC": "Tusker", "Ulinzi Stars FC": "Ulinzi"}
+
 def historique(code, doc=None, saison=None):
     """Saisons passees completes + saison en cours (assemblage Matchendirect, une ligne par match), tries par date. [] si le code n'est pas servi par Matchendirect.
     La saison en cours est partielle : elle n'alimente que l'historique, jamais le choix des parametres (voir calibrer_p1_med)."""
     comp = COMPETITIONS_MED.get(code)
     if comp is None: return []
     saison = saison or saison_courante()
-    passees = [(j, s, a, b, x, y) for s, ms in saisons_passees(code).items() if s != saison for j, a, b, x, y in ms]
-    return sorted(passees + [(datetime.date.fromisoformat(m["date"]).toordinal(), saison, m["dom_nom"], m["ext_nom"], int(m["h"]), int(m["a"])) for m in _ligues(doc).matchs.get(comp, [])], key=lambda r: r[0])
+    cur = [(datetime.date.fromisoformat(m["date"]).toordinal(), saison, m["dom_nom"], m["ext_nom"], int(m["h"]), int(m["a"])) for m in _ligues(doc).matchs.get(comp, [])]
+    # Les fichiers des saisons passees ecrivent « Fc Dordrecht », « Vvv », « Jong Az » ; Matchendirect (saison en cours) « FC Dordrecht », « VVV », « Jong AZ » :
+    # meme equipe, donc on reprend l'ecriture de la saison en cours (sinon l'equipe perd tout son historique).
+    ecriture = {n.casefold(): n for r in cur for n in (r[2], r[3])}
+    nom = lambda n: ecriture.get(ALIAS.get(n, n).casefold(), ALIAS.get(n, n))
+    passees = [(j, s, nom(a), nom(b), x, y) for s, ms in saisons_passees(code).items() if s != saison for j, a, b, x, y in ms]
+    return sorted(passees + cur, key=lambda r: r[0])
 
 def division_et_noms(competition, cle_dom, cle_ext, doc=None):
     """(code, nom domicile, nom exterieur) si le match est d'un championnat servi par Matchendirect et que les deux equipes y sont identifiees ; sinon None."""

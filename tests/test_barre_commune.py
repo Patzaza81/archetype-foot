@@ -8,8 +8,9 @@ import pytest
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPTS_ATTENDUS = {
-    "archetype.html": ["traduction_marches.js", "ui_mappings.js", "archetype.js"],
-    "pronostics_v3.html": ["traduction_marches.js", "ui_mappings.js", "archetype_v3.js"],
+    # 07/11/2026 : af-derniers-onglets.js (derniers matchs a trois onglets, commun a tous les moteurs) est chargé avant le script métier ; il ne fabrique que du HTML.
+    "archetype.html": ["traduction_marches.js", "ui_mappings.js", "af-derniers-onglets.js", "archetype.js"],
+    "pronostics_v3.html": ["traduction_marches.js", "ui_mappings.js", "af-derniers-onglets.js", "archetype_v3.js"],
     "journal.html": ["journal.js"],
     "panier.html": ["traduction_marches.js", "ui_mappings.js", "archetype.js", "panier.js"],
 }
