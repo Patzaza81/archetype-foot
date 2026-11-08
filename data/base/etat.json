@@ -1,58 +1,60 @@
 {
  "version_protocole": 4,
- "calcule_le": "2026-11-07T09:50:07.505939+00:00",
- "commit_source": "f0aed8b2df6b9fa923750b8fdbf2a0f69ad4c368",
+ "calcule_le": "2026-11-08T09:50:22.064317+00:00",
+ "commit_source": "da37aab4b522a369d8fed621299199207fe8eab1",
  "hypothese": {
   "marche": "Moins de 3,5 buts",
   "cote_min": 1.27,
   "cote_max": 1.39,
   "debut_test": "2026-10-13T00:00:00+00:00"
  },
- "statut_B0": "NON_EVALUE",
- "points_de_controle_atteints": [],
+ "statut_B0": "NON_CONCLUANT",
+ "points_de_controle_atteints": [
+  "C1"
+ ],
  "B0_fenetre": {
-  "matchs": 470,
-  "jours": 17,
-  "roi": -0.088085,
-  "reussite": 0.687234,
+  "matchs": 472,
+  "jours": 18,
+  "roi": -0.086483,
+  "reussite": 0.688559,
   "reussite_intervalle_95": [
-   0.643945,
-   0.727488
+   0.645401,
+   0.728673
   ],
-  "probabilite_implicite_brute_moyenne": 0.753866,
-  "cote_moyenne": 1.3275,
-  "marge_marche_moyenne": 0.079739,
+  "probabilite_implicite_brute_moyenne": 0.753956,
+  "cote_moyenne": 1.3273,
+  "marge_marche_moyenne": 0.079765,
   "niveau_intervalle": 0.997,
   "roi_intervalle_student": [
-   -0.172989,
-   -0.003181
+   -0.170408,
+   -0.002558
   ],
   "roi_intervalle_bootstrap": [
-   -0.156068,
-   0.000957
+   -0.154052,
+   0.004785
   ]
  },
  "tranches_information": {
   "H1-a": {
-   "matchs": 262,
-   "jours": 17,
-   "roi": -0.097366,
-   "reussite": 0.694656,
+   "matchs": 264,
+   "jours": 18,
+   "roi": -0.094432,
+   "reussite": 0.69697,
    "reussite_intervalle_95": [
-    0.63641,
-    0.747278
+    0.639035,
+    0.749255
    ],
-   "probabilite_implicite_brute_moyenne": 0.769603,
-   "cote_moyenne": 1.2997,
-   "marge_marche_moyenne": 0.080844,
+   "probabilite_implicite_brute_moyenne": 0.769646,
+   "cote_moyenne": 1.2996,
+   "marge_marche_moyenne": 0.080882,
    "niveau_intervalle": 0.95,
    "roi_intervalle_student": [
-    -0.160249,
-    -0.034484
+    -0.156731,
+    -0.032133
    ],
    "roi_intervalle_bootstrap": [
-    -0.159724,
-    -0.03858
+    -0.155795,
+    -0.034099
    ]
   },
   "H1-b": {
@@ -73,8 +75,8 @@
     0.035858
    ],
    "roi_intervalle_bootstrap": [
-    -0.177884,
-    0.029934
+    -0.17844,
+    0.030576
    ]
   }
  },
@@ -100,25 +102,25 @@
      0.27897
     ],
     "roi_intervalle_bootstrap": [
-     -0.342778,
-     0.192308
+     -0.345714,
+     0.192105
     ]
    },
    "non_retenus": 6,
-   "ecart_general": 0.085585,
+   "ecart_general": 0.083983,
    "ecart_general_intervalle_95": [
-    -0.27373861763580937,
-    0.2895331551056202
+    -0.2809561789626419,
+    0.2884911952464726
    ],
    "ecart_population_egale": 0.3475,
    "ecart_population_egale_intervalle_95": [
-    -0.2983097826086956,
-    0.9246153846153846
+    -0.2959090909090909,
+    0.9329380570409981
    ]
   },
   "B2": {
    "statut": "NON_EVALUE",
-   "admissibles": 333,
+   "admissibles": 334,
    "retenus": {
     "matchs": 73,
     "jours": 17,
@@ -137,20 +139,20 @@
      0.079658
     ],
     "roi_intervalle_bootstrap": [
-     -0.321614,
-     0.049445
+     -0.322116,
+     0.050412
     ]
    },
-   "non_retenus": 260,
-   "ecart_general": -0.045614,
+   "non_retenus": 261,
+   "ecart_general": -0.047216,
    "ecart_general_intervalle_95": [
-    -0.21087946213535805,
-    0.11470471127456962
+    -0.21359514547361227,
+    0.11373343633608986
    ],
-   "ecart_population_egale": -0.042391,
+   "ecart_population_egale": -0.04389,
    "ecart_population_egale_intervalle_95": [
-    -0.22836399053121487,
-    0.1401831348305002
+    -0.22990954140710243,
+    0.1384537123728983
    ]
   },
   "B3": {
@@ -175,65 +177,65 @@
     ],
     "roi_intervalle_bootstrap": [
      -0.325,
-     0.255295
+     0.256667
     ]
    },
    "non_retenus": 210,
-   "ecart_general": 0.04999,
+   "ecart_general": 0.048388,
    "ecart_general_intervalle_95": [
-    -0.21026551248217915,
-    0.317139118618242
+    -0.2113210325385133,
+    0.3159348564859263
    ],
    "ecart_population_egale": 0.066143,
    "ecart_population_egale_intervalle_95": [
-    -0.21247986042373676,
-    0.35700064372922946
+    -0.21213257810534847,
+    0.35669299675810356
    ]
   },
   "B4": {
    "statut": "NON_EVALUE",
-   "admissibles": 470,
+   "admissibles": 472,
    "retenus": {
-    "matchs": 367,
-    "jours": 17,
-    "roi": -0.084659,
-    "reussite": 0.689373,
+    "matchs": 368,
+    "jours": 18,
+    "roi": -0.083614,
+    "reussite": 0.690217,
     "reussite_intervalle_95": [
-     0.640273,
-     0.73455
+     0.641212,
+     0.735293
     ],
-    "probabilite_implicite_brute_moyenne": 0.753603,
-    "cote_moyenne": 1.3279,
-    "marge_marche_moyenne": 0.078215,
+    "probabilite_implicite_brute_moyenne": 0.753645,
+    "cote_moyenne": 1.3278,
+    "marge_marche_moyenne": 0.078228,
     "niveau_intervalle": 0.95,
     "roi_intervalle_student": [
-     -0.146907,
-     -0.022411
+     -0.145252,
+     -0.021977
     ],
     "roi_intervalle_bootstrap": [
-     -0.143625,
-     -0.030021
+     -0.14255,
+     -0.028107
     ]
    },
-   "non_retenus": 103,
-   "ecart_general": 0.003426,
+   "non_retenus": 104,
+   "ecart_general": 0.002869,
    "ecart_general_intervalle_95": [
-    -0.024885250808708147,
-    0.024449805607153513
+    -0.025439652962454127,
+    0.023817444656513264
    ],
-   "ecart_population_egale": 0.015632,
+   "ecart_population_egale": 0.01302,
    "ecart_population_egale_intervalle_95": [
-    -0.10277664975405855,
-    0.1266183684797339
+    -0.1044457217466896,
+    0.12343600514562025
    ]
   }
  },
  "admission": {
   "statuts": {
    "ANNULE": 6,
-   "NON_REGLE": 163,
-   "REGLE": 547,
-   "RESULTAT_MANQUANT": 59
+   "NON_REGLE": 152,
+   "REGLE": 555,
+   "RESULTAT_MANQUANT": 65
   },
   "liste_sans_resultat": {
    "RESULTAT_MANQUANT": [
@@ -295,7 +297,13 @@
     "6rda59lrcbnzf56myszwxwrv8",
     "64eyfzfltqmh67ovw91lp8tuc",
     "xc3bfrlp8jlt353difjy6psk",
-    "2bfavo6q3gx8c3wrdz83ew0t0"
+    "2bfavo6q3gx8c3wrdz83ew0t0",
+    "1oyreaof9stwguuh9thc3faj8",
+    "1pxlc4hij2ydm831uk7i108wk",
+    "1c3meg6brycxel19deg1j9dzo",
+    "1lnjkxqx2gis4huhf3i8d3ndg",
+    "69y4zip6u4xz77au5daia74t0",
+    "2ctxbdrnwzo33jd21j299u5uc"
    ],
    "ANNULE": [
     "8twciinwdgueyozx5kxz2qqdw",
@@ -306,21 +314,7 @@
     "8zychvyu94g7gyfm5exnk9ous"
    ],
    "NON_REGLE": [
-    "1oyreaof9stwguuh9thc3faj8",
-    "1pxlc4hij2ydm831uk7i108wk",
-    "1c3meg6brycxel19deg1j9dzo",
-    "1lnjkxqx2gis4huhf3i8d3ndg",
-    "69y4zip6u4xz77au5daia74t0",
-    "2ctxbdrnwzo33jd21j299u5uc",
-    "761rx1wuqi5z7xum138szeuqc",
-    "2fl5n5zxi213d75tbka7f5xxw",
     "2ikf0gpusuit4uhd3bamkhvkk",
-    "68gipny8d77728g9ioaa3b190",
-    "4lfvks8jq8jqg8pq0rjsri590",
-    "1kpf6xzxy54d4ok26wdvcetqs",
-    "2ebkv3d281g33973dwm1mw74k",
-    "1kzyaqqdlxkp68eooy7dzn66s",
-    "1l1osypk06pco8y1jjaiptp90",
     "ajokdmsi4vxmlq8vl97kqxlp0",
     "1dd5gh1p17wc3p4yezbbeaihg",
     "1ec8yfi9jeq42qaa3ltxo0o44",
@@ -457,18 +451,21 @@
     "4keq5l9j2qai3b7zqw23r2gb8",
     "76q7j3e47sre2ybw77glxcduc",
     "vnlfydtu4pm4vtj1bmaa2qs4",
+    "5nt81r63xj5riaxitqzf2y0pg",
     "45r2ovbx1mftj0s2kkd3f6gwk",
     "b3fyw6ldhtuaabt0sf62v88wk",
     "75cruowzr2966eoba246kq4no",
     "5o52ovj9bwkmtaipwjgo32h3o",
+    "5p4gr6c17wkkvkhv1r3t6bx1w",
     "8qw0hguzmh4tmpntes7cy0dg4",
+    "anbqd3vn0zuttvsbqt6cjiz9w",
     "b5n4bj7c5pkzgxrznd52fssgk",
     "6936720a8r04udv7mzygx6vis",
-    "f0hmwi7fssvqly5h8t9pwqfpw",
     "11dgyunkb4q9u44gurfnskphw",
     "czplnadprhctt6ueh66qeivis",
     "5osnc6i53mnuk122pkrzifxn8",
-    "bbxm0noxzbjm8tfly0bta1pn8"
+    "bbxm0noxzbjm8tfly0bta1pn8",
+    "cobhgwt1ox9exquayceu11h5g"
    ]
   },
   "exclusions": {
@@ -835,7 +832,7 @@
    {
     "match_id": "b5n4bj7c5pkzgxrznd52fssgk",
     "releves": 4,
-    "garde": "2026-11-07T02:55:00+00:00"
+    "garde": "2026-11-08T09:13:00+00:00"
    },
    {
     "match_id": "ey14x4w7w8a2a8bico69ew2dw",
