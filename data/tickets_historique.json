@@ -72123,32 +72123,19 @@
     "scenario": "EQUILIBRE_4",
     "date": "2026-11-08",
     "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 4.2881,
+    "cote_totale": 4.0563,
     "jambes": [
       {
-        "match_id": "e1fa2vczsk32o4g50d25k0v84",
-        "marche": "buts_equipe_exterieur_1.5_under",
-        "cote": 1.43,
-        "probabilite_estimee": 0.7381,
+        "match_id": "dxeq0lmdfcjs7t8htgo1pxl3o",
+        "marche": "double_chance_1X",
+        "cote": 1.37,
+        "probabilite_estimee": 0.809,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Carrarese",
-        "exterieur": "Sampdoria",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
-      },
-      {
-        "match_id": "bi60wv1hwbxbrndkzdibsrqc4",
-        "marche": "over_under_total_3.5_under",
-        "cote": 1.44,
-        "probabilite_estimee": 0.8089,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "KFC Komarno",
-        "exterieur": "Michalovce",
+        "domicile": "Heidenheim",
+        "exterieur": "Hanovre",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -72167,14 +72154,27 @@
         "resultat": null
       },
       {
-        "match_id": "dxeq0lmdfcjs7t8htgo1pxl3o",
-        "marche": "double_chance_1X",
-        "cote": 1.37,
-        "probabilite_estimee": 0.809,
+        "match_id": "8xw5tr2evo6k7f6qjg3qandhw",
+        "marche": "over_under_total_3.5_under",
+        "cote": 1.51,
+        "probabilite_estimee": 0.7246,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Heidenheim",
-        "exterieur": "Hanovre",
+        "domicile": "Egnatia",
+        "exterieur": "Vora",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
+      },
+      {
+        "match_id": "4rl64g43l669h2o5d0ezt3578",
+        "marche": "double_chance_1X",
+        "cote": 1.29,
+        "probabilite_estimee": 0.8448,
+        "source": "moteur_v3",
+        "rang": "P2",
+        "domicile": "Brighton",
+        "exterieur": "Brentford",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -72182,7 +72182,7 @@
     ],
     "analyse": {
       "paris": 4,
-      "paris_justes_attendus": 3.086,
+      "paris_justes_attendus": 3.1084,
       "plans": [
         {
           "nom": "COMBINE",
@@ -72196,8 +72196,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.3526,
-              "esperance_gain": 0.512
+              "proba_profit": 0.3615,
+              "esperance_gain": 0.4664
             }
           ],
           "composition": [
@@ -72208,16 +72208,16 @@
                 2,
                 3
               ],
-              "cote": 4.2881,
-              "probabilite": 0.352599,
+              "cote": 4.0563,
+              "probabilite": 0.361513,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 4.2881,
+          "retour_garanti": 4.0563,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.3526,
-          "esperance_gain": 0.512
+          "proba_profit": 0.3615,
+          "esperance_gain": 0.4664
         },
         {
           "nom": "TICKETS_2X2",
@@ -72226,21 +72226,28 @@
             2,
             2
           ],
-          "strategie": "SECURITE_GROUPEE",
+          "strategie": "COTES_EQUILIBREES",
           "variantes": [
             {
               "strategie": "COTES_EQUILIBREES",
+              "choisie": true,
+              "erreurs_garanties": 1,
+              "proba_profit": 0.8414,
+              "esperance_gain": 0.2109
+            },
+            {
+              "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.835,
-              "esperance_gain": 0.2296
+              "proba_profit": 0.8412,
+              "esperance_gain": 0.2105
             },
             {
               "strategie": "SECURITE_GROUPEE",
-              "choisie": true,
-              "erreurs_garanties": 1,
-              "proba_profit": 0.8406,
-              "esperance_gain": 0.234
+              "choisie": false,
+              "erreurs_garanties": 0,
+              "proba_profit": 0.3615,
+              "esperance_gain": 0.2106
             }
           ],
           "composition": [
@@ -72249,25 +72256,25 @@
                 1,
                 3
               ],
-              "cote": 1.9728,
-              "probabilite": 0.6544,
-              "mise": 0.5242
+              "cote": 1.9608,
+              "probabilite": 0.616704,
+              "mise": 0.5134
             },
             {
               "paris": [
                 0,
                 2
               ],
-              "cote": 2.1736,
-              "probabilite": 0.538813,
-              "mise": 0.4758
+              "cote": 2.0687,
+              "probabilite": 0.586201,
+              "mise": 0.4866
             }
           ],
-          "retour_garanti": 1.0342,
+          "retour_garanti": 1.0067,
           "gagnants_requis": 1,
           "erreurs_garanties": 1,
-          "proba_profit": 0.8406,
-          "esperance_gain": 0.234
+          "proba_profit": 0.8414,
+          "esperance_gain": 0.2109
         },
         {
           "nom": "SIMPLES",
@@ -72284,63 +72291,63 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7747,
-              "esperance_gain": 0.1094
+              "proba_profit": 0.7844,
+              "esperance_gain": 0.1002
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7747,
-              "esperance_gain": 0.1094
+              "proba_profit": 0.7844,
+              "esperance_gain": 0.1002
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7747,
-              "esperance_gain": 0.1094
+              "proba_profit": 0.7844,
+              "esperance_gain": 0.1002
             }
           ],
           "composition": [
             {
               "paris": [
-                2
+                1
               ],
               "cote": 1.52,
               "probabilite": 0.73,
-              "mise": 0.2365
+              "mise": 0.2329
             },
             {
               "paris": [
-                1
+                2
               ],
-              "cote": 1.44,
-              "probabilite": 0.8089,
-              "mise": 0.2497
+              "cote": 1.51,
+              "probabilite": 0.7246,
+              "mise": 0.2344
             },
             {
               "paris": [
                 0
               ],
-              "cote": 1.43,
-              "probabilite": 0.7381,
-              "mise": 0.2514
+              "cote": 1.37,
+              "probabilite": 0.809,
+              "mise": 0.2584
             },
             {
               "paris": [
                 3
               ],
-              "cote": 1.37,
-              "probabilite": 0.809,
-              "mise": 0.2624
+              "cote": 1.29,
+              "probabilite": 0.8448,
+              "mise": 0.2744
             }
           ],
-          "retour_garanti": 0.3595,
+          "retour_garanti": 0.3539,
           "gagnants_requis": 3,
           "erreurs_garanties": 1,
-          "proba_profit": 0.7747,
-          "esperance_gain": 0.1094
+          "proba_profit": 0.7844,
+          "esperance_gain": 0.1002
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -72355,19 +72362,19 @@
     "scenario": "EQUILIBRE_4",
     "date": "2026-11-08",
     "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 4.0294,
+    "cote_totale": 4.0358,
     "jambes": [
       {
-        "match_id": "dzd8oa2djvlaiteo029euxjbo",
-        "marche": "handicap_domicile_1.5",
-        "cote": 1.36,
-        "probabilite_estimee": 0.875,
+        "match_id": "twyaaiacsn3bc5lp2n63o104",
+        "marche": "double_chance_X2",
+        "cote": 1.44,
+        "probabilite_estimee": 0.7767,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Bolívar",
-        "exterieur": "The Strongest",
+        "domicile": "Varzim",
+        "exterieur": "Fafe",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -72386,27 +72393,27 @@
         "resultat": null
       },
       {
-        "match_id": "8m9shmzkfxqudy8rnc86sjevo",
-        "marche": "over_under_total_2.5_over",
-        "cote": 1.47,
-        "probabilite_estimee": 0.7312,
+        "match_id": "e1fa2vczsk32o4g50d25k0v84",
+        "marche": "buts_equipe_exterieur_1.5_under",
+        "cote": 1.43,
+        "probabilite_estimee": 0.7381,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Mainz 05",
-        "exterieur": "Stuttgart",
+        "domicile": "Carrarese",
+        "exterieur": "Sampdoria",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "5dr1c54gv66bo0wz5ast26l1w",
-        "marche": "1x2_domicile",
-        "cote": 1.45,
-        "probabilite_estimee": 0.7893,
+        "match_id": "9tujtd49fw6zexajqslf35kic",
+        "marche": "buts_equipe_domicile_1.5_under",
+        "cote": 1.41,
+        "probabilite_estimee": 0.7914,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "KAA Gent",
-        "exterieur": "Courtrai",
+        "domicile": "US Biskra",
+        "exterieur": "Chlef",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -72414,7 +72421,7 @@
     ],
     "analyse": {
       "paris": 4,
-      "paris_justes_attendus": 3.1869,
+      "paris_justes_attendus": 3.0976,
       "plans": [
         {
           "nom": "COMBINE",
@@ -72428,8 +72435,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.3997,
-              "esperance_gain": 0.6104
+              "proba_profit": 0.3591,
+              "esperance_gain": 0.4491
             }
           ],
           "composition": [
@@ -72440,16 +72447,16 @@
                 2,
                 3
               ],
-              "cote": 4.0294,
-              "probabilite": 0.399652,
+              "cote": 4.0358,
+              "probabilite": 0.359055,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 4.0294,
+          "retour_garanti": 4.0358,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.3997,
-          "esperance_gain": 0.6104
+          "proba_profit": 0.3591,
+          "esperance_gain": 0.4491
         },
         {
           "nom": "TICKETS_2X2",
@@ -72464,42 +72471,49 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.8648,
-              "esperance_gain": 0.2691
+              "proba_profit": 0.8398,
+              "esperance_gain": 0.2042
+            },
+            {
+              "strategie": "SECURITE_EQUILIBREE",
+              "choisie": false,
+              "erreurs_garanties": 1,
+              "proba_profit": 0.8398,
+              "esperance_gain": 0.2042
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.87,
-              "esperance_gain": 0.272
+              "proba_profit": 0.8405,
+              "esperance_gain": 0.2046
             }
           ],
           "composition": [
             {
               "paris": [
-                0,
-                1
+                1,
+                3
               ],
-              "cote": 1.8904,
-              "probabilite": 0.692475,
-              "mise": 0.53
+              "cote": 1.9599,
+              "probabilite": 0.626314,
+              "mise": 0.5124
             },
             {
               "paris": [
-                2,
-                3
+                0,
+                2
               ],
-              "cote": 2.1315,
-              "probabilite": 0.577136,
-              "mise": 0.47
+              "cote": 2.0592,
+              "probabilite": 0.573282,
+              "mise": 0.4876
             }
           ],
-          "retour_garanti": 1.0019,
+          "retour_garanti": 1.0042,
           "gagnants_requis": 1,
           "erreurs_garanties": 1,
-          "proba_profit": 0.87,
-          "esperance_gain": 0.272
+          "proba_profit": 0.8405,
+          "esperance_gain": 0.2046
         },
         {
           "nom": "SIMPLES",
@@ -72516,33 +72530,48 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.8157,
-              "esperance_gain": 0.1282
+              "proba_profit": 0.779,
+              "esperance_gain": 0.0975
+            },
+            {
+              "strategie": "SECURITE_EQUILIBREE",
+              "choisie": false,
+              "erreurs_garanties": 1,
+              "proba_profit": 0.779,
+              "esperance_gain": 0.0975
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.8157,
-              "esperance_gain": 0.1282
+              "proba_profit": 0.779,
+              "esperance_gain": 0.0975
             }
           ],
           "composition": [
             {
               "paris": [
+                0
+              ],
+              "cote": 1.44,
+              "probabilite": 0.7767,
+              "mise": 0.246
+            },
+            {
+              "paris": [
                 2
               ],
-              "cote": 1.47,
-              "probabilite": 0.7312,
-              "mise": 0.2408
+              "cote": 1.43,
+              "probabilite": 0.7381,
+              "mise": 0.2478
             },
             {
               "paris": [
                 3
               ],
-              "cote": 1.45,
-              "probabilite": 0.7893,
-              "mise": 0.2442
+              "cote": 1.41,
+              "probabilite": 0.7914,
+              "mise": 0.2513
             },
             {
               "paris": [
@@ -72550,22 +72579,14 @@
               ],
               "cote": 1.39,
               "probabilite": 0.7914,
-              "mise": 0.2547
-            },
-            {
-              "paris": [
-                0
-              ],
-              "cote": 1.36,
-              "probabilite": 0.875,
-              "mise": 0.2603
+              "mise": 0.2549
             }
           ],
-          "retour_garanti": 0.354,
+          "retour_garanti": 0.3543,
           "gagnants_requis": 3,
           "erreurs_garanties": 1,
-          "proba_profit": 0.8157,
-          "esperance_gain": 0.1282
+          "proba_profit": 0.779,
+          "esperance_gain": 0.0975
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -72580,20 +72601,20 @@
     "scenario": "EQUILIBRE_5",
     "date": "2026-11-08",
     "portee": "melange",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 5.3955,
+    "cote_totale": 5.5484,
     "jambes": [
       {
-        "match_id": "czplnadprhctt6ueh66qeivis",
-        "marche": "over_under_total_3.5_under",
-        "cote": 1.33,
-        "probabilite_estimee": 0.806,
+        "match_id": "axydwsrhpybjcswnv3nx6ynmc",
+        "marche": "over_under_total_2.5_over",
+        "cote": 1.5,
+        "probabilite_estimee": 0.7428,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Pineto",
-        "exterieur": "Vis Pesaro",
-        "date": "2026-11-09",
+        "domicile": "Utrecht",
+        "exterieur": "NEC Nimègue",
+        "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
@@ -72611,40 +72632,40 @@
         "resultat": null
       },
       {
-        "match_id": "cdhwozagdmuv5duvfv37savis",
+        "match_id": "bi60wv1hwbxbrndkzdibsrqc4",
         "marche": "over_under_total_3.5_under",
-        "cote": 1.36,
-        "probabilite_estimee": 0.8004,
+        "cote": 1.44,
+        "probabilite_estimee": 0.8089,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Super Nova",
-        "exterieur": "Daugavpils",
+        "domicile": "KFC Komarno",
+        "exterieur": "Michalovce",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "5dr1c54gv66bo0wz5ast26l1w",
-        "marche": "1x2_domicile",
-        "cote": 1.45,
-        "probabilite_estimee": 0.7893,
+        "match_id": "dzumkescpxrw1hwro73k9oe1g",
+        "marche": "handicap_domicile_1.5",
+        "cote": 1.32,
+        "probabilite_estimee": 0.9038,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "KAA Gent",
-        "exterieur": "Courtrai",
-        "date": "2026-11-08",
+        "domicile": "Club Aurora",
+        "exterieur": "Uni de Vinto",
+        "date": "2026-11-10",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "d0en5nwn2de7hj8npe0rw2ln8",
-        "marche": "buts_equipe_exterieur_1.5_under",
-        "cote": 1.48,
-        "probabilite_estimee": 0.7935,
+        "match_id": "92v5m07ku60wbm3mdhqinurkk",
+        "marche": "handicap3_domicile_2_1",
+        "cote": 1.4,
+        "probabilite_estimee": 0.853,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Torres",
-        "exterieur": "Latina",
+        "domicile": "Varaždin",
+        "exterieur": "D. Zagreb",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -72652,7 +72673,7 @@
     ],
     "analyse": {
       "paris": 5,
-      "paris_justes_attendus": 3.9806,
+      "paris_justes_attendus": 4.0999,
       "plans": [
         {
           "nom": "COMBINE",
@@ -72666,8 +72687,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.3198,
-              "esperance_gain": 0.7253
+              "proba_profit": 0.3666,
+              "esperance_gain": 1.034
             }
           ],
           "composition": [
@@ -72679,16 +72700,16 @@
                 3,
                 4
               ],
-              "cote": 5.3955,
-              "probabilite": 0.319762,
+              "cote": 5.5484,
+              "probabilite": 0.366593,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 5.3955,
+          "retour_garanti": 5.5484,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.3198,
-          "esperance_gain": 0.7253
+          "proba_profit": 0.3666,
+          "esperance_gain": 1.034
         },
         {
           "nom": "TICKETS_2_DE_2_A_3",
@@ -72697,49 +72718,56 @@
             3,
             2
           ],
-          "strategie": "SECURITE_EQUILIBREE",
+          "strategie": "COTES_EQUILIBREES",
           "variantes": [
             {
               "strategie": "COTES_EQUILIBREES",
-              "choisie": false,
+              "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.8168,
-              "esperance_gain": 0.3068
+              "proba_profit": 0.8547,
+              "esperance_gain": 0.4211
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
-              "choisie": true,
+              "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.8174,
-              "esperance_gain": 0.311
+              "proba_profit": 0.8462,
+              "esperance_gain": 0.4097
+            },
+            {
+              "strategie": "SECURITE_GROUPEE",
+              "choisie": false,
+              "erreurs_garanties": 1,
+              "proba_profit": 0.8449,
+              "esperance_gain": 0.4163
             }
           ],
           "composition": [
             {
               "paris": [
                 0,
-                2,
+                1,
                 3
               ],
-              "cote": 2.6228,
-              "probabilite": 0.509195,
-              "mise": 0.4396
+              "cote": 2.7522,
+              "probabilite": 0.531301,
+              "mise": 0.4228
             },
             {
               "paris": [
-                1,
+                2,
                 4
               ],
-              "cote": 2.0572,
-              "probabilite": 0.627976,
-              "mise": 0.5604
+              "cote": 2.016,
+              "probabilite": 0.689992,
+              "mise": 0.5772
             }
           ],
-          "retour_garanti": 1.1529,
+          "retour_garanti": 1.1636,
           "gagnants_requis": 1,
           "erreurs_garanties": 1,
-          "proba_profit": 0.8174,
-          "esperance_gain": 0.311
+          "proba_profit": 0.8547,
+          "esperance_gain": 0.4211
         },
         {
           "nom": "SIMPLES",
@@ -72757,40 +72785,48 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7293,
-              "esperance_gain": 0.1144
+              "proba_profit": 0.779,
+              "esperance_gain": 0.1541
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7293,
-              "esperance_gain": 0.1144
+              "proba_profit": 0.779,
+              "esperance_gain": 0.1541
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7293,
-              "esperance_gain": 0.1144
+              "proba_profit": 0.779,
+              "esperance_gain": 0.1541
             }
           ],
           "composition": [
             {
               "paris": [
-                4
+                0
               ],
-              "cote": 1.48,
-              "probabilite": 0.7935,
-              "mise": 0.1892
+              "cote": 1.5,
+              "probabilite": 0.7428,
+              "mise": 0.1877
             },
             {
               "paris": [
-                3
+                2
               ],
-              "cote": 1.45,
-              "probabilite": 0.7893,
-              "mise": 0.1931
+              "cote": 1.44,
+              "probabilite": 0.8089,
+              "mise": 0.1955
+            },
+            {
+              "paris": [
+                4
+              ],
+              "cote": 1.4,
+              "probabilite": 0.853,
+              "mise": 0.2011
             },
             {
               "paris": [
@@ -72798,30 +72834,22 @@
               ],
               "cote": 1.39,
               "probabilite": 0.7914,
-              "mise": 0.2014
+              "mise": 0.2025
             },
             {
               "paris": [
-                2
+                3
               ],
-              "cote": 1.36,
-              "probabilite": 0.8004,
-              "mise": 0.2059
-            },
-            {
-              "paris": [
-                0
-              ],
-              "cote": 1.33,
-              "probabilite": 0.806,
-              "mise": 0.2105
+              "cote": 1.32,
+              "probabilite": 0.9038,
+              "mise": 0.2133
             }
           ],
-          "retour_garanti": 0.28,
+          "retour_garanti": 0.2815,
           "gagnants_requis": 4,
           "erreurs_garanties": 1,
-          "proba_profit": 0.7293,
-          "esperance_gain": 0.1144
+          "proba_profit": 0.779,
+          "esperance_gain": 0.1541
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -72836,49 +72864,10 @@
     "scenario": "EQUILIBRE_5",
     "date": "2026-11-08",
     "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 6.3769,
+    "cote_totale": 5.8388,
     "jambes": [
-      {
-        "match_id": "e1fa2vczsk32o4g50d25k0v84",
-        "marche": "buts_equipe_exterieur_1.5_under",
-        "cote": 1.43,
-        "probabilite_estimee": 0.7381,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "Carrarese",
-        "exterieur": "Sampdoria",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
-      },
-      {
-        "match_id": "axydwsrhpybjcswnv3nx6ynmc",
-        "marche": "over_under_total_2.5_over",
-        "cote": 1.5,
-        "probabilite_estimee": 0.7428,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "Utrecht",
-        "exterieur": "NEC Nimègue",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
-      },
-      {
-        "match_id": "92v5m07ku60wbm3mdhqinurkk",
-        "marche": "handicap3_domicile_2_1",
-        "cote": 1.4,
-        "probabilite_estimee": 0.853,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "Varaždin",
-        "exterieur": "D. Zagreb",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
-      },
       {
         "match_id": "dxeq0lmdfcjs7t8htgo1pxl3o",
         "marche": "double_chance_1X",
@@ -72904,11 +72893,50 @@
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
+      },
+      {
+        "match_id": "4rl64g43l669h2o5d0ezt3578",
+        "marche": "double_chance_1X",
+        "cote": 1.29,
+        "probabilite_estimee": 0.8448,
+        "source": "moteur_v3",
+        "rang": "P2",
+        "domicile": "Brighton",
+        "exterieur": "Brentford",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
+      },
+      {
+        "match_id": "5dr1c54gv66bo0wz5ast26l1w",
+        "marche": "1x2_domicile",
+        "cote": 1.45,
+        "probabilite_estimee": 0.7893,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "KAA Gent",
+        "exterieur": "Courtrai",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
+      },
+      {
+        "match_id": "8m9shmzkfxqudy8rnc86sjevo",
+        "marche": "over_under_total_2.5_over",
+        "cote": 1.47,
+        "probabilite_estimee": 0.7312,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "Mainz 05",
+        "exterieur": "Stuttgart",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
       }
     ],
     "analyse": {
       "paris": 5,
-      "paris_justes_attendus": 3.8724,
+      "paris_justes_attendus": 3.9038,
       "plans": [
         {
           "nom": "COMBINE",
@@ -72922,8 +72950,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.276,
-              "esperance_gain": 0.76
+              "proba_profit": 0.2877,
+              "esperance_gain": 0.6801
             }
           ],
           "composition": [
@@ -72935,16 +72963,16 @@
                 3,
                 4
               ],
-              "cote": 6.3769,
-              "probabilite": 0.276001,
+              "cote": 5.8388,
+              "probabilite": 0.287744,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 6.3769,
+          "retour_garanti": 5.8388,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.276,
-          "esperance_gain": 0.76
+          "proba_profit": 0.2877,
+          "esperance_gain": 0.6801
         },
         {
           "nom": "TICKETS_2_DE_2_A_3",
@@ -72959,43 +72987,43 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.7757,
-              "esperance_gain": 0.3104
+              "proba_profit": 0.788,
+              "esperance_gain": 0.2895
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.775,
-              "esperance_gain": 0.3159
+              "proba_profit": 0.7851,
+              "esperance_gain": 0.294
             }
           ],
           "composition": [
             {
               "paris": [
-                2,
-                3,
-                4
+                0,
+                1,
+                2
               ],
-              "cote": 2.9729,
-              "probabilite": 0.503411,
-              "mise": 0.4191
+              "cote": 2.7393,
+              "probabilite": 0.498572,
+              "mise": 0.4376
             },
             {
               "paris": [
-                0,
-                1
+                3,
+                4
               ],
-              "cote": 2.145,
-              "probabilite": 0.548261,
-              "mise": 0.5809
+              "cote": 2.1315,
+              "probabilite": 0.577136,
+              "mise": 0.5624
             }
           ],
-          "retour_garanti": 1.246,
+          "retour_garanti": 1.1987,
           "gagnants_requis": 1,
           "erreurs_garanties": 1,
-          "proba_profit": 0.7757,
-          "esperance_gain": 0.3104
+          "proba_profit": 0.788,
+          "esperance_gain": 0.2895
         },
         {
           "nom": "SIMPLES",
@@ -73013,71 +73041,64 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.6846,
-              "esperance_gain": 0.1207
-            },
-            {
-              "strategie": "SECURITE_EQUILIBREE",
-              "choisie": false,
-              "erreurs_garanties": 1,
-              "proba_profit": 0.6846,
-              "esperance_gain": 0.1207
+              "proba_profit": 0.6978,
+              "esperance_gain": 0.109
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.6846,
-              "esperance_gain": 0.1207
+              "proba_profit": 0.6978,
+              "esperance_gain": 0.109
             }
           ],
           "composition": [
             {
               "paris": [
-                4
+                1
               ],
               "cote": 1.55,
               "probabilite": 0.7295,
-              "mise": 0.1867
+              "mise": 0.1833
             },
             {
               "paris": [
-                1
+                4
               ],
-              "cote": 1.5,
-              "probabilite": 0.7428,
-              "mise": 0.1929
-            },
-            {
-              "paris": [
-                0
-              ],
-              "cote": 1.43,
-              "probabilite": 0.7381,
-              "mise": 0.2024
-            },
-            {
-              "paris": [
-                2
-              ],
-              "cote": 1.4,
-              "probabilite": 0.853,
-              "mise": 0.2067
+              "cote": 1.47,
+              "probabilite": 0.7312,
+              "mise": 0.1932
             },
             {
               "paris": [
                 3
               ],
+              "cote": 1.45,
+              "probabilite": 0.7893,
+              "mise": 0.1959
+            },
+            {
+              "paris": [
+                0
+              ],
               "cote": 1.37,
               "probabilite": 0.809,
-              "mise": 0.2112
+              "mise": 0.2074
+            },
+            {
+              "paris": [
+                2
+              ],
+              "cote": 1.29,
+              "probabilite": 0.8448,
+              "mise": 0.2202
             }
           ],
-          "retour_garanti": 0.2894,
+          "retour_garanti": 0.2841,
           "gagnants_requis": 4,
           "erreurs_garanties": 1,
-          "proba_profit": 0.6846,
-          "esperance_gain": 0.1207
+          "proba_profit": 0.6978,
+          "esperance_gain": 0.109
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -73092,7 +73113,7 @@
     "scenario": "EQUILIBRE_8",
     "date": "2026-11-08",
     "portee": "melange",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
     "cote_totale": 18.9563,
     "jambes": [
@@ -74054,10 +74075,36 @@
     "scenario": "OBJECTIF_COTE_10",
     "date": "2026-11-08",
     "portee": "melange",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 9.1428,
+    "cote_totale": 8.4954,
     "jambes": [
+      {
+        "match_id": "8m9shmzkfxqudy8rnc86sjevo",
+        "marche": "over_under_total_2.5_over",
+        "cote": 1.47,
+        "probabilite_estimee": 0.7312,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "Mainz 05",
+        "exterieur": "Stuttgart",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
+      },
+      {
+        "match_id": null,
+        "marche": "Match à moins de 3,5 buts",
+        "cote": 1.28,
+        "probabilite_estimee": 0.658414,
+        "source": "journal",
+        "rang": null,
+        "domicile": "San Lorenzo",
+        "exterieur": "Rubio NU",
+        "date": "2026-11-09",
+        "journal_team": "San Lorenzo",
+        "resultat": null
+      },
       {
         "match_id": null,
         "marche": "Match à moins de 3,5 buts",
@@ -74099,19 +74146,6 @@
       },
       {
         "match_id": null,
-        "marche": "Ne perd pas (victoire ou nul)",
-        "cote": 1.35,
-        "probabilite_estimee": 0.728451,
-        "source": "journal",
-        "rang": null,
-        "domicile": "Club León",
-        "exterieur": "CD Guadalajara",
-        "date": "2026-11-09",
-        "journal_team": "CD Guadalajara",
-        "resultat": null
-      },
-      {
-        "match_id": null,
         "marche": "Match à plus de 2,5 buts",
         "cote": 1.47,
         "probabilite_estimee": 0.714843,
@@ -74122,24 +74156,11 @@
         "date": "2026-11-09",
         "journal_team": "Universitario",
         "resultat": null
-      },
-      {
-        "match_id": "axydwsrhpybjcswnv3nx6ynmc",
-        "marche": "over_under_total_2.5_over",
-        "cote": 1.5,
-        "probabilite_estimee": 0.7428,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "Utrecht",
-        "exterieur": "NEC Nimègue",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
       }
     ],
     "analyse": {
       "paris": 6,
-      "paris_justes_attendus": 4.4687,
+      "paris_justes_attendus": 4.3871,
       "plans": [
         {
           "nom": "COMBINE",
@@ -74153,8 +74174,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.167,
-              "esperance_gain": 0.5268
+              "proba_profit": 0.1486,
+              "esperance_gain": 0.2623
             }
           ],
           "composition": [
@@ -74167,16 +74188,16 @@
                 4,
                 5
               ],
-              "cote": 9.1428,
-              "probabilite": 0.166997,
+              "cote": 8.4954,
+              "probabilite": 0.148584,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 9.1428,
+          "retour_garanti": 8.4954,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.167,
-          "esperance_gain": 0.5268
+          "proba_profit": 0.1486,
+          "esperance_gain": 0.2623
         },
         {
           "nom": "TICKETS_2X3",
@@ -74191,51 +74212,51 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.6521,
-              "esperance_gain": 0.2384
+              "proba_profit": 0.627,
+              "esperance_gain": 0.1301
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.6511,
-              "esperance_gain": 0.2357
+              "proba_profit": 0.6223,
+              "esperance_gain": 0.1231
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.6673,
-              "esperance_gain": 0.2576
+              "proba_profit": 0.6459,
+              "esperance_gain": 0.1527
             }
           ],
           "composition": [
-            {
-              "paris": [
-                1,
-                2,
-                5
-              ],
-              "cote": 3.2675,
-              "probabilite": 0.500996,
-              "mise": 0.4613
-            },
             {
               "paris": [
                 0,
                 3,
                 4
               ],
-              "cote": 2.7981,
-              "probabilite": 0.333331,
-              "mise": 0.5387
+              "cote": 3.2021,
+              "probabilite": 0.493172,
+              "mise": 0.4531
+            },
+            {
+              "paris": [
+                1,
+                2,
+                5
+              ],
+              "cote": 2.6531,
+              "probabilite": 0.301283,
+              "mise": 0.5469
             }
           ],
-          "retour_garanti": 1.5073,
+          "retour_garanti": 1.4509,
           "gagnants_requis": 1,
           "erreurs_garanties": 1,
-          "proba_profit": 0.6673,
-          "esperance_gain": 0.2576
+          "proba_profit": 0.6459,
+          "esperance_gain": 0.1527
         },
         {
           "nom": "TICKETS_3X2",
@@ -74251,58 +74272,58 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5839,
-              "esperance_gain": 0.1609
+              "proba_profit": 0.5482,
+              "esperance_gain": 0.0854
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5767,
-              "esperance_gain": 0.149
+              "proba_profit": 0.5445,
+              "esperance_gain": 0.0797
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5872,
-              "esperance_gain": 0.1657
+              "proba_profit": 0.5599,
+              "esperance_gain": 0.0967
             }
           ],
           "composition": [
             {
               "paris": [
-                1,
-                2
+                3,
+                4
               ],
               "cote": 2.1783,
               "probabilite": 0.674469,
-              "mise": 0.3198
-            },
-            {
-              "paris": [
-                3,
-                5
-              ],
-              "cote": 2.025,
-              "probabilite": 0.541093,
-              "mise": 0.344
+              "mise": 0.311
             },
             {
               "paris": [
                 0,
-                4
+                5
               ],
-              "cote": 2.0727,
-              "probabilite": 0.457589,
-              "mise": 0.3361
+              "cote": 2.1609,
+              "probabilite": 0.522693,
+              "mise": 0.3135
+            },
+            {
+              "paris": [
+                1,
+                2
+              ],
+              "cote": 1.8048,
+              "probabilite": 0.421467,
+              "mise": 0.3754
             }
           ],
-          "retour_garanti": 0.6967,
+          "retour_garanti": 0.6775,
           "gagnants_requis": 2,
           "erreurs_garanties": 1,
-          "proba_profit": 0.5872,
-          "esperance_gain": 0.1657
+          "proba_profit": 0.5599,
+          "esperance_gain": 0.0967
         },
         {
           "nom": "SIMPLES",
@@ -74321,79 +74342,79 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5203,
-              "esperance_gain": 0.0753
+              "proba_profit": 0.4878,
+              "esperance_gain": 0.0421
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5203,
-              "esperance_gain": 0.0753
+              "proba_profit": 0.4878,
+              "esperance_gain": 0.0421
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 1,
-              "proba_profit": 0.5203,
-              "esperance_gain": 0.0753
+              "proba_profit": 0.4878,
+              "esperance_gain": 0.0421
             }
           ],
           "composition": [
             {
               "paris": [
-                1
+                3
               ],
               "cote": 1.59,
               "probabilite": 0.819508,
-              "mise": 0.1513
-            },
-            {
-              "paris": [
-                5
-              ],
-              "cote": 1.5,
-              "probabilite": 0.7428,
-              "mise": 0.1604
-            },
-            {
-              "paris": [
-                4
-              ],
-              "cote": 1.47,
-              "probabilite": 0.714843,
-              "mise": 0.1637
+              "mise": 0.1494
             },
             {
               "paris": [
                 0
               ],
-              "cote": 1.41,
-              "probabilite": 0.640125,
-              "mise": 0.1707
+              "cote": 1.47,
+              "probabilite": 0.7312,
+              "mise": 0.1616
+            },
+            {
+              "paris": [
+                5
+              ],
+              "cote": 1.47,
+              "probabilite": 0.714843,
+              "mise": 0.1616
             },
             {
               "paris": [
                 2
               ],
-              "cote": 1.37,
-              "probabilite": 0.823017,
-              "mise": 0.1756
+              "cote": 1.41,
+              "probabilite": 0.640125,
+              "mise": 0.1685
             },
             {
               "paris": [
-                3
+                4
               ],
-              "cote": 1.35,
-              "probabilite": 0.728451,
-              "mise": 0.1782
+              "cote": 1.37,
+              "probabilite": 0.823017,
+              "mise": 0.1734
+            },
+            {
+              "paris": [
+                1
+              ],
+              "cote": 1.28,
+              "probabilite": 0.658414,
+              "mise": 0.1856
             }
           ],
-          "retour_garanti": 0.2406,
+          "retour_garanti": 0.2375,
           "gagnants_requis": 5,
           "erreurs_garanties": 1,
-          "proba_profit": 0.5203,
-          "esperance_gain": 0.0753
+          "proba_profit": 0.4878,
+          "esperance_gain": 0.0421
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -74786,33 +74807,33 @@
     "cle": "2026-11-08|PRUDENT_2",
     "scenario": "PRUDENT_2",
     "date": "2026-11-08",
-    "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "portee": "melange",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 2.058,
+    "cote_totale": 2.046,
     "jambes": [
       {
-        "match_id": "92v5m07ku60wbm3mdhqinurkk",
-        "marche": "handicap3_domicile_2_1",
-        "cote": 1.4,
-        "probabilite_estimee": 0.853,
+        "match_id": "dzumkescpxrw1hwro73k9oe1g",
+        "marche": "handicap_domicile_1.5",
+        "cote": 1.32,
+        "probabilite_estimee": 0.9038,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Varaždin",
-        "exterieur": "D. Zagreb",
-        "date": "2026-11-08",
+        "domicile": "Club Aurora",
+        "exterieur": "Uni de Vinto",
+        "date": "2026-11-09",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "8m9shmzkfxqudy8rnc86sjevo",
+        "match_id": "7q53atho30n8iti0uzfnudbmc",
         "marche": "over_under_total_2.5_over",
-        "cote": 1.47,
-        "probabilite_estimee": 0.7312,
+        "cote": 1.55,
+        "probabilite_estimee": 0.7295,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Mainz 05",
-        "exterieur": "Stuttgart",
+        "domicile": "Monza",
+        "exterieur": "Atalanta",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -74820,7 +74841,7 @@
     ],
     "analyse": {
       "paris": 2,
-      "paris_justes_attendus": 1.5842,
+      "paris_justes_attendus": 1.6333,
       "plans": [
         {
           "nom": "COMBINE",
@@ -74834,8 +74855,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.6237,
-              "esperance_gain": 0.2836
+              "proba_profit": 0.6593,
+              "esperance_gain": 0.349
             }
           ],
           "composition": [
@@ -74844,16 +74865,16 @@
                 0,
                 1
               ],
-              "cote": 2.058,
-              "probabilite": 0.623714,
+              "cote": 2.046,
+              "probabilite": 0.659322,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 2.058,
+          "retour_garanti": 2.046,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.6237,
-          "esperance_gain": 0.2836
+          "proba_profit": 0.6593,
+          "esperance_gain": 0.349
         },
         {
           "nom": "SIMPLES",
@@ -74868,15 +74889,15 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.6237,
-              "esperance_gain": 0.136
+              "proba_profit": 0.6593,
+              "esperance_gain": 0.1644
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 0,
-              "proba_profit": 0.6237,
-              "esperance_gain": 0.136
+              "proba_profit": 0.6593,
+              "esperance_gain": 0.1644
             }
           ],
           "composition": [
@@ -74884,24 +74905,24 @@
               "paris": [
                 1
               ],
-              "cote": 1.47,
-              "probabilite": 0.7312,
-              "mise": 0.4878
+              "cote": 1.55,
+              "probabilite": 0.7295,
+              "mise": 0.4599
             },
             {
               "paris": [
                 0
               ],
-              "cote": 1.4,
-              "probabilite": 0.853,
-              "mise": 0.5122
+              "cote": 1.32,
+              "probabilite": 0.9038,
+              "mise": 0.5401
             }
           ],
-          "retour_garanti": 0.7171,
+          "retour_garanti": 0.7129,
           "gagnants_requis": 2,
           "erreurs_garanties": 0,
-          "proba_profit": 0.6237,
-          "esperance_gain": 0.136
+          "proba_profit": 0.6593,
+          "esperance_gain": 0.1644
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -74916,10 +74937,23 @@
     "scenario": "PRUDENT_2",
     "date": "2026-11-08",
     "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 2.1888,
+    "cote_totale": 2.2952,
     "jambes": [
+      {
+        "match_id": "8xw5tr2evo6k7f6qjg3qandhw",
+        "marche": "over_under_total_3.5_under",
+        "cote": 1.51,
+        "probabilite_estimee": 0.7246,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "Egnatia",
+        "exterieur": "Vora",
+        "date": "2026-11-08",
+        "journal_team": null,
+        "resultat": null
+      },
       {
         "match_id": "da1xq5d9x8ocf2gufsm9i4nis",
         "marche": "over_under_total_3.5_under",
@@ -74932,24 +74966,11 @@
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
-      },
-      {
-        "match_id": "bi60wv1hwbxbrndkzdibsrqc4",
-        "marche": "over_under_total_3.5_under",
-        "cote": 1.44,
-        "probabilite_estimee": 0.8089,
-        "source": "moteur_v3",
-        "rang": "P1",
-        "domicile": "KFC Komarno",
-        "exterieur": "Michalovce",
-        "date": "2026-11-08",
-        "journal_team": null,
-        "resultat": null
       }
     ],
     "analyse": {
       "paris": 2,
-      "paris_justes_attendus": 1.5389,
+      "paris_justes_attendus": 1.4546,
       "plans": [
         {
           "nom": "COMBINE",
@@ -74963,8 +74984,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.5905,
-              "esperance_gain": 0.2925
+              "proba_profit": 0.529,
+              "esperance_gain": 0.2141
             }
           ],
           "composition": [
@@ -74973,16 +74994,16 @@
                 0,
                 1
               ],
-              "cote": 2.1888,
-              "probabilite": 0.590497,
+              "cote": 2.2952,
+              "probabilite": 0.528958,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 2.1888,
+          "retour_garanti": 2.2952,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.5905,
-          "esperance_gain": 0.2925
+          "proba_profit": 0.529,
+          "esperance_gain": 0.2141
         },
         {
           "nom": "SIMPLES",
@@ -74997,40 +75018,40 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.5905,
-              "esperance_gain": 0.138
+              "proba_profit": 0.529,
+              "esperance_gain": 0.1018
             },
             {
-              "strategie": "SECURITE_GROUPEE",
+              "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 0,
-              "proba_profit": 0.5905,
-              "esperance_gain": 0.138
+              "proba_profit": 0.529,
+              "esperance_gain": 0.1018
             }
           ],
           "composition": [
             {
               "paris": [
-                0
+                1
               ],
               "cote": 1.52,
               "probabilite": 0.73,
-              "mise": 0.4865
+              "mise": 0.4983
             },
             {
               "paris": [
-                1
+                0
               ],
-              "cote": 1.44,
-              "probabilite": 0.8089,
-              "mise": 0.5135
+              "cote": 1.51,
+              "probabilite": 0.7246,
+              "mise": 0.5017
             }
           ],
-          "retour_garanti": 0.7395,
+          "retour_garanti": 0.7575,
           "gagnants_requis": 2,
           "erreurs_garanties": 0,
-          "proba_profit": 0.5905,
-          "esperance_gain": 0.138
+          "proba_profit": 0.529,
+          "esperance_gain": 0.1018
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -75044,46 +75065,46 @@
     "cle": "2026-11-08|PRUDENT_3",
     "scenario": "PRUDENT_3",
     "date": "2026-11-08",
-    "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "portee": "melange",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 3.0192,
+    "cote_totale": 2.7578,
     "jambes": [
       {
-        "match_id": "7q53atho30n8iti0uzfnudbmc",
-        "marche": "over_under_total_2.5_over",
-        "cote": 1.55,
-        "probabilite_estimee": 0.7295,
+        "match_id": "e1fa2vczsk32o4g50d25k0v84",
+        "marche": "buts_equipe_exterieur_1.5_under",
+        "cote": 1.43,
+        "probabilite_estimee": 0.7381,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Monza",
-        "exterieur": "Atalanta",
+        "domicile": "Carrarese",
+        "exterieur": "Sampdoria",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "8xw5tr2evo6k7f6qjg3qandhw",
+        "match_id": "czplnadprhctt6ueh66qeivis",
         "marche": "over_under_total_3.5_under",
-        "cote": 1.51,
-        "probabilite_estimee": 0.7246,
+        "cote": 1.33,
+        "probabilite_estimee": 0.806,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Egnatia",
-        "exterieur": "Vora",
-        "date": "2026-11-08",
+        "domicile": "Pineto",
+        "exterieur": "Vis Pesaro",
+        "date": "2026-11-09",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "4rl64g43l669h2o5d0ezt3578",
-        "marche": "double_chance_1X",
-        "cote": 1.29,
-        "probabilite_estimee": 0.8448,
+        "match_id": "5dr1c54gv66bo0wz5ast26l1w",
+        "marche": "1x2_domicile",
+        "cote": 1.45,
+        "probabilite_estimee": 0.7893,
         "source": "moteur_v3",
-        "rang": "P2",
-        "domicile": "Brighton",
-        "exterieur": "Brentford",
+        "rang": "P1",
+        "domicile": "KAA Gent",
+        "exterieur": "Courtrai",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -75091,7 +75112,7 @@
     ],
     "analyse": {
       "paris": 3,
-      "paris_justes_attendus": 2.2989,
+      "paris_justes_attendus": 2.3334,
       "plans": [
         {
           "nom": "COMBINE",
@@ -75105,8 +75126,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4466,
-              "esperance_gain": 0.3483
+              "proba_profit": 0.4696,
+              "esperance_gain": 0.2949
             }
           ],
           "composition": [
@@ -75116,16 +75137,16 @@
                 1,
                 2
               ],
-              "cote": 3.0192,
-              "probabilite": 0.446558,
+              "cote": 2.7578,
+              "probabilite": 0.469561,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 3.0192,
+          "retour_garanti": 2.7578,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.4466,
-          "esperance_gain": 0.3483
+          "proba_profit": 0.4696,
+          "esperance_gain": 0.2949
         },
         {
           "nom": "SIMPLES",
@@ -75141,55 +75162,55 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4466,
-              "esperance_gain": 0.1039
+              "proba_profit": 0.4696,
+              "esperance_gain": 0.0899
             },
             {
               "strategie": "SECURITE_EQUILIBREE",
               "choisie": false,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4466,
-              "esperance_gain": 0.1039
+              "proba_profit": 0.4696,
+              "esperance_gain": 0.0899
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4466,
-              "esperance_gain": 0.1039
+              "proba_profit": 0.4696,
+              "esperance_gain": 0.0899
             }
           ],
           "composition": [
             {
               "paris": [
+                2
+              ],
+              "cote": 1.45,
+              "probabilite": 0.7893,
+              "mise": 0.3221
+            },
+            {
+              "paris": [
                 0
               ],
-              "cote": 1.55,
-              "probabilite": 0.7295,
-              "mise": 0.3098
+              "cote": 1.43,
+              "probabilite": 0.7381,
+              "mise": 0.3266
             },
             {
               "paris": [
                 1
               ],
-              "cote": 1.51,
-              "probabilite": 0.7246,
-              "mise": 0.318
-            },
-            {
-              "paris": [
-                2
-              ],
-              "cote": 1.29,
-              "probabilite": 0.8448,
-              "mise": 0.3722
+              "cote": 1.33,
+              "probabilite": 0.806,
+              "mise": 0.3512
             }
           ],
-          "retour_garanti": 0.4802,
+          "retour_garanti": 0.4671,
           "gagnants_requis": 3,
           "erreurs_garanties": 0,
-          "proba_profit": 0.4466,
-          "esperance_gain": 0.1039
+          "proba_profit": 0.4696,
+          "esperance_gain": 0.0899
         }
       ],
       "meilleur_plan": "COMBINE",
@@ -75204,45 +75225,45 @@
     "scenario": "PRUDENT_3",
     "date": "2026-11-08",
     "portee": "meme_jour",
-    "genere_le": "2026-11-08T09:38:13.472494+00:00",
+    "genere_le": "2026-11-08T12:03:58.957818+00:00",
     "statut": "PENDING",
-    "cote_totale": 2.8829,
+    "cote_totale": 2.856,
     "jambes": [
       {
-        "match_id": "4rl64g43l669h2o5d0ezt3578",
-        "marche": "double_chance_1X",
-        "cote": 1.29,
-        "probabilite_estimee": 0.8448,
+        "match_id": "dzd8oa2djvlaiteo029euxjbo",
+        "marche": "handicap_domicile_1.5",
+        "cote": 1.36,
+        "probabilite_estimee": 0.875,
         "source": "moteur_v3",
-        "rang": "P2",
-        "domicile": "Brighton",
-        "exterieur": "Brentford",
+        "rang": "P1",
+        "domicile": "Bolívar",
+        "exterieur": "The Strongest",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "8xw5tr2evo6k7f6qjg3qandhw",
-        "marche": "over_under_total_3.5_under",
-        "cote": 1.51,
-        "probabilite_estimee": 0.7246,
+        "match_id": "axydwsrhpybjcswnv3nx6ynmc",
+        "marche": "over_under_total_2.5_over",
+        "cote": 1.5,
+        "probabilite_estimee": 0.7428,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Egnatia",
-        "exterieur": "Vora",
+        "domicile": "Utrecht",
+        "exterieur": "NEC Nimègue",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
       },
       {
-        "match_id": "d0en5nwn2de7hj8npe0rw2ln8",
-        "marche": "buts_equipe_exterieur_1.5_under",
-        "cote": 1.48,
-        "probabilite_estimee": 0.7935,
+        "match_id": "92v5m07ku60wbm3mdhqinurkk",
+        "marche": "handicap3_domicile_2_1",
+        "cote": 1.4,
+        "probabilite_estimee": 0.853,
         "source": "moteur_v3",
         "rang": "P1",
-        "domicile": "Torres",
-        "exterieur": "Latina",
+        "domicile": "Varaždin",
+        "exterieur": "D. Zagreb",
         "date": "2026-11-08",
         "journal_team": null,
         "resultat": null
@@ -75250,7 +75271,7 @@
     ],
     "analyse": {
       "paris": 3,
-      "paris_justes_attendus": 2.3629,
+      "paris_justes_attendus": 2.4708,
       "plans": [
         {
           "nom": "COMBINE",
@@ -75264,8 +75285,8 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4857,
-              "esperance_gain": 0.4003
+              "proba_profit": 0.5544,
+              "esperance_gain": 0.5834
             }
           ],
           "composition": [
@@ -75275,16 +75296,16 @@
                 1,
                 2
               ],
-              "cote": 2.8829,
-              "probabilite": 0.485735,
+              "cote": 2.856,
+              "probabilite": 0.554407,
               "mise": 1.0
             }
           ],
-          "retour_garanti": 2.8829,
+          "retour_garanti": 2.856,
           "gagnants_requis": 1,
           "erreurs_garanties": 0,
-          "proba_profit": 0.4857,
-          "esperance_gain": 0.4003
+          "proba_profit": 0.5544,
+          "esperance_gain": 0.5834
         },
         {
           "nom": "SIMPLES",
@@ -75300,15 +75321,15 @@
               "strategie": "COTES_EQUILIBREES",
               "choisie": true,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4857,
-              "esperance_gain": 0.1182
+              "proba_profit": 0.5544,
+              "esperance_gain": 0.1675
             },
             {
               "strategie": "SECURITE_GROUPEE",
               "choisie": false,
               "erreurs_garanties": 0,
-              "proba_profit": 0.4857,
-              "esperance_gain": 0.1182
+              "proba_profit": 0.5544,
+              "esperance_gain": 0.1675
             }
           ],
           "composition": [
@@ -75316,32 +75337,32 @@
               "paris": [
                 1
               ],
-              "cote": 1.51,
-              "probabilite": 0.7246,
-              "mise": 0.3134
+              "cote": 1.5,
+              "probabilite": 0.7428,
+              "mise": 0.315
             },
             {
               "paris": [
                 2
               ],
-              "cote": 1.48,
-              "probabilite": 0.7935,
-              "mise": 0.3198
+              "cote": 1.4,
+              "probabilite": 0.853,
+              "mise": 0.3375
             },
             {
               "paris": [
                 0
               ],
-              "cote": 1.29,
-              "probabilite": 0.8448,
-              "mise": 0.3668
+              "cote": 1.36,
+              "probabilite": 0.875,
+              "mise": 0.3475
             }
           ],
-          "retour_garanti": 0.4732,
+          "retour_garanti": 0.4725,
           "gagnants_requis": 3,
           "erreurs_garanties": 0,
-          "proba_profit": 0.4857,
-          "esperance_gain": 0.1182
+          "proba_profit": 0.5544,
+          "esperance_gain": 0.1675
         }
       ],
       "meilleur_plan": "COMBINE",
