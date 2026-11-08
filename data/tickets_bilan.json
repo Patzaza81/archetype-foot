@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "genere_le": "2026-11-08T00:45:31.201074+00:00",
+  "genere_le": "2026-11-08T09:18:53.553411+00:00",
   "comptes": {
     "total": 261,
-    "regles": 179,
-    "en_attente": 80,
+    "regles": 180,
+    "en_attente": 79,
     "exclus": 2
   },
   "par_scenario": {
@@ -45,12 +45,12 @@
       }
     },
     "EQUILIBRE_5": {
-      "tickets_regles": 24,
-      "paris": 120,
-      "justes_attendus": 95.61,
-      "justes_observes": 75,
+      "tickets_regles": 25,
+      "paris": 125,
+      "justes_attendus": 99.55,
+      "justes_observes": 80,
       "erreurs": {
-        "0": 1,
+        "0": 2,
         "1": 10,
         "2": 7,
         "3": 4,
@@ -59,25 +59,25 @@
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 24,
-          "taux_rentable_observe": 0.0417,
-          "proba_profit_prevue": 0.3214,
-          "roi_observe": -0.8274,
-          "esperance_prevue": 1.0308
+          "tickets_regles": 25,
+          "taux_rentable_observe": 0.08,
+          "proba_profit_prevue": 0.3206,
+          "roi_observe": -0.6009,
+          "esperance_prevue": 1.0194
         },
         "SIMPLES": {
-          "tickets_regles": 24,
-          "taux_rentable_observe": 0.4583,
-          "proba_profit_prevue": 0.7306,
-          "roi_observe": -0.0986,
-          "esperance_prevue": 0.1476
+          "tickets_regles": 25,
+          "taux_rentable_observe": 0.48,
+          "proba_profit_prevue": 0.7298,
+          "roi_observe": -0.0779,
+          "esperance_prevue": 0.1464
         },
         "TICKETS_2_DE_2_A_3": {
-          "tickets_regles": 24,
-          "taux_rentable_observe": 0.5417,
-          "proba_profit_prevue": 0.8172,
-          "roi_observe": -0.2825,
-          "esperance_prevue": 0.412
+          "tickets_regles": 25,
+          "taux_rentable_observe": 0.56,
+          "proba_profit_prevue": 0.8166,
+          "roi_observe": -0.2149,
+          "esperance_prevue": 0.4085
         }
       }
     },
@@ -282,10 +282,10 @@
       "justes": 243
     },
     "meme_jour": {
-      "tickets_regles": 85,
-      "gagnants": 13,
-      "paris": 362,
-      "justes": 219
+      "tickets_regles": 86,
+      "gagnants": 14,
+      "paris": 367,
+      "justes": 224
     }
   },
   "par_source": {
@@ -295,9 +295,9 @@
       "proba_moyenne_estimee": 0.6978
     },
     "moteur_v3": {
-      "paris": 250,
-      "taux_reussite": 0.596,
-      "proba_moyenne_estimee": 0.7884
+      "paris": 251,
+      "taux_reussite": 0.5976,
+      "proba_moyenne_estimee": 0.7882
     }
   },
   "avertissement": "Petits échantillons : un écart entre prévu et observé n'est significatif qu'avec beaucoup de tickets réglés."
