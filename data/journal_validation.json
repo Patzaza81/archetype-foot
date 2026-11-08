@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-08T00:45:01Z",
+  "genere_le": "2026-11-08T09:37:50Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -234,29 +234,6 @@
     "Boyacá Chicó|handicap_domicile_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
-    "Boyacá Chicó|1x2_domicile": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
-      "observations": 1,
-      "par_regime": {
-        "PERSISTANT": {
-          "signaux": 1,
-          "frequence_apres": 0.0
-        }
-      }
-    },
-    "Boyacá Chicó|handicap_domicile_-1.5": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
-    "Boyacá Chicó|double_chance_1X": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
       "observations": 1,
       "par_regime": {
         "PERSISTANT": {
@@ -265,14 +242,55 @@
         }
       }
     },
-    "Boyacá Chicó|handicap_domicile_-0.5": {
+    "Boyacá Chicó|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
           "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Boyacá Chicó|handicap_domicile_-1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Boyacá Chicó|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 2,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Boyacá Chicó|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
@@ -1112,6 +1130,18 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Guastatoya|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Tigre|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Twente|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1602,6 +1632,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Fukuoka|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fukuoka|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fukuoka|handicap_domicile_-1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Dunfermline|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1671,6 +1719,18 @@
       "par_regime": {}
     },
     "Houston|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "V-Varen|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "V-Varen|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1794,7 +1854,25 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Boyacá Chicó|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Boyacá Chicó|cage_inviolee_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Charlton|btts_oui": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Suchitepéquez|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
