@@ -1,133 +1,49 @@
 {
-  "genere_le": "2026-11-09T01:04:27.734224+00:00",
+  "genere_le": "2026-11-09T21:51:24.695008+00:00",
   "statut": "PRODUCTION_PARALLELE",
   "moteur_actif": "moteur_v2_6_10",
   "moteur_candidat": "moteur_v3",
   "regle_promotion": "Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.",
   "v2": {
-    "matchs_avec_selection": 10,
-    "choix": 16,
+    "matchs_avec_selection": 2,
+    "choix": 4,
     "marches": {
-      "over_under_total_2.5_over": 4,
-      "buts_equipe_exterieur_0.5_over": 2,
       "1x2_domicile": 1,
-      "buts_equipe_domicile_0.5_over": 1,
-      "buts_equipe_domicile_1.5_under": 1,
-      "double_chance_1X": 1,
-      "handicap_domicile_0.5": 1,
-      "handicap_exterieur_1.5": 1,
-      "over_under_total_1.5_over": 1,
+      "over_under_total_2.5_over": 1,
       "over_under_total_3.5_over": 1,
-      "over_under_total_3.5_under": 1,
       "over_under_total_4.5_over": 1
     }
   },
   "v3": {
-    "matchs_avec_selection": 3,
-    "choix": 3,
+    "matchs_avec_selection": 1,
+    "choix": 1,
     "marches": {
-      "double_chance_X2": 1,
-      "handicap_domicile_1.5": 1,
-      "over_under_total_3.5_under": 1
+      "handicap_domicile_1.5": 1
     }
   },
   "comparaison": {
-    "matchs_communs": 27,
-    "matchs_v2_seulement": 23,
+    "matchs_communs": 17,
+    "matchs_v2_seulement": 28,
     "matchs_v3_seulement": 0,
     "accord_marche": 0,
-    "divergence_marche": 12,
+    "divergence_marche": 2,
     "taux_accord_sur_matchs_communs": 0.0,
     "accords": [],
     "divergences": [
       {
-        "match_id": "id:11dgyunkb4q9u44gurfnskphw",
-        "v2": [
-          "1x2_domicile"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:1aiwrspj7ypzok8qbzrwqvl04",
-        "v2": [
-          "buts_equipe_domicile_0.5_over",
-          "over_under_total_2.5_over"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:279e6vvt3885xehyky69gicyc",
-        "v2": [
-          "handicap_exterieur_1.5"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:3xts35pg9eqywpl46rs6ixv6c",
-        "v2": [
-          "buts_equipe_exterieur_0.5_over"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:3y3emvsmx120kx4pallhrr5zo",
-        "v2": [
-          "over_under_total_1.5_over",
-          "over_under_total_2.5_over"
-        ],
-        "v3": []
-      },
-      {
         "match_id": "id:5ogvc9pclw7en00regy12ujv8",
         "v2": [
           "over_under_total_2.5_over",
-          "over_under_total_3.5_over"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:amzr5u1a5d4ktxh3hzm886b6c",
-        "v2": [
-          "buts_equipe_exterieur_0.5_over",
-          "over_under_total_3.5_under"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:bbxm0noxzbjm8tfly0bta1pn8",
-        "v2": [
-          "buts_equipe_domicile_1.5_under"
-        ],
-        "v3": [
-          "double_chance_X2"
-        ]
-      },
-      {
-        "match_id": "id:cobhgwt1ox9exquayceu11h5g",
-        "v2": [
-          "over_under_total_2.5_over",
+          "over_under_total_3.5_over",
           "over_under_total_4.5_over"
         ],
         "v3": []
       },
       {
-        "match_id": "id:coovr7ypmyvryq60fhwix1qms",
-        "v2": [
-          "double_chance_1X",
-          "handicap_domicile_0.5"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:czplnadprhctt6ueh66qeivis",
-        "v2": [],
-        "v3": [
-          "over_under_total_3.5_under"
-        ]
-      },
-      {
         "match_id": "id:dzumkescpxrw1hwro73k9oe1g",
-        "v2": [],
+        "v2": [
+          "1x2_domicile"
+        ],
         "v3": [
           "handicap_domicile_1.5"
         ]
@@ -136,8 +52,8 @@
   },
   "calibration_v3": {
     "prete": true,
-    "observations": 235805,
-    "matchs": 3668,
+    "observations": 235819,
+    "matchs": 3669,
     "minimum_observations": 300,
     "minimum_matchs": 50,
     "raison": "OK"

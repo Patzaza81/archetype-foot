@@ -1,32 +1,32 @@
 {
-  "genere_le": "2026-11-09T00:49:33Z",
-  "nb_signaux": 50,
-  "nb_exportes": 17,
+  "genere_le": "2026-11-09T21:47:23Z",
+  "nb_signaux": 45,
+  "nb_exportes": 5,
   "par_date": {
-    "2026-11-09": 14,
+    "2026-11-09": 2,
     "2026-11-10": 3
   },
   "rejets": {
-    "historique_indisponible": 4,
-    "pas_de_cotes_betpawa": 20,
-    "match_deja_commence_ou_termine": 9
+    "match_deja_commence_ou_termine": 31,
+    "pas_de_cotes_betpawa": 7,
+    "historique_indisponible": 2
   },
   "marches_ignores": {
-    "score_exact": 17,
-    "pair_impair": 17,
-    "1x2_btts": 16,
-    "dc_total_2.5": 16,
-    "handicap_3issues_1": 15,
-    "dc_total_1.5": 15,
-    "dc_total_3.5": 15,
-    "dc_total_4.5": 15,
-    "1x2_total_2.5": 14,
-    "handicap_3issues_-1": 14,
-    "1x2_total_1.5": 14,
-    "1x2_total_3.5": 14,
-    "dc_btts": 14,
-    "over_under_domicile_2.5 (hors périmètre moteur)": 13,
-    "handicap_3issues_-2": 13
+    "handicap_3issues_1": 5,
+    "score_exact": 5,
+    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 5,
+    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 5,
+    "pair_impair": 5,
+    "1x2_btts": 5,
+    "dc_total_2.5": 5,
+    "handicap_3issues_-1": 4,
+    "1x2_total_3.5": 4,
+    "dc_total_1.5": 4,
+    "dc_total_3.5": 4,
+    "dc_total_4.5": 4,
+    "over_under_domicile_2.5 (hors périmètre moteur)": 3,
+    "over_under_exterieur_2.5 (hors périmètre moteur)": 3,
+    "handicap_3issues_-2": 3
   },
   "fichiers": {
     "2026-11-09": "export_moteur/matchs_moteur_2026-11-09.json",
@@ -34,18 +34,60 @@
   },
   "detail_rejets": [
     {
+      "match_id": "4bm5q9alfh9zdqlkfw2zgjw9g",
+      "match": "Las Palmas - Eldense",
+      "competition": "Espagne :\n                        Segunda Division",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "9djrw2eejnodzzr48n1d92rro",
+      "match": "Ikorodu City - Inter Lagos",
+      "competition": "Nigeria :\n                        Premier Ligue",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "bbxm0noxzbjm8tfly0bta1pn8",
+      "match": "Torreense - Uniao de Leiria",
+      "competition": "Portugal :\n                        Liga Portugal 2",
+      "date": "2026-11-10",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "5s33dixxyiqny6usjg9i8vtas",
       "match": "Kristiansund - Vålerenga",
       "competition": "Norvège :\n                        Eliteserien",
       "date": "2026-11-09",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "czplnadprhctt6ueh66qeivis",
+      "match": "Pineto - Vis Pesaro",
+      "competition": "Italie :\n                        Série C Girone B",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "19jmxaign4qjjskkejmgn2psk",
+      "match": "Foggia - Barletta",
+      "competition": "Italie :\n                        Série C Girone B",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "188np9umbimz06egq9dmeqfbo",
       "match": "Team Altamura - Cavese",
       "competition": "Italie :\n                        Série C Girone B",
       "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "1aiwrspj7ypzok8qbzrwqvl04",
+      "match": "Picerno - Bari",
+      "competition": "Italie :\n                        Série C Girone B",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "dzlpncz42d0ue7jzhqvo18w7o",
@@ -69,6 +111,13 @@
       "raison": "match_deja_commence_ou_termine"
     },
     {
+      "match_id": "76e3ew1oakljw4ipbsm854e8k",
+      "match": "Alianza Valledupar - Llaneros",
+      "competition": "Colombie :\n                        Première A Cloture",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "f0hmwi7fssvqly5h8t9pwqfpw",
       "match": "Herediano - San Carlos",
       "competition": "Costa Rica :\n                        1ère Division Ouverture",
@@ -76,11 +125,25 @@
       "raison": "match_deja_commence_ou_termine"
     },
     {
+      "match_id": "3xts35pg9eqywpl46rs6ixv6c",
+      "match": "Mushuc Runa - Delfin",
+      "competition": "Équateur :\n                        Première A Tour de Relégation",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "3y3emvsmx120kx4pallhrr5zo",
+      "match": "Universitario - Manta",
+      "competition": "Équateur :\n                        Première A Tour de Relégation",
+      "date": "2026-11-10",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "8n81kvwuyfoiicy5ntkva2zh0",
       "match": "Cologne - RB Leipzig",
       "competition": "Allemagne :\n                        Bundesliga Femmes",
       "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "8qw0hguzmh4tmpntes7cy0dg4",
@@ -88,13 +151,6 @@
       "competition": "El Salvador :\n                        1ère Division Ouverture",
       "date": "2026-11-09",
       "raison": "match_deja_commence_ou_termine"
-    },
-    {
-      "match_id": "8r76awjf40dih4f0bv5gyml1w",
-      "match": "FAS - Fuerte",
-      "competition": "El Salvador :\n                        1ère Division Ouverture",
-      "date": "2026-11-09",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
     },
     {
       "match_id": "6936720a8r04udv7mzygx6vis",
@@ -115,7 +171,7 @@
       "match": "Marathón - Choloma",
       "competition": "Honduras :\n                        Ligue National Ouverture - 1er Tour",
       "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "9eb6gaa9cu2wx89f327tpx250",
@@ -129,7 +185,14 @@
       "match": "Club León - CD Guadalajara",
       "competition": "Mexique :\n                        Liga MX Ouverture",
       "date": "2026-11-09",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "5osnc6i53mnuk122pkrzifxn8",
+      "match": "San Lorenzo - Rubio NU",
+      "competition": "Paraguay :\n                        Professionnel de la Division Clôture",
+      "date": "2026-11-10",
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "anbqd3vn0zuttvsbqt6cjiz9w",
@@ -139,18 +202,32 @@
       "raison": "match_deja_commence_ou_termine"
     },
     {
+      "match_id": "amzr5u1a5d4ktxh3hzm886b6c",
+      "match": "Universitario - Moquegua",
+      "competition": "Pérou :\n                        Primera Division Cloture",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "11dgyunkb4q9u44gurfnskphw",
+      "match": "Botoşani - Otelul",
+      "competition": "Roumanie :\n                        Liga 1",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
+      "match_id": "279e6vvt3885xehyky69gicyc",
+      "match": "Atlético Madrid - Badalona",
+      "competition": "Espagne :\n                        Primera Division Femmes",
+      "date": "2026-11-09",
+      "raison": "match_deja_commence_ou_termine"
+    },
+    {
       "match_id": "27v42nllbfqgnr4shfvfkb3f8",
       "match": "Deportivo - Valencia",
       "competition": "Espagne :\n                        Primera Division Femmes",
-      "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "1s4n90dlsmblncxadccdz2d5g",
-      "match": "Sporting - Bubali",
-      "competition": "Aruba :\n                        Division di Honor",
-      "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "date": "2026-11-10",
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "1sggtudkpo7ilmiad4q6qp7v8",
@@ -164,42 +241,21 @@
       "match": "Iberia - Gagra",
       "competition": "Géorgie :\n                        Ligue Erovnuli",
       "date": "2026-11-09",
-      "raison": "historique_indisponible: domicile: aucun_match_saison_en_cours"
-    },
-    {
-      "match_id": "atqr9hpizq7rynhjrfqe2tqms",
-      "match": "Santos - Tigers",
-      "competition": "Guyana :\n                        GFF Super League",
-      "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "dlhtprj5w0rcgrl1urgos1gk4",
-      "match": "VG United - Avengers",
-      "competition": "Îles Vierges Britanniques :\n                        BVIFA National League",
-      "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "dl1ckhz7bnsc8yihbx5mu8s2c",
-      "match": "HBA Panthers - Old Madrid",
-      "competition": "Îles Vierges Britanniques :\n                        BVIFA National League",
-      "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "42rb0d71hzaoh0w4f7kypwopg",
       "match": "KK Erchim - Khovd Western",
       "competition": "Mongolie :\n                        Premiere Ligue Tour de relégation",
       "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "42z8w7abl0fu65lpexqmz9jis",
       "match": "Ulaangom City - Khovd",
       "competition": "Mongolie :\n                        Premiere Ligue Tour de relégation",
       "date": "2026-11-09",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "15jzfxzx68ozlkzcwj5ohszys",
@@ -209,25 +265,18 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "9c49eeyox88lfsb1fhbwfp5as",
-      "match": "Sport Lagos - Rivers Utd",
-      "competition": "Nigeria :\n                        Premier Ligue",
-      "date": "2026-11-10",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "8riac0b1sqepjnbbyc9dizwno",
       "match": "Cacahuatique - Angel Firpo",
       "competition": "El Salvador :\n                        1ère Division Ouverture",
       "date": "2026-11-10",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: exterieur: aucun_match_saison_en_cours"
     },
     {
       "match_id": "8rtddg0mszg8y6zw4y0lazv2s",
       "match": "Metapan - Platense",
       "competition": "El Salvador :\n                        1ère Division Ouverture",
       "date": "2026-11-10",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: exterieur: saison_incoherente_avec_resultats_connus"
     },
     {
       "match_id": "425kdkpyeabn5mwe3zplpfuok",

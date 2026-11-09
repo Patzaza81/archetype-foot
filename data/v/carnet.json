@@ -4317,7 +4317,7 @@
   "date": "2026-11-09",
   "domicile": "Botoşani",
   "exterieur": "Otelul",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -17087,7 +17087,7 @@
   "date": "2026-11-09",
   "domicile": "Foggia",
   "exterieur": "Barletta",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -20657,7 +20657,7 @@
   "date": "2026-11-09",
   "domicile": "Picerno",
   "exterieur": "Bari",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -157558,7 +157558,7 @@
   "date": "2026-11-09",
   "domicile": "Atlético Madrid",
   "exterieur": "Badalona",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -243058,7 +243058,7 @@
   "date": "2026-11-09",
   "domicile": "Mushuc Runa",
   "exterieur": "Delfin",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -243989,7 +243989,7 @@
   "date": "2026-11-09",
   "domicile": "Universitario",
   "exterieur": "Manta",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -292247,8 +292247,8 @@
     "niveau": "SÛR",
     "p_honnete": 0.748,
     "p_modele": 0.7215,
-    "profit": null,
-    "resultat": null
+    "profit": -1.0,
+    "resultat": "LOSS"
    },
    {
     "cote": 1.67,
@@ -292256,8 +292256,8 @@
     "niveau": "RISQUÉ",
     "p_honnete": 0.543,
     "p_modele": 0.7016,
-    "profit": null,
-    "resultat": null
+    "profit": 0.6699999999999999,
+    "resultat": "WIN"
    }
   ],
   "competition": "République Dominicaine : IV Liga Mayor",
@@ -292501,12 +292501,15 @@
    "niveau": "RISQUÉ",
    "p_honnete": 0.543,
    "p_modele": 0.779,
-   "profit": null,
-   "resultat": null
+   "profit": 0.51,
+   "resultat": "WIN"
   },
-  "profit": null,
-  "resultat": null,
-  "score": null,
+  "profit": 0.51,
+  "resultat": "WIN",
+  "score": [
+   0,
+   1
+  ],
   "vu_le": "2026-11-07T02:58:05.771116+00:00"
  },
  "4qjixhdd2f9gezkf1h74ret5g": {
@@ -338843,7 +338846,7 @@
   ],
   "autres": [
    {
-    "cote": 1.32,
+    "cote": 1.34,
     "marche": "Plus de 0.5 buts - Extérieur",
     "niveau": "SÛR",
     "p_honnete": 0.748,
@@ -338861,8 +338864,8 @@
     "resultat": null
    },
    {
-    "cote": 1.28,
-    "marche": "Plus de 0.5 buts - Domicile",
+    "cote": 1.3,
+    "marche": "Encaisse au moins 1 but - Extérieur",
     "niveau": "SÛR",
     "p_honnete": 0.748,
     "p_modele": 0.747,
@@ -338873,7 +338876,7 @@
   "competition": "Paraguay : Professionnel de la Division Clôture",
   "contexte": {
    "ecart_points": -0.194,
-   "ecart_rang": -0.333
+   "ecart_rang": -0.417
   },
   "coup_d_envoi_utc": "2026-11-09T22:30:00Z",
   "date": "2026-11-09",
@@ -338972,7 +338975,7 @@
   },
   "lambdas": {
    "force": [
-    1.4171,
+    1.4169,
     1.3585
    ],
    "simple": [
@@ -338982,7 +338985,7 @@
   },
   "marches": [
    {
-    "c": 1.32,
+    "c": 1.35,
     "k": 1.0,
     "m": "Plus de 1.5 buts",
     "pf": 0.7647,
@@ -338992,20 +338995,20 @@
     "sh": 0.8333
    },
    {
-    "c": 1.32,
+    "c": 1.34,
     "k": 1.0,
     "m": "Plus de 0.5 buts - Extérieur",
-    "pf": 0.7429,
+    "pf": 0.743,
     "pm": 0.7599,
     "ps": 0.7769,
     "sa": 0.5833,
     "sh": 0.9167
    },
    {
-    "c": 1.33,
+    "c": 1.35,
     "k": 1.0,
     "m": "Encaisse au moins 1 but - Domicile",
-    "pf": 0.7429,
+    "pf": 0.743,
     "pm": 0.7599,
     "ps": 0.7769,
     "sa": 0.5833,
@@ -339022,20 +339025,20 @@
     "sh": 1.0
    },
    {
-    "c": 1.28,
+    "c": 1.3,
     "k": 1.0,
-    "m": "Plus de 0.5 buts - Domicile",
-    "pf": 0.7576,
+    "m": "Encaisse au moins 1 but - Extérieur",
+    "pf": 0.7575,
     "pm": 0.747,
     "ps": 0.7364,
     "sa": 0.75,
     "sh": 0.75
    },
    {
-    "c": 1.29,
+    "c": 1.3,
     "k": 1.0,
-    "m": "Encaisse au moins 1 but - Extérieur",
-    "pf": 0.7576,
+    "m": "Plus de 0.5 buts - Domicile",
+    "pf": 0.7575,
     "pm": 0.747,
     "ps": 0.7364,
     "sa": 0.75,
@@ -339045,8 +339048,8 @@
     "c": 1.47,
     "k": 1.0,
     "m": "Handicap -0.5 - Extérieur",
-    "pf": 0.6136,
-    "pm": 0.6381,
+    "pf": 0.6137,
+    "pm": 0.6382,
     "ps": 0.6626,
     "sa": 0.6667,
     "sh": 0.6667
@@ -339055,8 +339058,8 @@
     "c": 1.49,
     "k": 1.0,
     "m": "Double chance - X2",
-    "pf": 0.6136,
-    "pm": 0.6381,
+    "pf": 0.6137,
+    "pm": 0.6382,
     "ps": 0.6626,
     "sa": 0.6667,
     "sh": 0.6667
@@ -339082,27 +339085,27 @@
     "sh": 0.3333
    },
    {
-    "c": 1.45,
+    "c": 1.42,
     "k": 1.0,
     "m": "Moins de 1.5 buts - Domicile",
-    "pf": 0.5859,
+    "pf": 0.586,
     "pm": 0.6005,
     "ps": 0.6151,
     "sa": 0.6667,
     "sh": 0.6667
    },
    {
-    "c": 1.38,
+    "c": 1.36,
     "k": 1.0,
     "m": "Moins de 1.5 buts - Extérieur",
-    "pf": 0.6063,
+    "pf": 0.6062,
     "pm": 0.582,
     "ps": 0.5578,
     "sa": 0.5833,
     "sh": 0.3333
    },
    {
-    "c": 1.79,
+    "c": 1.83,
     "k": 1.0,
     "m": "BTTS - oui",
     "pf": 0.5628,
@@ -339112,7 +339115,7 @@
     "sh": 0.6667
    },
    {
-    "c": 2.05,
+    "c": 2.13,
     "k": 1.0,
     "m": "Plus de 2.5 buts",
     "pf": 0.5247,
@@ -339122,7 +339125,7 @@
     "sh": 0.8333
    },
    {
-    "c": 1.69,
+    "c": 1.64,
     "k": 1.0,
     "m": "Moins de 2.5 buts",
     "pf": 0.4753,
@@ -339132,7 +339135,7 @@
     "sh": 0.1667
    },
    {
-    "c": 1.85,
+    "c": 1.8,
     "k": 1.0,
     "m": "BTTS - non",
     "pf": 0.4372,
@@ -339142,20 +339145,20 @@
     "sh": 0.3333
    },
    {
-    "c": 2.65,
+    "c": 2.73,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Extérieur",
-    "pf": 0.3937,
+    "pf": 0.3938,
     "pm": 0.418,
     "ps": 0.4422,
     "sa": 0.4167,
     "sh": 0.6667
    },
    {
-    "c": 2.43,
+    "c": 2.51,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Domicile",
-    "pf": 0.4141,
+    "pf": 0.414,
     "pm": 0.3995,
     "ps": 0.3849,
     "sa": 0.3333,
@@ -339185,8 +339188,8 @@
     "c": 2.37,
     "k": 1.0,
     "m": "Handicap -0.5 - Domicile",
-    "pf": 0.3864,
-    "pm": 0.3619,
+    "pf": 0.3863,
+    "pm": 0.3618,
     "ps": 0.3374,
     "sa": 0.3333,
     "sh": 0.3333
@@ -339195,37 +339198,37 @@
     "c": 2.43,
     "k": 1.0,
     "m": "1X2 - 1",
-    "pf": 0.3864,
-    "pm": 0.3619,
+    "pf": 0.3863,
+    "pm": 0.3618,
     "ps": 0.3374,
     "sa": 0.3333,
     "sh": 0.3333
    },
    {
-    "c": 3.7,
+    "c": 3.9,
     "k": 1.0,
     "m": "Plus de 3.5 buts",
     "pf": 0.3026,
-    "pm": 0.3091,
+    "pm": 0.309,
     "ps": 0.3155,
     "sa": 0.1667,
     "sh": 0.25
    },
    {
-    "c": 3.11,
+    "c": 3.01,
     "k": 1.0,
     "m": "Cage inviolée - Extérieur",
-    "pf": 0.2424,
+    "pf": 0.2425,
     "pm": 0.253,
     "ps": 0.2636,
     "sa": 0.25,
     "sh": 0.25
    },
    {
-    "c": 3.15,
+    "c": 3.05,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Domicile",
-    "pf": 0.2424,
+    "pf": 0.2425,
     "pm": 0.253,
     "ps": 0.2636,
     "sa": 0.25,
@@ -339242,27 +339245,27 @@
     "sh": 0.0
    },
    {
-    "c": 2.87,
+    "c": 2.79,
     "k": 1.0,
     "m": "Cage inviolée - Domicile",
-    "pf": 0.2571,
+    "pf": 0.257,
     "pm": 0.2401,
     "ps": 0.2231,
     "sa": 0.4167,
     "sh": 0.0833
    },
    {
-    "c": 2.92,
+    "c": 2.83,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Extérieur",
-    "pf": 0.2571,
+    "pf": 0.257,
     "pm": 0.2401,
     "ps": 0.2231,
     "sa": 0.4167,
     "sh": 0.0833
    },
    {
-    "c": 3.1,
+    "c": 2.96,
     "k": 1.0,
     "m": "Moins de 1.5 buts",
     "pf": 0.2353,
@@ -339272,7 +339275,7 @@
     "sh": 0.1667
    },
    {
-    "c": 5.83,
+    "c": 5.9,
     "k": 1.0,
     "m": "Handicap 1.5 - Extérieur",
     "pf": 0.1628,
@@ -339282,7 +339285,7 @@
     "sh": 0.25
    },
    {
-    "c": 6.49,
+    "c": 6.83,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Extérieur",
     "pf": 0.1566,
@@ -339292,17 +339295,17 @@
     "sh": 0.3333
    },
    {
-    "c": 4.98,
+    "c": 5.07,
     "k": 1.0,
     "m": "Handicap -1.5 - Domicile",
-    "pf": 0.181,
-    "pm": 0.1653,
+    "pf": 0.1809,
+    "pm": 0.1652,
     "ps": 0.1496,
     "sa": 0.25,
     "sh": 0.0
    },
    {
-    "c": 5.76,
+    "c": 6.03,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Domicile",
     "pf": 0.1706,
@@ -339312,7 +339315,7 @@
     "sh": 0.0833
    },
    {
-    "c": 7.49,
+    "c": 8.01,
     "k": 1.0,
     "m": "Plus de 4.5 buts",
     "pf": 0.1485,
@@ -339322,7 +339325,7 @@
     "sh": 0.25
    },
    {
-    "c": 8.6,
+    "c": 8.31,
     "k": 1.0,
     "m": "Moins de 0.5 buts",
     "pf": 0.0623,
@@ -339336,7 +339339,7 @@
   "n_matchs_lieu": 12,
   "parametres_version": "2026-10-16b",
   "principal": {
-   "cote": 1.32,
+   "cote": 1.35,
    "marche": "Plus de 1.5 buts",
    "niveau": "SÛR",
    "p_honnete": 0.748,
@@ -339347,7 +339350,7 @@
   "profit": null,
   "resultat": null,
   "score": null,
-  "vu_le": "2026-11-09T01:02:01.642671+00:00"
+  "vu_le": "2026-11-09T21:48:23.509973+00:00"
  },
  "5ol09lv8kbiwv536wsymb9bmc": {
   "alertes": [],
@@ -339870,7 +339873,7 @@
   "date": "2026-11-09",
   "domicile": "San Lorenzo",
   "exterieur": "Rubio NU",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -434992,7 +434995,7 @@
   "date": "2026-11-09",
   "domicile": "Alianza Valledupar",
   "exterieur": "Llaneros",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -437038,9 +437041,7 @@
  "77efr3scruoksnr732sis4r2s": {
   "alertes": [
    "musique dom:instable",
-   "musique dom:pic",
-   "musique ext:instable",
-   "musique ext:pic"
+   "musique dom:pic"
   ],
   "autres": [],
   "competition": "Colombie : Première A Cloture",
@@ -437145,8 +437146,8 @@
   },
   "lambdas": {
    "force": [
-    2.0886,
-    1.0072
+    2.0885,
+    1.0073
    ],
    "simple": [
     1.9508,
@@ -437155,7 +437156,17 @@
   },
   "marches": [
    {
-    "c": 1.4,
+    "c": 1.32,
+    "k": 1.0,
+    "m": "Moins de 1.5 buts - Extérieur",
+    "pf": 0.7331,
+    "pm": 0.7476,
+    "ps": 0.7622,
+    "sa": 0.9167,
+    "sh": 0.6364
+   },
+   {
+    "c": 1.3,
     "k": 1.0,
     "m": "Moins de 2.5 buts - Domicile",
     "pf": 0.6527,
@@ -437165,7 +437176,7 @@
     "sh": 0.7273
    },
    {
-    "c": 1.45,
+    "c": 1.42,
     "k": 1.0,
     "m": "Moins de 3.5 buts",
     "pf": 0.6258,
@@ -437175,7 +437186,7 @@
     "sh": 0.6364
    },
    {
-    "c": 1.49,
+    "c": 1.37,
     "k": 1.0,
     "m": "Handicap -1.5 - Extérieur",
     "pf": 0.6131,
@@ -437185,7 +437196,7 @@
     "sh": 0.8182
    },
    {
-    "c": 1.49,
+    "c": 1.41,
     "k": 1.0,
     "m": "Plus de 0.5 buts - Extérieur",
     "pf": 0.6348,
@@ -437195,7 +437206,7 @@
     "sh": 0.7273
    },
    {
-    "c": 1.5,
+    "c": 1.42,
     "k": 1.0,
     "m": "Encaisse au moins 1 but - Domicile",
     "pf": 0.6348,
@@ -437205,17 +437216,7 @@
     "sh": 0.7273
    },
    {
-    "c": 1.5,
-    "k": 1.0,
-    "m": "Handicap -0.5 - Domicile",
-    "pf": 0.6224,
-    "pm": 0.6175,
-    "ps": 0.6126,
-    "sa": 0.5833,
-    "sh": 0.3636
-   },
-   {
-    "c": 1.51,
+    "c": 1.71,
     "k": 1.0,
     "m": "1X2 - 1",
     "pf": 0.6224,
@@ -437225,7 +437226,17 @@
     "sh": 0.3636
    },
    {
-    "c": 1.53,
+    "c": 1.71,
+    "k": 1.0,
+    "m": "Handicap -0.5 - Domicile",
+    "pf": 0.6224,
+    "pm": 0.6175,
+    "ps": 0.6126,
+    "sa": 0.5833,
+    "sh": 0.3636
+   },
+   {
+    "c": 1.66,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Domicile",
     "pf": 0.6174,
@@ -437235,7 +437246,7 @@
     "sh": 0.5455
    },
    {
-    "c": 1.62,
+    "c": 1.68,
     "k": 1.0,
     "m": "Plus de 2.5 buts",
     "pf": 0.5979,
@@ -437245,7 +437256,7 @@
     "sh": 0.4545
    },
    {
-    "c": 1.69,
+    "c": 1.63,
     "k": 1.0,
     "m": "BTTS - oui",
     "pf": 0.5561,
@@ -437255,17 +437266,17 @@
     "sh": 0.6364
    },
    {
-    "c": 1.97,
+    "c": 2.05,
     "k": 1.0,
     "m": "BTTS - non",
-    "pf": 0.4439,
+    "pf": 0.4438,
     "pm": 0.4626,
     "ps": 0.4813,
     "sa": 0.5833,
     "sh": 0.3636
    },
    {
-    "c": 2.17,
+    "c": 2.07,
     "k": 1.0,
     "m": "Moins de 2.5 buts",
     "pf": 0.4021,
@@ -437275,7 +437286,7 @@
     "sh": 0.5455
    },
    {
-    "c": 2.24,
+    "c": 2.01,
     "k": 1.0,
     "m": "Moins de 1.5 buts - Domicile",
     "pf": 0.3826,
@@ -437285,7 +437296,7 @@
     "sh": 0.4545
    },
    {
-    "c": 2.2,
+    "c": 1.93,
     "k": 1.0,
     "m": "Double chance - X2",
     "pf": 0.3776,
@@ -437295,7 +437306,7 @@
     "sh": 0.6364
    },
    {
-    "c": 2.3,
+    "c": 2.02,
     "k": 1.0,
     "m": "Handicap -0.5 - Extérieur",
     "pf": 0.3776,
@@ -437305,7 +437316,7 @@
     "sh": 0.6364
    },
    {
-    "c": 2.34,
+    "c": 2.56,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Extérieur",
     "pf": 0.3652,
@@ -437315,7 +437326,7 @@
     "sh": 0.2727
    },
    {
-    "c": 2.36,
+    "c": 2.6,
     "k": 1.0,
     "m": "Cage inviolée - Domicile",
     "pf": 0.3652,
@@ -437325,17 +437336,17 @@
     "sh": 0.2727
    },
    {
-    "c": 2.32,
+    "c": 2.84,
     "k": 1.0,
     "m": "Handicap -1.5 - Domicile",
-    "pf": 0.3869,
+    "pf": 0.3868,
     "pm": 0.3778,
     "ps": 0.3688,
     "sa": 0.5,
     "sh": 0.1818
    },
    {
-    "c": 2.55,
+    "c": 2.65,
     "k": 1.0,
     "m": "Plus de 3.5 buts",
     "pf": 0.3742,
@@ -437345,17 +437356,17 @@
     "sh": 0.3636
    },
    {
-    "c": 2.61,
+    "c": 3.04,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Domicile",
-    "pf": 0.3473,
+    "pf": 0.3472,
     "pm": 0.3286,
     "ps": 0.31,
     "sa": 0.3333,
     "sh": 0.2727
    },
    {
-    "c": 3.32,
+    "c": 2.94,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Extérieur",
     "pf": 0.2669,
@@ -437365,7 +437376,7 @@
     "sh": 0.3636
    },
    {
-    "c": 4.31,
+    "c": 3.77,
     "k": 1.0,
     "m": "1X2 - X",
     "pf": 0.2038,
@@ -437375,7 +437386,7 @@
     "sh": 0.5455
    },
    {
-    "c": 4.22,
+    "c": 4.04,
     "k": 1.0,
     "m": "Moins de 1.5 buts",
     "pf": 0.1853,
@@ -437385,7 +437396,7 @@
     "sh": 0.1818
    },
    {
-    "c": 4.51,
+    "c": 4.8,
     "k": 1.0,
     "m": "Plus de 4.5 buts",
     "pf": 0.2011,
@@ -437395,7 +437406,7 @@
     "sh": 0.1818
    },
    {
-    "c": 4.4,
+    "c": 4.11,
     "k": 1.0,
     "m": "Handicap 0.5 - Extérieur",
     "pf": 0.1738,
@@ -437405,7 +437416,7 @@
     "sh": 0.0909
    },
    {
-    "c": 5.36,
+    "c": 4.35,
     "k": 1.0,
     "m": "1X2 - 2",
     "pf": 0.1738,
@@ -437415,7 +437426,7 @@
     "sh": 0.0909
    },
    {
-    "c": 5.4,
+    "c": 4.8,
     "k": 1.0,
     "m": "Cage inviolée - Extérieur",
     "pf": 0.1239,
@@ -437425,7 +437436,7 @@
     "sh": 0.0909
    },
    {
-    "c": 5.5,
+    "c": 4.9,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Domicile",
     "pf": 0.1239,
@@ -437435,7 +437446,7 @@
     "sh": 0.0909
    },
    {
-    "c": 8.26,
+    "c": 8.61,
     "k": 1.0,
     "m": "Plus de 5.5 buts",
     "pf": 0.0939,
@@ -437445,7 +437456,7 @@
     "sh": 0.1818
    },
    {
-    "c": 7.84,
+    "c": 7.08,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Extérieur",
     "pf": 0.0816,
@@ -437455,7 +437466,7 @@
     "sh": 0.1818
    },
    {
-    "c": 10.81,
+    "c": 9.83,
     "k": 1.0,
     "m": "Moins de 0.5 buts",
     "pf": 0.0452,
@@ -437469,18 +437480,18 @@
   "n_matchs_lieu": 11,
   "parametres_version": "2026-10-16b",
   "principal": {
-   "cote": 1.4,
-   "marche": "Moins de 2.5 buts - Domicile",
-   "niveau": "MOYEN",
-   "p_honnete": 0.655,
-   "p_modele": 0.6714,
+   "cote": 1.32,
+   "marche": "Moins de 1.5 buts - Extérieur",
+   "niveau": "SÛR",
+   "p_honnete": 0.748,
+   "p_modele": 0.7476,
    "profit": null,
    "resultat": null
   },
   "profit": null,
   "resultat": null,
   "score": null,
-  "vu_le": "2026-11-09T01:02:01.642671+00:00"
+  "vu_le": "2026-11-09T21:48:23.509973+00:00"
  },
  "77jjz06f7fb5npwgtbne4pfdg": {
   "alertes": [
@@ -543755,7 +543766,7 @@
   "date": "2026-11-09",
   "domicile": "Ikorodu City",
   "exterieur": "Inter Lagos",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -578047,7 +578058,7 @@
   "date": "2026-11-09",
   "domicile": "Universitario",
   "exterieur": "Moquegua",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -622000,7 +622011,7 @@
   "date": "2026-11-09",
   "domicile": "Torreense",
   "exterieur": "Uniao de Leiria",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -679361,9 +679372,28 @@
  },
  "coovr7ypmyvryq60fhwix1qms": {
   "alertes": [
-   "musique dom:pic"
+   "musique ext:pic"
   ],
-  "autres": [],
+  "autres": [
+   {
+    "cote": 1.27,
+    "marche": "Double chance - 12",
+    "niveau": "SÛR",
+    "p_honnete": 0.748,
+    "p_modele": 0.803,
+    "profit": null,
+    "resultat": null
+   },
+   {
+    "cote": 1.39,
+    "marche": "Moins de 1.5 buts - Domicile",
+    "niveau": "MOYEN",
+    "p_honnete": 0.655,
+    "p_modele": 0.7141,
+    "profit": null,
+    "resultat": null
+   }
+  ],
   "competition": "Jamaïque : Premier Ligue",
   "contexte": {
    "ecart_points": -0.333,
@@ -679466,8 +679496,8 @@
   },
   "lambdas": {
    "force": [
-    0.8698,
-    2.415
+    0.8697,
+    2.4152
    ],
    "simple": [
     1.25,
@@ -679476,9 +679506,39 @@
   },
   "marches": [
    {
-    "c": 1.36,
+    "c": 1.27,
     "k": 0.8,
-    "m": "Plus de 0.5 buts - Domicile",
+    "m": "Double chance - X2",
+    "pf": 0.8834,
+    "pm": 0.8146,
+    "ps": 0.7457,
+    "sa": 1.0,
+    "sh": 0.5
+   },
+   {
+    "c": 1.27,
+    "k": 0.8,
+    "m": "Double chance - 12",
+    "pf": 0.8315,
+    "pm": 0.803,
+    "ps": 0.7745,
+    "sa": 0.5,
+    "sh": 0.5
+   },
+   {
+    "c": 1.39,
+    "k": 0.8,
+    "m": "Moins de 1.5 buts - Domicile",
+    "pf": 0.7835,
+    "pm": 0.7141,
+    "ps": 0.6446,
+    "sa": 1.0,
+    "sh": 0.5
+   },
+   {
+    "c": 1.33,
+    "k": 0.8,
+    "m": "Encaisse au moins 1 but - Extérieur",
     "pf": 0.5809,
     "pm": 0.6472,
     "ps": 0.7135,
@@ -679486,7 +679546,7 @@
     "sh": 1.0
    },
    {
-    "c": 1.58,
+    "c": 1.71,
     "k": 0.8,
     "m": "Plus de 1.5 buts - Extérieur",
     "pf": 0.6948,
@@ -679496,17 +679556,17 @@
     "sh": 0.0
    },
    {
-    "c": 1.6,
+    "c": 1.64,
     "k": 0.8,
     "m": "Plus de 2.5 buts",
     "pf": 0.6375,
-    "pm": 0.6208,
+    "pm": 0.6209,
     "ps": 0.6042,
     "sa": 0.5,
     "sh": 0.5
    },
    {
-    "c": 1.62,
+    "c": 1.8,
     "k": 0.8,
     "m": "Handicap 0.5 - Extérieur",
     "pf": 0.715,
@@ -679516,7 +679576,7 @@
     "sh": 0.0
    },
    {
-    "c": 1.69,
+    "c": 1.9,
     "k": 0.8,
     "m": "1X2 - 2",
     "pf": 0.715,
@@ -679526,7 +679586,7 @@
     "sh": 0.0
    },
    {
-    "c": 1.47,
+    "c": 1.44,
     "k": 0.8,
     "m": "Moins de 3.5 buts",
     "pf": 0.5837,
@@ -679536,7 +679596,7 @@
     "sh": 0.75
    },
    {
-    "c": 1.59,
+    "c": 1.57,
     "k": 0.8,
     "m": "BTTS - oui",
     "pf": 0.529,
@@ -679546,7 +679606,7 @@
     "sh": 0.75
    },
    {
-    "c": 2.12,
+    "c": 2.17,
     "k": 0.8,
     "m": "BTTS - non",
     "pf": 0.4709,
@@ -679556,7 +679616,7 @@
     "sh": 0.25
    },
    {
-    "c": 2.44,
+    "c": 2.55,
     "k": 0.8,
     "m": "Plus de 3.5 buts",
     "pf": 0.4163,
@@ -679566,27 +679626,37 @@
     "sh": 0.25
    },
    {
-    "c": 1.92,
+    "c": 2.9,
+    "k": 0.8,
+    "m": "Handicap 1.5 - Extérieur",
+    "pf": 0.4899,
+    "pm": 0.3926,
+    "ps": 0.2953,
+    "sa": 0.5,
+    "sh": 0.0
+   },
+   {
+    "c": 1.71,
     "k": 0.8,
     "m": "Handicap 0.5 - Domicile",
-    "pf": 0.285,
+    "pf": 0.2849,
     "pm": 0.3824,
     "ps": 0.4798,
     "sa": 0.5,
     "sh": 1.0
    },
    {
-    "c": 1.94,
+    "c": 1.74,
     "k": 0.8,
     "m": "Double chance - 1X",
-    "pf": 0.285,
+    "pf": 0.2849,
     "pm": 0.3824,
     "ps": 0.4798,
     "sa": 0.5,
     "sh": 1.0
    },
    {
-    "c": 2.16,
+    "c": 2.09,
     "k": 0.8,
     "m": "Moins de 2.5 buts",
     "pf": 0.3625,
@@ -679596,7 +679666,7 @@
     "sh": 0.5
    },
    {
-    "c": 2.01,
+    "c": 1.83,
     "k": 0.8,
     "m": "Moins de 1.5 buts - Extérieur",
     "pf": 0.3052,
@@ -679606,9 +679676,9 @@
     "sh": 1.0
    },
    {
-    "c": 2.55,
+    "c": 2.89,
     "k": 0.8,
-    "m": "Moins de 0.5 buts - Domicile",
+    "m": "Cage inviolée - Extérieur",
     "pf": 0.419,
     "pm": 0.3528,
     "ps": 0.2865,
@@ -679616,7 +679686,17 @@
     "sh": 0.0
    },
    {
-    "c": 4.2,
+    "c": 2.42,
+    "k": 0.8,
+    "m": "Plus de 1.5 buts - Domicile",
+    "pf": 0.2165,
+    "pm": 0.2859,
+    "ps": 0.3554,
+    "sa": 0.0,
+    "sh": 0.5
+   },
+   {
+    "c": 4.4,
     "k": 0.8,
     "m": "Plus de 4.5 buts",
     "pf": 0.2346,
@@ -679626,7 +679706,7 @@
     "sh": 0.25
    },
    {
-    "c": 3.75,
+    "c": 3.5,
     "k": 0.8,
     "m": "1X2 - X",
     "pf": 0.1684,
@@ -679636,7 +679716,17 @@
     "sh": 0.5
    },
    {
-    "c": 4.1,
+    "c": 3.0,
+    "k": 0.8,
+    "m": "Handicap -0.5 - Domicile",
+    "pf": 0.1165,
+    "pm": 0.1854,
+    "ps": 0.2543,
+    "sa": 0.0,
+    "sh": 0.5
+   },
+   {
+    "c": 3.45,
     "k": 0.8,
     "m": "1X2 - 1",
     "pf": 0.1165,
@@ -679646,27 +679736,37 @@
     "sh": 0.5
    },
    {
-    "c": 4.1,
+    "c": 3.95,
     "k": 0.8,
     "m": "Moins de 1.5 buts",
-    "pf": 0.1605,
+    "pf": 0.1604,
     "pm": 0.1708,
     "ps": 0.1812,
     "sa": 0.25,
     "sh": 0.0
    },
    {
-    "c": 7.0,
+    "c": 4.3,
+    "k": 0.8,
+    "m": "Cage inviolée - Domicile",
+    "pf": 0.0894,
+    "pm": 0.1214,
+    "ps": 0.1534,
+    "sa": 0.25,
+    "sh": 0.25
+   },
+   {
+    "c": 7.2,
     "k": 0.8,
     "m": "Plus de 5.5 buts",
     "pf": 0.1153,
-    "pm": 0.1061,
+    "pm": 0.1062,
     "ps": 0.097,
     "sa": 0.25,
     "sh": 0.0
    },
    {
-    "c": 8.8,
+    "c": 8.6,
     "k": 0.8,
     "m": "Moins de 0.5 buts",
     "pf": 0.0374,
@@ -679680,18 +679780,18 @@
   "n_matchs_lieu": 4,
   "parametres_version": "2026-10-16b",
   "principal": {
-   "cote": 1.36,
-   "marche": "Plus de 0.5 buts - Domicile",
+   "cote": 1.27,
+   "marche": "Double chance - X2",
    "niveau": "SÛR",
    "p_honnete": 0.748,
-   "p_modele": 0.6472,
+   "p_modele": 0.8146,
    "profit": null,
    "resultat": null
   },
   "profit": null,
   "resultat": null,
   "score": null,
-  "vu_le": "2026-11-09T01:02:01.642671+00:00"
+  "vu_le": "2026-11-09T21:48:23.509973+00:00"
  },
  "coyl5flvtbv2en2vlh6ns2j9w": {
   "alertes": [
@@ -721306,7 +721406,7 @@
   "date": "2026-11-09",
   "domicile": "Pineto",
   "exterieur": "Vis Pesaro",
-  "fige": false,
+  "fige": true,
   "forme": {
    "domicile": [
     {
@@ -786725,19 +786825,19 @@
   ],
   "autres": [
    {
-    "cote": 2.03,
-    "marche": "Handicap 0.5 - Domicile",
-    "niveau": "NON CALIBRÉ",
-    "p_honnete": null,
+    "cote": 1.28,
+    "marche": "Double chance - 1X",
+    "niveau": "SÛR",
+    "p_honnete": 0.748,
     "p_modele": 0.8214,
     "profit": null,
     "resultat": null
    },
    {
-    "cote": 1.42,
+    "cote": 1.51,
     "marche": "Moins de 1.5 buts - Extérieur",
-    "niveau": "MOYEN",
-    "p_honnete": 0.655,
+    "niveau": "RISQUÉ",
+    "p_honnete": 0.543,
     "p_modele": 0.711,
     "profit": null,
     "resultat": null
@@ -786845,7 +786945,7 @@
   },
   "lambdas": {
    "force": [
-    2.0758,
+    2.0757,
     0.9987
    ],
    "simple": [
@@ -786855,7 +786955,7 @@
   },
   "marches": [
    {
-    "c": 1.36,
+    "c": 1.27,
     "k": 1.0,
     "m": "Handicap 1.5 - Domicile",
     "pf": 0.9402,
@@ -786865,7 +786965,17 @@
     "sh": 0.9091
    },
    {
-    "c": 2.03,
+    "c": 1.28,
+    "k": 1.0,
+    "m": "Double chance - 1X",
+    "pf": 0.8265,
+    "pm": 0.8214,
+    "ps": 0.8163,
+    "sa": 0.9091,
+    "sh": 0.9091
+   },
+   {
+    "c": 1.75,
     "k": 1.0,
     "m": "Handicap 0.5 - Domicile",
     "pf": 0.8265,
@@ -786875,7 +786985,7 @@
     "sh": 0.9091
    },
    {
-    "c": 1.42,
+    "c": 1.51,
     "k": 1.0,
     "m": "Moins de 1.5 buts - Extérieur",
     "pf": 0.7362,
@@ -786885,7 +786995,7 @@
     "sh": 0.5455
    },
    {
-    "c": 1.32,
+    "c": 1.27,
     "k": 1.0,
     "m": "Encaisse au moins 1 but - Domicile",
     "pf": 0.6316,
@@ -786895,7 +787005,7 @@
     "sh": 0.7273
    },
    {
-    "c": 1.32,
+    "c": 1.27,
     "k": 1.0,
     "m": "Plus de 0.5 buts - Extérieur",
     "pf": 0.6316,
@@ -786905,7 +787015,7 @@
     "sh": 0.7273
    },
    {
-    "c": 1.36,
+    "c": 1.27,
     "k": 1.0,
     "m": "Moins de 2.5 buts - Domicile",
     "pf": 0.6562,
@@ -786915,17 +787025,17 @@
     "sh": 0.6364
    },
    {
-    "c": 1.51,
+    "c": 1.65,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Domicile",
     "pf": 0.6141,
-    "pm": 0.6331,
+    "pm": 0.633,
     "ps": 0.652,
     "sa": 0.7273,
     "sh": 0.6364
    },
    {
-    "c": 1.49,
+    "c": 1.54,
     "k": 1.0,
     "m": "Plus de 2.5 buts",
     "pf": 0.5933,
@@ -786935,30 +787045,30 @@
     "sh": 0.6364
    },
    {
-    "c": 1.7,
+    "c": 1.95,
     "k": 1.0,
     "m": "1X2 - 1",
     "pf": 0.6218,
-    "pm": 0.6211,
+    "pm": 0.621,
     "ps": 0.6203,
     "sa": 0.8182,
     "sh": 0.4545
    },
    {
-    "c": 3.64,
+    "c": 3.18,
     "k": 1.0,
     "m": "Handicap -0.5 - Domicile",
     "pf": 0.6218,
-    "pm": 0.6211,
+    "pm": 0.621,
     "ps": 0.6203,
     "sa": 0.8182,
     "sh": 0.4545
    },
    {
-    "c": 1.6,
+    "c": 1.54,
     "k": 1.0,
     "m": "Moins de 3.5 buts",
-    "pf": 0.6305,
+    "pf": 0.6306,
     "pm": 0.5984,
     "ps": 0.5663,
     "sa": 0.6364,
@@ -786985,7 +787095,7 @@
     "sh": 0.2727
    },
    {
-    "c": 2.2,
+    "c": 2.33,
     "k": 1.0,
     "m": "Plus de 3.5 buts",
     "pf": 0.3694,
@@ -786995,7 +787105,7 @@
     "sh": 0.5455
    },
    {
-    "c": 1.99,
+    "c": 1.75,
     "k": 1.0,
     "m": "Double chance - X2",
     "pf": 0.3782,
@@ -787005,7 +787115,7 @@
     "sh": 0.5455
    },
    {
-    "c": 2.44,
+    "c": 2.33,
     "k": 1.0,
     "m": "Moins de 2.5 buts",
     "pf": 0.4067,
@@ -787015,7 +787125,7 @@
     "sh": 0.3636
    },
    {
-    "c": 2.29,
+    "c": 2.03,
     "k": 1.0,
     "m": "Moins de 1.5 buts - Domicile",
     "pf": 0.3859,
@@ -787025,7 +787135,7 @@
     "sh": 0.3636
    },
    {
-    "c": 2.73,
+    "c": 3.18,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Domicile",
     "pf": 0.3438,
@@ -787035,27 +787145,27 @@
     "sh": 0.3636
    },
    {
-    "c": 2.93,
+    "c": 3.18,
     "k": 1.0,
     "m": "Cage inviolée - Domicile",
-    "pf": 0.3684,
+    "pf": 0.3683,
     "pm": 0.3447,
     "ps": 0.321,
     "sa": 0.3636,
     "sh": 0.2727
    },
    {
-    "c": 2.93,
+    "c": 3.18,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Extérieur",
-    "pf": 0.3684,
+    "pf": 0.3683,
     "pm": 0.3447,
     "ps": 0.321,
     "sa": 0.3636,
     "sh": 0.2727
    },
    {
-    "c": 2.54,
+    "c": 2.29,
     "k": 1.0,
     "m": "Plus de 1.5 buts - Extérieur",
     "pf": 0.2638,
@@ -787065,7 +787175,7 @@
     "sh": 0.4545
    },
    {
-    "c": 3.7,
+    "c": 3.96,
     "k": 1.0,
     "m": "Plus de 4.5 buts",
     "pf": 0.1974,
@@ -787075,7 +787185,7 @@
     "sh": 0.2727
    },
    {
-    "c": 3.98,
+    "c": 3.65,
     "k": 1.0,
     "m": "1X2 - X",
     "pf": 0.2047,
@@ -787085,7 +787195,17 @@
     "sh": 0.4545
    },
    {
-    "c": 3.98,
+    "c": 1.27,
+    "k": 1.0,
+    "m": "Handicap 0.5 - Extérieur",
+    "pf": 0.1735,
+    "pm": 0.1786,
+    "ps": 0.1837,
+    "sa": 0.0909,
+    "sh": 0.0909
+   },
+   {
+    "c": 3.31,
     "k": 1.0,
     "m": "1X2 - 2",
     "pf": 0.1735,
@@ -787095,7 +787215,7 @@
     "sh": 0.0909
    },
    {
-    "c": 5.62,
+    "c": 6.8,
     "k": 1.0,
     "m": "Plus de 3.5 buts - Domicile",
     "pf": 0.1568,
@@ -787105,7 +787225,7 @@
     "sh": 0.0909
    },
    {
-    "c": 4.92,
+    "c": 4.72,
     "k": 1.0,
     "m": "Moins de 1.5 buts",
     "pf": 0.1883,
@@ -787115,7 +787235,7 @@
     "sh": 0.1818
    },
    {
-    "c": 5.2,
+    "c": 4.69,
     "k": 1.0,
     "m": "Moins de 0.5 buts - Domicile",
     "pf": 0.1255,
@@ -787125,7 +787245,7 @@
     "sh": 0.0909
    },
    {
-    "c": 5.82,
+    "c": 5.22,
     "k": 1.0,
     "m": "Cage inviolée - Extérieur",
     "pf": 0.1255,
@@ -787135,7 +787255,7 @@
     "sh": 0.0909
    },
    {
-    "c": 6.07,
+    "c": 5.22,
     "k": 1.0,
     "m": "Plus de 2.5 buts - Extérieur",
     "pf": 0.0801,
@@ -787145,7 +787265,7 @@
     "sh": 0.0909
    },
    {
-    "c": 1.65,
+    "c": 1.89,
     "k": 1.0,
     "m": "Handicap 1.5 - Extérieur",
     "pf": 0.0598,
@@ -787159,7 +787279,7 @@
   "n_matchs_lieu": 11,
   "parametres_version": "2026-10-16b",
   "principal": {
-   "cote": 1.36,
+   "cote": 1.27,
    "marche": "Handicap 1.5 - Domicile",
    "niveau": "SÛR",
    "p_honnete": 0.748,
@@ -787170,7 +787290,7 @@
   "profit": null,
   "resultat": null,
   "score": null,
-  "vu_le": "2026-11-09T01:02:01.642671+00:00"
+  "vu_le": "2026-11-09T21:48:23.509973+00:00"
  },
  "dzxwi7l6xqm3fd6dhtu6pfkes": {
   "alertes": [
