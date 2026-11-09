@@ -443,6 +443,7 @@ def fiche_match(x, maintenant, cfg):
         if r["verdict"] not in ("TIENT", "TIENT AVEC RÉSERVE"): continue
         A, B = r["A"], r["B"]; taux = (A["reussi"] + B["reussi"]) / (A["n"] + B["n"])
         e = {"marche": m, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round(taux, 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"]}
+        if r["regle"] and r["regle"]["remplie"]: e["regle"] = True     # marché gouverné par une règle active ET condition remplie : repéré sur la page
         if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[m]])
         G[groupe(m)].append(e)
     for L in G.values(): L.sort(key=lambda e: (-e["taux"], ORDRE.index(e["verdict"]), -(e["reussite_dom"][1] + e["reussite_ext"][1])))
