@@ -52,10 +52,11 @@ def _lignes(flux=None):
     return L
 
 def auditer(lignes, regles=None, gain_min=0.05, garde_min=50):
-    """Pour chaque règle : réussite des paris retenus moins celle de tous les paris du marché, sur chaque moitié des journées.
+    """Pour chaque règle : réussite des paris retenus moins celle de tous les paris du marché, sur chaque moitié des journées où le marché existe.
     La règle tient si le gain atteint gain_min dans les DEUX moitiés avec au moins garde_min paris retenus dans chacune."""
-    regles = regles or charger(); jours = sorted({l["jour"] for l in lignes}); coupure = jours[len(jours) // 2]; out = {}
+    regles = regles or charger(); out = {}
     for mk, r in regles.items():
+        jours = sorted({l["jour"] for l in lignes if l["marche"] == mk}) or [""]; coupure = jours[len(jours) // 2]     # moitiés propres au marché (les combos n'existent que depuis le 25/10)
         moitie = []
         for nom, sel in (("1ere", lambda j: j < coupure), ("2e", lambda j: j >= coupure)):
             S = [l for l in lignes if l["marche"] == mk and sel(l["jour"])]
