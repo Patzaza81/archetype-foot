@@ -27,7 +27,10 @@ def groupes(E, cle):
 def rapport(debut=None, fin=None, chemin=V.JOURNAL, flux=V.FLUX):
     anom = V.verifier_journal(chemin)
     if anom: raise RuntimeError(f"journal gele non intact : {anom[:3]}")
-    S = pd.scores(flux); J = [r for r in V.lire_journal(chemin) if (not debut or r["date"] >= debut) and (not fin or r["date"] <= fin)]
+    S = dict(pd.scores(flux))
+    try: S.update({k: v for k, v in json.load(open(V.os.path.join(V.DOSSIER, 'resultats_manuels.json'), encoding='utf-8'))['scores'].items() if k not in S})   # scores releves a la main (PDF Matchendirect)
+    except (OSError, ValueError, KeyError): pass
+    J = [r for r in V.lire_journal(chemin) if (not debut or r["date"] >= debut) and (not fin or r["date"] <= fin)]
     E = []
     for r in J:
         sc = S.get(r["match_id"])
