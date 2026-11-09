@@ -33,14 +33,18 @@ function ligne(p, fini, reco) {
     `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
-function top20(d) {   // les 20 meilleurs paris de chaque journée, toutes familles, cote >= 1,34, un pari (le mieux classé) par match
+// Critère du Top 20 (09/11, d'après les résultats réels des 7 et 8 nov) : la réussite observée seule ne classe pas (les paris « les plus solides » sont les moins réussis),
+// la probabilité du marché (1 / cote) classe mieux. On garde donc la plus prudente des deux : un pari n'est haut placé que si l'historique ET la cote le jugent sûr.
+const score = (p) => Math.min(Number(p.taux), 1 / Number(p.cote));
+function top20(d) {   // les 20 meilleurs paris de chaque journée, toutes familles, cote >= 1,34, un pari (le mieux noté) par match
   const jours = {};
   (d.matchs || []).forEach((m) => {
-    const p = meilleur(paris(m, "tous").filter((x) => Number(x.cote) >= COTE_TOP)); if (!p) return;
-    (jours[horaire(m.coup_d_envoi_utc).date] = jours[horaire(m.coup_d_envoi_utc).date] || []).push({ m, p });
+    const L = paris(m, "tous").filter((x) => Number(x.cote) >= COTE_TOP); if (!L.length) return;
+    const p = L.slice().sort((a, b) => score(b) - score(a) || b.taux - a.taux)[0], j = horaire(m.coup_d_envoi_utc).date;
+    (jours[j] = jours[j] || []).push({ m, p });
   });
   const sortie = new Map();
-  Object.values(jours).forEach((L) => L.sort((a, b) => b.p.taux - a.p.taux || Number(b.p.cote) - Number(a.p.cote)).slice(0, 20).forEach((x, i) => sortie.set(x.m.match_id, { p: x.p, rang: i + 1, nb: Math.min(20, L.length) })));
+  Object.values(jours).forEach((L) => L.sort((a, b) => score(b.p) - score(a.p) || b.p.taux - a.p.taux).slice(0, 20).forEach((x, i) => sortie.set(x.m.match_id, { p: x.p, rang: i + 1, nb: Math.min(20, L.length) })));
   return sortie;
 }
 function resume(m, onglet) {
