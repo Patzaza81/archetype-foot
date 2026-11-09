@@ -25,8 +25,8 @@ def test_regle_inactive_ou_marche_sans_regle_ignores():
 def test_valeur_absente_ou_verdict_deja_bas_ignores():
     assert VR.appliquer("1", "TIENT", T(None, None), REG)[0] == "TIENT" and VR.appliquer("1", "NE TIENT PAS", T(1.0, 1.0), REG)[0] == "NE TIENT PAS"
 
-def test_config_reelle_cinq_regles_actives_et_seuils_presents():
-    R = VR.charger(); assert sorted(k for k, r in R.items() if r["actif"]) == ["1", "1N", "btts_oui", "dom_plus_1.5", "total_plus_2.5"] and all("seuil" in r and "trait" in r for r in R.values())
+def test_config_reelle_six_regles_actives_et_seuils_presents():
+    R = VR.charger(); assert sorted(k for k, r in R.items() if r["actif"]) == ["1", "1N", "btts_oui", "dom_moins_1.5", "dom_plus_1.5", "total_plus_2.5"] and all("seuil" in r and "trait" in r for r in R.values())
 
 def test_audit_regle_qui_tient_et_regle_qui_ne_tient_pas():
     L = []
