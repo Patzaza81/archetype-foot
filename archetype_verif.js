@@ -16,15 +16,16 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
-const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire" };
+const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire", regles: "Marchés à règle validée" };
 const COTE_TOP = 1.34;
 const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
 let ONGLET = "tous", DONNEES = null;
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const paris = (m, onglet) => (onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : (m.paris && m.paris[onglet]) || []);
-const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
+const regleD = (L) => L.slice().sort((a, b) => (b.regle ? 1 : 0) - (a.regle ? 1 : 0));   // tri stable : les paris à règle validée d'abord, l'ordre par réussite est conservé ensuite
+const paris = (m, onglet) => (onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const meilleur = (L) => L.slice().sort((a, b) => (b.regle ? 1 : 0) - (a.regle ? 1 : 0) || b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT";
@@ -56,10 +57,10 @@ function resume(m, onglet) {
   return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${onglet === "tous" ? "Meilleur pari du match" : "Meilleur : " + TITRES[onglet].toLowerCase()}</div>${ligne(p, m.statut === "termine")}</div>`;
 }
 function listes(m, onglet) {            // carte dépliée : tous les paris de l'onglet, du plus au moins réussi
-  const fini = m.statut === "termine", cles = onglet === "tous" ? ORDRE_FAMILLES : [onglet];
+  const fini = m.statut === "termine", cles = onglet === "tous" || onglet === "regles" ? ORDRE_FAMILLES : [onglet];
   return cles.map((k) => {
-    const L = (m.paris && m.paris[k]) || []; if (!L.length) return "";
-    return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES[k]} (${L.length}) · du plus au moins réussi</div>${L.map((p) => ligne(p, fini)).join("")}</div>`;
+    const L0 = (m.paris && m.paris[k]) || [], L = onglet === "regles" ? L0.filter((p) => p.regle) : regleD(L0); if (!L.length) return "";
+    return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES[k]} (${L.length}) · règles validées d'abord, puis du plus au moins réussi</div>${L.map((p) => ligne(p, fini)).join("")}</div>`;
   }).join("");
 }
 function tableau(m) {
@@ -135,6 +136,7 @@ function rendu(d) {
   TOP = top20(d);
   let L = (d.matchs || []).filter((m) => paris(m, ONGLET).length);
   if (ONGLET === "top20") L = L.filter((m) => TOP.has(m.match_id)).sort((a, b) => String(a.coup_d_envoi_utc).slice(0, 10) === String(b.coup_d_envoi_utc).slice(0, 10) && 0 || (horaire(a.coup_d_envoi_utc).date === horaire(b.coup_d_envoi_utc).date ? TOP.get(a.match_id).rang - TOP.get(b.match_id).rang : String(a.coup_d_envoi_utc).localeCompare(b.coup_d_envoi_utc)));
+  if (ONGLET !== "top20") { const R = (m) => (paris(m, "regles").length ? 1 : 0); L = L.map((m, i) => [m, i]).sort((a, b) => R(b[0]) - R(a[0]) || a[1] - b[1]).map((x) => x[0]); }   // matchs ayant un pari à règle validée en premier
   const av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
   document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
   liste("om-avenir", av, "Aucun match à venir pour cet onglet."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");

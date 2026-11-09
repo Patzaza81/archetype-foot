@@ -48,3 +48,8 @@ def test_page_repere_les_paris_des_marches_a_regle_active():
     P = [p for m in d["matchs"] for L in m["paris"].values() for p in L]
     assert all(p["marche"] in actifs for p in P if p.get("regle")) and all(p.get("regle") is True for p in P if p.get("regle") is not None)
     assert "Règle validée" in open(os.path.join(os.path.dirname(__file__), "..", "archetype_verif.js"), encoding="utf-8").read()
+
+def test_onglet_regles_et_classement_regles_en_premier():
+    import os
+    js = open(os.path.join(os.path.dirname(__file__), "..", "archetype_verif.js"), encoding="utf-8").read()
+    assert '["regles", "Règles"]' in js and 'onglet === "regles"' in js and "regleD" in js and "règles validées d'abord" in js
