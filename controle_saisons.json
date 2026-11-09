@@ -1,15 +1,84 @@
 {
  "version": "1.0.0",
- "genere_le": "2026-11-08 12:03 UTC",
+ "genere_le": "2026-11-09 01:13 UTC",
  "resume": {
-  "equipes_en_cache": 142,
-  "verifiables": 49,
-  "coherentes": 49,
-  "incoherentes": 0,
+  "equipes_en_cache": 144,
+  "verifiables": 51,
+  "coherentes": 47,
+  "incoherentes": 4,
   "non_verifiables": 39,
   "sans_donnees": 54,
-  "taux_incoherence": 0.0
+  "taux_incoherence": 0.0784
  },
  "methode": "Chaque match connu par les pages de match (même compétition, joué avant l'enregistrement) doit figurer dans la saison enregistrée de l'équipe (même lieu, mêmes buts). Sinon : INCOHERENTE.",
- "incoherentes": []
+ "incoherentes": [
+  {
+   "equipe": "club guarani",
+   "competition": "paraguay : professionnel de la division clôture",
+   "url": "https://www.matchendirect.fr/equipe/club-guarani_8j13r6l93c46v57ekr68obhoz.html",
+   "enregistre_le": "2026-11-08",
+   "matchs_enregistres": 24,
+   "matchs_connus": 11,
+   "manquants": [
+    {
+     "date": "2026-11-07",
+     "adversaire": "Club Olimpia",
+     "lieu": "domicile",
+     "score_equipe": "1-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "club olimpia",
+   "competition": "paraguay : professionnel de la division clôture",
+   "url": "https://www.matchendirect.fr/equipe/club-olimpia_ajjzd6ex2rqp70mwh5by9wdfb.html",
+   "enregistre_le": "2026-11-08",
+   "matchs_enregistres": 24,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-11-07",
+     "adversaire": "Club Guaraní",
+     "lieu": "extérieur",
+     "score_equipe": "3-1"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "libertad",
+   "competition": "paraguay : professionnel de la division clôture",
+   "url": "https://www.matchendirect.fr/equipe/libertad_984ibdjplnlwb36kt6wbgwe97.html",
+   "enregistre_le": "2026-11-08",
+   "matchs_enregistres": 24,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-11-07",
+     "adversaire": "Nacional",
+     "lieu": "domicile",
+     "score_equipe": "3-0"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  },
+  {
+   "equipe": "nacional",
+   "competition": "paraguay : professionnel de la division clôture",
+   "url": "https://www.matchendirect.fr/equipe/nacional_3n0uz5141jkl4wazgk0h5oh85.html",
+   "enregistre_le": "2026-11-08",
+   "matchs_enregistres": 24,
+   "matchs_connus": 10,
+   "manquants": [
+    {
+     "date": "2026-11-07",
+     "adversaire": "Libertad",
+     "lieu": "extérieur",
+     "score_equipe": "0-3"
+    }
+   ],
+   "statut": "INCOHERENTE"
+  }
+ ]
 }
