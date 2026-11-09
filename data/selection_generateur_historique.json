@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 128,
-  "genere_le": "2026-11-09T21:52:39.144552+00:00",
+  "executions": 129,
+  "genere_le": "2026-11-09T21:58:14.686912+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -254,7 +254,7 @@
    },
    "2026-11-09": {
     "cote_moyenne": null,
-    "paris": 20,
+    "paris": 21,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -262,7 +262,7 @@
    },
    "2026-11-10": {
     "cote_moyenne": null,
-    "paris": 3,
+    "paris": 5,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -272,7 +272,7 @@
   "par_source": {
    "journal": {
     "cote_moyenne": 1.503,
-    "paris": 669,
+    "paris": 672,
     "proba_moyenne_estimee": 0.7247,
     "regles": 599,
     "reussis": 367,
@@ -295,7 +295,7 @@
     "taux_reussite": 0.6226
    }
   },
-  "paris_distincts": 1132,
+  "paris_distincts": 1135,
   "paris_regles": 1043
  },
  "derniere_erreur": null,
@@ -165679,6 +165679,210 @@
    ],
    "plages": {
     "2026-11-09..2026-11-09": 4,
+    "2026-11-09..2026-11-10": 7,
+    "2026-11-09..2026-11-11": 7,
+    "2026-11-09..2026-11-12": 7
+   }
+  },
+  {
+   "empreinte": "f36c0ebcdc35bab3",
+   "genere_le": "2026-11-09T21:58:13.901684+00:00",
+   "jour_present": "2026-11-09",
+   "paris": [
+    {
+     "competition": "Jamaïque : Premier Ligue",
+     "cote": 2.1,
+     "date": "2026-11-09",
+     "domicile": "Chapelton",
+     "ev_estime": null,
+     "exterieur": "Racing Utd",
+     "heure": "23:05",
+     "id": "match:2026-11-09|chapelton|racing utd|over_under_total_2.5_over|journal",
+     "journal_observations": 5,
+     "journal_team": "Racing Utd",
+     "journal_wins": 4,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_4_SUR_5",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.576337,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Paraguay : Professionnel de la Division Clôture",
+     "cote": 2.13,
+     "date": "2026-11-09",
+     "domicile": "Luqueño",
+     "ev_estime": null,
+     "exterieur": "CS 2 de Mayo",
+     "heure": "23:30",
+     "id": "match:2026-11-09|luqueno|cs 2 de mayo|over_under_total_2.5_over|journal",
+     "journal_observations": 10,
+     "journal_team": "Luqueño",
+     "journal_wins": 7,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_10",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.504295,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Bolivie : Primera Division",
+     "cote": 1.44,
+     "date": "2026-11-10",
+     "domicile": "Club Aurora",
+     "ev_estime": null,
+     "exterieur": "Uni de Vinto",
+     "heure": "01:30",
+     "id": "match:2026-11-10|club aurora|uni de vinto|btts_oui|journal",
+     "journal_observations": 7,
+     "journal_team": "Uni de Vinto",
+     "journal_wins": 6,
+     "marche": "Les deux équipes marquent",
+     "marche_canonique": "btts_oui",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_7",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.587299,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Bolivie : Primera Division",
+     "cote": 1.27,
+     "date": "2026-11-10",
+     "domicile": "Club Aurora",
+     "ev_estime": 0.152779,
+     "exterieur": "Uni de Vinto",
+     "heure": "01:30",
+     "id": "match:2026-11-10|club aurora|uni de vinto|handicap_domicile_1.5|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap_domicile_1.5",
+     "marche_canonique": "handicap_domicile_1.5",
+     "marge_modele": 0.120298,
+     "match_id": "dzumkescpxrw1hwro73k9oe1g",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.9077,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Jamaïque : Premier Ligue",
+     "cote": 1.57,
+     "date": "2026-11-10",
+     "domicile": "Gardens",
+     "ev_estime": null,
+     "exterieur": "Waterhouse",
+     "heure": "02:00",
+     "id": "match:2026-11-10|gardens|waterhouse|btts_oui|journal",
+     "journal_observations": 6,
+     "journal_team": "Gardens",
+     "journal_wins": 6,
+     "marche": "Les deux équipes marquent",
+     "marche_canonique": "btts_oui",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.685182,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "El Salvador : 1ère Division Ouverture",
+     "cote": 1.31,
+     "date": "2026-11-10",
+     "domicile": "Metapan",
+     "ev_estime": null,
+     "exterieur": "Platense",
+     "heure": "02:00",
+     "id": "match:2026-11-10|metapan|platense|over_under_total_3.5_under|journal",
+     "journal_observations": 11,
+     "journal_team": "Metapan",
+     "journal_wins": 9,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_9_SUR_11",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.690459,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "El Salvador : 1ère Division Ouverture",
+     "cote": 1.29,
+     "date": "2026-11-10",
+     "domicile": "Cacahuatique",
+     "ev_estime": null,
+     "exterieur": "Angel Firpo",
+     "heure": "22:30",
+     "id": "match:2026-11-10|cacahuatique|angel firpo|over_under_total_3.5_under|journal",
+     "journal_observations": 12,
+     "journal_team": "Cacahuatique",
+     "journal_wins": 10,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_10_SUR_12",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.703245,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    }
+   ],
+   "plages": {
+    "2026-11-09..2026-11-09": 2,
     "2026-11-09..2026-11-10": 7,
     "2026-11-09..2026-11-11": 7,
     "2026-11-09..2026-11-12": 7
