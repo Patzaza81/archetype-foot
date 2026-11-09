@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
       - run: pip install numpy pytest
       - name: Tests
-        run: python -m pytest tests/test_integration_calibration.py tests/test_page_p1.py tests/test_p1_paris.py tests/test_p1_source_med.py tests/test_apprentissage_p1.py tests/test_derniers_onglets.py tests/test_verif_pronostic.py -q
+        run: python -m pytest tests/test_integration_calibration.py tests/test_page_p1.py tests/test_p1_paris.py tests/test_p1_source_med.py tests/test_apprentissage_p1.py tests/test_derniers_onglets.py tests/test_verif_pronostic.py tests/test_verif_regles.py -q
       - name: Paramètres P1 de l'Eerste Divisie (source Matchendirect, choisis sur les données)
         run: python calibrer_p1_med.py
       - name: Enregistrer P1 original et calibré

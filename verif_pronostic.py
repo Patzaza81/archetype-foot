@@ -9,7 +9,7 @@ Pour un pari sur A (domicile) - B (exterieur) :
   5. si l'attaque contre la defense confirme (buts et xG) alors que les frequences disent non, le verdict remonte d'un cran ; si le xG contredit, il baisse d'un cran ;
   6. verdicts geles AVANT le coup d'envoi (journal infalsifiable) puis bilan chaque soir sur les resultats reels.
 Aucune constante inventee : la cote minimale vient de l'utilisateur, les moyennes viennent des matchs du championnat.
-Commandes : geler | bilan | page | coupon <fichier.json> [jour] | analyse <domicile> <exterieur> [jour]
+Commandes : geler | bilan | page | regles | coupon <fichier.json> [jour] | analyse <domicile> <exterieur> [jour]
 """
 import datetime, glob, gzip, json, math, os, sys
 import numpy as np
@@ -255,13 +255,17 @@ def constat(x, marche, cote=None, cfg=None):
     lect_x = _lecture(marche, *xa, champ["avantage_dom"]); lect_b = _lecture(marche, *bm, champ["avantage_dom"])
     ordre = ["NE TIENT PAS", "TIENT AVEC RÉSERVE", "TIENT"]
     verdict = _ajuster(verdict, lect_b, lect_x)
+    regle = None
+    if not cfg.get("sans_regles"):          # regles par marche (verif_regles.py) : condition non remplie = un cran de moins
+        import verif_regles; verdict, regle = verif_regles.appliquer(marche, verdict, verif_regles.traits(A, B, bm, xa, champ))
     nom_xg = "xG estimé" if src == "estimé" else "xG"
     lecture_xg = {None: "xG indisponible (trop peu de matchs)" if xa[0] is None else f"pari non lisible avec le {nom_xg}", True: f"le {nom_xg} confirme", False: f"le {nom_xg} contredit", "limite": f"le {nom_xg} est à la limite de la ligne"}[lect_x]
     phrase = (f"{x['domicile']} à domicile : {f(A['buts_marques'])} buts marqués, {f(A['buts_encaisses'])} encaissés (xG {f(A['xg_cree'])}/{f(A['xg_concede'])}), pari passé {A['reussi']} fois sur {A['n']}. "
               f"{x['exterieur']} à l'extérieur : {f(B['buts_marques'])} marqués, {f(B['buts_encaisses'])} encaissés (xG {f(B['xg_cree'])}/{f(B['xg_concede'])}), pari passé {B['reussi']} fois sur {B['n']}.")
     ch = lambda e: ("?" if e["xg_cree"] is None else f"xG {e['xg_cree']:.2f} créés / {e['xg_concede']:.2f} concédés (écart {e['ecart_xg']:+.2f}), buts {f(e['buts_marques'])} / {f(e['buts_encaisses'])}")
     phrase += f" Saison entière (xG) : {x['domicile']} {ch(SA)} ; {x['exterieur']} {ch(SB)}. Moyenne du championnat : {f(champ['buts'])} but par équipe et par match."
-    return {"verdict": verdict, "force": (A["reussi"] / A["n"] + B["reussi"] / B["n"]) / 2, "libelle": libelle(marche, x["domicile"], x["exterieur"]), "cote": cote, "phrase": phrase, "tendances_xg": tend, "buts_attendus": bm, "xg_attendus": xa, "xg_source": src, "lecture_xg": lecture_xg, "saison_A": SA, "saison_B": SB, "championnat": champ, "A": A, "B": B}
+    if regle and regle["phrase"]: phrase += " " + regle["phrase"]
+    return {"verdict": verdict, "force": (A["reussi"] / A["n"] + B["reussi"] / B["n"]) / 2, "libelle": libelle(marche, x["domicile"], x["exterieur"]), "cote": cote, "phrase": phrase, "tendances_xg": tend, "buts_attendus": bm, "xg_attendus": xa, "xg_source": src, "lecture_xg": lecture_xg, "saison_A": SA, "saison_B": SB, "championnat": champ, "A": A, "B": B, "regle": regle}
 
 
 # ---------------------------------------------------------------- journal gele (verdicts figes AVANT le coup d'envoi) et bilan sur resultats reels
@@ -306,6 +310,9 @@ def choix_a_geler(x, cfg, n=2):
     E.sort(); haut, bas = E[:n], [e for e in E[-n:] if e not in E[:n]]
     return [{"marche": e[2], "cote": e[3], "verdict": e[4], "force": round(-e[1], 4)} for e in haut + bas]
 
+def _version_regles():
+    import verif_regles; R = verif_regles.charger(); return f"{json.load(open(verif_regles.CHEMIN, encoding='utf-8')).get('version')}:{sum(1 for r in R.values() if r.get('actif'))}actives"
+
 def geler(jour=None, maintenant=None, chemin=JOURNAL, flux=FLUX, cfg=None):
     """Ajoute au journal (jamais reecrit) les verdicts des matchs a venir, avant leur coup d'envoi. -> nb de lignes ajoutees."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"); jour = jour or maintenant[:10]
@@ -315,7 +322,7 @@ def geler(jour=None, maintenant=None, chemin=JOURNAL, flux=FLUX, cfg=None):
         for x in matchs_a_venir(jour, maintenant, flux):
             for e in choix_a_geler(x, cfg):
                 if (x["match_id"], e["marche"]) in deja: continue
-                rec = {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x["coup_d_envoi_utc"], "gele_le": maintenant, **e}
+                rec = {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x["coup_d_envoi_utc"], "gele_le": maintenant, "regles": _version_regles(), **e}
                 prec = _empreinte(prec, rec); f.write(json.dumps({**rec, "empreinte": prec}, ensure_ascii=False, separators=(",", ":")) + "\n"); n += 1
     return n
 
@@ -476,6 +483,9 @@ if __name__ == "__main__":
         b = ecrire_bilan(); print(json.dumps({k: {x: round(y, 3) if isinstance(y, float) else y for x, y in v.items()} for k, v in b["par_verdict"].items()}, ensure_ascii=False))
     elif cmd == "page":
         d = ecrire_page(); print(json.dumps({"matchs": d["nb_matchs"], "octets": os.path.getsize(PAGE)}, ensure_ascii=False))
+    elif cmd == "regles":      # audit des regles par marche : gain de chaque regle sur les deux moities des journees (activer ou couper une regle reste une decision, dans config/verif_regles.json)
+        import verif_regles as VR
+        a = VR.auditer(VR._lignes()); [print(f"{mk:16} {'ACTIVE' if v['actif'] else 'inactive':9} {'tient' if v['tient'] else 'ne tient pas':13} gains par moitié : {[m['gain'] for m in v['moitiés']]} (retenus {[m['retenus'] for m in v['moitiés']]})") for mk, v in a.items()]
     elif cmd == "analyse":
         x = trouver(sys.argv[2], sys.argv[3], [sys.argv[4]] if len(sys.argv) > 4 else None); print(analyse(x) if x else "Match absent du flux commun.")
     elif cmd == "coupon":

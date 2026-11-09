@@ -5,7 +5,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import verif_pronostic as v
 
 def ok(m, h, a): return bool(v.CATALOGUE[m](h, a))
-CFG = {"cote_min": 1.26}
+CFG = {"cote_min": 1.26, "sans_regles": True}      # la methode de base ; les regles par marche ont leurs tests dans test_verif_regles.py
+CFG_REGLES = {"cote_min": 1.26}
 
 class Catalogue(unittest.TestCase):
     def test_passent(self):
@@ -49,6 +50,11 @@ class Verdict(unittest.TestCase):
     def test_reserve(self):                        # d'un seul cote le pari passe plus souvent que rate
         self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(1, 1)] * 6), "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
         self.assertEqual(v.constat(MATCH([(0, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
+    def test_regle_de_marche_dans_constat(self):   # meme match, meme pari : sans regle RESERVE ; avec la regle « 1 » (xG du domicile trop bas) un cran de moins ; marche sans regle : inchange
+        m = MATCH([(0, 0)] * 6, [(0, 2)] * 6)
+        self.assertEqual(v.constat(m, "1", 1.5, CFG)["verdict"], "TIENT AVEC RÉSERVE")
+        r = v.constat(m, "1", 1.5, CFG_REGLES); self.assertEqual(r["verdict"], "NE TIENT PAS"); self.assertFalse(r["regle"]["remplie"])
+        self.assertEqual(v.constat(m, "total_moins_2.5", 1.5, CFG_REGLES)["verdict"], v.constat(m, "total_moins_2.5", 1.5, CFG)["verdict"])
     def test_ne_tient_pas(self):                   # ni l'un ni l'autre : A perd chez lui, B gagne dehors
         self.assertEqual(v.constat(MATCH([(0, 2)] * 6, [(2, 0)] * 6), "1", 1.5, CFG)["verdict"], "NE TIENT PAS")
         self.assertEqual(v.constat(MATCH([(0, 0)] * 6, [(0, 0)] * 6), "total_plus_2.5", 1.5, CFG)["verdict"], "NE TIENT PAS")
