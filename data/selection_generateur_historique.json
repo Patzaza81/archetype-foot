@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 124,
-  "genere_le": "2026-11-08T12:03:59.519898+00:00",
+  "executions": 125,
+  "genere_le": "2026-11-09T01:05:36.042613+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -237,24 +237,24 @@
     "taux_reussite": 0.641
    },
    "2026-11-07": {
-    "cote_moyenne": 1.38,
+    "cote_moyenne": 1.44,
     "paris": 40,
-    "proba_moyenne_estimee": 0.7832,
-    "regles": 2,
-    "reussis": 0,
-    "taux_reussite": 0.0
+    "proba_moyenne_estimee": 0.8008,
+    "regles": 38,
+    "reussis": 27,
+    "taux_reussite": 0.7105
    },
    "2026-11-08": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.432,
     "paris": 36,
-    "proba_moyenne_estimee": null,
-    "regles": 0,
-    "reussis": 0,
-    "taux_reussite": null
+    "proba_moyenne_estimee": 0.801,
+    "regles": 34,
+    "reussis": 26,
+    "taux_reussite": 0.7647
    },
    "2026-11-09": {
     "cote_moyenne": null,
-    "paris": 15,
+    "paris": 19,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -271,12 +271,12 @@
   },
   "par_source": {
    "journal": {
-    "cote_moyenne": 1.507,
-    "paris": 663,
-    "proba_moyenne_estimee": 0.7192,
-    "regles": 566,
-    "reussis": 341,
-    "taux_reussite": 0.6025
+    "cote_moyenne": 1.503,
+    "paris": 666,
+    "proba_moyenne_estimee": 0.7247,
+    "regles": 599,
+    "reussis": 367,
+    "taux_reussite": 0.6127
    },
    "moteur_v2_6_10": {
     "cote_moyenne": 1.923,
@@ -287,16 +287,16 @@
     "taux_reussite": 0.4286
    },
    "moteur_v3": {
-    "cote_moyenne": 1.47,
-    "paris": 434,
-    "proba_moyenne_estimee": 0.7906,
-    "regles": 379,
-    "reussis": 232,
-    "taux_reussite": 0.6121
+    "cote_moyenne": 1.468,
+    "paris": 435,
+    "proba_moyenne_estimee": 0.7902,
+    "regles": 416,
+    "reussis": 259,
+    "taux_reussite": 0.6226
    }
   },
-  "paris_distincts": 1125,
-  "paris_regles": 973
+  "paris_distincts": 1129,
+  "paris_regles": 1043
  },
  "derniere_erreur": null,
  "executions": [
@@ -164353,6 +164353,326 @@
     "2026-11-08..2026-11-10": 30,
     "2026-11-08..2026-11-11": 30
    }
+  },
+  {
+   "empreinte": "55f9311e0d989e00",
+   "genere_le": "2026-11-09T01:05:35.191304+00:00",
+   "jour_present": "2026-11-09",
+   "paris": [
+    {
+     "competition": "Pérou : Primera Division Cloture",
+     "cote": 1.47,
+     "date": "2026-11-09",
+     "domicile": "Universitario",
+     "ev_estime": null,
+     "exterieur": "Moquegua",
+     "heure": "02:30",
+     "id": "match:2026-11-09|universitario|moquegua|over_under_total_2.5_over|journal",
+     "journal_observations": 8,
+     "journal_team": "Universitario",
+     "journal_wins": 8,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_8",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.720703,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Mexique : Liga MX Ouverture",
+     "cote": 1.35,
+     "date": "2026-11-09",
+     "domicile": "Club León",
+     "ev_estime": null,
+     "exterieur": "CD Guadalajara",
+     "heure": "03:10",
+     "id": "match:2026-11-09|club leon|cd guadalajara|double_chance_X2|journal",
+     "journal_observations": 9,
+     "journal_team": "CD Guadalajara",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_9",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.729539,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Nigeria : Premier Ligue",
+     "cote": 1.72,
+     "date": "2026-11-09",
+     "domicile": "Ikorodu City",
+     "ev_estime": null,
+     "exterieur": "Inter Lagos",
+     "heure": "16:00",
+     "id": "match:2026-11-09|ikorodu city|inter lagos|over_under_total_2.5_under|journal",
+     "journal_observations": 7,
+     "journal_team": "Inter Lagos",
+     "journal_wins": 6,
+     "marche": "Match à moins de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_7",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.548762,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Espagne : Primera Division Femmes",
+     "cote": 1.88,
+     "date": "2026-11-09",
+     "domicile": "Atlético Madrid",
+     "ev_estime": null,
+     "exterieur": "Badalona",
+     "heure": "19:00",
+     "id": "match:2026-11-09|atletico madrid|badalona|btts_non|journal",
+     "journal_observations": 8,
+     "journal_team": "Badalona",
+     "journal_wins": 6,
+     "marche": "Au moins une équipe ne marque pas",
+     "marche_canonique": "btts_non",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_8",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.428844,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Italie : Série C Girone B",
+     "cote": 1.33,
+     "date": "2026-11-09",
+     "domicile": "Pineto",
+     "ev_estime": 0.073842,
+     "exterieur": "Vis Pesaro",
+     "heure": "20:30",
+     "id": "match:2026-11-09|pineto|vis pesaro|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.05552,
+     "match_id": "czplnadprhctt6ueh66qeivis",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.8074,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Paraguay : Professionnel de la Division Clôture",
+     "cote": 1.28,
+     "date": "2026-11-09",
+     "domicile": "San Lorenzo",
+     "ev_estime": null,
+     "exterieur": "Rubio NU",
+     "heure": "21:00",
+     "id": "match:2026-11-09|san lorenzo|rubio nu|over_under_total_3.5_under|journal",
+     "journal_observations": 10,
+     "journal_team": "San Lorenzo",
+     "journal_wins": 8,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_10",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.674384,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Portugal : Liga Portugal 2",
+     "cote": 1.62,
+     "date": "2026-11-09",
+     "domicile": "Torreense",
+     "ev_estime": 0.139022,
+     "exterieur": "Uniao de Leiria",
+     "heure": "21:15",
+     "id": "match:2026-11-09|torreense|uniao de leiria|double_chance_x2|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "double_chance_X2",
+     "marche_canonique": "double_chance_x2",
+     "marge_modele": 0.085816,
+     "match_id": "bbxm0noxzbjm8tfly0bta1pn8",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.7031,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Portugal : Liga Portugal 2",
+     "cote": 1.37,
+     "date": "2026-11-09",
+     "domicile": "Torreense",
+     "ev_estime": null,
+     "exterieur": "Uniao de Leiria",
+     "heure": "21:15",
+     "id": "match:2026-11-09|torreense|uniao de leiria|over_under_total_3.5_under|journal",
+     "journal_observations": 6,
+     "journal_team": "Torreense",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_6",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.84298,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Jamaïque : Premier Ligue",
+     "cote": 1.27,
+     "date": "2026-11-09",
+     "domicile": "Chapelton",
+     "ev_estime": null,
+     "exterieur": "Racing Utd",
+     "heure": "23:05",
+     "id": "match:2026-11-09|chapelton|racing utd|over_under_total_3.5_under|journal",
+     "journal_observations": 7,
+     "journal_team": "Chapelton",
+     "journal_wins": 6,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_6_SUR_7",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.722554,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Paraguay : Professionnel de la Division Clôture",
+     "cote": 2.05,
+     "date": "2026-11-09",
+     "domicile": "Luqueño",
+     "ev_estime": null,
+     "exterieur": "CS 2 de Mayo",
+     "heure": "23:30",
+     "id": "match:2026-11-09|luqueno|cs 2 de mayo|over_under_total_2.5_over|journal",
+     "journal_observations": 10,
+     "journal_team": "Luqueño",
+     "journal_wins": 7,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_10",
+     "plages": [
+      "2026-11-09..2026-11-09",
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.504492,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Bolivie : Primera Division",
+     "cote": 1.36,
+     "date": "2026-11-10",
+     "domicile": "Club Aurora",
+     "ev_estime": 0.234472,
+     "exterieur": "Uni de Vinto",
+     "heure": "01:30",
+     "id": "match:2026-11-10|club aurora|uni de vinto|handicap_domicile_1.5|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "handicap_domicile_1.5",
+     "marche_canonique": "handicap_domicile_1.5",
+     "marge_modele": 0.172406,
+     "match_id": "dzumkescpxrw1hwro73k9oe1g",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-09..2026-11-10",
+      "2026-11-09..2026-11-11",
+      "2026-11-09..2026-11-12"
+     ],
+     "probabilite_estimee": 0.9077,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    }
+   ],
+   "plages": {
+    "2026-11-09..2026-11-09": 10,
+    "2026-11-09..2026-11-10": 11,
+    "2026-11-09..2026-11-11": 11,
+    "2026-11-09..2026-11-12": 11
+   }
   }
  ],
  "resultats": {
@@ -169211,15 +169531,365 @@
    "resultat": "WIN",
    "score": "1-1"
   },
+  "match:2026-11-07|aberdeen|hibernian|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "0-4"
+  },
+  "match:2026-11-07|ado|s rotterdam|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-1"
+  },
+  "match:2026-11-07|antequera|rayo majadah|over_under_total_2.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-07|antequera|rayo majadah|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-07|aubagne|amiens|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-2"
+  },
+  "match:2026-11-07|aubagne|amiens|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-2"
+  },
+  "match:2026-11-07|bangor|crusaders|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "1-0"
+  },
+  "match:2026-11-07|bourg en br|le puy|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|bourg en br|le puy|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|carrick|glentoran|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-07|chaves|penafiel|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-3"
+  },
+  "match:2026-11-07|chicago fire|columbus|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-4"
+  },
   "match:2026-11-07|cibao|salcedo|double_chance_X2|journal": {
    "regle_le": "2026-11-08T09:18:52.559712+00:00",
    "resultat": "LOSS",
    "score": "1-0"
   },
+  "match:2026-11-07|club guarani|club olimpia|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-3"
+  },
+  "match:2026-11-07|dundee utd|motherwell fc|double_chance_1X|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|fc cajamarca|alianza atl|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "2-0"
+  },
+  "match:2026-11-07|fc cajamarca|alianza atl|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "2-0"
+  },
+  "match:2026-11-07|galatasaray|amed|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "4-3"
+  },
   "match:2026-11-07|guastatoya|suchitepequez|over_under_total_3.5_under|journal": {
    "regle_le": "2026-11-08T09:18:52.559712+00:00",
    "resultat": "LOSS",
    "score": "4-0"
+  },
+  "match:2026-11-07|gyirmot|tiszakecske|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|h petah tikva|h ramat gan|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-11-07|hertha bsc|wolfsbourg|double_chance_1X|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-11-07|i tiberias|beitar|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|inter miami|charlotte|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-3"
+  },
+  "match:2026-11-07|linfield|coleraine|double_chance_1X|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-11-07|n madeira|viseu|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-07|osasuna|ath bilbao|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-07|osnabruck|kaiserslautern|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-11-07|ostia mare|spezia|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "0-4"
+  },
+  "match:2026-11-07|p munster|duisbourg|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-11-07|portsmouth|stoke|over_under_total_1.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-11-07|queen s park|p thistle|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-11-07|r central|e rio cuarto|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-07|rouen|sc bastia|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-07|unionistas|zamora|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-07|vaduz|sion|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-4"
+  },
+  "match:2026-11-07|zeleznicar p|fk radnicki 1923|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-07|zemun|fk imt|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-08|aek|levadiakos fc|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-11-08|america cali|cali|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-08|bochum|karlsruher|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "3-2"
+  },
+  "match:2026-11-08|bolivar|the strongest|handicap_domicile_1.5|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-08|brighton|brentford|double_chance_1x|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-08|carrarese|sampdoria|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-11-08|carrarese|sampdoria|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-11-08|club guarani|club olimpia|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "1-3"
+  },
+  "match:2026-11-08|drenica|kf drita|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-08|egnatia|vora|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "5-1"
+  },
+  "match:2026-11-08|feirense|lourosa|buts_equipe_domicile_1.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-08|genoa|milan|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-11-08|giana erminio|cittadella|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-08|hartberg|altach|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-11-08|heidenheim|hanovre|double_chance_1x|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-08|kaa gent|courtrai|1x2_domicile|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-08|kfc komarno|michalovce|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-08|levski sofia|cska sofia|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-3"
+  },
+  "match:2026-11-08|lks lodz|stal rzeszow|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-08|mainz 05|stuttgart|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-3"
+  },
+  "match:2026-11-08|monza|atalanta|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "0-1"
+  },
+  "match:2026-11-08|nyiregyhaza|gyor|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-08|polonia bytom|lechia gdansk|double_chance_1X|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-08|santa fe|dep pasto|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "5-0"
+  },
+  "match:2026-11-08|servette|zurich|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-08|shakhtar|dynamo kiev|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-08|sturm graz|salzbourg|double_chance_X2|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "3-4"
+  },
+  "match:2026-11-08|super nova|daugavpils|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-08|teplice|fk pardubice|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "1-4"
+  },
+  "match:2026-11-08|torres|latina|buts_equipe_exterieur_1.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-08|us biskra|chlef|buts_equipe_domicile_1.5_under|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-08|utrecht|nec nimegue|over_under_total_2.5_over|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "WIN",
+   "score": "2-3"
+  },
+  "match:2026-11-08|varazdin|d zagreb|handicap3_domicile_2_1|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "1-3"
+  },
+  "match:2026-11-08|varzim|fafe|double_chance_x2|moteur_v3": {
+   "regle_le": "2026-11-09T01:05:36.042613+00:00",
+   "resultat": "LOSS",
+   "score": "2-0"
   }
  },
  "version": 1
