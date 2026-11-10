@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-10T03:28:43Z",
+  "genere_le": "2026-11-10T07:22:59Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -669,6 +669,35 @@
     "Picerno|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Picerno|over_under_total_2.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Picerno|over_under_total_3.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Picerno|over_under_total_4.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Picerno|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
@@ -1283,6 +1312,18 @@
       "observations": 0,
       "par_regime": {}
     },
+    "San Lorenzo|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "San Lorenzo|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Libertad|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1354,6 +1395,12 @@
       "par_regime": {}
     },
     "Enyimba|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Ikorodu City|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1539,6 +1586,17 @@
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Universitario|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Talleres|1x2_exterieur": {
       "methode": "walk_forward",
