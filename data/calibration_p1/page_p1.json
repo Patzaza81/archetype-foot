@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-10T03:29:50Z",
+ "genere_le": "2026-11-10T07:24:24Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -14,98 +14,98 @@
   "derniere_empreinte": "61c463a96406fb9e1751a73fef03be8f07af0bf20e3fe43bdd84d3d12b011334"
  },
  "apprentissage": {
-  "matchs_termines": 260,
+  "matchs_termines": 265,
   "periode": [
    "2026-11-05",
-   "2026-11-08"
+   "2026-11-09"
   ],
   "corrections_validees": [],
   "texte": "Aucune correction validee : P1 inchange."
  },
  "performance": {
-  "matchs_termines": 260,
+  "matchs_termines": 265,
   "periode": [
    "2026-11-05",
-   "2026-11-08"
+   "2026-11-09"
   ],
   "par_version": {
    "original": {
-    "logloss_1x2": 1.0185643422556627,
-    "brier_1x2": 0.6101344680223647,
-    "favori_correct": 130,
-    "favori_taux": 0.5,
-    "favori_erreur_type": 0.031008683647302113,
+    "logloss_1x2": 1.0206732887817478,
+    "brier_1x2": 0.6115202572481656,
+    "favori_correct": 131,
+    "favori_taux": 0.49433962264150944,
+    "favori_erreur_type": 0.030712787584951284,
     "marches": {
      "o15": {
-      "n": 260,
-      "frequence_reelle": 0.7461538461538462,
-      "probabilite_moyenne": 0.7587337287878425,
-      "brier": 0.19307458723277116
+      "n": 265,
+      "frequence_reelle": 0.7509433962264151,
+      "probabilite_moyenne": 0.7579342139570078,
+      "brier": 0.19096490950646555
      },
      "o25": {
-      "n": 260,
-      "frequence_reelle": 0.5230769230769231,
-      "probabilite_moyenne": 0.5237475364449028,
-      "brier": 0.24394883643995136
+      "n": 265,
+      "frequence_reelle": 0.5169811320754717,
+      "probabilite_moyenne": 0.522577908641867,
+      "brier": 0.24413236145484588
      },
      "o35": {
-      "n": 260,
-      "frequence_reelle": 0.3076923076923077,
-      "probabilite_moyenne": 0.3085085095498711,
-      "brier": 0.2106116907052996
+      "n": 265,
+      "frequence_reelle": 0.30566037735849055,
+      "probabilite_moyenne": 0.30736486370364374,
+      "brier": 0.21008420100156128
      },
      "btts": {
-      "n": 260,
-      "frequence_reelle": 0.5423076923076923,
-      "probabilite_moyenne": 0.5424744279090585,
-      "brier": 0.2495313418232954
+      "n": 265,
+      "frequence_reelle": 0.5433962264150943,
+      "probabilite_moyenne": 0.541626006260122,
+      "brier": 0.24938207265175072
      }
     }
    },
    "calibre": {
-    "logloss_1x2": 1.0185643422556627,
-    "brier_1x2": 0.6101344680223647,
-    "favori_correct": 130,
-    "favori_taux": 0.5,
-    "favori_erreur_type": 0.031008683647302113,
+    "logloss_1x2": 1.0206732887817478,
+    "brier_1x2": 0.6115202572481656,
+    "favori_correct": 131,
+    "favori_taux": 0.49433962264150944,
+    "favori_erreur_type": 0.030712787584951284,
     "marches": {
      "o15": {
-      "n": 260,
-      "frequence_reelle": 0.7461538461538462,
-      "probabilite_moyenne": 0.7587337287878425,
-      "brier": 0.19307458723277116
+      "n": 265,
+      "frequence_reelle": 0.7509433962264151,
+      "probabilite_moyenne": 0.7579342139570078,
+      "brier": 0.19096490950646555
      },
      "o25": {
-      "n": 260,
-      "frequence_reelle": 0.5230769230769231,
-      "probabilite_moyenne": 0.5237475364449028,
-      "brier": 0.24394883643995136
+      "n": 265,
+      "frequence_reelle": 0.5169811320754717,
+      "probabilite_moyenne": 0.522577908641867,
+      "brier": 0.24413236145484588
      },
      "o35": {
-      "n": 260,
-      "frequence_reelle": 0.3076923076923077,
-      "probabilite_moyenne": 0.3085085095498711,
-      "brier": 0.2106116907052996
+      "n": 265,
+      "frequence_reelle": 0.30566037735849055,
+      "probabilite_moyenne": 0.30736486370364374,
+      "brier": 0.21008420100156128
      },
      "btts": {
-      "n": 260,
-      "frequence_reelle": 0.5423076923076923,
-      "probabilite_moyenne": 0.5424744279090585,
-      "brier": 0.2495313418232954
+      "n": 265,
+      "frequence_reelle": 0.5433962264150943,
+      "probabilite_moyenne": 0.541626006260122,
+      "brier": 0.24938207265175072
      }
     }
    }
   }
  },
  "performance_paris": {
-  "matchs_termines": 260,
-  "paris": 246,
+  "matchs_termines": 265,
+  "paris": 251,
   "matchs_sans_pari": 14,
-  "gagnes": 148,
-  "taux": 0.6016260162601627,
-  "taux_erreur_type": 0.031213411283934303,
-  "rendement_moyen": -0.03304878048780487,
-  "rendement_erreur_type": 0.05498196657685385
+  "gagnes": 152,
+  "taux": 0.6055776892430279,
+  "taux_erreur_type": 0.030848127629136853,
+  "rendement_moyen": -0.0298804780876494,
+  "rendement_erreur_type": 0.054137981661638426
  },
  "matchs": [
   {
@@ -111278,9 +111278,54 @@
     ],
     "h2h": []
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5735077846023534,
+     "logloss_1x2": 0.5559837686559194,
+     "brier_1x2": 0.274587516757335,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08469815476722799,
+      "o25": 0.20388729859983742,
+      "o35": 0.05691301393129354,
+      "btts": 0.20568482914217928
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5735077846023534,
+     "logloss_1x2": 0.5559837686559194,
+     "brier_1x2": 0.274587516757335,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08469815476722799,
+      "o25": 0.20388729859983742,
+      "o35": 0.05691301393129354,
+      "btts": 0.20568482914217928
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": true,
+     "gain": 0.3500000000000001
+    }
+   }
   },
   {
    "match_id": "d9p0apqocuctq6t5k3ryb6ihg",
@@ -117534,9 +117579,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.24997170429414314,
+     "logloss_1x2": 1.3864075503489772,
+     "brier_1x2": 0.8747679621217501,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06788417201696585,
+      "o25": 0.24061190919437828,
+      "o35": 0.07388056675749614,
+      "btts": 0.26674251869187565
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.24997170429414314,
+     "logloss_1x2": 1.3864075503489772,
+     "brier_1x2": 0.8747679621217501,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06788417201696585,
+      "o25": 0.24061190919437828,
+      "o35": 0.07388056675749614,
+      "btts": 0.26674251869187565
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.45999999999999996
+    }
+   }
   },
   {
    "match_id": "9enz9ejz74zc2m07mw8rnq044",
@@ -117965,9 +118055,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2577233383249227,
+     "logloss_1x2": 1.3558686014938552,
+     "brier_1x2": 0.829781360888746,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.06300817967112242,
+      "o25": 0.253215624382511,
+      "o35": 0.08012381845467734,
+      "btts": 0.2077518543329993
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2577233383249227,
+     "logloss_1x2": 1.3558686014938552,
+     "brier_1x2": 0.829781360888746,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.06300817967112242,
+      "o25": 0.253215624382511,
+      "o35": 0.08012381845467734,
+      "btts": 0.2077518543329993
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.44999999999999996
+    }
+   }
   },
   {
    "match_id": "11dgyunkb4q9u44gurfnskphw",
@@ -118378,9 +118513,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2656497875035764,
+     "logloss_1x2": 1.325576425996755,
+     "brier_1x2": 0.8173679958880231,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08010407534491598,
+      "o25": 0.21302634840042595,
+      "o35": 0.060964535114404694,
+      "btts": 0.2420829818108498
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2656497875035764,
+     "logloss_1x2": 1.325576425996755,
+     "brier_1x2": 0.8173679958880231,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08010407534491598,
+      "o25": 0.21302634840042595,
+      "o35": 0.060964535114404694,
+      "btts": 0.2420829818108498
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.3700000000000001
+    }
+   }
   },
   {
    "match_id": "bbxm0noxzbjm8tfly0bta1pn8",
@@ -118689,9 +118869,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.35777313513480313,
+     "logloss_1x2": 1.0278561941953914,
+     "brier_1x2": 0.6214016492932052,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11061375689263521,
+      "o25": 0.35763713056965574,
+      "o35": 0.6413917477779761,
+      "btts": 0.28583819467923255
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.35777313513480313,
+     "logloss_1x2": 1.0278561941953914,
+     "brier_1x2": 0.6214016492932052,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11061375689263521,
+      "o25": 0.35763713056965574,
+      "o35": 0.6413917477779761,
+      "btts": 0.28583819467923255
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   }
  ]
 }
