@@ -1,59 +1,43 @@
 {
-  "genere_le": "2026-11-09T21:51:24.695008+00:00",
+  "genere_le": "2026-11-10T07:15:50.224727+00:00",
   "statut": "PRODUCTION_PARALLELE",
   "moteur_actif": "moteur_v2_6_10",
   "moteur_candidat": "moteur_v3",
   "regle_promotion": "Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.",
   "v2": {
-    "matchs_avec_selection": 2,
-    "choix": 4,
-    "marches": {
-      "1x2_domicile": 1,
-      "over_under_total_2.5_over": 1,
-      "over_under_total_3.5_over": 1,
-      "over_under_total_4.5_over": 1
-    }
+    "matchs_avec_selection": 0,
+    "choix": 0,
+    "marches": {}
   },
   "v3": {
     "matchs_avec_selection": 1,
     "choix": 1,
     "marches": {
-      "handicap_domicile_1.5": 1
+      "over_under_total_3.5_under": 1
     }
   },
   "comparaison": {
-    "matchs_communs": 17,
-    "matchs_v2_seulement": 28,
-    "matchs_v3_seulement": 0,
+    "matchs_communs": 4,
+    "matchs_v2_seulement": 40,
+    "matchs_v3_seulement": 3,
     "accord_marche": 0,
-    "divergence_marche": 2,
+    "divergence_marche": 1,
     "taux_accord_sur_matchs_communs": 0.0,
     "accords": [],
     "divergences": [
       {
-        "match_id": "id:5ogvc9pclw7en00regy12ujv8",
-        "v2": [
-          "over_under_total_2.5_over",
-          "over_under_total_3.5_over",
-          "over_under_total_4.5_over"
-        ],
-        "v3": []
-      },
-      {
-        "match_id": "id:dzumkescpxrw1hwro73k9oe1g",
-        "v2": [
-          "1x2_domicile"
-        ],
+        "match_id": "id:79f8njrmj56coeirtb1fdmpzo",
+        "v2": [],
         "v3": [
-          "handicap_domicile_1.5"
+          "over_under_total_3.5_under"
         ]
       }
     ]
   },
   "calibration_v3": {
     "prete": true,
-    "observations": 235819,
-    "matchs": 3669,
+    "observations": 237514,
+    "matchs": 3697,
     "minimum_observations": 300,
     "minimum_matchs": 50,
     "raison": "OK"

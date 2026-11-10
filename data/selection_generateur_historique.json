@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 130,
-  "genere_le": "2026-11-10T03:28:57.085450+00:00",
+  "executions": 131,
+  "genere_le": "2026-11-10T07:17:05.622394+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -253,16 +253,24 @@
     "taux_reussite": 0.7647
    },
    "2026-11-09": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.584,
     "paris": 21,
-    "proba_moyenne_estimee": null,
-    "regles": 0,
-    "reussis": 0,
-    "taux_reussite": null
+    "proba_moyenne_estimee": 0.6846,
+    "regles": 20,
+    "reussis": 13,
+    "taux_reussite": 0.65
    },
    "2026-11-10": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.27,
     "paris": 5,
+    "proba_moyenne_estimee": 0.9077,
+    "regles": 1,
+    "reussis": 1,
+    "taux_reussite": 1.0
+   },
+   "2026-11-11": {
+    "cote_moyenne": null,
+    "paris": 1,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -271,12 +279,12 @@
   },
   "par_source": {
    "journal": {
-    "cote_moyenne": 1.503,
+    "cote_moyenne": 1.506,
     "paris": 672,
-    "proba_moyenne_estimee": 0.7247,
-    "regles": 599,
-    "reussis": 367,
-    "taux_reussite": 0.6127
+    "proba_moyenne_estimee": 0.723,
+    "regles": 616,
+    "reussis": 377,
+    "taux_reussite": 0.612
    },
    "moteur_v2_6_10": {
     "cote_moyenne": 1.923,
@@ -287,16 +295,16 @@
     "taux_reussite": 0.4286
    },
    "moteur_v3": {
-    "cote_moyenne": 1.468,
-    "paris": 435,
-    "proba_moyenne_estimee": 0.7902,
-    "regles": 416,
-    "reussis": 259,
-    "taux_reussite": 0.6226
+    "cote_moyenne": 1.467,
+    "paris": 436,
+    "proba_moyenne_estimee": 0.7906,
+    "regles": 420,
+    "reussis": 263,
+    "taux_reussite": 0.6262
    }
   },
-  "paris_distincts": 1135,
-  "paris_regles": 1043
+  "paris_distincts": 1136,
+  "paris_regles": 1064
  },
  "derniere_erreur": null,
  "executions": [
@@ -165928,6 +165936,74 @@
     "2026-11-10..2026-11-12": 1,
     "2026-11-10..2026-11-13": 1
    }
+  },
+  {
+   "empreinte": "28e30c879d13b902",
+   "genere_le": "2026-11-10T07:17:04.636440+00:00",
+   "jour_present": "2026-11-10",
+   "paris": [
+    {
+     "competition": "El Salvador : 1ère Division Ouverture",
+     "cote": 1.29,
+     "date": "2026-11-10",
+     "domicile": "Cacahuatique",
+     "ev_estime": null,
+     "exterieur": "Angel Firpo",
+     "heure": "22:30",
+     "id": "match:2026-11-10|cacahuatique|angel firpo|over_under_total_3.5_under|journal",
+     "journal_observations": 12,
+     "journal_team": "Cacahuatique",
+     "journal_wins": 10,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_10_SUR_12",
+     "plages": [
+      "2026-11-10..2026-11-10",
+      "2026-11-10..2026-11-11",
+      "2026-11-10..2026-11-12",
+      "2026-11-10..2026-11-13"
+     ],
+     "probabilite_estimee": 0.704994,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Colombie : Première A Cloture",
+     "cote": 1.41,
+     "date": "2026-11-11",
+     "domicile": "Millonarios FC",
+     "ev_estime": 0.122501,
+     "exterieur": "Alianza Valledupar",
+     "heure": "",
+     "id": "match:2026-11-11|millonarios fc|alianza valledupar|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.08688,
+     "match_id": "79f8njrmj56coeirtb1fdmpzo",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-10..2026-11-11",
+      "2026-11-10..2026-11-12",
+      "2026-11-10..2026-11-13"
+     ],
+     "probabilite_estimee": 0.7961,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    }
+   ],
+   "plages": {
+    "2026-11-10..2026-11-10": 1,
+    "2026-11-10..2026-11-11": 2,
+    "2026-11-10..2026-11-12": 2,
+    "2026-11-10..2026-11-13": 2
+   }
   }
  ],
  "resultats": {
@@ -171145,6 +171221,111 @@
    "regle_le": "2026-11-09T01:05:36.042613+00:00",
    "resultat": "LOSS",
    "score": "2-0"
+  },
+  "match:2026-11-09|antigua|malacateco|over_under_total_2.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-09|antigua|malacateco|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-09|atletico madrid|badalona|btts_non|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-11-09|blooming|o petrolero|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "0-1"
+  },
+  "match:2026-11-09|chapelton|racing utd|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "0-0"
+  },
+  "match:2026-11-09|chapelton|racing utd|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-09|club aurora|uni de vinto|handicap_domicile_1.5|moteur_v3": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-09|club leon|cd guadalajara|double_chance_X2|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-09|dep tolima|millonarios fc|double_chance_X2|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "2-1"
+  },
+  "match:2026-11-09|deportivo g|comerciantes uni|btts_oui|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "0-0"
+  },
+  "match:2026-11-09|herediano|san carlos|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-09|ikorodu city|inter lagos|over_under_total_2.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-11-09|luqueno|cs 2 de mayo|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "3-0"
+  },
+  "match:2026-11-09|pineto|vis pesaro|over_under_total_3.5_under|moteur_v3": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "1-0"
+  },
+  "match:2026-11-09|queretaro fc|puebla fc|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "0-2"
+  },
+  "match:2026-11-09|san lorenzo|rubio nu|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-11-09|torreense|uniao de leiria|double_chance_x2|moteur_v3": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "2-3"
+  },
+  "match:2026-11-09|torreense|uniao de leiria|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-11-09|u concepcion|o higgins|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "LOSS",
+   "score": "3-2"
+  },
+  "match:2026-11-09|universitario|moquegua|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-10|club aurora|uni de vinto|handicap_domicile_1.5|moteur_v3": {
+   "regle_le": "2026-11-10T07:17:05.622394+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
   }
  },
  "version": 1
