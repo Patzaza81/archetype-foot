@@ -1,4 +1,5 @@
 import copy
+import pytest
 import json
 import unittest
 from pathlib import Path
@@ -144,8 +145,10 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertIn("NO_SELECTION", result["errors"])
 
     def test_real_generator_file_is_accepted_without_modifying_it(self):
-        source = Path(__file__).resolve().parents[1] / "data" / "tickets.json"
-        self.assertTrue(source.is_file(), "data/tickets.json must exist for integration test")
+        # Fichier réel du générateur FIGÉ (07/11/2026) : tickets.json (dossier data) est réécrit chaque nuit et peut ne contenir aucun ticket
+        # (jour sans match éligible) ; lire ce fichier-là faisait échouer les autotests du pipeline sans qu'aucun code n'ait changé.
+        source = Path(__file__).resolve().parent / "fixtures" / "tickets_generateur_reel.json"
+        self.assertTrue(source.is_file(), "tests/fixtures/tickets_generateur_reel.json must exist for integration test")
         original = json.loads(source.read_text(encoding="utf-8"))
         intact = copy.deepcopy(original)
         scenarios = original["scenarios"]
@@ -192,6 +195,21 @@ class BetpawaValidationTests(unittest.TestCase):
         self.assertEqual(
             [s["selection"][1:] for s in original["scenarios"]], [s["selection"][1:] for s in intact["scenarios"]],
             "le validateur ne doit jamais modifier les jambes du fichier")
+
+    @pytest.mark.donnees_du_jour
+    def test_fichier_du_jour_est_toujours_lisible_meme_sans_ticket(self):
+        """Le fichier de la nuit (data/tickets.json) peut avoir des tickets vides : le validateur ne doit jamais planter, quel que soit le contenu."""
+        source = Path(__file__).resolve().parents[1] / "data" / "tickets.json"
+        if not source.is_file():
+            self.skipTest("pas de fichier du jour")
+        original = json.loads(source.read_text(encoding="utf-8"))
+        manifest = build_manifest(original)
+        self.assertEqual(manifest["tickets_checked"], min(15, len(original["scenarios"])))
+        self.assertTrue(all(not t["submission_automated"] for t in manifest["tickets"]))
+
+    def test_jour_sans_aucune_jambe_ne_plante_pas(self):
+        manifest = build_manifest({"scenarios": [{"selection": []}, {"selection": []}]})
+        self.assertEqual(manifest["tickets_checked"], 2)
 
     def test_daily_cap_is_fifteen(self):
         raw = {"tickets": [{"selection": [leg(home=f"Home {i}", away=f"Away {i}")]} 

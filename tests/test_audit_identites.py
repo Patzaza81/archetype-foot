@@ -80,6 +80,7 @@ def test_identifiant_extrait_de_l_adresse():
 
 
 # --- données réelles -----------------------------------------------------------------------------------------------------
+@pytest.mark.donnees_du_jour
 def test_assemblage_courant_aucun_alias_rattache_sans_preuve_d_identifiant():
     if not D.ASSEMBLAGE.exists():
         pytest.skip("assemblage absent")

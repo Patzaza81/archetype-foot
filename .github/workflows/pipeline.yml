@@ -45,19 +45,20 @@ jobs:
           pip install requests beautifulsoup4 pandas numpy scipy lxml playwright pytest
           playwright install --with-deps chromium
 
-      - name: Autotests du moteur, du pont et suite Python
+      # CHANGEMENT 10/11/2026 (ordre de Patrick : résoudre définitivement les échecs répétés d'« autotests ») : cette étape ne juge plus que le CODE.
+      # Les tests qui lisent des données réécrites chaque nuit (marqueur « donnees_du_jour ») passent dans l'étape suivante : non bloquante, erreur visible.
+      # Un test de ce type, sans marqueur ni fichier figé, est refusé par tests/test_garde_donnees_du_jour.py.
+      - name: Autotests du moteur, du pont et suite Python (code uniquement)
         run: |
           python -m moteur_v2_6_10 --autotest
           python pont_moteur.py --autotest
-          python -m pytest tests -q --deselect tests/test_audit_identites.py::test_assemblage_courant_aucun_alias_rattache_sans_preuve_d_identifiant
+          python -m pytest tests -q -m "not donnees_du_jour"
 
-      # CHANGEMENT 06/11/2026 (ordre de Patrick) : ce contrôle lit l'assemblage du jour (données générées) ; un nom bizarre chez Football-Data
-      # bloquait tout le pipeline (5 et 6/11). Il ne bloque plus la publication mais l'erreur reste visible : annotation rouge + étape en échec.
-      - name: Audit des identités sur l'assemblage du jour (non bloquant, erreur visible)
+      - name: Tests sur les données du jour (non bloquant, erreur visible)
         continue-on-error: true
         run: |
-          if ! python -m pytest tests/test_audit_identites.py::test_assemblage_courant_aucun_alias_rattache_sans_preuve_d_identifiant -q; then
-            echo "::error title=Audit des identités en échec::Alias rattachés sans preuve d'identifiant, voir python audit_identites.py"
+          if ! python -m pytest tests -q -m donnees_du_jour; then
+            echo "::error title=Tests des données du jour en échec::Un fichier de data/ du jour est inattendu (tickets vides, identités), voir le journal de cette étape"
             exit 1
           fi
 
