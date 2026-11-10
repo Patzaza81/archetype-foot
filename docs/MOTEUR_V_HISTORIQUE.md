@@ -18,7 +18,7 @@ Description technique du moteur : `docs/MOTEUR_V.md`. Période de conception : 1
 - Raison : les mesures ci-dessous (section 3) montrent que le pourcentage brut est trop optimiste et n'apporte rien en plus de la cote.
 
 ## 3. Tests subis et résultats
-Chiffres exacts ; scripts d'origine dans `evaluation/moteur_v/analyses_conception/` (archive, voir son LISEZMOI).
+Chiffres exacts ; scripts d'origine dans `archive_code/analyses_conception_moteur_v/` (archive, voir son LISEZMOI).
 
 1. **Rejeu du prototype v1** (fréquences x k, verrou, musique) sur les 440 matchs : 488 lignes passent les seuils (239 matchs). Le pourcentage annoncé n'apporte aucune information au-delà de la cote (coefficient logistique ≈ 0, celui de la cote ≈ 1,0). Effet « malédiction du gagnant » : choisir le meilleur de ~60 marchés par match sélectionne le bruit favorable.
 2. **Réglage « en trichant »** (sur résultats connus) : grille de 525 règles, découpes chronologiques. Les règles trouvées en échantillon **ne tiennent pas hors échantillon**. Règles A (buts d'une équipe, cote 1,50-2,00) et B (total de buts, cote 1,26-1,74, >= 80 %) figées dans `test_300.py` : il faut ~600 matchs neufs (A) et >1 000 (B) pour atteindre 100 paris.
