@@ -17,9 +17,13 @@ def test_page_v2r_branchee_sur_le_fichier_de_donnees():
     assert "data/v3" not in js and "data/europe" not in js and "archetype_v3" not in h
 
 
-def test_menu_contient_v2r_dans_toutes_les_pages():
+def test_v2r_desactive_retire_du_menu_de_toutes_les_pages():
+    """10/11/2026 : v2r désactivé (config/moteurs_desactives.json, mesure sur résultats réels) : plus dans aucun menu, la page reste consultable par son adresse."""
+    import json
+    assert "v2r" in json.loads((RACINE / "config" / "moteurs_desactives.json").read_text(encoding="utf-8"))["desactives"]
     for f in PAGES_AVEC_MENU:
-        assert 'href="pronostics_v2r.html"' in (RACINE / f).read_text(encoding="utf-8"), f
+        assert 'href="pronostics_v2r.html"' not in (RACINE / f).read_text(encoding="utf-8"), f
+        assert 'href="pronostics_megapower.html"' in (RACINE / f).read_text(encoding="utf-8"), f
 
 
 def test_passage_nocturne_jamais_bloquant():

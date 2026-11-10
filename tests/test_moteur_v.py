@@ -229,7 +229,10 @@ def test_page_v_branchee():
         assert f'id="{ident}"' in html and ident in js
     assert "archetype_v.js" in html and "data/v/pronostics_v.json" in js
     assert "Autres paris possibles" in js and "réussite mesurée" in js
-    assert "pronostics_v.html" in (RACINE / "index.html").read_text(encoding="utf-8")
+    # 10/11/2026 : moteur v désactivé (config/moteurs_desactives.json) : la page reste consultable par son adresse, mais elle n'est plus dans le menu.
+    import json
+    assert "v" in json.loads((RACINE / "config" / "moteurs_desactives.json").read_text(encoding="utf-8"))["desactives"]
+    assert "pronostics_v.html" not in (RACINE / "index.html").read_text(encoding="utf-8")
 
 
 def test_hook_nocturne_present_et_isole():

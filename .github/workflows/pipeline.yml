@@ -151,13 +151,19 @@ jobs:
       - name: Pourcentage mixte (essai, journal gelé à part)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true
-        run: python -m moteur_omega_v3.mixte pipeline
+        run: if python -m megapower.actifs mixte; then python -m moteur_omega_v3.mixte pipeline; fi
 
       # CONSERVÉ (audit du 02/11/2026) : moteur DC = ancien Gamma, inchangé, pour la comparaison avec Omega V3 sur les mêmes matchs gelés (data/dc/, page pronostics_dc.html).
       - name: Ancien moteur DC (pronostics et journal gelé, hors tickets)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true
-        run: python -m moteur_dc.suivi pipeline
+        run: if python -m megapower.actifs dc; then python -m moteur_dc.suivi pipeline; fi
+
+      # AJOUT 10/11/2026 : moteur Megapower (réunit Analyse Verdict, Alpha, Omega et Gamma ; réapprend chaque nuit sur les résultats connus ; ne propose que des paris prouvés).
+      - name: Moteur Megapower (apprentissage, pronostics et journal gelé, hors tickets)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m megapower.suivi pipeline
 
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
