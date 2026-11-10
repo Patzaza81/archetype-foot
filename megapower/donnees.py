@@ -6,6 +6,7 @@ import gzip
 import json
 import os
 import re
+from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
@@ -27,11 +28,24 @@ def scores() -> dict[str, tuple[int, int]]:
     return out
 
 
+def cotes_avant_match(x: dict) -> bool:
+    """Vrai seulement si les cotes ont été relevées AVANT le coup d'envoi (heure de prise du flux < coup d'envoi, les deux connus).
+    Constat du 11/11/2026 : 45 matchs joués de la base avaient des cotes relevées pendant le match, et 162 n'avaient pas d'heure de coup d'envoi (cotes « en direct » possibles,
+    ex. un nul coté 1,36 sur un 0-0 en cours). Une cote relevée pendant le match connaît déjà une partie du résultat : elle fausse tout apprentissage."""
+    ko, pris = x.get("coup_d_envoi_utc"), (x.get("run") or {}).get("pris_le")
+    if not ko or not pris:
+        return False
+    try:
+        return datetime.fromisoformat(str(pris).replace("Z", "+00:00")) < datetime.fromisoformat(str(ko).replace("Z", "+00:00"))
+    except ValueError:
+        return False
+
+
 def _fichier(f: str) -> list[dict]:
     cfg = V.config()
     out = []
     for k, x in json.load(gzip.open(f)).items():
-        if not x.get("cotes_betpawa") or not x.get("date"):
+        if not x.get("cotes_betpawa") or not x.get("date") or not cotes_avant_match(x):
             continue
         try:
             r = S.lire(x, cfg)

@@ -33,18 +33,38 @@ Aucun seuil posé à la main. Seules valeurs fixées : la cote minimale (règle 
 Chaque nuit : réapprentissage sur tous les matchs joués, test « marche avant », gel avant le coup d'envoi (`data/megapower/journal.jsonl`, ajout seul), règlement, page (`data/megapower/pronostics.json`).
 Bilan réel = dernier gel avant le coup d'envoi, match terminé. Rien d'autre.
 
-## Résultats mesurés le 10/11/2026
+## Résultats mesurés le 11/11/2026
 
-Base : 2 238 matchs joués du flux commun (28/09 → 10/11), 108 721 paris cotés à 1,26 ou plus.
+Base : 2 092 matchs joués du flux commun (28/09 → 10/11), 105 046 paris cotés à 1,26 ou plus, cotes relevées avant le coup d'envoi seulement.
 
 - **Aucun pari prouvé**, ni sur toute la base, ni dans le test marche avant.
-- Test marche avant (chaque jour du 19/10 au 10/11, apprendre sur les jours d'avant, juger le jour) : 255 paris « sous observation », 47,8 % de réussite, cote moyenne 4,29, **20,3 perdus pour 100 misés** (± 14,9). Ce n'est pas un bilan réel.
-- Marge du bookmaker mesurée : 7,8 % sur le 1X2 et sur plus/moins de 2,5 buts, 9,0 % sur « les deux marquent ».
-- Jouer tous les paris d'une famille perd de 7,7 (les deux marquent) à 20,5 (victoire + les deux marquent) pour 100 misés. Les combinés double chance + total perdent 12,3.
-- Les quatre lectures n'ajoutent pas d'information à la cote : erreur de prévision (log-loss) 0,52501 avec la cote seule, 0,52579 avec les quatre moteurs en plus (99 713 lignes jamais vues).
-- Autres essais, tous perdants sur des matchs jamais vus : modèle combiné linéaire (3 124 paris, −9,2 %), arbres de décision (10 380 paris, −17,4 %), 151 règles simples famille × tranche de cote × accord des moteurs (les 6 positives à l'apprentissage donnent −4,4 % ensuite, 1 079 paris).
+- Test marche avant (chaque jour du 19/10 au 10/11, apprendre sur les jours d'avant, juger le jour) : 220 paris « sous observation », 44,6 % de réussite, cote moyenne 4,00, **23,5 perdus pour 100 misés** (± 15,6). Ce n'est pas un bilan réel.
+- Jouer tous les paris d'une famille perd de 7,7 (les deux marquent) à 21,1 (victoire + les deux marquent) pour 100 misés. Les combinés double chance + total perdent 11,4.
+- Marge du bookmaker mesurée le 10/11 (avant nettoyage des cotes) : 7,8 % sur le 1X2 et sur plus/moins de 2,5 buts, 9,0 % sur « les deux marquent ».
+- Mesures du 10/11 (avant nettoyage, 2 238 matchs) : les quatre lectures n'ajoutent pas d'information à la cote (log-loss 0,52501 avec la cote seule, 0,52579 avec les quatre moteurs, 99 713 lignes jamais vues) ; modèle combiné linéaire −9,2 % (3 124 paris), arbres de décision −17,4 % (10 380 paris), 151 règles simples : les 6 positives à l'apprentissage donnent −4,4 % ensuite (1 079 paris).
 
-Conclusion : avec ces données (historiques des équipes au même lieu), aucun système ne bat la cote. MEGAPOWER le dit au lieu de forcer une sélection, et se réévalue chaque nuit.
+Conclusion : avec les seuls historiques des équipes, aucun système ne bat la cote. MEGAPOWER le dit au lieu de forcer une sélection, et se réévalue chaque nuit.
+
+## Défaut de données corrigé le 11/11/2026 : cotes relevées pendant le match
+
+Dans le flux commun, 45 matchs joués avaient des cotes relevées APRÈS le coup d'envoi et 162 n'avaient pas d'heure de coup d'envoi (exemple du 31/10 : nul coté 1,36 sur un 0-0 en cours).
+Une cote relevée pendant le match connaît déjà une partie du résultat. `megapower.donnees.cotes_avant_match` écarte ces matchs. Les autres moteurs lisent le même flux sans ce filtre.
+
+Garde ajoutée le même jour : jamais de pari à une cote plus haute que la plus haute cote déjà gagnée dans la famille (au-delà, le modèle devine).
+
+## Étude du 11/11/2026 : information extérieure (cotes d'autres bookmakers, Football-Data)
+
+Question : quand Betpawa paie plus que le prix « juste » d'un marché de référence, est-ce rentable ? 780 matchs rapprochés (même division, mêmes équipes, même score), 28/09 → 08/11, marchés 1X2, double chance, plus/moins de 2,5 buts.
+
+| Référence | Paris où Betpawa paie plus | Pour 100 misés |
+|---|---|---|
+| Moyenne des bookmakers, avant-match | 355 | −14,9 (± 18,6) |
+| Bet365, avant-match | 396 | −16,7 (± 15,8) |
+| Betfair Exchange, avant-match | 355 | −1,4 (± 17,2) ; moitiés : +28,0 puis −21,7 |
+| Betfair Exchange, clôture | 699 | +3,5 (± 9,4) ; avantage ≥ 2 % : 388 paris, +12,6 (± 12,8) |
+
+Lecture : la seule piste positive est le prix Betfair de clôture. Mais ce prix n'existe qu'au coup d'envoi, alors que la cote Betpawa de l'archive a été relevée des heures avant : c'est de la triche (information du futur), pas un système jouable.
+Pour la rendre jouable, il faut relever le prix Betfair (ou Pinnacle) au même moment que la cote Betpawa, puis geler et suivre. Le dépôt ne collecte pas ces prix en direct aujourd'hui.
 
 ## Tri des moteurs (`python -m megapower.tri_moteurs`)
 

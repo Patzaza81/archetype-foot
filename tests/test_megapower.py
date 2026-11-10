@@ -45,10 +45,13 @@ def test_un_seul_pari_par_match_le_meilleur():
     T, jours = _tableau(600, lambda i: i % 10 != 0, 1.50)
     mod = C.apprendre(T, jours, 1.26)
     T2 = {k: np.concatenate([v[:1], v[:1]]) for k, v in T.items()}
-    T2["cote"] = np.array([1.50, 1.60])
+    T2["cote"] = np.array([1.40, 1.50])
     J = C.juger(T2, mod)
     i = C.meilleur_par_match(T2, J, 1)
     assert len(i) == 1 and J["gain"][i[0]] == J["gain"].max()
+    T2["cote"] = np.array([1.50, 1.60])                              # 1,60 n'a jamais été gagné à l'apprentissage (cote la plus haute gagnée : 1,50) : le modèle ne devine pas
+    J = C.juger(T2, mod)
+    assert J["statut"].tolist() == [2, 0]
 
 
 def test_accord_compte_les_lectures_disponibles():
@@ -99,3 +102,11 @@ def test_page_megapower_branchee_et_moteurs_desactives():
     assert "megapower.suivi pipeline" in (racine / ".github" / "workflows" / "pipeline.yml").read_text(encoding="utf-8")
     assert set(actifs.desactives()) == {"v2r", "v", "dc", "mixte"} and actifs.actif("gamma") and not actifs.actif("dc")
     assert actifs.desactives(racine / "inexistant.json") == {}          # fichier absent : rien n'est désactivé
+
+
+def test_cotes_relevees_pendant_le_match_ecartees():
+    from megapower.donnees import cotes_avant_match
+    assert cotes_avant_match({"coup_d_envoi_utc": "2026-10-31T18:30:00Z", "run": {"pris_le": "2026-10-31T10:00:00Z"}})
+    assert not cotes_avant_match({"coup_d_envoi_utc": "2026-10-31T18:30:00Z", "run": {"pris_le": "2026-10-31T19:35:00Z"}})     # relevées pendant le match
+    assert not cotes_avant_match({"coup_d_envoi_utc": None, "run": {"pris_le": "2026-10-31T19:35:00Z"}})                       # heure du match inconnue : doute, écarté
+    assert not cotes_avant_match({"coup_d_envoi_utc": "2026-10-31T18:30:00Z"})

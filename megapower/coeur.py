@@ -104,7 +104,7 @@ def apprendre(T: dict[str, np.ndarray], jours: np.ndarray, cote_min: float) -> d
         out["familles"][f] = {"avec_accord": bool(avec), "w": [float(v) for v in w], "cov": _cov(A, T["y"][m], w, T["match"][m]).tolist(),
                               "w1": [float(v) for v in _ajuster(_matrice(x[m1], maj[m1], avec), T["y"][m1])],
                               "w2": [float(v) for v in _ajuster(_matrice(x[m2], maj[m2], avec), T["y"][m2])],
-                              "coupe": str(coupe), "paris": int(m.sum()), "matchs": int(len(np.unique(T["match"][m]))), "reussite": float(T["y"][m].mean()), "rendement_de_tout_jouer": float(gain.mean()),
+                              "cote_gagnante_max": float(T["cote"][m][T["y"][m] == 1].max()), "coupe": str(coupe), "paris": int(m.sum()), "matchs": int(len(np.unique(T["match"][m]))), "reussite": float(T["y"][m].mean()), "rendement_de_tout_jouer": float(gain.mean()),
                               "perte_sans_accord": pertes[False], "perte_avec_accord": pertes[True]}
     return out
 
@@ -126,7 +126,10 @@ def juger(T: dict[str, np.ndarray], modele: dict) -> dict[str, np.ndarray]:
         p[m], bas[m] = sig(eta), sig(eta - Z95 * se)
         g1[m], g2[m] = sig(A @ np.array(r["w1"])) * T["cote"][m] - 1, sig(A @ np.array(r["w2"])) * T["cote"][m] - 1
     gain, gain_bas = p * T["cote"] - 1, bas * T["cote"] - 1
-    jouable = T["cote"] >= modele["cote_min"]
+    connu = np.zeros(n, dtype=bool)                             # jamais de pari à une cote plus haute que la plus haute cote déjà gagnée dans cette famille : au-delà, le modèle devine
+    for f, r in modele["familles"].items():
+        connu |= (fam == f) & (T["cote"] <= r["cote_gagnante_max"])
+    jouable = (T["cote"] >= modele["cote_min"]) & connu
     obs = jouable & (gain >= 0) & (g1 >= 0) & (g2 >= 0)
     statut = np.where(jouable & (gain_bas >= 0), 2, np.where(obs, 1, 0))
     return {"p": p, "gain": gain, "gain_bas": gain_bas, "statut": statut}
