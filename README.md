@@ -155,7 +155,6 @@ Hébergé sur Netlify (`netlify.toml` : publie la racine du dépôt, en-têtes a
 | `tickets.html` — Générateur de tickets | `tickets.js`, `style.css`, `theme.css` | `data/tickets.json` |
 | `admin.html` — Audit / calibration | `admin.js`, `style.css`, `theme.css` | `data/audit_status.json`, `data/audit_telemetry.json`, `config/journal_promotion.jsonl` |
 | `journal.html` — Journal de rentabilité | `journal.js`, `journal.css` + `archetype.css` | `journal.json` |
-| `presentation-site.html` | autonome | aucune (maquette temporaire) |
 
 **Cartes de match (Archetype et Panier).** Une seule fonction, `construitCarte()` dans `archetype.js`, construit les
 cartes des deux pages : le panier est donc identique à la page principale, avec en plus le bouton « Retirer ».
