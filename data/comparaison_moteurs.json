@@ -1,43 +1,65 @@
 {
-  "genere_le": "2026-11-10T07:15:50.224727+00:00",
+  "genere_le": "2026-11-11T01:24:20.916809+00:00",
   "statut": "PRODUCTION_PARALLELE",
   "moteur_actif": "moteur_v2_6_10",
   "moteur_candidat": "moteur_v3",
   "regle_promotion": "Aucune promotion automatique : la V3 doit démontrer un avantage réel sur des données hors échantillon.",
   "v2": {
-    "matchs_avec_selection": 0,
-    "choix": 0,
-    "marches": {}
+    "matchs_avec_selection": 2,
+    "choix": 3,
+    "marches": {
+      "buts_equipe_exterieur_0.5_over": 1,
+      "over_under_total_3.5_over": 1,
+      "over_under_total_4.5_under": 1
+    }
   },
   "v3": {
-    "matchs_avec_selection": 1,
-    "choix": 1,
+    "matchs_avec_selection": 3,
+    "choix": 3,
     "marches": {
-      "over_under_total_3.5_under": 1
+      "over_under_total_3.5_under": 2,
+      "over_under_total_2.5_over": 1
     }
   },
   "comparaison": {
-    "matchs_communs": 4,
-    "matchs_v2_seulement": 40,
-    "matchs_v3_seulement": 3,
+    "matchs_communs": 7,
+    "matchs_v2_seulement": 38,
+    "matchs_v3_seulement": 1,
     "accord_marche": 0,
-    "divergence_marche": 1,
+    "divergence_marche": 3,
     "taux_accord_sur_matchs_communs": 0.0,
     "accords": [],
     "divergences": [
       {
-        "match_id": "id:79f8njrmj56coeirtb1fdmpzo",
+        "match_id": "id:3sfkl5niyjl43qkvgjftb9990",
         "v2": [],
         "v3": [
           "over_under_total_3.5_under"
+        ]
+      },
+      {
+        "match_id": "id:7b3in1wqh5f13bs0mf9a6efx0",
+        "v2": [
+          "over_under_total_4.5_under"
+        ],
+        "v3": []
+      },
+      {
+        "match_id": "id:8t1w599msb8fnnvzff42sp4b8",
+        "v2": [
+          "buts_equipe_exterieur_0.5_over",
+          "over_under_total_3.5_over"
+        ],
+        "v3": [
+          "over_under_total_2.5_over"
         ]
       }
     ]
   },
   "calibration_v3": {
     "prete": true,
-    "observations": 237514,
-    "matchs": 3697,
+    "observations": 237711,
+    "matchs": 3700,
     "minimum_observations": 300,
     "minimum_matchs": 50,
     "raison": "OK"

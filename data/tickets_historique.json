@@ -76265,7 +76265,7 @@
         "exterieur": "Angel Firpo",
         "date": "2026-11-10",
         "journal_team": "Cacahuatique",
-        "resultat": null
+        "resultat": "WIN"
       },
       {
         "match_id": null,
@@ -76867,5 +76867,134 @@
         }
       ]
     }
+  },
+  {
+    "cle": "2026-11-11|PRUDENT_2",
+    "scenario": "PRUDENT_2",
+    "date": "2026-11-11",
+    "portee": "melange",
+    "genere_le": "2026-11-11T01:28:26.272234+00:00",
+    "statut": "PENDING",
+    "cote_totale": 2.3406,
+    "jambes": [
+      {
+        "match_id": "79f8njrmj56coeirtb1fdmpzo",
+        "marche": "over_under_total_3.5_under",
+        "cote": 1.41,
+        "probabilite_estimee": 0.7962,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "Millonarios FC",
+        "exterieur": "Alianza Valledupar",
+        "date": "2026-11-11",
+        "journal_team": null,
+        "resultat": null
+      },
+      {
+        "match_id": "8t1w599msb8fnnvzff42sp4b8",
+        "marche": "over_under_total_2.5_over",
+        "cote": 1.66,
+        "probabilite_estimee": 0.7254,
+        "source": "moteur_v3",
+        "rang": "P1",
+        "domicile": "Águila",
+        "exterieur": "Municipal L.",
+        "date": "2026-11-12",
+        "journal_team": null,
+        "resultat": null
+      }
+    ],
+    "analyse": {
+      "paris": 2,
+      "paris_justes_attendus": 1.5216,
+      "plans": [
+        {
+          "nom": "COMBINE",
+          "tickets": 1,
+          "tailles": [
+            2
+          ],
+          "strategie": "COTES_EQUILIBREES",
+          "variantes": [
+            {
+              "strategie": "COTES_EQUILIBREES",
+              "choisie": true,
+              "erreurs_garanties": 0,
+              "proba_profit": 0.5776,
+              "esperance_gain": 0.3518
+            }
+          ],
+          "composition": [
+            {
+              "paris": [
+                0,
+                1
+              ],
+              "cote": 2.3406,
+              "probabilite": 0.577563,
+              "mise": 1.0
+            }
+          ],
+          "retour_garanti": 2.3406,
+          "gagnants_requis": 1,
+          "erreurs_garanties": 0,
+          "proba_profit": 0.5776,
+          "esperance_gain": 0.3518
+        },
+        {
+          "nom": "SIMPLES",
+          "tickets": 2,
+          "tailles": [
+            1,
+            1
+          ],
+          "strategie": "COTES_EQUILIBREES",
+          "variantes": [
+            {
+              "strategie": "COTES_EQUILIBREES",
+              "choisie": true,
+              "erreurs_garanties": 0,
+              "proba_profit": 0.5776,
+              "esperance_gain": 0.1601
+            },
+            {
+              "strategie": "SECURITE_GROUPEE",
+              "choisie": false,
+              "erreurs_garanties": 0,
+              "proba_profit": 0.5776,
+              "esperance_gain": 0.1601
+            }
+          ],
+          "composition": [
+            {
+              "paris": [
+                1
+              ],
+              "cote": 1.66,
+              "probabilite": 0.7254,
+              "mise": 0.4593
+            },
+            {
+              "paris": [
+                0
+              ],
+              "cote": 1.41,
+              "probabilite": 0.7962,
+              "mise": 0.5407
+            }
+          ],
+          "retour_garanti": 0.7624,
+          "gagnants_requis": 2,
+          "erreurs_garanties": 0,
+          "proba_profit": 0.5776,
+          "esperance_gain": 0.1601
+        }
+      ],
+      "meilleur_plan": "COMBINE",
+      "plan_le_plus_regulier": "COMBINE",
+      "plan_marge_max": "COMBINE",
+      "rentable": true
+    },
+    "resultat": null
   }
 ]

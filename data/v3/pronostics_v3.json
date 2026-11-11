@@ -1,94 +1,53 @@
 {
  "moteur": "moteur_v3",
  "statut": "PRODUCTION PARALLÈLE — CANDIDAT",
- "genere_le": "2026-11-10T07:13:24Z",
+ "genere_le": "2026-11-11T01:22:01Z",
  "empreinte_code_v3": "9a071e895e08",
- "commit": "0ab210a",
+ "commit": "8bdb63a",
  "calibration": {
   "prete": true,
-  "observations": 237514,
-  "matchs": 3697,
+  "observations": 237711,
+  "matchs": 3700,
   "minimum_observations": 300,
   "minimum_matchs": 50,
   "raison": "OK"
  },
  "bilan": {
-  "matchs": 7,
+  "matchs": 8,
   "statuts": {
-   "NON_EVALUE": 6,
-   "EVALUE": 1
+   "EVALUE": 5,
+   "NON_EVALUE": 3
   },
-  "selections": 1,
-  "matchs_avec_selection": 1,
+  "selections": 3,
+  "matchs_avec_selection": 3,
   "matchs_en_apercu_non_calibre": 0,
   "raisons_de_rejet": {
-   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 71,
-   "JUSTIFICATION_INSUFFISANTE": 71,
-   "VALUE_NON_ELIGIBLE": 71,
-   "COTE_HORS_FENETRE": 67,
-   "PROBABILITE_INF_60": 58,
-   "EDV_INSUFFISANTE": 10,
-   "PROBABILITE_DEGENEREE": 1
+   "VALUE_NON_ELIGIBLE": 378,
+   "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT": 373,
+   "JUSTIFICATION_INSUFFISANTE": 373,
+   "COTE_HORS_FENETRE": 347,
+   "PROBABILITE_INF_60": 307,
+   "SURDISPERSION_1_20_1_50_ET_P_INF_67": 68,
+   "EDV_INSUFFISANTE": 56,
+   "PROBABILITE_DEGENEREE": 6
   },
   "couverture": {
-   "marches_cotes_calcules": 74,
-   "issues_betpawa": 119,
+   "marches_cotes_calcules": 391,
+   "issues_betpawa": 655,
    "groupes_betpawa_non_lus": {
-    "1x2_btts": 1,
-    "1x2_total_1.5": 1,
-    "dc_btts": 1,
-    "dc_total_1.5": 1,
-    "dc_total_2.5": 1,
-    "dc_total_3.5": 1,
-    "dc_total_4.5": 1
+    "1x2_btts": 5,
+    "1x2_total_1.5": 5,
+    "dc_btts": 5,
+    "dc_total_1.5": 5,
+    "dc_total_2.5": 5,
+    "dc_total_3.5": 5,
+    "dc_total_4.5": 5,
+    "1x2_total_2.5": 4,
+    "1x2_total_3.5": 4
    }
   }
  },
  "matchs": [
-  {
-   "match_id": "5osnc6i53mnuk122pkrzifxn8",
-   "date": "2026-11-10",
-   "heure": null,
-   "competition": "Paraguay : Professionnel de la Division Clôture",
-   "domicile": "San Lorenzo",
-   "exterieur": "Rubio NU",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "bbxm0noxzbjm8tfly0bta1pn8",
-   "date": "2026-11-10",
-   "heure": null,
-   "competition": "Portugal : Liga Portugal 2",
-   "domicile": "Torreense",
-   "exterieur": "Uniao de Leiria",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "3y3emvsmx120kx4pallhrr5zo",
-   "date": "2026-11-10",
-   "heure": null,
-   "competition": "Équateur : Première A Tour de Relégation",
-   "domicile": "Universitario",
-   "exterieur": "Manta",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
-   "match_id": "8riac0b1sqepjnbbyc9dizwno",
-   "date": "2026-11-10",
-   "heure": "22:30",
-   "competition": "El Salvador : 1ère Division Ouverture",
-   "domicile": "Cacahuatique",
-   "exterieur": "Angel Firpo",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
   {
    "match_id": "79f8njrmj56coeirtb1fdmpzo",
    "date": "2026-11-11",
@@ -122,8 +81,8 @@
      "marche": "under_3_5",
      "libelle": "Moins de 3,5 buts",
      "cote": 1.41,
-     "probabilite": 0.7961,
-     "edge": 0.08689345018382422,
+     "probabilite": 0.7962,
+     "edge": 0.08696483453370607,
      "edv": 12.3,
      "justification": "✓ -3,5 chacun à son lieu : 83% / 83% ; ✓ total attendu (moyennes simples) : 2,25 buts ; ✓ sous la ligne sur les 6 derniers : 4 (Millonarios FC) / 5 (Alianza Valledupar)",
      "raisons_saison": [
@@ -401,7 +360,7 @@
      "libelle": "Exactement 0 buts",
      "cote": 13.04,
      "probabilite_brute": 0.11418819104605375,
-     "probabilite": 0.1277412390923015,
+     "probabilite": 0.1277802448922563,
      "calibree": true,
      "edv": 66.6,
      "raisons": [
@@ -417,9 +376,9 @@
      "libelle": "Score exact 0-2",
      "cote": 58.33,
      "probabilite_brute": 0.019768549118187158,
-     "probabilite": 0.02809303369767691,
+     "probabilite": 0.028067411733376627,
      "calibree": true,
-     "edv": 63.9,
+     "edv": 63.7,
      "raisons": [
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
@@ -433,9 +392,9 @@
      "libelle": "Victoire extérieur",
      "cote": 10.58,
      "probabilite_brute": 0.13599739193350568,
-     "probabilite": 0.15286369840429032,
+     "probabilite": 0.15313384890193815,
      "calibree": true,
-     "edv": 61.7,
+     "edv": 62.0,
      "raisons": [
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
@@ -449,9 +408,9 @@
      "libelle": "Moins de 1,5 buts",
      "cote": 3.94,
      "probabilite_brute": 0.3619659926353379,
-     "probabilite": 0.372763745357579,
+     "probabilite": 0.3725597649045086,
      "calibree": true,
-     "edv": 46.9,
+     "edv": 46.8,
      "raisons": [
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
@@ -465,9 +424,9 @@
      "libelle": "Handicap 3 choix Domicile −1 (2) : Extérieur ne perd pas",
      "cote": 3.5,
      "probabilite_brute": 0.38387926479112705,
-     "probabilite": 0.3951011577402957,
+     "probabilite": 0.3947255168780663,
      "calibree": true,
-     "edv": 38.3,
+     "edv": 38.2,
      "raisons": [
       "COTE_HORS_FENETRE",
       "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
@@ -479,17 +438,6 @@
    ]
   },
   {
-   "match_id": "8rtddg0mszg8y6zw4y0lazv2s",
-   "date": "2026-11-11",
-   "heure": "02:00",
-   "competition": "El Salvador : 1ère Division Ouverture",
-   "domicile": "Metapan",
-   "exterieur": "Platense",
-   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-   "selections": [],
-   "candidats": []
-  },
-  {
    "match_id": "8s4ednjsfo5cz1wpqebmeugpg",
    "date": "2026-11-11",
    "heure": "22:30",
@@ -499,73 +447,1133 @@
    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
    "selections": [],
    "candidats": []
+  },
+  {
+   "match_id": "3sfkl5niyjl43qkvgjftb9990",
+   "date": "2026-11-12",
+   "heure": "00:00",
+   "competition": "Uruguay : Primera Division Cloture",
+   "domicile": "Cerro Largo",
+   "exterieur": "CA Progreso",
+   "statut": "EVALUE",
+   "lambda_dom": 1.139,
+   "lambda_ext": 0.778,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 139,
+    "marches_cotes_calcules": 85,
+    "groupes_non_lus": [
+     "1x2_btts",
+     "1x2_total_1.5",
+     "1x2_total_2.5",
+     "1x2_total_3.5",
+     "dc_btts",
+     "dc_total_1.5",
+     "dc_total_2.5",
+     "dc_total_3.5",
+     "dc_total_4.5"
+    ],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [
+    {
+     "marche": "under_3_5",
+     "libelle": "Moins de 3,5 buts",
+     "cote": 1.27,
+     "probabilite": 0.8354,
+     "edge": 0.04798073267642289,
+     "edv": 6.1,
+     "justification": "✓ -3,5 chacun à son lieu : 92% / 92% ; ✓ total attendu (moyennes simples) : 2,12 buts ; ✓ sous la ligne sur les 6 derniers : 5 (Cerro Largo) / 5 (CA Progreso)",
+     "raisons_saison": [
+      "✓ -3,5 chacun à son lieu : 92% / 92%",
+      "✓ total attendu (moyennes simples) : 2,12 buts"
+     ],
+     "raisons_recent": [
+      "✓ sous la ligne sur les 6 derniers : 5 (Cerro Largo) / 5 (CA Progreso)"
+     ],
+     "indice_performance": {
+      "version": 4,
+      "indice": 1,
+      "sur": 4,
+      "niveau": "RISQUE",
+      "libelle": "Risqué",
+      "phrase": "Validé dans 1 scénario sur 4.",
+      "moyenne_domicile": {
+       "marque": 1.083,
+       "encaisse": 0.917
+      },
+      "moyenne_exterieur": {
+       "marque": 0.917,
+       "encaisse": 1.333
+      },
+      "pire_domicile": {
+       "marque": 2.0,
+       "encaisse": 3.0
+      },
+      "pire_exterieur": {
+       "marque": 2.0,
+       "encaisse": 3.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 1.208,
+        "buts_exterieur": 0.917,
+        "marge": 1.375,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.667,
+        "buts_exterieur": 1.958,
+        "marge": -0.125,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.042,
+        "buts_exterieur": 1.458,
+        "marge": 0.0,
+        "valide": false
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.5,
+        "buts_exterieur": 2.5,
+        "marge": -1.5,
+        "valide": false
+       }
+      ]
+     },
+     "explication": {
+      "alertes": [],
+      "blocs": [
+       {
+        "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Cerro Largo",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 3,
+            "res": "D"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 0,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "CA Progreso",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 0,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         }
+        ],
+        "lignes": [
+         "Cerro Largo à domicile (12) : 0-1, 2-3, 3-0, 2-0, 1-1, 1-1, 1-1, 1-1, 0-0, 0-2, 0-1, 2-0 → marque 1,08, encaisse 0,92 par match.",
+         "CA Progreso à l'extérieur (12) : 2-1, 2-0, 1-2, 2-0, 2-1, 1-0, 1-0, 0-1, 1-2, 3-2, 1-1, 0-1 → marque 0,92, encaisse 1,33 par match.",
+         "Classement : Cerro Largo 15 ; CA Progreso 7."
+        ]
+       },
+       {
+        "titre": "Buts attendus",
+        "lignes": [
+         "Cerro Largo — buts marqués attendus : 1,14 ; buts encaissés attendus : 0,78.",
+         "CA Progreso — buts marqués attendus : 0,78 ; buts encaissés attendus : 1,14."
+        ]
+       },
+       {
+        "titre": "Probabilité",
+        "lignes": [
+         "Moins de 3,5 buts : 83,5 %.",
+         "Somme des scores avec au plus 3 buts.",
+         "Scores les plus probables : 1-0 (16,7 %), 0-0 (14,7 %)."
+        ]
+       },
+       {
+        "titre": "Face à la cote",
+        "lignes": [
+         "Cote 1,27 → 78,7 % selon le bookmaker ; écart +4,8 points.",
+         "Marge = 1,27 × 0,048 = +6,1 % (seuil 5 % à cette probabilité)."
+        ]
+       },
+       {
+        "titre": "Contrôles",
+        "lignes": [
+         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+         "Dispersion des buts : 0,74 (accepté).",
+         "Double contrôle « Moins de 3.5 buts » passé : -3,5 chacun à son lieu : 92% / 92% ; total attendu (moyennes simples) : 2,12 buts ; sous la ligne sur les 6 derniers : 5 (Cerro Largo) / 5 (CA Progreso).",
+         "12 matchs au même lieu : échantillon suffisant.",
+         "Calibration : prête."
+        ]
+       },
+       {
+        "titre": "Pourquoi ce marché",
+        "lignes": [
+         "Probabilité estimée : 83,5 %, contre 78,7 % selon la cote (écart de +4,8 points).",
+         "Marge estimée : +6,1 %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « total de buts »."
+        ]
+       },
+       {
+        "titre": "Indice de performance",
+        "lignes": [
+         "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
+         "Cerro Largo à domicile : moyenne simple 1,08 marqué(s) et 0,92 encaissé(s) ; pire score 2-3.",
+         "CA Progreso à l'extérieur : moyenne simple 0,92 marqué(s) et 1,33 encaissé(s) ; pire score 3-2.",
+         "Pire score = le score réel qui met le plus le marché en difficulté (peu importe domicile ou extérieur) ; moyen = moyenne de tous les scores. Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse.",
+         "Cerro Largo moyen : 1,21 / CA Progreso moyen : 0,92 (total 2,12) → marge +1,38 but : validé.",
+         "Cerro Largo pire : 1,67 / CA Progreso moyen : 1,96 (total 3,62) → marge −0,12 but : non validé.",
+         "Cerro Largo moyen : 2,04 / CA Progreso pire : 1,46 (total 3,50) → marge +0,00 but : non validé.",
+         "Cerro Largo pire : 2,50 / CA Progreso pire : 2,50 (total 5,00) → marge −1,50 but : non validé.",
+         "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "apercu_non_calibre": [],
+   "alternatives_indice": [],
+   "candidats": [
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 8.7,
+     "probabilite_brute": 0.1469603300417474,
+     "probabilite": 0.16061272164985502,
+     "calibree": true,
+     "edv": 39.7,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_1_5",
+     "libelle": "Moins de 1,5 buts",
+     "cote": 3.19,
+     "probabilite_brute": 0.42877037033476495,
+     "probabilite": 0.4262524844562163,
+     "calibree": true,
+     "edv": 36.0,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "under_0_5",
+     "libelle": "Moins de 0,5 buts",
+     "cote": 8.26,
+     "probabilite_brute": 0.14696033004174747,
+     "probabilite": 0.16061272164985504,
+     "calibree": true,
+     "edv": 32.7,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "clean_away",
+     "libelle": "Extérieur n'encaisse pas",
+     "cote": 3.95,
+     "probabilite_brute": 0.32002637921246546,
+     "probabilite": 0.3243794915549129,
+     "calibree": true,
+     "edv": 28.1,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "home_under_0_5",
+     "libelle": "Domicile marque moins de 0,5 but",
+     "cote": 3.94,
+     "probabilite_brute": 0.32002637921246546,
+     "probabilite": 0.3243794915549129,
+     "calibree": true,
+     "edv": 27.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "7a39k26r2dwz65ksmj93ekp3o",
+   "date": "2026-11-12",
+   "heure": "01:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Llaneros",
+   "exterieur": "Boyacá Chicó",
+   "statut": "EVALUE",
+   "lambda_dom": 2.149,
+   "lambda_ext": 0.437,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 137,
+    "marches_cotes_calcules": 83,
+    "groupes_non_lus": [
+     "1x2_btts",
+     "1x2_total_1.5",
+     "1x2_total_2.5",
+     "1x2_total_3.5",
+     "dc_btts",
+     "dc_total_1.5",
+     "dc_total_2.5",
+     "dc_total_3.5",
+     "dc_total_4.5"
+    ],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "alternatives_indice": [],
+   "candidats": [
+    {
+     "marche": "handicap_2_1",
+     "libelle": "Handicap 3 choix Domicile −2 (1) : Domicile gagne par 3 buts ou plus",
+     "cote": 5.2,
+     "probabilite_brute": 0.28734070085635255,
+     "probabilite": 0.29584863335619316,
+     "calibree": true,
+     "edv": 53.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_4_0",
+     "libelle": "Score exact 4-0",
+     "cote": 18.33,
+     "probabilite_brute": 0.06692494686889115,
+     "probabilite": 0.07649582953330726,
+     "calibree": true,
+     "edv": 40.2,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_1_1",
+     "libelle": "Handicap 3 choix Domicile −1 (1) : Domicile gagne par 2 buts ou plus",
+     "cote": 2.6,
+     "probabilite_brute": 0.5225250193711111,
+     "probabilite": 0.5259809626029662,
+     "calibree": true,
+     "edv": 36.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_1.5_1",
+     "libelle": "Handicap Domicile −1,5 : Domicile gagne par 2 buts ou plus",
+     "cote": 2.48,
+     "probabilite_brute": 0.5225250193711111,
+     "probabilite": 0.5259809626029662,
+     "calibree": true,
+     "edv": 30.4,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "clean_home",
+     "libelle": "Domicile n'encaisse pas",
+     "cote": 2.05,
+     "probabilite_brute": 0.6460970491791764,
+     "probabilite": 0.6260027821428114,
+     "calibree": true,
+     "edv": 28.3,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "SURDISPERSION_1_20_1_50_ET_P_INF_67",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "8sfm3bqztfznjyjmrfypxo26s",
+   "date": "2026-11-12",
+   "heure": "02:00",
+   "competition": "El Salvador : 1ère Division Ouverture",
+   "domicile": "FAS",
+   "exterieur": "Inter",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "8t1w599msb8fnnvzff42sp4b8",
+   "date": "2026-11-12",
+   "heure": "22:30",
+   "competition": "El Salvador : 1ère Division Ouverture",
+   "domicile": "Águila",
+   "exterieur": "Municipal L.",
+   "statut": "EVALUE",
+   "lambda_dom": 2.441,
+   "lambda_ext": 1.445,
+   "n_dom": 9,
+   "n_ext": 10,
+   "couverture": {
+    "issues_betpawa": 139,
+    "marches_cotes_calcules": 85,
+    "groupes_non_lus": [
+     "1x2_btts",
+     "1x2_total_1.5",
+     "1x2_total_2.5",
+     "1x2_total_3.5",
+     "dc_btts",
+     "dc_total_1.5",
+     "dc_total_2.5",
+     "dc_total_3.5",
+     "dc_total_4.5"
+    ],
+    "groupes_ignores_par_choix": []
+   },
+   "selections": [
+    {
+     "marche": "over_2_5",
+     "libelle": "Plus de 2,5 buts",
+     "cote": 1.66,
+     "probabilite": 0.7254,
+     "edge": 0.12295364099292083,
+     "edv": 20.4,
+     "justification": "✓ Águila à domicile : 89% de matchs à +2,5 ; ✓ Municipal L. à l'extérieur : 60% de matchs à +2,5 ; ✓ saison complète +2,5 : 68% / 55% ; ✓ total attendu (moyennes simples) : 3,50 buts ; ✓ au-dessus de la ligne sur les 6 derniers : 6 (Águila) / 4 (Municipal L.)",
+     "raisons_saison": [
+      "✓ Águila à domicile : 89% de matchs à +2,5",
+      "✓ Municipal L. à l'extérieur : 60% de matchs à +2,5",
+      "✓ saison complète +2,5 : 68% / 55%",
+      "✓ total attendu (moyennes simples) : 3,50 buts"
+     ],
+     "raisons_recent": [
+      "✓ au-dessus de la ligne sur les 6 derniers : 6 (Águila) / 4 (Municipal L.)"
+     ],
+     "indice_performance": {
+      "version": 4,
+      "indice": 2,
+      "sur": 4,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "phrase": "Validé dans 2 scénarios sur 4.",
+      "moyenne_domicile": {
+       "marque": 2.667,
+       "encaisse": 1.333
+      },
+      "moyenne_exterieur": {
+       "marque": 1.5,
+       "encaisse": 1.5
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": {
+       "marque": 1.0,
+       "encaisse": 1.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.083,
+        "buts_exterieur": 1.417,
+        "marge": 1.0,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 1.25,
+        "buts_exterieur": 1.25,
+        "marge": 0.0,
+        "valide": false
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.333,
+        "buts_exterieur": 0.667,
+        "marge": 0.5,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 1.0,
+        "buts_exterieur": 1.0,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     },
+     "explication": {
+      "alertes": [
+       "Écart inhabituel avec le marché : +12,3 points."
+      ],
+      "blocs": [
+       {
+        "titre": "Données",
+        "historiques": [
+         {
+          "equipe": "Águila",
+          "domicile": true,
+          "matchs": [
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           },
+           {
+            "dom": 2,
+            "ext": 4,
+            "res": "D"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 2,
+            "res": "N"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 4,
+            "ext": 1,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 0,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "V"
+           }
+          ]
+         },
+         {
+          "equipe": "Municipal L.",
+          "domicile": false,
+          "matchs": [
+           {
+            "dom": 3,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 0,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 3,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 0,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 3,
+            "ext": 2,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 2,
+            "ext": 1,
+            "res": "D"
+           },
+           {
+            "dom": 1,
+            "ext": 2,
+            "res": "V"
+           },
+           {
+            "dom": 1,
+            "ext": 1,
+            "res": "N"
+           }
+          ]
+         }
+        ],
+        "lignes": [
+         "Águila à domicile (9) : 1-1, 2-4, 4-1, 2-2, 3-1, 2-1, 4-1, 3-0, 3-1 → marque 2,67, encaisse 1,33 par match.",
+         "Municipal L. à l'extérieur (10) : 3-1, 2-0, 1-3, 0-2, 0-2, 3-2, 2-1, 2-1, 1-2, 1-1 → marque 1,50, encaisse 1,50 par match.",
+         "Classement : Águila 4 ; Municipal L. 8."
+        ]
+       },
+       {
+        "titre": "Buts attendus",
+        "lignes": [
+         "Águila — buts marqués attendus : 2,44 ; buts encaissés attendus : 1,44.",
+         "Municipal L. — buts marqués attendus : 1,44 ; buts encaissés attendus : 2,44."
+        ]
+       },
+       {
+        "titre": "Probabilité",
+        "lignes": [
+         "Plus de 2,5 buts : 72,5 %.",
+         "Somme des scores avec au moins 3 buts.",
+         "Scores les plus probables : 2-1 (8,8 %), 1-1 (7,2 %)."
+        ]
+       },
+       {
+        "titre": "Face à la cote",
+        "lignes": [
+         "Cote 1,66 → 60,2 % selon le bookmaker ; écart +12,3 points.",
+         "Marge = 1,66 × 0,123 = +20,4 % (seuil 5 % à cette probabilité)."
+        ]
+       },
+       {
+        "titre": "Contrôles",
+        "lignes": [
+         "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+         "Dispersion des buts : 0,90 (accepté).",
+         "Double contrôle « Plus de 2.5 buts » passé : Águila à domicile : 89% de matchs à +2,5 ; Municipal L. à l'extérieur : 60% de matchs à +2,5 ; saison complète +2,5 : 68% / 55% ; total attendu (moyennes simples) : 3,50 buts ; au-dessus de la ligne sur les 6 derniers : 6 (Águila) / 4 (Municipal L.).",
+         "9 matchs au même lieu : échantillon suffisant.",
+         "Calibration : prête."
+        ]
+       },
+       {
+        "titre": "Pourquoi ce marché",
+        "lignes": [
+         "Probabilité estimée : 72,5 %, contre 60,2 % selon la cote (écart de +12,3 points).",
+         "Marge estimée : +20,4 %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « total de buts »."
+        ]
+       },
+       {
+        "titre": "Indice de performance",
+        "lignes": [
+         "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
+         "Águila à domicile : moyenne simple 2,67 marqué(s) et 1,33 encaissé(s) ; pire score 1-1.",
+         "Municipal L. à l'extérieur : moyenne simple 1,50 marqué(s) et 1,50 encaissé(s) ; pire score 1-1.",
+         "Pire score = le score réel qui met le plus le marché en difficulté (peu importe domicile ou extérieur) ; moyen = moyenne de tous les scores. Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse.",
+         "Águila moyen : 2,08 / Municipal L. moyen : 1,42 (total 3,50) → marge +1,00 but : validé.",
+         "Águila pire : 1,25 / Municipal L. moyen : 1,25 (total 2,50) → marge +0,00 but : non validé.",
+         "Águila moyen : 2,33 / Municipal L. pire : 0,67 (total 3,00) → marge +0,50 but : validé.",
+         "Águila pire : 1,00 / Municipal L. pire : 1,00 (total 2,00) → marge −0,50 but : non validé.",
+         "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "apercu_non_calibre": [],
+   "alternatives_indice": [
+    {
+     "marche": "buts_equipe_domicile_1.5_over",
+     "marche_moteur": "home_over_1_5",
+     "libelle": null,
+     "cote": 1.61,
+     "probabilite": 0.6890280604609768,
+     "indice_performance": {
+      "version": 4,
+      "indice": 1,
+      "sur": 2,
+      "niveau": "ATTENTION",
+      "libelle": "Attention",
+      "phrase": "Tient en moyenne, mais pas dans le pire match.",
+      "moyenne_domicile": {
+       "marque": 2.667,
+       "encaisse": 1.333
+      },
+      "moyenne_exterieur": {
+       "marque": 1.5,
+       "encaisse": 1.5
+      },
+      "pire_domicile": {
+       "marque": 1.0,
+       "encaisse": 1.0
+      },
+      "pire_exterieur": null,
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": null,
+        "buts_domicile": 2.667,
+        "buts_exterieur": null,
+        "marge": 1.167,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": null,
+        "buts_domicile": 1.0,
+        "buts_exterieur": null,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     }
+    },
+    {
+     "marche": "btts_oui",
+     "marche_moteur": "btts_yes",
+     "libelle": null,
+     "cote": 1.65,
+     "probabilite": 0.683700882218251,
+     "indice_performance": {
+      "version": 4,
+      "indice": 3,
+      "sur": 4,
+      "niveau": "RECOMMANDE",
+      "libelle": "Recommandé",
+      "phrase": "Validé dans 3 scénarios sur 4.",
+      "moyenne_domicile": {
+       "marque": 2.667,
+       "encaisse": 1.333
+      },
+      "moyenne_exterieur": {
+       "marque": 1.5,
+       "encaisse": 1.5
+      },
+      "pire_domicile": {
+       "marque": 3.0,
+       "encaisse": 0.0
+      },
+      "pire_exterieur": {
+       "marque": 0.0,
+       "encaisse": 2.0
+      },
+      "scenarios": [
+       {
+        "domicile": "moyen",
+        "exterieur": "moyen",
+        "buts_domicile": 2.083,
+        "buts_exterieur": 1.417,
+        "marge": 0.917,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "moyen",
+        "buts_domicile": 2.25,
+        "buts_exterieur": 0.75,
+        "marge": 0.25,
+        "valide": true
+       },
+       {
+        "domicile": "moyen",
+        "exterieur": "pire",
+        "buts_domicile": 2.333,
+        "buts_exterieur": 0.667,
+        "marge": 0.167,
+        "valide": true
+       },
+       {
+        "domicile": "pire",
+        "exterieur": "pire",
+        "buts_domicile": 2.5,
+        "buts_exterieur": 0.0,
+        "marge": -0.5,
+        "valide": false
+       }
+      ]
+     }
+    }
+   ],
+   "candidats": [
+    {
+     "marche": "exact_goals_6_plus",
+     "libelle": "6 buts ou plus",
+     "cote": 9.57,
+     "probabilite_brute": 0.19727083783303548,
+     "probabilite": 0.2055095829134207,
+     "calibree": true,
+     "edv": 96.7,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_4_3",
+     "libelle": "Score exact 4-3",
+     "cote": 80.8,
+     "probabilite_brute": 0.015265329467505659,
+     "probabilite": 0.02315900880610068,
+     "calibree": true,
+     "edv": 87.1,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_3_3",
+     "libelle": "Score exact 3-3",
+     "cote": 48.0,
+     "probabilite_brute": 0.025014615513979866,
+     "probabilite": 0.03692063754235436,
+     "calibree": true,
+     "edv": 77.2,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_4_5",
+     "libelle": "Plus de 4,5 buts",
+     "cote": 4.72,
+     "probabilite_brute": 0.34884654567769874,
+     "probabilite": 0.36832297797227875,
+     "calibree": true,
+     "edv": 73.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "over_5_5",
+     "libelle": "Plus de 5,5 buts",
+     "cote": 8.44,
+     "probabilite_brute": 0.19727083783303548,
+     "probabilite": 0.2055095829134207,
+     "calibree": true,
+     "edv": 73.5,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
+  },
+  {
+   "match_id": "6aoj7icio1rhe2vsi6e0911ck",
+   "date": "2026-11-12",
+   "heure": "23:00",
+   "competition": "Guatemala : Ligue Nationale Ouverture",
+   "domicile": "Aurora",
+   "exterieur": "Mixco",
+   "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+   "selections": [],
+   "candidats": []
+  },
+  {
+   "match_id": "7b3in1wqh5f13bs0mf9a6efx0",
+   "date": "2026-11-12",
+   "heure": "23:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Dep. Pasto",
+   "exterieur": "Atl. Junior",
+   "statut": "EVALUE",
+   "lambda_dom": 0.985,
+   "lambda_ext": 1.089,
+   "n_dom": 12,
+   "n_ext": 12,
+   "couverture": {
+    "issues_betpawa": 121,
+    "marches_cotes_calcules": 64,
+    "groupes_non_lus": [
+     "1x2_btts",
+     "1x2_total_1.5",
+     "1x2_total_2.5",
+     "1x2_total_3.5",
+     "dc_btts",
+     "dc_total_1.5",
+     "dc_total_2.5",
+     "dc_total_3.5",
+     "dc_total_4.5"
+    ],
+    "groupes_ignores_par_choix": [
+     "handicap_3issues_3"
+    ]
+   },
+   "selections": [],
+   "apercu_non_calibre": [],
+   "alternatives_indice": [],
+   "candidats": [
+    {
+     "marche": "1x2_1",
+     "libelle": "Victoire domicile",
+     "cote": 22.19,
+     "probabilite_brute": 0.3225034335714537,
+     "probabilite": 0.32846131963178943,
+     "calibree": true,
+     "edv": 628.9,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_2_0",
+     "libelle": "Score exact 2-0",
+     "cote": 84.17,
+     "probabilite_brute": 0.0609594686008573,
+     "probabilite": 0.0750641465494954,
+     "calibree": true,
+     "edv": 531.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "score_1_0",
+     "libelle": "Score exact 1-0",
+     "cote": 41.67,
+     "probabilite_brute": 0.12379593576481539,
+     "probabilite": 0.13238907495235325,
+     "calibree": true,
+     "edv": 451.7,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "exact_goals_0",
+     "libelle": "Exactement 0 buts",
+     "cote": 30.43,
+     "probabilite_brute": 0.12570183159102186,
+     "probabilite": 0.13336099354637088,
+     "calibree": true,
+     "edv": 305.8,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "PROBABILITE_INF_60",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    },
+    {
+     "marche": "handicap_-1_1",
+     "libelle": "Handicap 3 choix Domicile +1 (1) : Domicile ne perd pas",
+     "cote": 6.0,
+     "probabilite_brute": 0.6237754475816668,
+     "probabilite": 0.6166850369258735,
+     "calibree": true,
+     "edv": 270.0,
+     "raisons": [
+      "COTE_HORS_FENETRE",
+      "DOUBLE_CONTROLE_ECHOUE_OU_ABSENT",
+      "JUSTIFICATION_INSUFFISANTE",
+      "VALUE_NON_ELIGIBLE"
+     ]
+    }
+   ]
   }
  ],
  "signaux": [
-  {
-   "match_id": "5osnc6i53mnuk122pkrzifxn8",
-   "date": "2026-11-10",
-   "heure_cameroun": null,
-   "competition": "Paraguay : Professionnel de la Division Clôture",
-   "domicile": "San Lorenzo",
-   "exterieur": "Rubio NU",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "bbxm0noxzbjm8tfly0bta1pn8",
-   "date": "2026-11-10",
-   "heure_cameroun": null,
-   "competition": "Portugal : Liga Portugal 2",
-   "domicile": "Torreense",
-   "exterieur": "Uniao de Leiria",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "3y3emvsmx120kx4pallhrr5zo",
-   "date": "2026-11-10",
-   "heure_cameroun": null,
-   "competition": "Équateur : Première A Tour de Relégation",
-   "domicile": "Universitario",
-   "exterieur": "Manta",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
-  {
-   "match_id": "8riac0b1sqepjnbbyc9dizwno",
-   "date": "2026-11-10",
-   "heure_cameroun": "22:30",
-   "competition": "El Salvador : 1ère Division Ouverture",
-   "domicile": "Cacahuatique",
-   "exterieur": "Angel Firpo",
-   "moteur_utilise": "moteur_v3",
-   "moteur_v3": {
-    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
-    "moteur": "moteur_v3",
-    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
-    "apercu_non_calibre": false,
-    "selection": {}
-   }
-  },
   {
    "match_id": "79f8njrmj56coeirtb1fdmpzo",
    "date": "2026-11-11",
@@ -584,9 +1592,9 @@
       "marche": "over_under_total_3.5_under",
       "marche_moteur": "under_3_5",
       "libelle": null,
-      "probabilite": 0.7961,
+      "probabilite": 0.7962,
       "cote": 1.41,
-      "edge": 0.08689345018382422,
+      "edge": 0.08696483453370607,
       "edv": 0.12300000000000001,
       "niveau": "V3_ECHANTILLON_TRES_SOLIDE",
       "robustesse": null,
@@ -881,12 +1889,12 @@
    }
   },
   {
-   "match_id": "8rtddg0mszg8y6zw4y0lazv2s",
+   "match_id": "8s4ednjsfo5cz1wpqebmeugpg",
    "date": "2026-11-11",
-   "heure_cameroun": "02:00",
+   "heure_cameroun": "22:30",
    "competition": "El Salvador : 1ère Division Ouverture",
-   "domicile": "Metapan",
-   "exterieur": "Platense",
+   "domicile": "Fuerte",
+   "exterieur": "Alianza",
    "moteur_utilise": "moteur_v3",
    "moteur_v3": {
     "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
@@ -897,15 +1905,780 @@
    }
   },
   {
-   "match_id": "8s4ednjsfo5cz1wpqebmeugpg",
-   "date": "2026-11-11",
-   "heure_cameroun": "22:30",
+   "match_id": "3sfkl5niyjl43qkvgjftb9990",
+   "date": "2026-11-12",
+   "heure_cameroun": "00:00",
+   "competition": "Uruguay : Primera Division Cloture",
+   "domicile": "Cerro Largo",
+   "exterieur": "CA Progreso",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {
+     "P1": {
+      "marche": "over_under_total_3.5_under",
+      "marche_moteur": "under_3_5",
+      "libelle": null,
+      "probabilite": 0.8354,
+      "cote": 1.27,
+      "edge": 0.04798073267642289,
+      "edv": 0.061,
+      "niveau": "V3_ECHANTILLON_TRES_SOLIDE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": false,
+      "indice_performance": {
+       "version": 4,
+       "indice": 1,
+       "sur": 4,
+       "niveau": "RISQUE",
+       "libelle": "Risqué",
+       "phrase": "Validé dans 1 scénario sur 4.",
+       "moyenne_domicile": {
+        "marque": 1.083,
+        "encaisse": 0.917
+       },
+       "moyenne_exterieur": {
+        "marque": 0.917,
+        "encaisse": 1.333
+       },
+       "pire_domicile": {
+        "marque": 2.0,
+        "encaisse": 3.0
+       },
+       "pire_exterieur": {
+        "marque": 2.0,
+        "encaisse": 3.0
+       },
+       "scenarios": [
+        {
+         "domicile": "moyen",
+         "exterieur": "moyen",
+         "buts_domicile": 1.208,
+         "buts_exterieur": 0.917,
+         "marge": 1.375,
+         "valide": true
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "moyen",
+         "buts_domicile": 1.667,
+         "buts_exterieur": 1.958,
+         "marge": -0.125,
+         "valide": false
+        },
+        {
+         "domicile": "moyen",
+         "exterieur": "pire",
+         "buts_domicile": 2.042,
+         "buts_exterieur": 1.458,
+         "marge": 0.0,
+         "valide": false
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "pire",
+         "buts_domicile": 2.5,
+         "buts_exterieur": 2.5,
+         "marge": -1.5,
+         "valide": false
+        }
+       ]
+      },
+      "alternatives_indice": [],
+      "justification": {
+       "resume": "Probabilité calibrée 84 % contre 79 % selon la cote 1,27 · marge +6,1 % · 12 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "-3,5 chacun à son lieu : 92% / 92% ; total attendu (moyennes simples) : 2,12 buts"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "sous la ligne sur les 6 derniers : 5 (Cerro Largo) / 5 (CA Progreso)"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 6.1,
+         "texte": "Le prix proposé laisse 6,1 % de marge par rapport à l'estimation calibrée."
+        }
+       ],
+       "explication": {
+        "alertes": [],
+        "blocs": [
+         {
+          "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Cerro Largo",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 3,
+              "res": "D"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 0,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "CA Progreso",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 0,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           }
+          ],
+          "lignes": [
+           "Cerro Largo à domicile (12) : 0-1, 2-3, 3-0, 2-0, 1-1, 1-1, 1-1, 1-1, 0-0, 0-2, 0-1, 2-0 → marque 1,08, encaisse 0,92 par match.",
+           "CA Progreso à l'extérieur (12) : 2-1, 2-0, 1-2, 2-0, 2-1, 1-0, 1-0, 0-1, 1-2, 3-2, 1-1, 0-1 → marque 0,92, encaisse 1,33 par match.",
+           "Classement : Cerro Largo 15 ; CA Progreso 7."
+          ]
+         },
+         {
+          "titre": "Buts attendus",
+          "lignes": [
+           "Cerro Largo — buts marqués attendus : 1,14 ; buts encaissés attendus : 0,78.",
+           "CA Progreso — buts marqués attendus : 0,78 ; buts encaissés attendus : 1,14."
+          ]
+         },
+         {
+          "titre": "Probabilité",
+          "lignes": [
+           "Moins de 3,5 buts : 83,5 %.",
+           "Somme des scores avec au plus 3 buts.",
+           "Scores les plus probables : 1-0 (16,7 %), 0-0 (14,7 %)."
+          ]
+         },
+         {
+          "titre": "Face à la cote",
+          "lignes": [
+           "Cote 1,27 → 78,7 % selon le bookmaker ; écart +4,8 points.",
+           "Marge = 1,27 × 0,048 = +6,1 % (seuil 5 % à cette probabilité)."
+          ]
+         },
+         {
+          "titre": "Contrôles",
+          "lignes": [
+           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+           "Dispersion des buts : 0,74 (accepté).",
+           "Double contrôle « Moins de 3.5 buts » passé : -3,5 chacun à son lieu : 92% / 92% ; total attendu (moyennes simples) : 2,12 buts ; sous la ligne sur les 6 derniers : 5 (Cerro Largo) / 5 (CA Progreso).",
+           "12 matchs au même lieu : échantillon suffisant.",
+           "Calibration : prête."
+          ]
+         },
+         {
+          "titre": "Pourquoi ce marché",
+          "lignes": [
+           "Probabilité estimée : 83,5 %, contre 78,7 % selon la cote (écart de +4,8 points).",
+           "Marge estimée : +6,1 %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « total de buts »."
+          ]
+         },
+         {
+          "titre": "Indice de performance",
+          "lignes": [
+           "Indice 1/4 : Risqué. Le marché est validé dans 1 scénario sur 4.",
+           "Cerro Largo à domicile : moyenne simple 1,08 marqué(s) et 0,92 encaissé(s) ; pire score 2-3.",
+           "CA Progreso à l'extérieur : moyenne simple 0,92 marqué(s) et 1,33 encaissé(s) ; pire score 3-2.",
+           "Pire score = le score réel qui met le plus le marché en difficulté (peu importe domicile ou extérieur) ; moyen = moyenne de tous les scores. Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse.",
+           "Cerro Largo moyen : 1,21 / CA Progreso moyen : 0,92 (total 2,12) → marge +1,38 but : validé.",
+           "Cerro Largo pire : 1,67 / CA Progreso moyen : 1,96 (total 3,62) → marge −0,12 but : non validé.",
+           "Cerro Largo moyen : 2,04 / CA Progreso pire : 1,46 (total 3,50) → marge +0,00 but : non validé.",
+           "Cerro Largo pire : 2,50 / CA Progreso pire : 2,50 (total 5,00) → marge −1,50 but : non validé.",
+           "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
+          ]
+         }
+        ]
+       },
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 6.1
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "7a39k26r2dwz65ksmj93ekp3o",
+   "date": "2026-11-12",
+   "heure_cameroun": "01:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Llaneros",
+   "exterieur": "Boyacá Chicó",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "8sfm3bqztfznjyjmrfypxo26s",
+   "date": "2026-11-12",
+   "heure_cameroun": "02:00",
    "competition": "El Salvador : 1ère Division Ouverture",
-   "domicile": "Fuerte",
-   "exterieur": "Alianza",
+   "domicile": "FAS",
+   "exterieur": "Inter",
    "moteur_utilise": "moteur_v3",
    "moteur_v3": {
     "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "8t1w599msb8fnnvzff42sp4b8",
+   "date": "2026-11-12",
+   "heure_cameroun": "22:30",
+   "competition": "El Salvador : 1ère Division Ouverture",
+   "domicile": "Águila",
+   "exterieur": "Municipal L.",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
+    "moteur": "moteur_v3",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {
+     "P1": {
+      "marche": "over_under_total_2.5_over",
+      "marche_moteur": "over_2_5",
+      "libelle": null,
+      "probabilite": 0.7254,
+      "cote": 1.66,
+      "edge": 0.12295364099292083,
+      "edv": 0.204,
+      "niveau": "V3_ECHANTILLON_SOLIDE",
+      "robustesse": null,
+      "points_de_vigilance": [
+       "Moteur V3 en production parallèle : candidat, non promu comme moteur principal."
+      ],
+      "rang": "P1",
+      "apercu_non_calibre": false,
+      "indice_performance": {
+       "version": 4,
+       "indice": 2,
+       "sur": 4,
+       "niveau": "ATTENTION",
+       "libelle": "Attention",
+       "phrase": "Validé dans 2 scénarios sur 4.",
+       "moyenne_domicile": {
+        "marque": 2.667,
+        "encaisse": 1.333
+       },
+       "moyenne_exterieur": {
+        "marque": 1.5,
+        "encaisse": 1.5
+       },
+       "pire_domicile": {
+        "marque": 1.0,
+        "encaisse": 1.0
+       },
+       "pire_exterieur": {
+        "marque": 1.0,
+        "encaisse": 1.0
+       },
+       "scenarios": [
+        {
+         "domicile": "moyen",
+         "exterieur": "moyen",
+         "buts_domicile": 2.083,
+         "buts_exterieur": 1.417,
+         "marge": 1.0,
+         "valide": true
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "moyen",
+         "buts_domicile": 1.25,
+         "buts_exterieur": 1.25,
+         "marge": 0.0,
+         "valide": false
+        },
+        {
+         "domicile": "moyen",
+         "exterieur": "pire",
+         "buts_domicile": 2.333,
+         "buts_exterieur": 0.667,
+         "marge": 0.5,
+         "valide": true
+        },
+        {
+         "domicile": "pire",
+         "exterieur": "pire",
+         "buts_domicile": 1.0,
+         "buts_exterieur": 1.0,
+         "marge": -0.5,
+         "valide": false
+        }
+       ]
+      },
+      "alternatives_indice": [
+       {
+        "marche": "buts_equipe_domicile_1.5_over",
+        "marche_moteur": "home_over_1_5",
+        "libelle": null,
+        "cote": 1.61,
+        "probabilite": 0.6890280604609768,
+        "indice_performance": {
+         "version": 4,
+         "indice": 1,
+         "sur": 2,
+         "niveau": "ATTENTION",
+         "libelle": "Attention",
+         "phrase": "Tient en moyenne, mais pas dans le pire match.",
+         "moyenne_domicile": {
+          "marque": 2.667,
+          "encaisse": 1.333
+         },
+         "moyenne_exterieur": {
+          "marque": 1.5,
+          "encaisse": 1.5
+         },
+         "pire_domicile": {
+          "marque": 1.0,
+          "encaisse": 1.0
+         },
+         "pire_exterieur": null,
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": null,
+           "buts_domicile": 2.667,
+           "buts_exterieur": null,
+           "marge": 1.167,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": null,
+           "buts_domicile": 1.0,
+           "buts_exterieur": null,
+           "marge": -0.5,
+           "valide": false
+          }
+         ]
+        }
+       },
+       {
+        "marche": "btts_oui",
+        "marche_moteur": "btts_yes",
+        "libelle": null,
+        "cote": 1.65,
+        "probabilite": 0.683700882218251,
+        "indice_performance": {
+         "version": 4,
+         "indice": 3,
+         "sur": 4,
+         "niveau": "RECOMMANDE",
+         "libelle": "Recommandé",
+         "phrase": "Validé dans 3 scénarios sur 4.",
+         "moyenne_domicile": {
+          "marque": 2.667,
+          "encaisse": 1.333
+         },
+         "moyenne_exterieur": {
+          "marque": 1.5,
+          "encaisse": 1.5
+         },
+         "pire_domicile": {
+          "marque": 3.0,
+          "encaisse": 0.0
+         },
+         "pire_exterieur": {
+          "marque": 0.0,
+          "encaisse": 2.0
+         },
+         "scenarios": [
+          {
+           "domicile": "moyen",
+           "exterieur": "moyen",
+           "buts_domicile": 2.083,
+           "buts_exterieur": 1.417,
+           "marge": 0.917,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "moyen",
+           "buts_domicile": 2.25,
+           "buts_exterieur": 0.75,
+           "marge": 0.25,
+           "valide": true
+          },
+          {
+           "domicile": "moyen",
+           "exterieur": "pire",
+           "buts_domicile": 2.333,
+           "buts_exterieur": 0.667,
+           "marge": 0.167,
+           "valide": true
+          },
+          {
+           "domicile": "pire",
+           "exterieur": "pire",
+           "buts_domicile": 2.5,
+           "buts_exterieur": 0.0,
+           "marge": -0.5,
+           "valide": false
+          }
+         ]
+        }
+       }
+      ],
+      "justification": {
+       "resume": "Probabilité calibrée 73 % contre 60 % selon la cote 1,66 · marge +20,4 % · 9 matchs au même lieu.",
+       "preuves": [
+        {
+         "type": "v3_controle_saison",
+         "texte": "Águila à domicile : 89% de matchs à +2,5 ; Municipal L. à l'extérieur : 60% de matchs à +2,5 ; saison complète +2,5 : 68% / 55% ; total attendu (moyennes simples) : 3,50 buts"
+        },
+        {
+         "type": "v3_forme_recente",
+         "texte": "au-dessus de la ligne sur les 6 derniers : 6 (Águila) / 4 (Municipal L.)"
+        },
+        {
+         "type": "ev_percentage",
+         "valeur": 20.4,
+         "texte": "Le prix proposé laisse 20,4 % de marge par rapport à l'estimation calibrée."
+        }
+       ],
+       "explication": {
+        "alertes": [
+         "Écart inhabituel avec le marché : +12,3 points."
+        ],
+        "blocs": [
+         {
+          "titre": "Données",
+          "historiques": [
+           {
+            "equipe": "Águila",
+            "domicile": true,
+            "matchs": [
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             },
+             {
+              "dom": 2,
+              "ext": 4,
+              "res": "D"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 2,
+              "res": "N"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 4,
+              "ext": 1,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 0,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "V"
+             }
+            ]
+           },
+           {
+            "equipe": "Municipal L.",
+            "domicile": false,
+            "matchs": [
+             {
+              "dom": 3,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 0,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 3,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 0,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 3,
+              "ext": 2,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 2,
+              "ext": 1,
+              "res": "D"
+             },
+             {
+              "dom": 1,
+              "ext": 2,
+              "res": "V"
+             },
+             {
+              "dom": 1,
+              "ext": 1,
+              "res": "N"
+             }
+            ]
+           }
+          ],
+          "lignes": [
+           "Águila à domicile (9) : 1-1, 2-4, 4-1, 2-2, 3-1, 2-1, 4-1, 3-0, 3-1 → marque 2,67, encaisse 1,33 par match.",
+           "Municipal L. à l'extérieur (10) : 3-1, 2-0, 1-3, 0-2, 0-2, 3-2, 2-1, 2-1, 1-2, 1-1 → marque 1,50, encaisse 1,50 par match.",
+           "Classement : Águila 4 ; Municipal L. 8."
+          ]
+         },
+         {
+          "titre": "Buts attendus",
+          "lignes": [
+           "Águila — buts marqués attendus : 2,44 ; buts encaissés attendus : 1,44.",
+           "Municipal L. — buts marqués attendus : 1,44 ; buts encaissés attendus : 2,44."
+          ]
+         },
+         {
+          "titre": "Probabilité",
+          "lignes": [
+           "Plus de 2,5 buts : 72,5 %.",
+           "Somme des scores avec au moins 3 buts.",
+           "Scores les plus probables : 2-1 (8,8 %), 1-1 (7,2 %)."
+          ]
+         },
+         {
+          "titre": "Face à la cote",
+          "lignes": [
+           "Cote 1,66 → 60,2 % selon le bookmaker ; écart +12,3 points.",
+           "Marge = 1,66 × 0,123 = +20,4 % (seuil 5 % à cette probabilité)."
+          ]
+         },
+         {
+          "titre": "Contrôles",
+          "lignes": [
+           "Cote dans la fenêtre 1,26 – 1,74 : oui.",
+           "Dispersion des buts : 0,90 (accepté).",
+           "Double contrôle « Plus de 2.5 buts » passé : Águila à domicile : 89% de matchs à +2,5 ; Municipal L. à l'extérieur : 60% de matchs à +2,5 ; saison complète +2,5 : 68% / 55% ; total attendu (moyennes simples) : 3,50 buts ; au-dessus de la ligne sur les 6 derniers : 6 (Águila) / 4 (Municipal L.).",
+           "9 matchs au même lieu : échantillon suffisant.",
+           "Calibration : prête."
+          ]
+         },
+         {
+          "titre": "Pourquoi ce marché",
+          "lignes": [
+           "Probabilité estimée : 72,5 %, contre 60,2 % selon la cote (écart de +12,3 points).",
+           "Marge estimée : +20,4 %. Le marché a passé les contrôles requis et est le meilleur choix admissible de la famille « total de buts »."
+          ]
+         },
+         {
+          "titre": "Indice de performance",
+          "lignes": [
+           "Indice 2/4 : Attention. Le marché est validé dans 2 scénarios sur 4.",
+           "Águila à domicile : moyenne simple 2,67 marqué(s) et 1,33 encaissé(s) ; pire score 1-1.",
+           "Municipal L. à l'extérieur : moyenne simple 1,50 marqué(s) et 1,50 encaissé(s) ; pire score 1-1.",
+           "Pire score = le score réel qui met le plus le marché en difficulté (peu importe domicile ou extérieur) ; moyen = moyenne de tous les scores. Buts d'un scénario = moyenne de ce que l'équipe marque et de ce que l'adversaire encaisse.",
+           "Águila moyen : 2,08 / Municipal L. moyen : 1,42 (total 3,50) → marge +1,00 but : validé.",
+           "Águila pire : 1,25 / Municipal L. moyen : 1,25 (total 2,50) → marge +0,00 but : non validé.",
+           "Águila moyen : 2,33 / Municipal L. pire : 0,67 (total 3,00) → marge +0,50 but : validé.",
+           "Águila pire : 1,00 / Municipal L. pire : 1,00 (total 2,00) → marge −0,50 but : non validé.",
+           "Échelle (4 scénarios) : 4/4 Sûr · 3/4 Recommandé · 2/4 Attention · 1/4 Risqué. Marché d'une seule équipe : Sûr si tout tient, Attention si seulement la moyenne tient. Information seulement : elle ne change ni la probabilité ni la sélection."
+          ]
+         }
+        ]
+       },
+       "donnees_suffisantes": true,
+       "bibliotheque": {
+        "ev_percentage": 20.4
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "match_id": "6aoj7icio1rhe2vsi6e0911ck",
+   "date": "2026-11-12",
+   "heure_cameroun": "23:00",
+   "competition": "Guatemala : Ligue Nationale Ouverture",
+   "domicile": "Aurora",
+   "exterieur": "Mixco",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "NON_EVALUE : MATCHS_DOMICILE_OU_EXTERIEUR_ABSENTS",
+    "moteur": "moteur_v3",
+    "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
+    "apercu_non_calibre": false,
+    "selection": {}
+   }
+  },
+  {
+   "match_id": "7b3in1wqh5f13bs0mf9a6efx0",
+   "date": "2026-11-12",
+   "heure_cameroun": "23:00",
+   "competition": "Colombie : Première A Cloture",
+   "domicile": "Dep. Pasto",
+   "exterieur": "Atl. Junior",
+   "moteur_utilise": "moteur_v3",
+   "moteur_v3": {
+    "statut": "OK",
     "moteur": "moteur_v3",
     "statut_global": "PRODUCTION PARALLÈLE — CANDIDAT",
     "apercu_non_calibre": false,
