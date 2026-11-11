@@ -13,3 +13,6 @@ precalcul.json
 historique_pronostics.json
 # Trop gros pour Cloudflare (49 Mo) : la page Journal ne pourra pas charger ce fichier sur le site de secours.
 data/journal_intelligence.json
+# 11/11/2026 : journaux gelés (.jsonl). Aucune page du site ne les charge, et data/gamma/journal.jsonl a dépassé 25 Mo le 09/11 :
+# depuis, chaque publication Cloudflare échouait et le site de secours restait figé sur une ancienne version.
+*.jsonl

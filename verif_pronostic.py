@@ -476,6 +476,75 @@ def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
     json.dump(d, open(chemin, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":")); return d
 
+# ---------------------------------------------------------------- selections de la page gelees AVANT le coup d'envoi (Top 20 et onglet Regles) : pour mesurer leur reussite REELLE
+JOURNAL_SELECTIONS = os.path.join(DOSSIER, "journal_selections.jsonl")
+JOURS_PASSES_PAGE = 7      # la page garde les matchs des 7 derniers jours (comme les pages des moteurs), pour les retrouver par date
+COTE_TOP = 1.34            # cote minimale du Top 20 (regle de l'utilisateur, 07/11) : meme valeur que dans archetype_verif.js
+NB_TOP = 20
+ORDRE_FAMILLES = ("buts", "equipes", "victoire", "combos")
+
+def _jour_cameroun(ko):
+    """Jour du match a l'heure du Cameroun (UTC+1), comme sur la page. -> 'AAAA-MM-JJ' ou ''."""
+    try: return (datetime.datetime.strptime(ko, "%Y-%m-%dT%H:%M:%SZ") + datetime.timedelta(hours=1)).date().isoformat()
+    except (TypeError, ValueError): return ""
+
+def top20_page(d):
+    """Le Top 20 exactement comme la page le calcule (archetype_verif.js, fonction top20) : par match, le pari le mieux note parmi ceux a cote >= 1,34 ;
+    note = le plus prudent entre la reussite observee et la probabilite de la cote ; puis les 20 meilleurs de chaque journee. -> {match_id: {"pari": ..., "rang": n}}"""
+    note = lambda p: min(p["taux"], 1 / p["cote"]); jours = {}
+    for m in d.get("matchs") or []:
+        L = [p for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p["cote"] >= COTE_TOP]
+        if not L: continue
+        p = sorted(L, key=lambda p: (-note(p), -p["taux"]))[0]      # tri stable, comme en JavaScript
+        jours.setdefault(_jour_cameroun(m.get("coup_d_envoi_utc")), []).append((m, p))
+    out = {}
+    for L in jours.values():
+        for i, (m, p) in enumerate(sorted(L, key=lambda mp: (-note(mp[1]), -mp[1]["taux"]))[:NB_TOP]): out[m["match_id"]] = {"pari": p, "rang": i + 1}
+    return out
+
+def selections_page(d):
+    """Ce que la page recommande pour chaque match A VENIR : son pari du Top 20 (s'il y est) et ses paris de l'onglet Regles. -> {(match_id, selection): [paris]}"""
+    T = top20_page(d); out = {}; court = lambda p: {"marche": p["marche"], "cote": p["cote"], "verdict": p["verdict"], "taux": p["taux"]}
+    for m in d.get("matchs") or []:
+        if m.get("statut") != "a_venir" or not m.get("coup_d_envoi_utc"): continue
+        out[(m["match_id"], "top20")] = [court(T[m["match_id"]]["pari"])] if m["match_id"] in T else []
+        out[(m["match_id"], "regles")] = [court(p) for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p.get("regle")]
+    return out, {m["match_id"]: m for m in d.get("matchs") or []}
+
+def geler_selections(d, maintenant=None, chemin=JOURNAL_SELECTIONS):
+    """Ajoute au journal des selections (jamais reecrit, empreintes chainees) l'etat du Top 20 et de l'onglet Regles de chaque match a venir, seulement quand il change.
+    Une liste vide est ecrite quand un match sort d'une selection ou il figurait : le dernier etat avant le coup d'envoi fait foi. -> nb de lignes ajoutees."""
+    maintenant = maintenant or d.get("genere_le") or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    S, M = selections_page(d); ex = lire_journal(chemin); prec = ex[-1]["empreinte"] if ex else ""; n = 0
+    dernier = {(r["match_id"], r["selection"]): json.dumps(r["paris"], sort_keys=True) for r in ex}
+    os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    with open(chemin, "a", encoding="utf-8") as f:
+        for (mid, sel), P in sorted(S.items()):
+            m = M[mid]
+            if not m["coup_d_envoi_utc"] > maintenant: continue                                   # jamais de gel apres le coup d'envoi
+            if not P and (mid, sel) not in dernier: continue                                        # jamais selectionne : rien a ecrire
+            if dernier.get((mid, sel)) == json.dumps(P, sort_keys=True): continue
+            rec = {"match_id": mid, "date": m["date"], "coup_d_envoi_utc": m["coup_d_envoi_utc"], "gele_le": maintenant, "selection": sel, "regles": _version_regles(), "paris": P}
+            prec = _empreinte(prec, rec); f.write(json.dumps({**rec, "empreinte": prec}, ensure_ascii=False, separators=(",", ":")) + "\n"); n += 1
+    return n
+
+def bilan_selections(chemin=JOURNAL_SELECTIONS, flux=FLUX):
+    """Reussite REELLE du Top 20 et de l'onglet Regles : dernier etat gele avant le coup d'envoi de chaque match, matchs termines. Refuse si le journal est altere."""
+    anom = verifier_journal(chemin)
+    if anom: raise RuntimeError(f"journal des selections non intact : {anom[:3]}")
+    import p1_page_donnees as pd
+    S = pd.scores(flux); etat = {}
+    for r in lire_journal(chemin): etat[(r["match_id"], r["selection"])] = r                         # le journal est chronologique : le dernier ecrase les precedents
+    out = {}
+    for (mid, sel), r in etat.items():
+        sc = S.get(mid)
+        if sc is None: continue
+        for p in r["paris"]:
+            g = out.setdefault(sel, {"paris": 0, "reussis": 0, "cotes": 0.0, "matchs": set(), "jours": set()})
+            g["paris"] += 1; g["reussis"] += bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[p["marche"]]]); g["cotes"] += p["cote"]; g["matchs"].add(mid); g["jours"].add(r["date"])
+    return {sel: {"paris": g["paris"], "matchs": len(g["matchs"]), "reussis": g["reussis"], "taux_reel": g["reussis"] / g["paris"], "cote_moyenne": round(g["cotes"] / g["paris"], 3),
+                  "du": min(g["jours"]), "au": max(g["jours"])} for sel, g in out.items()}
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "geler":
@@ -483,7 +552,10 @@ if __name__ == "__main__":
     elif cmd == "bilan":
         b = ecrire_bilan(); print(json.dumps({k: {x: round(y, 3) if isinstance(y, float) else y for x, y in v.items()} for k, v in b["par_verdict"].items()}, ensure_ascii=False))
     elif cmd == "page":
-        d = ecrire_page(); print(json.dumps({"matchs": d["nb_matchs"], "octets": os.path.getsize(PAGE)}, ensure_ascii=False))
+        d = page_donnees(JOURS_PASSES_PAGE); n = geler_selections(d)        # la page garde 7 jours ; le Top 20 et l'onglet Regles sont geles avant le coup d'envoi
+        try: d["bilan_selections"] = bilan_selections()
+        except RuntimeError as err: d["bilan_selections"] = {"erreur": str(err)}
+        ecrire_page(d); print(json.dumps({"matchs": d["nb_matchs"], "octets": os.path.getsize(PAGE), "selections_gelees": n}, ensure_ascii=False))
     elif cmd == "regles":      # audit des regles par marche : gain de chaque regle sur les deux moities des journees (activer ou couper une regle reste une decision, dans config/verif_regles.json)
         import verif_regles as VR
         a = VR.auditer(VR._lignes()); [print(f"{mk:16} {'ACTIVE' if v['actif'] else 'inactive':9} {'tient' if v['tient'] else 'ne tient pas':13} gains par moitié : {[m['gain'] for m in v['moitiés']]} (retenus {[m['retenus'] for m in v['moitiés']]})") for mk, v in a.items()]

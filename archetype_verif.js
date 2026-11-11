@@ -139,12 +139,18 @@ function rendu(d) {
   document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
   liste("om-avenir", av, "Aucun match à venir pour cet onglet."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");
 }
+// Réussite réelle du Top 20 et de l'onglet Règles : leur dernier état gelé avant le coup d'envoi (journal_selections.jsonl), matchs terminés. Rien n'est affiché tant qu'aucun n'est terminé.
+function selectionsGelees(d) {
+  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"]];
+  return noms.filter(([k]) => S[k] && S[k].paris).map(([k, t]) => `<tr><td style="text-align:left">${t}</td><td>${e(S[k].paris)}</td><td>${e(S[k].reussis)}</td><td>${Math.round(S[k].taux_reel * 100)} %</td></tr>`).join("");
+}
 function bilan(d) {
   const B = d.bilan || {}, cles = Object.keys(B);
   if (!cles.length) return `<p class="om-info" style="margin:8px 14px">Aucun pari gelé n'est encore terminé : le bilan réel apparaîtra avec les premiers matchs terminés.</p>`;
   const ordre = ["TIENT", "TIENT AVEC RÉSERVE", "NE TIENT PAS"];
   return `<table class="om-table"><tr><th>Verdict gelé avant le match</th><th>Paris terminés</th><th>Réussis</th><th>Réussite réelle</th></tr>` +
-    ordre.filter((k) => B[k]).map((k) => `<tr><td style="text-align:left">${e(maj1(k.toLowerCase()))}</td><td>${e(B[k].paris)}</td><td>${e(B[k].reussis)}</td><td>${Math.round(B[k].taux_reel * 100)} %</td></tr>`).join("") + `</table>`;
+    ordre.filter((k) => B[k]).map((k) => `<tr><td style="text-align:left">${e(maj1(k.toLowerCase()))}</td><td>${e(B[k].paris)}</td><td>${e(B[k].reussis)}</td><td>${Math.round(B[k].taux_reel * 100)} %</td></tr>`).join("") +
+    selectionsGelees(d) + `</table>`;
 }
 function affiche(d) {
   const L = d.matchs || []; DONNEES = d;
