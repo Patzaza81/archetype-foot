@@ -14,13 +14,17 @@ from sources_calendrier.sources import espn, matchendirect, openfootball
 
 # ---------------------------------------------------------------- noms d'équipes : au moins 3 cas qui passent et 3 qui échouent par règle
 @pytest.mark.parametrize("a,b", [("Arsenal FC", "Arsenal"), ("Séville", "Seville FC"), ("Washington", "Washington Spirit"), ("Allemagne", "Germany"),
-                                 ("États-Unis", "United States"), ("Köge", "Koge"), ("AS Monaco", "Monaco")])
+                                 ("États-Unis", "United States"), ("Köge", "Koge"), ("AS Monaco", "Monaco"),
+                                 ("Gérone", "Girona"), ("Colchester Utd", "Colchester United"), ("S. Wednesday", "Sheffield Wednesday"),
+                                 ("Atl. Mineiro", "Atlético Mineiro"), ("Dep. Pasto", "Deportivo Pasto")])
 def test_meme_equipe_oui(a, b):
     assert meme_equipe(a, b) and meme_equipe(b, a)
 
 
 @pytest.mark.parametrize("a,b", [("Arsenal", "Arsenal Women"), ("Chelsea féminines", "Chelsea"), ("Real Madrid", "Real Madrid B"), ("Espagne", "Espagne U19"),
-                                 ("Italie U17", "Italie U19"), ("Manchester United", "Manchester City"), ("Real Madrid", "Real Sociedad"), ("", "Arsenal"), ("FC", "Arsenal")])
+                                 ("Italie U17", "Italie U19"), ("Manchester United", "Manchester City"), ("Real Madrid", "Real Sociedad"), ("", "Arsenal"), ("FC", "Arsenal"),
+                                 ("S. Wednesday", "Sheffield United"), ("Colchester Utd", "Manchester United"), ("Atl. Mineiro", "Atlético Madrid"),
+                                 ("Atl. Junior", "Atlético Nacional"), ("Dep. Pasto", "Deportivo Cali"), ("Gérone", "Gimnàstic")])
 def test_meme_equipe_non(a, b):
     assert not meme_equipe(a, b) and not meme_equipe(b, a)
 
