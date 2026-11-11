@@ -1,33 +1,33 @@
 {
-  "genere_le": "2026-11-11T09:04:04Z",
-  "nb_signaux": 253,
-  "nb_exportes": 96,
+  "genere_le": "2026-11-11T18:06:30Z",
+  "nb_signaux": 249,
+  "nb_exportes": 99,
   "par_date": {
-    "2026-11-12": 2,
-    "2026-11-13": 14,
+    "2026-11-12": 4,
+    "2026-11-13": 15,
     "2026-11-14": 80
   },
   "rejets": {
-    "pas_de_cotes_betpawa": 151,
-    "match_deja_commence_ou_termine": 2,
-    "historique_indisponible": 4
+    "match_deja_commence_ou_termine": 6,
+    "historique_indisponible": 5,
+    "pas_de_cotes_betpawa": 139
   },
   "marches_ignores": {
-    "score_exact": 96,
+    "score_exact": 99,
+    "pair_impair": 98,
+    "1x2_btts": 95,
     "nombre_exact_buts": 94,
-    "1x2_btts": 90,
-    "dc_total_4.5": 90,
-    "pair_impair": 89,
-    "dc_btts": 89,
-    "dc_total_1.5": 88,
-    "dc_total_3.5": 86,
-    "dc_total_2.5": 84,
-    "handicap_3issues_-1": 84,
-    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 83,
-    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 83,
-    "handicap_3issues_1": 81,
-    "handicap_3issues_-2": 62,
-    "1x2_total_1.5": 51
+    "dc_btts": 94,
+    "dc_total_1.5": 91,
+    "dc_total_2.5": 91,
+    "dc_total_3.5": 91,
+    "dc_total_4.5": 91,
+    "handicap_3issues_-1": 90,
+    "cages_inviolees_domicile.non (pas d'équivalent moteur)": 89,
+    "cages_inviolees_exterieur.non (pas d'équivalent moteur)": 89,
+    "handicap_3issues_1": 87,
+    "handicap_3issues_-2": 67,
+    "1x2_total_3.5": 54
   },
   "fichiers": {
     "2026-11-12": "export_moteur/matchs_moteur_2026-11-12.json",
@@ -40,7 +40,7 @@
       "match": "FC Fleury 91 - Toulouse",
       "competition": "France :\n                        Arkema Première Ligue",
       "date": "2026-11-11",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "8rtddg0mszg8y6zw4y0lazv2s",
@@ -68,14 +68,14 @@
       "match": "Tukums - Valmiera",
       "competition": "Lettonie :\n                        Virsliga - Relegation Final",
       "date": "2026-11-11",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "5hxdtg48h62jvcaewg5ab8mc4",
       "match": "Colombe - Victoria Utd",
       "competition": "Cameroun :\n                        Elite One",
       "date": "2026-11-11",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "45vhjwm9llqrluzeztvb025uc",
@@ -187,7 +187,7 @@
       "match": "Petrzalka - S. Trnava",
       "competition": "Slovaquie :\n                        I Ligue Femmes",
       "date": "2026-11-11",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "match_deja_commence_ou_termine"
     },
     {
       "match_id": "8sqrw1to3mvab8gy8b3wfqjv8",
@@ -246,13 +246,6 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "cgyirvfk5iijqbug3tic03t3o",
-      "match": "Mount Pleasant - Portmore",
-      "competition": "Jamaïque :\n                        Premier Ligue",
-      "date": "2026-11-13",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "1606zy59w3sb64yfcz94r1afo",
       "match": "Ulaanbaatar - Hunters",
       "competition": "Mongolie :\n                        Premiere Ligue Tour de championnat",
@@ -260,24 +253,10 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "eq148ye6rs1gf7p6kch8nbeok",
-      "match": "Kigezi Home Boyz - Vipers",
-      "competition": "Ouganda :\n                        Premier Ligue",
-      "date": "2026-11-12",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "176zzt0d5b6n05o8hdtd5bklw",
       "match": "Arkadag - Altyn",
       "competition": "Turkménistan :\n                        Ýokary Ligue",
       "date": "2026-11-12",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "9cvefjcwwkc8mm4nanjmzf2ms",
-      "match": "JS Saoura - USM Khenchela",
-      "competition": "Algérie :\n                        Ligue 1",
-      "date": "2026-11-13",
       "raison": "pas_de_cotes_betpawa"
     },
     {
@@ -365,31 +344,10 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "admvwayfjg91gc8867z090d0",
-      "match": "FAP - Astres",
-      "competition": "Cameroun :\n                        Elite Deux",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "9u2uweg8y4qusqzf8kvfil1w",
-      "match": "Fauve Azur E. - Atlantic",
-      "competition": "Cameroun :\n                        Elite Deux",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "b7anyjhasjab5a7lp32vlus4",
       "match": "Fortuna Mfou - Tonnerre",
       "competition": "Cameroun :\n                        Elite Deux",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "a3vk43pofe9h1dpq8krvf2ms",
-      "match": "Sable de Batié - Mintack",
-      "competition": "Cameroun :\n                        Elite Deux",
-      "date": "2026-11-14",
+      "date": "2026-11-13",
       "raison": "pas_de_cotes_betpawa"
     },
     {
@@ -527,7 +485,7 @@
     },
     {
       "match_id": "1pwape9ba8jzh5z8otapb2rdg",
-      "match": "Lyon - Saint Malo",
+      "match": "OL Lyonnes - Saint Malo",
       "competition": "France :\n                        Arkema Première Ligue",
       "date": "2026-11-14",
       "raison": "pas_de_cotes_betpawa"
@@ -649,7 +607,7 @@
       "match": "Comunicaciones - CSD Imperial",
       "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
       "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
+      "raison": "historique_indisponible: domicile: saison_incoherente_avec_resultats_connus"
     },
     {
       "match_id": "6azxo2myqk2s7xg0131dhz190",
@@ -743,20 +701,6 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "7xm3cemdcs4cz5ba62pctxes4",
-      "match": "Aston Villa - All Saints Utd",
-      "competition": "Antigua-et-Barbuda :\n                        1ère Division",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
-      "match_id": "7xtp6ei2297klowup8rtd8w7o",
-      "match": "Old Road - Greenbay Hoppers",
-      "competition": "Antigua-et-Barbuda :\n                        1ère Division",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "1t57122fbcebzjg8or69lt1jo",
       "match": "Britannia - Bubali",
       "competition": "Aruba :\n                        Division di Honor",
@@ -813,6 +757,13 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
+      "match_id": "5acs854xbuin8jb4x99wcnrbo",
+      "match": "Unisport - Canon",
+      "competition": "Cameroun :\n                        Elite One",
+      "date": "2026-11-14",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
       "match_id": "5978s0teo1ze9vy4ccnux4q38",
       "match": "Aigle Royal - PWD Bamenda",
       "competition": "Cameroun :\n                        Elite One",
@@ -848,13 +799,6 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "5acs854xbuin8jb4x99wcnrbo",
-      "match": "Unisport - Canon",
-      "competition": "Cameroun :\n                        Elite One",
-      "date": "2026-11-14",
-      "raison": "pas_de_cotes_betpawa"
-    },
-    {
       "match_id": "5a2cjdqjfi7mqkh76vf3k51ck",
       "match": "USA - APEJES",
       "competition": "Cameroun :\n                        Elite One",
@@ -862,15 +806,22 @@
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "anjp4oxnwlr0d4yhyaaiusk4",
-      "match": "Elecsport - Bamboutos",
+      "match_id": "admvwayfjg91gc8867z090d0",
+      "match": "FAP - Astres",
       "competition": "Cameroun :\n                        Elite Deux",
       "date": "2026-11-14",
       "raison": "pas_de_cotes_betpawa"
     },
     {
-      "match_id": "axj58hfs4c9vjozatagovok4",
-      "match": "KCFC - Avion Academy",
+      "match_id": "a3vk43pofe9h1dpq8krvf2ms",
+      "match": "Sable de Batié - Mintack",
+      "competition": "Cameroun :\n                        Elite Deux",
+      "date": "2026-11-14",
+      "raison": "pas_de_cotes_betpawa"
+    },
+    {
+      "match_id": "9u2uweg8y4qusqzf8kvfil1w",
+      "match": "Fauve Azur E. - Atlantic",
       "competition": "Cameroun :\n                        Elite Deux",
       "date": "2026-11-14",
       "raison": "pas_de_cotes_betpawa"
