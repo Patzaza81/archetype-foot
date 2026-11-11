@@ -159,9 +159,14 @@ def main():
     # AJOUT 13/10/2026 -- moteur v2r (moteur_v2r/, écrit seulement data/v2r/, affiché par pronostics_v2r.html) : règle son
     # carnet puis choisit les paris des matchs à venir, juste après l'archive de test dont il lit les données. Isolé dans
     # un try : un échec de v2r ne fait jamais échouer l'enregistrement des scores. Le lundi, v2r réentraîne ses règles.
+    # 10/11/2026 : v2r et v sont désactivés (config/moteurs_desactives.json, mesure sur résultats réels) ; retirer leur ligne de ce fichier les relance.
+    from megapower.actifs import actif
     try:
-        from moteur_v2r.execution import passage_nocturne
-        print(f"[v2r] {passage_nocturne()}")
+        if actif("v2r"):
+            from moteur_v2r.execution import passage_nocturne
+            print(f"[v2r] {passage_nocturne()}")
+        else:
+            print("[v2r] désactivé (config/moteurs_desactives.json)")
     except Exception as e:
         print(f"[v2r] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non concernés.",
               file=sys.stderr)
@@ -169,8 +174,11 @@ def main():
     # puis écrit principal + « autres » des matchs à venir, avant le coup d'envoi. Isolé dans un try : un échec de v ne fait
     # jamais échouer l'enregistrement des scores ni v2r. Autonome : lit seulement data/archive_test.
     try:
-        from moteur_v.execution import passage_nocturne as passage_nocturne_v
-        print(f"[v] {passage_nocturne_v()}")
+        if actif("v"):
+            from moteur_v.execution import passage_nocturne as passage_nocturne_v
+            print(f"[v] {passage_nocturne_v()}")
+        else:
+            print("[v] désactivé (config/moteurs_desactives.json)")
     except Exception as e:
         print(f"[v] AVERTISSEMENT : échec ({type(e).__name__}: {e}) -- scores de l'historique non concernés.",
               file=sys.stderr)
