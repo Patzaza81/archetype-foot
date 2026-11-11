@@ -34,7 +34,7 @@ def test_correction_validee_active_seulement_en_mode_actif_et_1x2_renormalise():
         assert r["publie"] == (r["p1_calibre"] if mode_ == "actif" else r["p1_original"]); assert r["p1_calibre"]["o25"] == r["p1_original"]["o25"]
 
 def test_journal_gele_non_reecrit(tmp_path):
-    e = [{"statut": "OK", "match_id": "z", "p1_original": {}, "p1_calibre": {}}]
+    e = [{"statut": "OK", "match_id": "z", "coup_d_envoi_utc": "2099-01-01T00:00:00Z", "p1_original": {}, "p1_calibre": {}}]
     assert ic.ecrire(e, CFG, str(tmp_path))[0] == 1 and ic.ecrire(e, CFG, str(tmp_path))[0] == 0
     assert len(open(tmp_path / "journal.jsonl").read().strip().split("\n")) == 1
 

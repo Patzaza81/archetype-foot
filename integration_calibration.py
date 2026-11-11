@@ -134,7 +134,7 @@ def ecrire(enregistrements, config, dossier=DOSSIER, maintenant=None):
     with open(chemin, "a", encoding="utf-8") as f:
         for r in enregistrements:
             if r["statut"] != "OK" or r["match_id"] in deja: continue
-            if r.get("coup_d_envoi_utc") and r["coup_d_envoi_utc"] <= maintenant: continue
+            if not r.get("coup_d_envoi_utc") or r["coup_d_envoi_utc"] <= maintenant: continue   # sans heure de coup d'envoi, on ne peut pas prouver le gel avant le match : rien n'est gele
             corps = {**r, "gele_le": maintenant}; e = _empreinte(prec, corps); f.write(json.dumps({**corps, "empreinte": e}, ensure_ascii=False, separators=(",", ":")) + "\n"); prec = e; n += 1
     return n, len([r for r in enregistrements if r["statut"] == "OK" and r["match_id"] in deja])
 

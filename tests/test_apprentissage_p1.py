@@ -67,3 +67,11 @@ def test_construire_refuse_un_journal_altere(tmp_path):
     with pytest.raises(RuntimeError): ap.construire(d, f)
 def test_construire_est_deterministe(tmp_path):
     d, f = _monde(tmp_path, {"m1": {"buts_dom": 2, "buts_ext": 1}}); assert ap.construire(d, f) == ap.construire(d, f)
+
+
+# ---- un match sans heure de coup d'envoi n'est jamais gele (le gel avant le match ne se prouve pas) : le journal reste intact et l'apprentissage tourne
+def test_gel_ignore_un_match_sans_coup_d_envoi(tmp_path):
+    sans, passe, futur = _rec(1, "2026-11-02T19:00:00Z"), _rec(2, "2026-11-02T19:00:00Z"), _rec(3, "2026-11-02T19:00:00Z")
+    sans["coup_d_envoi_utc"] = None; passe["coup_d_envoi_utc"] = "2026-11-01T09:00:00Z"
+    n, _ = ic.ecrire([sans, passe, futur], cp.charger(), str(tmp_path), maintenant="2026-11-01T10:00:00Z")
+    assert n == 1 and [r["match_id"] for r in ic.lire_journal(str(tmp_path))] == ["m3"] and ic.verifier_journal(str(tmp_path)) == []
