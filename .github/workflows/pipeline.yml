@@ -165,6 +165,12 @@ jobs:
         continue-on-error: true
         run: python -m megapower.suivi pipeline
 
+      # AJOUT 11/11/2026 : mesure des sources de calendrier de secours (ESPN, openfootball) face à Matchendirect. Lecture seule : rien n'alimente le système.
+      - name: Sources de calendrier de secours (mesure seulement)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
+        continue-on-error: true
+        run: python -m sources_calendrier.mesure
+
       - name: Récupérer les scores des matchs du jeu d'évaluation du moteur
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         run: python evaluation_scores.py
