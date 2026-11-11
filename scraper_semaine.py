@@ -64,6 +64,43 @@ def scrape_jour_playwright(page, date_cible, max_matchs=200):
     return parse_matches(html, max_matchs=max_matchs, date_label=date_cible.isoformat())
 
 
+def scrape_jour_http(date_cible, max_matchs=200):
+    """SECOURS (11/11/2026) : même page, lue en HTTP simple comme le fait scraper.py pour « demain ».
+    Depuis le 08/11/2026 le navigateur automatisé ramène 0 match pour J+2 et J+3 alors que la page en contient des centaines :
+    le système ne voyait plus que 2 jours au lieu de 4. Même garde que pour « demain » : si le site redirige vers une autre
+    page que la date demandée, c'est un échec (jamais les matchs d'un autre jour sous cette date)."""
+    from scraper import fetch_html
+    url = url_resultat_foot(date_cible)
+    html, url_finale = fetch_html(url)
+    segment_attendu = f"resultat-foot-{date_cible.strftime('%d-%m-%Y')}"
+    if segment_attendu not in url_finale:
+        raise RuntimeError(f"{url} a redirigé vers {url_finale} : page de la date demandée non servie en HTTP simple")
+    return parse_matches(html, max_matchs=max_matchs, date_label=date_cible.isoformat())
+
+
+def scrape_jour(page, date_cible, max_matchs=200, journal=sys.stderr):
+    """Navigateur d'abord (chemin historique) ; s'il échoue ou ne ramène aucun match, secours en HTTP simple.
+    Lève une exception seulement si les DEUX chemins échouent. -> (matchs, chemin utilisé)"""
+    erreur = None
+    try:
+        matchs = scrape_jour_playwright(page, date_cible, max_matchs=max_matchs) if page is not None else []
+    except Exception as e:                                   # noqa: BLE001 : le secours prend le relais
+        matchs, erreur = [], e
+    if matchs:
+        return matchs, "navigateur"
+    try:
+        titre = page.title() if page is not None else "navigateur indisponible"
+    except Exception:                                        # noqa: BLE001
+        titre = "titre illisible"
+    print(f"  {date_cible.isoformat()} : navigateur -> 0 match ({erreur or 'page chargée, titre : ' + repr(titre)}) ; secours HTTP", file=journal)
+    try:
+        return scrape_jour_http(date_cible, max_matchs=max_matchs), "http"
+    except Exception as e:                                   # noqa: BLE001
+        if erreur is not None:
+            raise RuntimeError(f"navigateur : {erreur} ; HTTP : {e}") from e
+        raise
+
+
 def deduplique_par_match_id(matchs):
     """Déduplique une liste de matchs par match_id, garde la PREMIÈRE
     occurrence rencontrée dans l'ordre de la liste (= date la plus
@@ -110,37 +147,42 @@ def main():
     parser.add_argument("--sortie", default=FICHIER_SORTIE_DEFAUT)
     args = parser.parse_args()
 
-    try:
-        from playwright.sync_api import sync_playwright
-    except ImportError:
-        print("ÉCHEC : Playwright n'est pas installé -- voir l'étape "
-              "d'installation dans pipeline.yml.", file=sys.stderr)
-        # Non bloquant : écrit une liste vide plutôt que de faire planter
-        # le pipeline pour une fonctionnalité annexe.
-        with open(args.sortie, "w", encoding="utf-8") as f:
-            json.dump([], f)
-        sys.exit(0)
-
     tous_les_matchs = []
     # CORRECTIF FUSEAU HORAIRE 04/09/2026 -- voir run_pipeline.aujourdhui_france()
     from run_pipeline import aujourdhui_france
     aujourd_hui = aujourdhui_france()
 
-    with sync_playwright() as p:
-        navigateur = p.chromium.launch()
-        page = navigateur.new_page()
+    def collecte(page):
         for delta in range(args.jours_avant, args.jours_apres + 1):
             date_cible = aujourd_hui + datetime.timedelta(days=delta)
             try:
-                matchs_du_jour = scrape_jour_playwright(page, date_cible, max_matchs=args.max_matchs)
-                print(f"  {date_cible.isoformat()} : {len(matchs_du_jour)} match(s)", file=sys.stderr)
+                matchs_du_jour, chemin = scrape_jour(page, date_cible, max_matchs=args.max_matchs)
+                print(f"  {date_cible.isoformat()} : {len(matchs_du_jour)} match(s) ({chemin})", file=sys.stderr)
                 tous_les_matchs.extend(matchs_du_jour)
             except Exception as e:
                 # Un jour qui échoue n'empêche pas de récupérer les autres --
                 # même philosophie que "demain" dans scraper.py : échec
                 # localisé, jamais un plantage global.
                 print(f"  {date_cible.isoformat()} : ÉCHEC ({e})", file=sys.stderr)
-        navigateur.close()
+
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        # 11/11/2026 : sans navigateur, on ne rend plus une liste vide : le secours HTTP fait le travail.
+        print("Playwright n'est pas installé : collecte en HTTP simple seulement.", file=sys.stderr)
+        sync_playwright = None
+    if sync_playwright is None:
+        collecte(None)
+    else:
+        try:
+            with sync_playwright() as p:
+                navigateur = p.chromium.launch()
+                collecte(navigateur.new_page())
+                navigateur.close()
+        except Exception as e:                               # noqa: BLE001 : navigateur impossible à lancer -> HTTP seul
+            print(f"Navigateur impossible à lancer ({e}) : collecte en HTTP simple seulement.", file=sys.stderr)
+            if not tous_les_matchs:
+                collecte(None)
 
     # CORRECTIF 24/10/2026 : un match de la nuit listé sur J+2 et J+3 est daté de J+3 (voir scraper.corrige_dates_minuit)
     # avant la déduplication, qui ne voit donc plus de conflit de date pour ces matchs.
