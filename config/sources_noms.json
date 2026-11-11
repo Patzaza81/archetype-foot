@@ -1,0 +1,17 @@
+{
+ "explication": "Règles de comparaison des noms d'équipes entre sources (sources_calendrier/noms.py). Tout se corrige ici. mots_ignores : mots sans valeur pour reconnaître un club. marqueurs : mots qui désignent une AUTRE équipe du même club (F = féminines, B = réserve) ; les catégories de jeunes (u17, u19, u21…) sont reconnues toutes seules. equivalents : nom d'une source -> nom de référence (tout en minuscules, sans accents), à compléter d'après les « non retrouvés » de la mesure.",
+ "mots_ignores": ["fc", "cf", "sc", "ac", "afc", "cd", "ca", "fk", "sk", "as", "us", "ud", "sd", "rc", "ss", "club", "de", "del", "la", "le", "the", "football", "futbol", "calcio"],
+ "marqueurs": {"w": "F", "women": "F", "womens": "F", "ladies": "F", "feminin": "F", "feminine": "F", "feminines": "F", "femmes": "F", "femenino": "F", "frauen": "F",
+               "b": "B", "ii": "B", "reserve": "B", "reserves": "B"},
+ "equivalents": {
+  "allemagne": "germany", "angleterre": "england", "espagne": "spain", "italie": "italy", "pays bas": "netherlands", "belgique": "belgium", "ecosse": "scotland",
+  "pays de galles": "wales", "irlande": "republic of ireland", "irlande du nord": "northern ireland", "suisse": "switzerland", "autriche": "austria", "suede": "sweden",
+  "norvege": "norway", "danemark": "denmark", "finlande": "finland", "pologne": "poland", "hongrie": "hungary", "roumanie": "romania", "bulgarie": "bulgaria",
+  "grece": "greece", "turquie": "turkey", "turkiye": "turkey", "croatie": "croatia", "serbie": "serbia", "slovenie": "slovenia", "slovaquie": "slovakia",
+  "tchequie": "czechia", "republique tcheque": "czechia", "czech republic": "czechia", "georgie": "georgia", "albanie": "albania", "islande": "iceland",
+  "etats unis": "united states", "usa": "united states", "mexique": "mexico", "jamaique": "jamaica", "bresil": "brazil", "argentine": "argentina", "colombie": "colombia",
+  "perou": "peru", "chili": "chile", "equateur": "ecuador", "japon": "japan", "coree du sud": "south korea", "arabie saoudite": "saudi arabia", "australie": "australia",
+  "cameroun": "cameroon", "cote d ivoire": "ivory coast", "senegal": "senegal", "maroc": "morocco", "algerie": "algeria", "tunisie": "tunisia", "egypte": "egypt",
+  "afrique du sud": "south africa", "soudan du sud": "south sudan", "guinee": "guinea", "ghana": "ghana", "nigeria": "nigeria"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "explication": "Hiérarchie des sources de calendrier (sources_calendrier/). L'ordre de la liste est l'ordre de priorité. mode « mesure » : les sources de secours sont seulement comparées à la source principale, rien n'alimente le système.",
+ "mode": "mesure",
+ "sources": [
+  {"nom": "matchendirect", "role": "principale", "fichiers": ["matchs_du_jour.json", "matchs_demain.json", "matchs_semaine.json"]},
+  {"nom": "espn", "role": "secours", "actif": true, "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard?dates={AAAAMMJJ}&limit={limite}", "limite": 1000},
+  {"nom": "openfootball", "role": "secours", "actif": true, "url": "https://raw.githubusercontent.com/openfootball/football.json/master/{fichier}",
+   "fichiers": ["2026-27/en.1.json", "2026-27/en.2.json", "2026-27/de.1.json", "2026-27/es.1.json", "2026-27/it.1.json", "2026-27/fr.1.json", "2026-27/nl.1.json", "2026-27/pt.1.json", "2026/br.1.json"]}
+ ]
+}
