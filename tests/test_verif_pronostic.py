@@ -200,3 +200,67 @@ class LectureXG(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---------------------------------------------------------------- selections gelees (Top 20 et onglet Regles) et page sur 7 jours — donnees fabriquees
+import pytest
+def _pari(marche, cote, taux, verdict="TIENT", regle=False):
+    p = {"marche": marche, "cote": cote, "taux": taux, "verdict": verdict}
+    if regle: p["regle"] = True
+    return p
+
+def _match(mid, ko, paris, statut="a_venir"):
+    G = {"buts": [], "equipes": [], "victoire": [], "combos": []}
+    for p in paris: G[v.groupe(p["marche"])].append(p)
+    return {"match_id": mid, "date": ko[:10], "coup_d_envoi_utc": ko, "statut": statut, "domicile": "A" + mid, "exterieur": "B" + mid, "paris": G}
+
+class TestTop20:
+    def test_cote_minimale_1_34(self):               # 3 cas refuses (1,26 / 1,30 / 1,33) et 3 acceptes (1,34 / 1,40 / 2,00)
+        for c in (1.26, 1.30, 1.33): assert v.top20_page({"matchs": [_match("m", "2026-11-20T18:00:00Z", [_pari("1N", c, 0.9)])]}) == {}
+        for c in (1.34, 1.40, 2.00): assert "m" in v.top20_page({"matchs": [_match("m", "2026-11-20T18:00:00Z", [_pari("1N", c, 0.9)])]})
+    def test_note_la_plus_prudente(self):            # reussite 90 % a 2,00 (cote : 50 %) passe APRES reussite 70 % a 1,40 (cote : 71 %)
+        d = {"matchs": [_match("a", "2026-11-20T18:00:00Z", [_pari("1", 2.00, 0.9)]), _match("b", "2026-11-20T19:00:00Z", [_pari("1N", 1.40, 0.7)])]}
+        T = v.top20_page(d); assert T["b"]["rang"] == 1 and T["a"]["rang"] == 2
+    def test_un_pari_par_match_et_20_par_jour(self):
+        d = {"matchs": [_match(f"m{i:02d}", "2026-11-20T18:00:00Z", [_pari("1N", 1.40, 0.5 + i / 100), _pari("total_plus_1.5", 1.36, 0.4)]) for i in range(25)]}
+        T = v.top20_page(d); assert len(T) == 20 and all(t["pari"]["marche"] == "1N" for t in T.values()) and T["m24"]["rang"] == 1 and "m04" not in T
+    def test_jour_du_cameroun(self):                 # 23h30 UTC le 20 = le 21 au Cameroun : classe avec les matchs du 21
+        d = {"matchs": [_match("soir", "2026-11-20T23:30:00Z", [_pari("1N", 1.40, 0.6)])] + [_match(f"m{i:02d}", "2026-11-21T15:00:00Z", [_pari("1N", 1.40, 0.7)]) for i in range(20)]}
+        assert "soir" not in v.top20_page(d)
+
+class TestGelSelections:
+    def _d(self, extra=()):
+        return {"genere_le": "2026-11-20T10:00:00Z", "matchs": [_match("m1", "2026-11-20T18:00:00Z", [_pari("1N", 1.40, 0.8, regle=True), _pari("total_plus_1.5", 1.36, 0.7)]),
+                                                                _match("m2", "2026-11-20T18:00:00Z", [_pari("total_plus_2.5", 1.30, 0.8)]),                       # sous 1,34 et sans regle : dans aucune selection
+                                                                _match("m3", "2026-11-20T09:00:00Z", [_pari("1N", 1.40, 0.8, regle=True)], "en_cours_ou_resultat_attendu"), *extra]}
+    def test_gel_seulement_avant_le_coup_d_envoi(self, tmp_path):
+        j = str(tmp_path / "sel.jsonl")
+        assert v.geler_selections(self._d(), chemin=j) == 2                                   # m1 : top20 + regles ; m2 : rien ; m3 : deja commence
+        L = v.lire_journal(j); assert {(r["match_id"], r["selection"]) for r in L} == {("m1", "top20"), ("m1", "regles")} and v.verifier_journal(j) == []
+        assert v.geler_selections(self._d(), chemin=j) == 0                                   # rien n'a change : aucune ligne
+        assert v.geler_selections(self._d(), maintenant="2026-11-20T18:30:00Z", chemin=j) == 0   # apres le coup d'envoi : plus aucun gel
+    def test_sortie_d_une_selection_enregistree(self, tmp_path):
+        j = str(tmp_path / "sel.jsonl"); v.geler_selections(self._d(), chemin=j)
+        d = self._d(); d["matchs"][0] = _match("m1", "2026-11-20T18:00:00Z", [_pari("total_plus_1.5", 1.30, 0.7)]); d["genere_le"] = "2026-11-20T12:00:00Z"
+        assert v.geler_selections(d, chemin=j) == 2                                           # m1 sort du Top 20 et des Regles : deux listes vides ecrites
+        assert [r["paris"] for r in v.lire_journal(j)[-2:]] == [[], []]
+    def test_bilan_reel_sur_le_dernier_etat(self, tmp_path, monkeypatch):
+        import p1_page_donnees
+        j = str(tmp_path / "sel.jsonl"); v.geler_selections(self._d(), chemin=j)
+        monkeypatch.setattr(p1_page_donnees, "scores", lambda flux: {"m1": {"buts_dom": 2, "buts_ext": 0}})
+        b = v.bilan_selections(j)
+        assert b["top20"] == {"paris": 1, "matchs": 1, "reussis": 1, "taux_reel": 1.0, "cote_moyenne": 1.4, "du": "2026-11-20", "au": "2026-11-20"} and b["regles"]["reussis"] == 1
+        monkeypatch.setattr(p1_page_donnees, "scores", lambda flux: {"m1": {"buts_dom": 0, "buts_ext": 1}})
+        assert v.bilan_selections(j)["top20"]["reussis"] == 0                                 # 0-1 : « 1N » perd
+        monkeypatch.setattr(p1_page_donnees, "scores", lambda flux: {})
+        assert v.bilan_selections(j) == {}                                                     # match pas termine : pas compte
+    def test_journal_altere_refuse(self, tmp_path):
+        j = str(tmp_path / "sel.jsonl"); v.geler_selections(self._d(), chemin=j)
+        texte = open(j, encoding="utf-8").read().replace("1.4", "1.9", 1)                      # une cote modifiee apres coup
+        open(j, "w", encoding="utf-8").write(texte)
+        with pytest.raises(RuntimeError): v.bilan_selections(j)
+
+def test_page_garde_sept_jours_et_meme_cote_que_la_page():
+    import pathlib
+    js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
+    assert v.JOURS_PASSES_PAGE == 7 and f"const COTE_TOP = {v.COTE_TOP};" in js and "selectionsGelees(d)" in js

@@ -50,3 +50,12 @@ Pages : `archetype.html` (V2), `pronostics_v3.html` (V3), `journal.html`, `panie
 - Barre commune sur les pages qui chargent `theme.css` / `theme.js` (index, tickets, corners, système, compte, abonnement, inscription, admin). Leur bouton nuit est installé par `theme.js` dans leur en-tête ; il faut l'adapter page par page, avec la même méthode de vérification.
 - `systeme.html` : 10 px de défilement horizontal à 390 px. Défaut déjà présent sur `main`, la page n'a pas été modifiée.
 - `betpawa-validation.html` et `presentation-site.html` : pas de mode nuit.
+
+
+## Analyse Verdict (`pronostics_verif.html`) — 11/11/2026
+
+- **Page sur 7 jours** : `python verif_pronostic.py page` garde les matchs des 7 derniers jours (`JOURS_PASSES_PAGE`). Avant, seuls les matchs du jour et à venir étaient écrits : dès le lendemain les matchs disparaissaient et la recherche par date ne trouvait plus rien.
+- **Sélections gelées** : la même commande gèle, avant le coup d'envoi, le pari du Top 20 de chaque match à venir et ses paris de l'onglet Règles (`data/verif_pronostics/journal_selections.jsonl`, ajout seul, empreintes chaînées). Une ligne n'est écrite que si la sélection change ; une liste vide note qu'un match est sorti d'une sélection. Le dernier état avant le coup d'envoi fait foi.
+- **Bilan réel** : `bilan_selections()` (matchs terminés seulement), affiché dans le tableau de résultats de la page (lignes « Top 20 (recommandé) » et « Onglet Règles »), dès qu'un match gelé est terminé.
+- `top20_page()` recalcule le Top 20 exactement comme `archetype_verif.js` (contrôlé le 11/11 sur 493 matchs : 107 sélections identiques). Le classement de la page n'est pas modifié.
+- Le premier journal (`journal.jsonl` : 2 paris qui tiennent le mieux et 2 qui tiennent le moins bien par match) est inchangé.
