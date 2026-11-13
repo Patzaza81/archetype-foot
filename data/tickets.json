@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "genere_le": "2026-11-13T18:29:47.252051+00:00",
+  "genere_le": "2026-11-13T19:25:44.601767+00:00",
   "graine_tirage": "2026-11-13|2026-11-13..2026-11-16",
   "journal_calibrage": "regularites",
   "maximum_matchs": 12,
@@ -18,7 +18,7 @@
   "principe": "Deux sources : V3 et Journal (V2.6.10 est exclu depuis le 09/10/2026). Le générateur trie chaque source (paris jouables, classement) et retient 15 paris au maximum par source, 30 au total, sans doublon de pari. Ces 30 sont à égalité : les tickets sont tirés au hasard (graine = date du jour), sans règle de diversification de marchés, sans jamais réutiliser un match dans les tickets du jour. Aucun quota n'est rempli de force. La cote totale est choisie par le parieur, entre 2 et 20.",
   "avertissement": "La cote totale d'un combiné est exacte comme produit des cotes observées ; la probabilité indépendante affichée n'est pas une probabilité jointe garantie.",
   "candidats_total": 30,
-  "candidats_receptionnes": 260,
+  "candidats_receptionnes": 259,
   "candidats_retenus": 30,
   "sources": {
     "moteur_v3": 15,
@@ -284,12 +284,12 @@
       "domicile": "JS Saoura",
       "exterieur": "USM Khenchela",
       "marche": "over_under_total_2.5_under",
-      "cote": 1.63,
+      "cote": 1.57,
       "probabilite": 0.8005,
       "probabilite_estimee": 0.8005,
-      "ev_estime": 0.304815,
-      "marge_modele": 0.187003,
-      "marge_succes": -0.008883,
+      "ev_estime": 0.256785,
+      "marge_modele": 0.163557,
+      "marge_succes": -0.032329,
       "niveau_confiance": "OBSERVE",
       "historique_observations": 28,
       "calibrage_externe": {
@@ -314,7 +314,7 @@
       "source": "moteur_v3",
       "moteur": "moteur_v3",
       "rang": "P1",
-      "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+      "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
       "betpawa_url": null,
       "aussi_propose_par": [],
       "journal_calibrage": null
@@ -1729,12 +1729,12 @@
       "domicile": "JS Saoura",
       "exterieur": "USM Khenchela",
       "marche": "over_under_total_2.5_under",
-      "cote": 1.63,
+      "cote": 1.57,
       "probabilite": 0.8005,
       "probabilite_estimee": 0.8005,
-      "ev_estime": 0.304815,
-      "marge_modele": 0.187003,
-      "marge_succes": -0.008883,
+      "ev_estime": 0.256785,
+      "marge_modele": 0.163557,
+      "marge_succes": -0.032329,
       "niveau_confiance": "OBSERVE",
       "historique_observations": 28,
       "calibrage_externe": {
@@ -1759,7 +1759,7 @@
       "source": "moteur_v3",
       "moteur": "moteur_v3",
       "rang": "P1",
-      "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+      "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
       "betpawa_url": null,
       "aussi_propose_par": [],
       "journal_calibrage": null
@@ -3494,12 +3494,12 @@
           "domicile": "JS Saoura",
           "exterieur": "USM Khenchela",
           "marche": "over_under_total_2.5_under",
-          "cote": 1.63,
+          "cote": 1.57,
           "probabilite": 0.8005,
           "probabilite_estimee": 0.8005,
-          "ev_estime": 0.304815,
-          "marge_modele": 0.187003,
-          "marge_succes": -0.008883,
+          "ev_estime": 0.256785,
+          "marge_modele": 0.163557,
+          "marge_succes": -0.032329,
           "niveau_confiance": "OBSERVE",
           "historique_observations": 28,
           "calibrage_externe": {
@@ -3524,7 +3524,7 @@
           "source": "moteur_v3",
           "moteur": "moteur_v3",
           "rang": "P1",
-          "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+          "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
           "betpawa_url": null,
           "aussi_propose_par": [],
           "journal_calibrage": null
@@ -3532,13 +3532,13 @@
       ],
       "metrics": {
         "matchs": 5,
-        "cote_totale": 6.8616,
+        "cote_totale": 6.6091,
         "ecart_objectif": null,
         "marge_succes_min": -0.341485,
-        "marge_succes_moyenne": -0.176371,
-        "marge_modele_moyenne": 0.08261,
+        "marge_succes_moyenne": -0.18106,
+        "marge_modele_moyenne": 0.077921,
         "probabilite_independante_theorique": 0.260306,
-        "ev_theorique": 0.7861,
+        "ev_theorique": 0.7204,
         "sources": [
           "moteur_v3"
         ],
@@ -3572,7 +3572,7 @@
                 "choisie": true,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.2603,
-                "esperance_gain": 0.7861
+                "esperance_gain": 0.7204
               }
             ],
             "composition": [
@@ -3584,16 +3584,16 @@
                   3,
                   4
                 ],
-                "cote": 6.8616,
+                "cote": 6.6091,
                 "probabilite": 0.260306,
                 "mise": 1.0
               }
             ],
-            "retour_garanti": 6.8616,
+            "retour_garanti": 6.6091,
             "gagnants_requis": 1,
             "erreurs_garanties": 0,
             "proba_profit": 0.2603,
-            "esperance_gain": 0.7861
+            "esperance_gain": 0.7204
           },
           {
             "nom": "TICKETS_2_DE_2_A_3",
@@ -3609,14 +3609,14 @@
                 "choisie": false,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.7604,
-                "esperance_gain": 0.3263
+                "esperance_gain": 0.3045
               },
               {
                 "strategie": "SECURITE_EQUILIBREE",
                 "choisie": true,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.7655,
-                "esperance_gain": 0.3109
+                "esperance_gain": 0.2916
               }
             ],
             "composition": [
@@ -3626,9 +3626,9 @@
                   1,
                   4
                 ],
-                "cote": 3.2735,
+                "cote": 3.153,
                 "probabilite": 0.460153,
-                "mise": 0.3904
+                "mise": 0.3993
               },
               {
                 "paris": [
@@ -3637,14 +3637,14 @@
                 ],
                 "cote": 2.0961,
                 "probabilite": 0.565694,
-                "mise": 0.6096
+                "mise": 0.6007
               }
             ],
-            "retour_garanti": 1.2779,
+            "retour_garanti": 1.2591,
             "gagnants_requis": 1,
             "erreurs_garanties": 1,
             "proba_profit": 0.7655,
-            "esperance_gain": 0.3109
+            "esperance_gain": 0.2916
           },
           {
             "nom": "SIMPLES",
@@ -3663,21 +3663,21 @@
                 "choisie": true,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.6642,
-                "esperance_gain": 0.1211
+                "esperance_gain": 0.1134
               },
               {
                 "strategie": "SECURITE_EQUILIBREE",
                 "choisie": false,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.6642,
-                "esperance_gain": 0.1211
+                "esperance_gain": 0.1134
               },
               {
                 "strategie": "SECURITE_GROUPEE",
                 "choisie": false,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.6642,
-                "esperance_gain": 0.1211
+                "esperance_gain": 0.1134
               }
             ],
             "composition": [
@@ -3685,9 +3685,9 @@
                 "paris": [
                   4
                 ],
-                "cote": 1.63,
+                "cote": 1.57,
                 "probabilite": 0.8005,
-                "mise": 0.1799
+                "mise": 0.1854
               },
               {
                 "paris": [
@@ -3695,7 +3695,7 @@
                 ],
                 "cote": 1.53,
                 "probabilite": 0.7259,
-                "mise": 0.1916
+                "mise": 0.1903
               },
               {
                 "paris": [
@@ -3703,7 +3703,7 @@
                 ],
                 "cote": 1.51,
                 "probabilite": 0.7189,
-                "mise": 0.1941
+                "mise": 0.1928
               },
               {
                 "paris": [
@@ -3711,7 +3711,7 @@
                 ],
                 "cote": 1.37,
                 "probabilite": 0.7793,
-                "mise": 0.214
+                "mise": 0.2125
               },
               {
                 "paris": [
@@ -3719,14 +3719,14 @@
                 ],
                 "cote": 1.33,
                 "probabilite": 0.7996,
-                "mise": 0.2204
+                "mise": 0.2189
               }
             ],
-            "retour_garanti": 0.2932,
+            "retour_garanti": 0.2912,
             "gagnants_requis": 4,
             "erreurs_garanties": 1,
             "proba_profit": 0.6642,
-            "esperance_gain": 0.1211
+            "esperance_gain": 0.1134
           }
         ],
         "meilleur_plan": "COMBINE",
@@ -5291,12 +5291,12 @@
           "domicile": "JS Saoura",
           "exterieur": "USM Khenchela",
           "marche": "over_under_total_2.5_under",
-          "cote": 1.63,
+          "cote": 1.57,
           "probabilite": 0.8005,
           "probabilite_estimee": 0.8005,
-          "ev_estime": 0.304815,
-          "marge_modele": 0.187003,
-          "marge_succes": -0.008883,
+          "ev_estime": 0.256785,
+          "marge_modele": 0.163557,
+          "marge_succes": -0.032329,
           "niveau_confiance": "OBSERVE",
           "historique_observations": 28,
           "calibrage_externe": {
@@ -5321,7 +5321,7 @@
           "source": "moteur_v3",
           "moteur": "moteur_v3",
           "rang": "P1",
-          "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+          "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
           "betpawa_url": null,
           "aussi_propose_par": [],
           "journal_calibrage": null
@@ -5744,12 +5744,12 @@
               "domicile": "JS Saoura",
               "exterieur": "USM Khenchela",
               "marche": "over_under_total_2.5_under",
-              "cote": 1.63,
+              "cote": 1.57,
               "probabilite": 0.8005,
               "probabilite_estimee": 0.8005,
-              "ev_estime": 0.304815,
-              "marge_modele": 0.187003,
-              "marge_succes": -0.008883,
+              "ev_estime": 0.256785,
+              "marge_modele": 0.163557,
+              "marge_succes": -0.032329,
               "niveau_confiance": "OBSERVE",
               "historique_observations": 28,
               "calibrage_externe": {
@@ -5774,7 +5774,7 @@
               "source": "moteur_v3",
               "moteur": "moteur_v3",
               "rang": "P1",
-              "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+              "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
               "betpawa_url": null,
               "aussi_propose_par": [],
               "journal_calibrage": null
@@ -5826,13 +5826,13 @@
           ],
           "metrics": {
             "matchs": 2,
-            "cote_totale": 2.1679,
+            "cote_totale": 2.0881,
             "ecart_objectif": null,
             "marge_succes_min": -0.451887,
-            "marge_succes_moyenne": -0.230385,
-            "marge_modele_moyenne": 0.115012,
+            "marge_succes_moyenne": -0.242108,
+            "marge_modele_moyenne": 0.103289,
             "probabilite_independante_theorique": 0.636317,
-            "ev_theorique": 0.3795,
+            "ev_theorique": 0.3287,
             "sources": [
               "moteur_v3"
             ],
@@ -5863,7 +5863,7 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.6363,
-                    "esperance_gain": 0.3795
+                    "esperance_gain": 0.3287
                   }
                 ],
                 "composition": [
@@ -5872,16 +5872,16 @@
                       0,
                       1
                     ],
-                    "cote": 2.1679,
+                    "cote": 2.0881,
                     "probabilite": 0.636317,
                     "mise": 1.0
                   }
                 ],
-                "retour_garanti": 2.1679,
+                "retour_garanti": 2.0881,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.6363,
-                "esperance_gain": 0.3795
+                "esperance_gain": 0.3287
               },
               {
                 "nom": "SIMPLES",
@@ -5897,14 +5897,14 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.6363,
-                    "esperance_gain": 0.1685
+                    "esperance_gain": 0.1487
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": false,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.6363,
-                    "esperance_gain": 0.1685
+                    "esperance_gain": 0.1487
                   }
                 ],
                 "composition": [
@@ -5912,9 +5912,9 @@
                     "paris": [
                       0
                     ],
-                    "cote": 1.63,
+                    "cote": 1.57,
                     "probabilite": 0.8005,
-                    "mise": 0.4493
+                    "mise": 0.4586
                   },
                   {
                     "paris": [
@@ -5922,14 +5922,14 @@
                     ],
                     "cote": 1.33,
                     "probabilite": 0.7949,
-                    "mise": 0.5507
+                    "mise": 0.5414
                   }
                 ],
-                "retour_garanti": 0.7324,
+                "retour_garanti": 0.72,
                 "gagnants_requis": 2,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.6363,
-                "esperance_gain": 0.1685
+                "esperance_gain": 0.1487
               }
             ],
             "meilleur_plan": "COMBINE",
@@ -6760,12 +6760,12 @@
           "domicile": "JS Saoura",
           "exterieur": "USM Khenchela",
           "marche": "over_under_total_2.5_under",
-          "cote": 1.63,
+          "cote": 1.57,
           "probabilite": 0.8005,
           "probabilite_estimee": 0.8005,
-          "ev_estime": 0.304815,
-          "marge_modele": 0.187003,
-          "marge_succes": -0.008883,
+          "ev_estime": 0.256785,
+          "marge_modele": 0.163557,
+          "marge_succes": -0.032329,
           "niveau_confiance": "OBSERVE",
           "historique_observations": 28,
           "calibrage_externe": {
@@ -6790,7 +6790,7 @@
           "source": "moteur_v3",
           "moteur": "moteur_v3",
           "rang": "P1",
-          "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+          "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
           "betpawa_url": null,
           "aussi_propose_par": [],
           "journal_calibrage": null
@@ -8582,12 +8582,12 @@
               "domicile": "JS Saoura",
               "exterieur": "USM Khenchela",
               "marche": "over_under_total_2.5_under",
-              "cote": 1.63,
+              "cote": 1.57,
               "probabilite": 0.8005,
               "probabilite_estimee": 0.8005,
-              "ev_estime": 0.304815,
-              "marge_modele": 0.187003,
-              "marge_succes": -0.008883,
+              "ev_estime": 0.256785,
+              "marge_modele": 0.163557,
+              "marge_succes": -0.032329,
               "niveau_confiance": "OBSERVE",
               "historique_observations": 28,
               "calibrage_externe": {
@@ -8612,7 +8612,7 @@
               "source": "moteur_v3",
               "moteur": "moteur_v3",
               "rang": "P1",
-              "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+              "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
               "betpawa_url": null,
               "aussi_propose_par": [],
               "journal_calibrage": null
@@ -8754,13 +8754,13 @@
           ],
           "metrics": {
             "matchs": 4,
-            "cote_totale": 4.905,
+            "cote_totale": 4.7245,
             "ecart_objectif": null,
             "marge_succes_min": -0.43167,
-            "marge_succes_moyenne": -0.217078,
-            "marge_modele_moyenne": 0.120548,
+            "marge_succes_moyenne": -0.222939,
+            "marge_modele_moyenne": 0.114686,
             "probabilite_independante_theorique": 0.395798,
-            "ev_theorique": 0.9414,
+            "ev_theorique": 0.8699,
             "sources": [
               "moteur_v3"
             ],
@@ -8793,7 +8793,7 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.3958,
-                    "esperance_gain": 0.9414
+                    "esperance_gain": 0.8699
                   }
                 ],
                 "composition": [
@@ -8804,16 +8804,16 @@
                       2,
                       3
                     ],
-                    "cote": 4.905,
+                    "cote": 4.7245,
                     "probabilite": 0.395798,
                     "mise": 1.0
                   }
                 ],
-                "retour_garanti": 4.905,
+                "retour_garanti": 4.7245,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.3958,
-                "esperance_gain": 0.9414
+                "esperance_gain": 0.8699
               },
               {
                 "nom": "TICKETS_2X2",
@@ -8829,14 +8829,14 @@
                     "choisie": true,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.8667,
-                    "esperance_gain": 0.3975
+                    "esperance_gain": 0.3705
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.8626,
-                    "esperance_gain": 0.3876
+                    "esperance_gain": 0.364
                   }
                 ],
                 "composition": [
@@ -8845,9 +8845,9 @@
                       0,
                       3
                     ],
-                    "cote": 2.1516,
+                    "cote": 2.0724,
                     "probabilite": 0.683067,
-                    "mise": 0.5145
+                    "mise": 0.5238
                   },
                   {
                     "paris": [
@@ -8856,14 +8856,14 @@
                     ],
                     "cote": 2.2797,
                     "probabilite": 0.579442,
-                    "mise": 0.4855
+                    "mise": 0.4762
                   }
                 ],
-                "retour_garanti": 1.1069,
+                "retour_garanti": 1.0856,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.8667,
-                "esperance_gain": 0.3975
+                "esperance_gain": 0.3705
               },
               {
                 "nom": "SIMPLES",
@@ -8881,21 +8881,21 @@
                     "choisie": true,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.812,
-                    "esperance_gain": 0.1789
+                    "esperance_gain": 0.1687
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.812,
-                    "esperance_gain": 0.1789
+                    "esperance_gain": 0.1687
                   },
                   {
                     "strategie": "SECURITE_GROUPEE",
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.812,
-                    "esperance_gain": 0.1789
+                    "esperance_gain": 0.1687
                   }
                 ],
                 "composition": [
@@ -8903,9 +8903,9 @@
                     "paris": [
                       0
                     ],
-                    "cote": 1.63,
+                    "cote": 1.57,
                     "probabilite": 0.8005,
-                    "mise": 0.2276
+                    "mise": 0.2342
                   },
                   {
                     "paris": [
@@ -8913,7 +8913,7 @@
                     ],
                     "cote": 1.53,
                     "probabilite": 0.7253,
-                    "mise": 0.2424
+                    "mise": 0.2404
                   },
                   {
                     "paris": [
@@ -8921,7 +8921,7 @@
                     ],
                     "cote": 1.49,
                     "probabilite": 0.7989,
-                    "mise": 0.249
+                    "mise": 0.2468
                   },
                   {
                     "paris": [
@@ -8929,14 +8929,14 @@
                     ],
                     "cote": 1.32,
                     "probabilite": 0.8533,
-                    "mise": 0.281
+                    "mise": 0.2786
                   }
                 ],
-                "retour_garanti": 0.3709,
+                "retour_garanti": 0.3677,
                 "gagnants_requis": 3,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.812,
-                "esperance_gain": 0.1789
+                "esperance_gain": 0.1687
               }
             ],
             "meilleur_plan": "COMBINE",
@@ -10223,7 +10223,7 @@
         "2026-11-15"
       ],
       "candidats_total": 30,
-      "candidats_receptionnes": 253,
+      "candidats_receptionnes": 252,
       "candidats_retenus": 30,
       "sources": {
         "moteur_v3": 15,
@@ -10392,12 +10392,12 @@
           "domicile": "JS Saoura",
           "exterieur": "USM Khenchela",
           "marche": "over_under_total_2.5_under",
-          "cote": 1.63,
+          "cote": 1.57,
           "probabilite": 0.8005,
           "probabilite_estimee": 0.8005,
-          "ev_estime": 0.304815,
-          "marge_modele": 0.187003,
-          "marge_succes": -0.008883,
+          "ev_estime": 0.256785,
+          "marge_modele": 0.163557,
+          "marge_succes": -0.032329,
           "niveau_confiance": "OBSERVE",
           "historique_observations": 28,
           "calibrage_externe": {
@@ -10422,7 +10422,7 @@
           "source": "moteur_v3",
           "moteur": "moteur_v3",
           "rang": "P1",
-          "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+          "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
           "betpawa_url": null,
           "aussi_propose_par": [],
           "journal_calibrage": null
@@ -11900,12 +11900,12 @@
               "domicile": "JS Saoura",
               "exterieur": "USM Khenchela",
               "marche": "over_under_total_2.5_under",
-              "cote": 1.63,
+              "cote": 1.57,
               "probabilite": 0.8005,
               "probabilite_estimee": 0.8005,
-              "ev_estime": 0.304815,
-              "marge_modele": 0.187003,
-              "marge_succes": -0.008883,
+              "ev_estime": 0.256785,
+              "marge_modele": 0.163557,
+              "marge_succes": -0.032329,
               "niveau_confiance": "OBSERVE",
               "historique_observations": 28,
               "calibrage_externe": {
@@ -11930,7 +11930,7 @@
               "source": "moteur_v3",
               "moteur": "moteur_v3",
               "rang": "P1",
-              "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+              "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
               "betpawa_url": null,
               "aussi_propose_par": [],
               "journal_calibrage": null
@@ -12030,13 +12030,13 @@
           ],
           "metrics": {
             "matchs": 3,
-            "cote_totale": 3.1042,
+            "cote_totale": 2.9899,
             "ecart_objectif": null,
             "marge_succes_min": -0.153566,
-            "marge_succes_moyenne": -0.105338,
-            "marge_modele_moyenne": 0.129543,
+            "marge_succes_moyenne": -0.113154,
+            "marge_modele_moyenne": 0.121727,
             "probabilite_independante_theorique": 0.544663,
-            "ev_theorique": 0.6907,
+            "ev_theorique": 0.6285,
             "sources": [
               "moteur_v3"
             ],
@@ -12068,7 +12068,7 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.5447,
-                    "esperance_gain": 0.6907
+                    "esperance_gain": 0.6285
                   }
                 ],
                 "composition": [
@@ -12078,16 +12078,16 @@
                       1,
                       2
                     ],
-                    "cote": 3.1042,
+                    "cote": 2.9899,
                     "probabilite": 0.544663,
                     "mise": 1.0
                   }
                 ],
-                "retour_garanti": 3.1042,
+                "retour_garanti": 2.9899,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.5447,
-                "esperance_gain": 0.6907
+                "esperance_gain": 0.6285
               },
               {
                 "nom": "SIMPLES",
@@ -12104,21 +12104,21 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.5447,
-                    "esperance_gain": 0.1884
+                    "esperance_gain": 0.175
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": false,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.5447,
-                    "esperance_gain": 0.1884
+                    "esperance_gain": 0.175
                   },
                   {
                     "strategie": "SECURITE_GROUPEE",
                     "choisie": false,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.5447,
-                    "esperance_gain": 0.1884
+                    "esperance_gain": 0.175
                   }
                 ],
                 "composition": [
@@ -12126,9 +12126,9 @@
                     "paris": [
                       0
                     ],
-                    "cote": 1.63,
+                    "cote": 1.57,
                     "probabilite": 0.8005,
-                    "mise": 0.2974
+                    "mise": 0.3053
                   },
                   {
                     "paris": [
@@ -12136,7 +12136,7 @@
                     ],
                     "cote": 1.38,
                     "probabilite": 0.8565,
-                    "mise": 0.3513
+                    "mise": 0.3473
                   },
                   {
                     "paris": [
@@ -12144,14 +12144,14 @@
                     ],
                     "cote": 1.38,
                     "probabilite": 0.7944,
-                    "mise": 0.3513
+                    "mise": 0.3473
                   }
                 ],
-                "retour_garanti": 0.4848,
+                "retour_garanti": 0.4793,
                 "gagnants_requis": 3,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.5447,
-                "esperance_gain": 0.1884
+                "esperance_gain": 0.175
               }
             ],
             "meilleur_plan": "COMBINE",
@@ -14461,7 +14461,7 @@
         "2026-11-16"
       ],
       "candidats_total": 30,
-      "candidats_receptionnes": 260,
+      "candidats_receptionnes": 259,
       "candidats_retenus": 30,
       "sources": {
         "moteur_v3": 15,
@@ -14727,12 +14727,12 @@
           "domicile": "JS Saoura",
           "exterieur": "USM Khenchela",
           "marche": "over_under_total_2.5_under",
-          "cote": 1.63,
+          "cote": 1.57,
           "probabilite": 0.8005,
           "probabilite_estimee": 0.8005,
-          "ev_estime": 0.304815,
-          "marge_modele": 0.187003,
-          "marge_succes": -0.008883,
+          "ev_estime": 0.256785,
+          "marge_modele": 0.163557,
+          "marge_succes": -0.032329,
           "niveau_confiance": "OBSERVE",
           "historique_observations": 28,
           "calibrage_externe": {
@@ -14757,7 +14757,7 @@
           "source": "moteur_v3",
           "moteur": "moteur_v3",
           "rang": "P1",
-          "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+          "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
           "betpawa_url": null,
           "aussi_propose_par": [],
           "journal_calibrage": null
@@ -16962,12 +16962,12 @@
               "domicile": "JS Saoura",
               "exterieur": "USM Khenchela",
               "marche": "over_under_total_2.5_under",
-              "cote": 1.63,
+              "cote": 1.57,
               "probabilite": 0.8005,
               "probabilite_estimee": 0.8005,
-              "ev_estime": 0.304815,
-              "marge_modele": 0.187003,
-              "marge_succes": -0.008883,
+              "ev_estime": 0.256785,
+              "marge_modele": 0.163557,
+              "marge_succes": -0.032329,
               "niveau_confiance": "OBSERVE",
               "historique_observations": 28,
               "calibrage_externe": {
@@ -16992,7 +16992,7 @@
               "source": "moteur_v3",
               "moteur": "moteur_v3",
               "rang": "P1",
-              "justification": "Probabilité calibrée 80 % contre 61 % selon la cote 1,63 · marge +30,5 % · 3 matchs au même lieu.",
+              "justification": "Probabilité calibrée 80 % contre 64 % selon la cote 1,57 · marge +25,7 % · 3 matchs au même lieu.",
               "betpawa_url": null,
               "aussi_propose_par": [],
               "journal_calibrage": null
@@ -17000,13 +17000,13 @@
           ],
           "metrics": {
             "matchs": 5,
-            "cote_totale": 6.8616,
+            "cote_totale": 6.6091,
             "ecart_objectif": null,
             "marge_succes_min": -0.341485,
-            "marge_succes_moyenne": -0.176371,
-            "marge_modele_moyenne": 0.08261,
+            "marge_succes_moyenne": -0.18106,
+            "marge_modele_moyenne": 0.077921,
             "probabilite_independante_theorique": 0.260306,
-            "ev_theorique": 0.7861,
+            "ev_theorique": 0.7204,
             "sources": [
               "moteur_v3"
             ],
@@ -17040,7 +17040,7 @@
                     "choisie": true,
                     "erreurs_garanties": 0,
                     "proba_profit": 0.2603,
-                    "esperance_gain": 0.7861
+                    "esperance_gain": 0.7204
                   }
                 ],
                 "composition": [
@@ -17052,16 +17052,16 @@
                       3,
                       4
                     ],
-                    "cote": 6.8616,
+                    "cote": 6.6091,
                     "probabilite": 0.260306,
                     "mise": 1.0
                   }
                 ],
-                "retour_garanti": 6.8616,
+                "retour_garanti": 6.6091,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 0,
                 "proba_profit": 0.2603,
-                "esperance_gain": 0.7861
+                "esperance_gain": 0.7204
               },
               {
                 "nom": "TICKETS_2_DE_2_A_3",
@@ -17077,14 +17077,14 @@
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.7604,
-                    "esperance_gain": 0.3263
+                    "esperance_gain": 0.3045
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": true,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.7655,
-                    "esperance_gain": 0.3109
+                    "esperance_gain": 0.2916
                   }
                 ],
                 "composition": [
@@ -17094,9 +17094,9 @@
                       1,
                       4
                     ],
-                    "cote": 3.2735,
+                    "cote": 3.153,
                     "probabilite": 0.460153,
-                    "mise": 0.3904
+                    "mise": 0.3993
                   },
                   {
                     "paris": [
@@ -17105,14 +17105,14 @@
                     ],
                     "cote": 2.0961,
                     "probabilite": 0.565694,
-                    "mise": 0.6096
+                    "mise": 0.6007
                   }
                 ],
-                "retour_garanti": 1.2779,
+                "retour_garanti": 1.2591,
                 "gagnants_requis": 1,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.7655,
-                "esperance_gain": 0.3109
+                "esperance_gain": 0.2916
               },
               {
                 "nom": "SIMPLES",
@@ -17131,21 +17131,21 @@
                     "choisie": true,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.6642,
-                    "esperance_gain": 0.1211
+                    "esperance_gain": 0.1134
                   },
                   {
                     "strategie": "SECURITE_EQUILIBREE",
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.6642,
-                    "esperance_gain": 0.1211
+                    "esperance_gain": 0.1134
                   },
                   {
                     "strategie": "SECURITE_GROUPEE",
                     "choisie": false,
                     "erreurs_garanties": 1,
                     "proba_profit": 0.6642,
-                    "esperance_gain": 0.1211
+                    "esperance_gain": 0.1134
                   }
                 ],
                 "composition": [
@@ -17153,9 +17153,9 @@
                     "paris": [
                       4
                     ],
-                    "cote": 1.63,
+                    "cote": 1.57,
                     "probabilite": 0.8005,
-                    "mise": 0.1799
+                    "mise": 0.1854
                   },
                   {
                     "paris": [
@@ -17163,7 +17163,7 @@
                     ],
                     "cote": 1.53,
                     "probabilite": 0.7259,
-                    "mise": 0.1916
+                    "mise": 0.1903
                   },
                   {
                     "paris": [
@@ -17171,7 +17171,7 @@
                     ],
                     "cote": 1.51,
                     "probabilite": 0.7189,
-                    "mise": 0.1941
+                    "mise": 0.1928
                   },
                   {
                     "paris": [
@@ -17179,7 +17179,7 @@
                     ],
                     "cote": 1.37,
                     "probabilite": 0.7793,
-                    "mise": 0.214
+                    "mise": 0.2125
                   },
                   {
                     "paris": [
@@ -17187,14 +17187,14 @@
                     ],
                     "cote": 1.33,
                     "probabilite": 0.7996,
-                    "mise": 0.2204
+                    "mise": 0.2189
                   }
                 ],
-                "retour_garanti": 0.2932,
+                "retour_garanti": 0.2912,
                 "gagnants_requis": 4,
                 "erreurs_garanties": 1,
                 "proba_profit": 0.6642,
-                "esperance_gain": 0.1211
+                "esperance_gain": 0.1134
               }
             ],
             "meilleur_plan": "COMBINE",
