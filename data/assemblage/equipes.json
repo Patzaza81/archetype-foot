@@ -1,18 +1,18 @@
 {
  "version": "1.0.0",
  "version_contrat": 1,
- "genere_le": "2026-11-13 13:10 UTC",
+ "genere_le": "2026-11-13 19:51 UTC",
  "saison_football_data": "2627",
  "regle": "Football-Data en base ; jours manquants complétés par Matchendirect (provisoire) ; même équipe à ± 1 jour = même match ; reconstruit à chaque run, jamais cumulé",
  "bilan": {
-  "equipes_matchendirect_seul": 243,
-  "matchs_matchendirect_seul": 2985,
+  "equipes_matchendirect_seul": 259,
+  "matchs_matchendirect_seul": 3083,
   "doublons_evites": 1244,
   "equipes_couvertes": 88,
   "matchs_football_data": 1312,
   "matchs_provisoires": 1,
   "matchs_sans_date_ignores": 0,
-  "equipes_couvertes_non_reliees": 6
+  "equipes_couvertes_non_reliees": 12
  },
  "equipes": [
   {
@@ -3608,6 +3608,74 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/aps-bomet_x336bylr96mkuqivi7erouay.html||kenya : première ligue",
+   "competition": "kenya : première ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-10-10",
+     "domicile": false,
+     "adversaire": "Mathare Utd",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/mathare-utd-aps-bomet_3pxdmvno90bnuwesbfn1b2uj8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "Gor Mahia",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/aps-bomet-gor-mahia_bynlh8zrw7u8064cktlhsovmc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": false,
+     "adversaire": "Nairobi Utd",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/nairobi-utd-aps-bomet_4knsrgpv1s3ogflngasqslfkk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-28",
+     "domicile": true,
+     "adversaire": "3K",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/aps-bomet-3k_4mbmj5rij40883u6ibgqwo7x0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": true,
+     "adversaire": "Murang'a SEAL",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/aps-bomet-murang-a-seal_56ef48jgdnpl4czywqulrmfbo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-06",
+     "domicile": false,
+     "adversaire": "Kenya Com",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/kenya-com-aps-bomet_57h9nrfqz2hrjbjeskjus836c.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/arabe_symb3x7i8v247jtown7vfbvn.html||panama : primera division ouverture",
    "competition": "panama : primera division ouverture",
    "couverte_par_football_data": false,
@@ -3760,124 +3828,6 @@
      "buts_marques": 1,
      "buts_encaisses": 1,
      "url_match": "/live-score/alianza-arabe_8yuxd9ktmubbutrb1jwnyxkwk.html",
-     "source": "matchendirect",
-     "provisoire": false
-    }
-   ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/arenas-getxo_eqojc0yyx5ccwhz8i29q8gl1i.html||espagne : première division rfef groupe 1",
-   "competition": "espagne : première division rfef groupe 1",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-29",
-     "domicile": true,
-     "adversaire": "Racing de Ferrol",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/arenas-getxo-racing-de-ferrol_5pp975nqry95rqx4srg0svhg4.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-05",
-     "domicile": false,
-     "adversaire": "Pontevedra",
-     "buts_marques": 1,
-     "buts_encaisses": 4,
-     "url_match": "/live-score/pontevedra-arenas-getxo_5vwis11oyi7cr5f2w0xq5rytw.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-13",
-     "domicile": true,
-     "adversaire": "Zamora",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/arenas-getxo-zamora_5x8zn18hkihm5e0mezztxajh0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-20",
-     "domicile": false,
-     "adversaire": "Cacereño",
-     "buts_marques": 0,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/cacereno-arenas-getxo_61b7wtuh300flgo1jbtt3avpw.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-26",
-     "domicile": true,
-     "adversaire": "Ath Bilbao II",
-     "buts_marques": 0,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/arenas-getxo-ath-bilbao-ii_63ztweqytrchamqc5d1ejc00k.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-03",
-     "domicile": false,
-     "adversaire": "Barakaldo 2",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/barakaldo-arenas-getxo_67pd79dbga8ik0g9ggwaxlxjo.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-12",
-     "domicile": false,
-     "adversaire": "Leonesa",
-     "buts_marques": 1,
-     "buts_encaisses": 4,
-     "url_match": "/live-score/leonesa-arenas-getxo_6bqmd98ar58egxwqpybccr6l0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-18",
-     "domicile": true,
-     "adversaire": "Mérida",
-     "buts_marques": 0,
-     "buts_encaisses": 4,
-     "url_match": "/live-score/arenas-getxo-merida_6e3kp1p1t0bxvnmfkano8hgk4.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-24",
-     "domicile": true,
-     "adversaire": "UD Ourense",
-     "buts_marques": 2,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/arenas-getxo-ud-ourense_6hgecuzaibaur6aw6c6yj7yms.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-01",
-     "domicile": false,
-     "adversaire": "CD Coria",
-     "buts_marques": 1,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/cd-coria-arenas-getxo_6li6liblkia93r67q9kgxva50.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-08",
-     "domicile": true,
-     "adversaire": "A Coruña II",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/arenas-getxo-a-coruna-ii_6o792rd87ddwe189t2jhtdzis.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -5908,6 +5858,114 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/badalona_e7p3lxg97gac51s71hotzi0a5.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": false,
+     "adversaire": "Athletic Club",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/athletic-club-badalona_1l3fvexu5pymxpqd12lz9yy38.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": false,
+     "adversaire": "Espanyol",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/espanyol-badalona_1ok9b5rt417kqgl2y4je1p9n8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Eibar",
+     "buts_marques": 4,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/eibar-badalona_1rahw8gkagkg3oa75l58sai38.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": true,
+     "adversaire": "Sociedad",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/badalona-sociedad_1ub7atvzhd7v2o3nrotl0n6s4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": true,
+     "adversaire": "Granada",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/badalona-granada_1w4cvqu3do4e8rqrzrnahzswk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-03",
+     "domicile": false,
+     "adversaire": "Sevilla",
+     "buts_marques": 3,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/sevilla-badalona_1z5dgdqy7blyh88ngwiw1n7dg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "2 Tenerife",
+     "buts_marques": 0,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/badalona-tenerife_219evc2zk7nyv71pyuzlqwpas.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": false,
+     "adversaire": "Logroño",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/logrono-badalona_231td18g9h7ubu74d1q4a5ono.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": true,
+     "adversaire": "Barcelone",
+     "buts_marques": 0,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/badalona-barcelone_2625ba49jius0gwn7j4gngxsk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-09",
+     "domicile": false,
+     "adversaire": "Atlético Madrid",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/atletico-madrid-badalona_279e6vvt3885xehyky69gicyc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/ballymena-utd_e2vt5me7kj77z7vxcgyc5n2ve.html||irlande du nord : ifa premiership",
    "competition": "irlande du nord : ifa premiership",
    "couverte_par_football_data": false,
@@ -6040,6 +6098,74 @@
      "buts_marques": 1,
      "buts_encaisses": 1,
      "url_match": "/live-score/portadown-ballymena-utd_cyhihjzosf160k24w29gfqq6s.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/bandari_7p5d32tvcr8ii0gdecpstkqs.html||kenya : première ligue",
+   "competition": "kenya : première ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-10-14",
+     "domicile": false,
+     "adversaire": "Leopards",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/leopards-bandari_3rfjnytxho1lpruvh0wa2tnh0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-19",
+     "domicile": true,
+     "adversaire": "3K",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bandari-3k_bzquv2xbyeiht1iwgnpsu9clw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": false,
+     "adversaire": "Gor Mahia",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/gor-mahia-bandari_4l4vc3fxhu2b6zuuz8jhnsf10.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-28",
+     "domicile": true,
+     "adversaire": "Posta Rangers",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/bandari-posta-rangers_4mk8hchddy6i65r8438g1vt3o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": false,
+     "adversaire": "Nairobi Utd",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/nairobi-utd-bandari_56m62enrrb4k6wa451o52hn9w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": true,
+     "adversaire": "Tusker",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/bandari-tusker_58seug4hu7gyiayx3s4oqum8k.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -6198,6 +6324,134 @@
      "buts_marques": 1,
      "buts_encaisses": 0,
      "url_match": "/live-score/bangor-crusaders_cwoh7681jcqlt8berkz0z27mc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/barau_3z3d5burqmmwzlqzud12shno4.html||nigeria : premier ligue",
+   "competition": "nigeria : premier ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": true,
+     "adversaire": "Nasarawa Utd",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/barau-nasarawa-utd_6ajos0qfh6to5rkv44hnarnkk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": false,
+     "adversaire": "Kun Khalifat",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/kun-khalifat-barau_8jp8fn060m058yk5u922t6uqc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Bees",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/barau-bees_8mqruga3f35m1pwvtkwdybbpw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": false,
+     "adversaire": "Ikorodu City",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/ikorodu-city-barau_8p4x5hvw3qc89o7ecbqcsgzys.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-23",
+     "domicile": true,
+     "adversaire": "Abia Warriors",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/barau-abia-warriors_8s053kmojppjrrjy18n7lx7o4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": false,
+     "adversaire": "Sport Lagos",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/sport-lagos-barau_8uvf9delmqc5prs9yma37boyc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": false,
+     "adversaire": "Bendel Ins.",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/bendel-ins-barau_8y0vaslus5z2wdre534uq5wk4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": true,
+     "adversaire": "Eng. Rangers",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/barau-eng-rangers_90wewyjmnqdw4gue919lb28es.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-18",
+     "domicile": false,
+     "adversaire": "Rivers Utd",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/rivers-utd-barau_941hk6nl37wmtztji1g6co2dw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": true,
+     "adversaire": "Kwara Utd",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/barau-kwara-utd_96x0fyvwmi9i589a5s4psp53o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-30",
+     "domicile": false,
+     "adversaire": "Tornadoes",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/tornadoes-barau_9a2mzez6iq91k3y2cqph813x0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": true,
+     "adversaire": "Shooting Stars",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/barau-shooting-stars_9cz6u0ixnvifk05zl93odw07o.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -7386,6 +7640,34 @@
      "buts_marques": 4,
      "buts_encaisses": 3,
      "url_match": "/live-score/bengaluru-united-mohammedan-sc_2rvn5h8q3fkksz28i3c1rosno.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/binga_b5dna2rcnudth53jlpx612sk4.html||mali : première division",
+   "competition": "mali : première division",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-11-01",
+     "domicile": true,
+     "adversaire": "USFAS",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/binga-usfas_7yb8mw5ukbhcjln21k4eerqqc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-06",
+     "domicile": false,
+     "adversaire": "CSB",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/csb-binga_2ljxs8zlrnemly81vn0gq0pg.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -9965,6 +10247,254 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/bunyodkor_dp0thx76vcs64snddeqvp17zz.html||ouzbékistan : oliy liga",
+   "competition": "ouzbékistan : oliy liga",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-03-01",
+     "domicile": false,
+     "adversaire": "Agmk",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/agmk-bunyodkor_2y8rgrbu708iytqylanyvam8k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-03-11",
+     "domicile": false,
+     "adversaire": "Surkhon Termez",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/surkhon-termez-bunyodkor_35347m4j5lbszr732gjw9vi1g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-03-18",
+     "domicile": false,
+     "adversaire": "Xorazm",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/xorazm-bunyodkor_38ho2cbub7x9b8dkm1hiinbx0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-07",
+     "domicile": false,
+     "adversaire": "Mash'al",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/mash-al-bunyodkor_3ia7tlw1dlgkmfnfk035soys4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-14",
+     "domicile": true,
+     "adversaire": "Neftchi",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-neftchi_3mejas4tp9is6u1mzbbc9jndg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-19",
+     "domicile": false,
+     "adversaire": "Sogdiana",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/sogdiana-bunyodkor_3syfrr2zlt4tqb7s1nkth4x78.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-24",
+     "domicile": true,
+     "adversaire": "Andijan",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/bunyodkor-andijan_3vn8opxfaruqqnbesv2ir3cpg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-04-29",
+     "domicile": true,
+     "adversaire": "N. Namangan",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-n-namangan_3ysjlgjghdaxzf5ccdkvhow7o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-05-03",
+     "domicile": false,
+     "adversaire": "Kokand 1912",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/kokand-1912-bunyodkor_462cm2f5ruciq8sx1sa6omrro.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-16",
+     "domicile": true,
+     "adversaire": "Nasaf",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/bunyodkor-nasaf_4bmjdpcu3w9akwfdej9cr84yc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-21",
+     "domicile": false,
+     "adversaire": "Buxoro",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/buxoro-bunyodkor_4hdhixedzvaqps5m3mh5fan10.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-07-26",
+     "domicile": true,
+     "adversaire": "Pakhtakor",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-pakhtakor_4iz488nrz3z0ys77f4lbytjis.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-02",
+     "domicile": false,
+     "adversaire": "Qizilqum",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/qizilqum-bunyodkor_4ozx334zzhelp6ryn4a57et5g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-08",
+     "domicile": true,
+     "adversaire": "Agmk",
+     "buts_marques": 2,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/bunyodkor-agmk_4tgblov6k8nkocockcxabisyc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-14",
+     "domicile": false,
+     "adversaire": "N. Namangan",
+     "buts_marques": 3,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/n-namangan-bunyodkor_4wra4ztyrz0yywujgqhrx8nis.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-20",
+     "domicile": true,
+     "adversaire": "Kokand 1912",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-kokand-1912_51v5r8z928go3hev5rtt1i9lg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-26",
+     "domicile": false,
+     "adversaire": "Lokomotiv",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/lokomotiv-bunyodkor_56ypeq0hqx064jmu16mmjw3ro.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-04",
+     "domicile": true,
+     "adversaire": "Surkhon Termez",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-surkhon-termez_5ckalxj7y0funffdwy2zh49hw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-09",
+     "domicile": false,
+     "adversaire": "Nasaf",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/nasaf-bunyodkor_5f6oohj55ax1ww7ossjbehvys.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": true,
+     "adversaire": "Buxoro",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-buxoro_5hpw09ynencc81bx5u6a0yej8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-09",
+     "domicile": false,
+     "adversaire": "Pakhtakor",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/pakhtakor-bunyodkor_5lgg0v0oqhaziv68qa4a9gsno.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-16",
+     "domicile": true,
+     "adversaire": "Sogdiana",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-sogdiana_5poqazpv957hvrqgzfzt3brbo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-22",
+     "domicile": true,
+     "adversaire": "Mash'al",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/bunyodkor-mash-al_5z8vzs4jj625rxph43p4g2kus.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-05",
+     "domicile": true,
+     "adversaire": "Xorazm",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/bunyodkor-xorazm_6bkqo7jlnust16n6gjf2rm87o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/burgos_9dh08biovdh6rzklzlf3zvezi.html||espagne : segunda division",
    "competition": "espagne : segunda division",
    "couverte_par_football_data": true,
@@ -11897,124 +12427,6 @@
      "buts_marques": 0,
      "buts_encaisses": 0,
      "url_match": "/live-score/carrick-glentoran_cx16kpqpoqm7c1vnsr47n6rys.html",
-     "source": "matchendirect",
-     "provisoire": false
-    }
-   ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/carthagene_5wxu1zqzg59vcv980gd8f946c.html||espagne : première division rfef groupe 1",
-   "competition": "espagne : première division rfef groupe 1",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-29",
-     "domicile": false,
-     "adversaire": "Algeciras",
-     "buts_marques": 3,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/algeciras-carthagene_eanw75bz10s99v68djeyopo2c.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-05",
-     "domicile": true,
-     "adversaire": "Gimnastic",
-     "buts_marques": 0,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/carthagene-gimnastic_ee2b6mud8zt4uwtphjlj260ic.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": false,
-     "adversaire": "Rayo Majadah",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/rayo-majadah-carthagene_eipblurvk9xomir13xbt0eeqc.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-20",
-     "domicile": false,
-     "adversaire": "Real Saragosse",
-     "buts_marques": 0,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/real-saragosse-carthagene_em67qnqrr4a78kppd86xhoob8.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-03",
-     "domicile": true,
-     "adversaire": "Águilas",
-     "buts_marques": 4,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/carthagene-aguilas_epznclabp2s1k09tm4kv1jpqs.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-07",
-     "domicile": true,
-     "adversaire": "Real Murcie",
-     "buts_marques": 1,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/carthagene-real-murcie_encbi0ic0cqogj8jghx4r5i50.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-11",
-     "domicile": false,
-     "adversaire": "Antequera",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/antequera-carthagene_esvffl0w9v8zryvm15a9yrqqc.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-16",
-     "domicile": true,
-     "adversaire": "Europa",
-     "buts_marques": 3,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/carthagene-europa_ew1dws3o4f7e9ewmuf2wehous.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-25",
-     "domicile": false,
-     "adversaire": "Villarreal II",
-     "buts_marques": 1,
-     "buts_encaisses": 4,
-     "url_match": "/live-score/villarreal-ii-carthagene_f0ojx388b4oo3ydtrf5q80178.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-31",
-     "domicile": false,
-     "adversaire": "Real Madrid CF II",
-     "buts_marques": 0,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/real-madrid-cf-ii-carthagene_f2zgzkih726g0b66hsw8lybys.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-07",
-     "domicile": true,
-     "adversaire": "Sant Andreu",
-     "buts_marques": 2,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/carthagene-sant-andreu_f4pinuoa8qbdxcpha7i9kn95g.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -19490,6 +19902,104 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/deportivo-alaves_7mk4va7b2p6tnv2xjxcgjy8h6.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": true,
+     "adversaire": "Valencia",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/deportivo-alaves-valencia_1kn2rfhu26a51b8dl6brdo1ec.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": false,
+     "adversaire": "Atlético Madrid",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/atletico-madrid-deportivo-alaves_1nnjl2elfwkde0z4x43olnvv8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Granada",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/deportivo-alaves-granada_1q2slhg484bf0cudd61bj0avo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-18",
+     "domicile": true,
+     "adversaire": "Barcelone",
+     "buts_marques": 0,
+     "buts_encaisses": 6,
+     "url_match": "/live-score/deportivo-alaves-barcelone_1si0roipd797g3zfbudqc4kr8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": false,
+     "adversaire": "Madrid",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/madrid-deportivo-alaves_1vtghgkupn1lm33811v47or2s.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-03",
+     "domicile": false,
+     "adversaire": "Espanyol",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/espanyol-deportivo-alaves_1xxnp3fon8xbv1i9gfzbk4idw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-18",
+     "domicile": true,
+     "adversaire": "Sevilla",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/deportivo-alaves-sevilla_1zr59tu2bc93o81avapxiwnpw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": false,
+     "adversaire": "Deportivo",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/deportivo-deportivo-alaves_22r1zc4nm3mz4cdj17cnsdy50.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": true,
+     "adversaire": "Sociedad",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/deportivo-alaves-sociedad_24jucychvace25v8zx77w0o44.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/desenzano_26h42l7oamhswlc1ho922vuhg.html||italie : série c girone a",
    "competition": "italie : série c girone a",
    "couverte_par_football_data": false,
@@ -19622,6 +20132,82 @@
      "buts_marques": 0,
      "buts_encaisses": 1,
      "url_match": "/live-score/desenzano-ospitaletto_689fb1ob8zoybxv1ttk2f0s9g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/diambars_66lqzwuu7kumveknixh1o5y39.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-17",
+     "domicile": false,
+     "adversaire": "Essamaye",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/essamaye-diambars_76gnjw1vx9xb7lmmbsxa061p0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": true,
+     "adversaire": "HLM",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/diambars-hlm_f22aq6efnj1t4e7br4xc85lw4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": false,
+     "adversaire": "AJEL",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/ajel-diambars_76mj1uowy47igl67ukfzd7h0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": false,
+     "adversaire": "Casa",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/casa-diambars_4zgbbso6hjxdutvp4jkmkqtxw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/djoliba_cgvfyhqy5ke9e2q4qdkdbsj14.html||mali : première division",
+   "competition": "mali : première division",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-11-02",
+     "domicile": false,
+     "adversaire": "Diarra",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/diarra-djoliba_7yqwc1ekyiswet5qu4s4itp1w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": true,
+     "adversaire": "Onze",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/djoliba-onze_303ambdkkpesd4rn5j1mf95g.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -19767,6 +20353,124 @@
      "buts_marques": 2,
      "buts_encaisses": 4,
      "url_match": "/live-score/pro-vercelli-dolomiti_69r6akv2vc0x15pyr0v3l2ec4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/doma-united_c7wjyp3jag7kdfdws7etwvj10.html||nigeria : premier ligue",
+   "competition": "nigeria : premier ligue",
+   "couverte_par_football_data": false,
+   "raison": "championnat couvert par Football-Data mais équipe pas encore reliée (A3)",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": true,
+     "adversaire": "Sport Lagos",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/doma-united-sport-lagos_69gcc90hnsok913soa4fn2ql0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": false,
+     "adversaire": "Inter Lagos",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/inter-lagos-doma-united_8iz27cu01cd6yuhvkx9vo4844.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-12",
+     "domicile": true,
+     "adversaire": "Enyimba",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/doma-united-enyimba_8m67eyx07jattzlceelkmwqvo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": false,
+     "adversaire": "Kano Pillars",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/kano-pillars-doma-united_8r53nm8ri77s1teg2szt6r0no.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-23",
+     "domicile": true,
+     "adversaire": "Plateau Utd",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/doma-united-plateau-utd_8u0fbrm6fdk8hbpmceyhwig44.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-27",
+     "domicile": false,
+     "adversaire": "Katsina Utd",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/katsina-utd-doma-united_8wvlojai7kb0bheatd3c8dic4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": true,
+     "adversaire": "Warri Wolves",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/doma-united-warri-wolves_8xqifgdtrslc0jnu1m2t7cvmc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-11",
+     "domicile": false,
+     "adversaire": "Nasarawa Utd",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/nasarawa-utd-doma-united_921lznim8tygigwphonkzvmdw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "Kun Khalifat",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/doma-united-kun-khalifat_93gx4my033f1xdk2aoflynvo4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-31",
+     "domicile": true,
+     "adversaire": "Ikorodu City",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/doma-united-ikorodu-city_997u1vcyt2tnz7k7zcztpr384.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": false,
+     "adversaire": "Abia Warriors",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/abia-warriors-doma-united_9d9ffjlma9uolg9xd0k1yokyc.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -20725,6 +21429,114 @@
      "source": "football-data",
      "provisoire": false,
      "saison": "2627"
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/eibar_6fg6tuq29l23vvmfaoivzmbx1.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-29",
+     "domicile": true,
+     "adversaire": "Espanyol",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/eibar-espanyol_1lua88onsfqywew7vg2en340k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": false,
+     "adversaire": "Real Madrid",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/real-madrid-eibar_1p5xz1hl4lc36eogleorzg3ro.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Badalona",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/eibar-badalona_1rahw8gkagkg3oa75l58sai38.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Athletic Club",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/eibar-athletic-club_1tej1mezjzcff34o1mnfphkb8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-27",
+     "domicile": false,
+     "adversaire": "Sevilla",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/sevilla-eibar_1wq62toe2qh62vkwpmems6lg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": false,
+     "adversaire": "Granada",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/granada-eibar_1yjipxeajt7pnav0dc6qbnms4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-18",
+     "domicile": true,
+     "adversaire": "Deportivo",
+     "buts_marques": 2,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/eibar-deportivo_20yl6yorz4itjzaroni9e0glw.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": true,
+     "adversaire": "Madrid",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/eibar-madrid_23cmwsualpt8mk68pcofmnmz8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-31",
+     "domicile": false,
+     "adversaire": "Valencia",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/valencia-eibar_26nuz7rdh160r3bytyupj4tn8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": true,
+     "adversaire": "Sociedad",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/eibar-sociedad_28gp1foh8fs30yv64zmxeov84.html",
+     "source": "matchendirect",
+     "provisoire": false
     }
    ]
   },
@@ -26355,6 +27167,114 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/granada_2yt41edbtlrasj4t5nv3w64re.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-29",
+     "domicile": false,
+     "adversaire": "Madrid",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/madrid-granada_1mlcwzrujgw8z6skz8bfdegwk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-07",
+     "domicile": true,
+     "adversaire": "Sociedad",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/granada-sociedad_1ov53y4zft4hs7rb0sgfc3od0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Deportivo Alavés",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/deportivo-alaves-granada_1q2slhg484bf0cudd61bj0avo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-20",
+     "domicile": true,
+     "adversaire": "Deportivo",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/granada-deportivo_1u0aox0wya1tk65b75cfa41ec.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": false,
+     "adversaire": "Badalona",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/badalona-granada_1w4cvqu3do4e8rqrzrnahzswk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": true,
+     "adversaire": "Eibar",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/granada-eibar_1yjipxeajt7pnav0dc6qbnms4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": false,
+     "adversaire": "Logroño",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/logrono-granada_20nru0o3v809rx5dwlejibggk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": false,
+     "adversaire": "Barcelone",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/barcelone-granada_23ndtt3k2da2uwnllfxdmrt3o.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-31",
+     "domicile": true,
+     "adversaire": "Atlético Madrid",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/granada-atletico-madrid_25gmlk2srtqxi1m29cpqfbeok.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": true,
+     "adversaire": "Espanyol",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/granada-espanyol_292b4fwbv2jfxn9jvmretekus.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/grasshopper_3jut125hjyjtovwjxs6y4xy3p.html||suisse : nationalliga a féminine",
    "competition": "suisse : nationalliga a féminine",
    "couverte_par_football_data": false,
@@ -29136,6 +30056,54 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/hlm_b5tpm8en56goewi7zy133hxsf.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "Casa",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/hlm-casa_768jq6qoehb7xml8kw7npw4yc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": false,
+     "adversaire": "Diambars",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/diambars-hlm_f22aq6efnj1t4e7br4xc85lw4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-30",
+     "domicile": true,
+     "adversaire": "Stade Mbour",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/hlm-stade-mbour_5lqhm76wz81aebmh2o1h6baxg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": false,
+     "adversaire": "Teungueth",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/teungueth-hlm_4zxwegkcaxyk0s0v1h16rlyqc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/hoffenheim_eyecbfb1ur2104bhhwazhvrf.html||allemagne : bundesliga femmes",
    "competition": "allemagne : bundesliga femmes",
    "couverte_par_football_data": false,
@@ -29921,124 +30889,6 @@
    "couverte_par_football_data": false,
    "raison": "championnat non couvert par Football-Data",
    "matchs": []
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/ibiza_91yvq2zksnnd51c1t3zdf88yy.html||espagne : première division rfef groupe 1",
-   "competition": "espagne : première division rfef groupe 1",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-30",
-     "domicile": false,
-     "adversaire": "Antequera",
-     "buts_marques": 2,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/antequera-ibiza_ebd6nojt3o4csurzurz164t1w.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-05",
-     "domicile": true,
-     "adversaire": "Rayo Majadah",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/ibiza-rayo-majadah_een5scxuto8tacq0riberaq6s.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": true,
-     "adversaire": "Sant Andreu",
-     "buts_marques": 2,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/ibiza-sant-andreu_ei4dt1on22lwzquil1wy9s7is.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-19",
-     "domicile": false,
-     "adversaire": "Real Jaen",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/real-jaen-ibiza_ekq3b8u7dg2m655gfp70tjg9g.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-25",
-     "domicile": true,
-     "adversaire": "Real Saragosse",
-     "buts_marques": 0,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/ibiza-real-saragosse_enx31ptwgd9ljci1wrhbxe9sk.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-04",
-     "domicile": false,
-     "adversaire": "Villarreal II",
-     "buts_marques": 1,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/villarreal-ii-ibiza_erpy6x4ujuu4z236e4gwqqkus.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-09",
-     "domicile": true,
-     "adversaire": "Real Madrid CF II",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/ibiza-real-madrid-cf-ii_etqn2xil5s9rixjd7tzr8jod0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-17",
-     "domicile": false,
-     "adversaire": "Águilas",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/aguilas-ibiza_evgtp92vqsludxlky01twb8yc.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-25",
-     "domicile": false,
-     "adversaire": "Alcorcón",
-     "buts_marques": 3,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/alcorcon-ibiza_ey2hu3xna7wn9wc1f3ybbtel0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-30",
-     "domicile": true,
-     "adversaire": "Europa",
-     "buts_marques": 3,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/ibiza-europa_f24dwkr5p2z5jllpzjh859edw.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-08",
-     "domicile": false,
-     "adversaire": "Teruel",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/teruel-ibiza_8uqu2o8jtmqs3x289r1zims.html",
-     "source": "matchendirect",
-     "provisoire": false
-    }
-   ]
   },
   {
    "cle_cache": "https://www.matchendirect.fr/equipe/ilirija_2o2aidytyjty706ku9cquis45.html||slovénie : 2. snl",
@@ -34784,124 +35634,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/logrones_5pg705229tqiakekrot9tk0dr.html||espagne : première division rfef groupe 1",
-   "competition": "espagne : première division rfef groupe 1",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-31",
-     "domicile": true,
-     "adversaire": "Extremadura",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/logrones-extremadura_5sp7wbsweisc09ekrccw03jmc.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-06",
-     "domicile": false,
-     "adversaire": "Zamora",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/zamora-logrones_5wwv3bxgbrf7z9gfop3hsdtec.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": false,
-     "adversaire": "UD Ourense",
-     "buts_marques": 3,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/ud-ourense-logrones_5zlzjk2m6xpy1azmrat37bfh0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-18",
-     "domicile": true,
-     "adversaire": "Pontevedra",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/logrones-pontevedra_62zhmlmw6q38gau4759lah5w4.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-27",
-     "domicile": false,
-     "adversaire": "Mérida",
-     "buts_marques": 5,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/merida-logrones_660h4pfmxnbs4d6dy1dr5efbo.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-04",
-     "domicile": true,
-     "adversaire": "A Coruña II",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/logrones-a-coruna-ii_69pupyp5e8ke2yr8rtgvexij8.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-12",
-     "domicile": false,
-     "adversaire": "Lugo",
-     "buts_marques": 1,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/lugo-logrones_6ces5zrfnln9l26ave2om2pzo.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-18",
-     "domicile": true,
-     "adversaire": "Leonesa",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/logrones-leonesa_6gs8felucqvrsnzz04o3ygt90.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-24",
-     "domicile": false,
-     "adversaire": "Real Avilés",
-     "buts_marques": 3,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/real-aviles-logrones_6jhck63dkyxn7sowlkm17vehg.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-31",
-     "domicile": true,
-     "adversaire": "Mirandés",
-     "buts_marques": 0,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/logrones-mirandes_6nj4und7e692fuhy8k2xxdp90.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-07",
-     "domicile": false,
-     "adversaire": "Racing de Ferrol",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/racing-de-ferrol-logrones_6pk11v1zouptcdaz15gzaaz2s.html",
-     "source": "matchendirect",
-     "provisoire": false
-    }
-   ]
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/london-city_blzubaa449m1wjt46fasgdvse.html||angleterre : femmes super ligue",
    "competition": "angleterre : femmes super ligue",
    "couverte_par_football_data": false,
@@ -39147,6 +39879,13 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/neftchi_ds29ggecv78whcgnr2neij683.html||ouzbékistan : oliy liga",
+   "competition": "ouzbékistan : oliy liga",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": []
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/newport_bewbbriuwh3i7a2zn19e6d0v4.html||angleterre : league two",
    "competition": "angleterre : league two",
    "couverte_par_football_data": true,
@@ -40997,6 +41736,54 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/ouakam_achc84ovjgvywfibhyd3vjk02.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-25",
+     "domicile": true,
+     "adversaire": "Jaraaf",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/ouakam-jaraaf_f2qci392n6lqrbhvaxo3y6mms.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-02",
+     "domicile": false,
+     "adversaire": "US Goree",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/us-goree-ouakam_5mcbs8p6odmdbwdxy0ex0dpg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-05",
+     "domicile": false,
+     "adversaire": "Teungueth",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/teungueth-ouakam_77cda4rmzmwayudpxj9fa97v8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": true,
+     "adversaire": "Generation Foot",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/ouakam-generation-foot_506pqqppvlfut0xtpoej2kbo4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/oviedo_clo928vcczjp0mczavs5o7p5k.html||espagne : segunda division",
    "competition": "espagne : segunda division",
    "couverte_par_football_data": true,
@@ -42215,144 +43002,6 @@
    ]
   },
   {
-   "cle_cache": "https://www.matchendirect.fr/equipe/pescara_13x31xf866impd8gbjf6a05g3.html||italie : série c girone a",
-   "competition": "italie : série c girone a",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-22",
-     "domicile": true,
-     "adversaire": "Vis Pesaro",
-     "buts_marques": 2,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/pescara-vis-pesaro_btwl7vnx2dx9lyd5nt2jf1444.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-08-29",
-     "domicile": false,
-     "adversaire": "Forlì",
-     "buts_marques": 3,
-     "buts_encaisses": 6,
-     "url_match": "/live-score/forli-pescara_bvw3skhouua0kurdbep2qqsr8.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-06",
-     "domicile": true,
-     "adversaire": "Ravenne",
-     "buts_marques": 0,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/pescara-ravenne_c127boztzkw4ouk0ix3i48u1g.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": false,
-     "adversaire": "Atalanta II",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/atalanta-ii-pescara_c2fzu8iqtkvw7p0bvf1utg5qs.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-16",
-     "domicile": true,
-     "adversaire": "Gubbio",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/pescara-gubbio_c7mg423ub4mqc7pvc2a19tzis.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-20",
-     "domicile": false,
-     "adversaire": "Vado",
-     "buts_marques": 1,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/vado-pescara_cchdeuy4vt7lwznkgmdj1nehg.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-27",
-     "domicile": true,
-     "adversaire": "Spezia",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/pescara-spezia_ce7z9fe3qbqx2j8tf1swmpwd0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-03",
-     "domicile": false,
-     "adversaire": "Livourne",
-     "buts_marques": 1,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/livourne-pescara_cid9fle0kjzfq1aht0zz64rh0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-12",
-     "domicile": true,
-     "adversaire": "Guidonia 1937",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/pescara-guidonia-1937_cks1l8j1xgooswocete15cg7o.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-18",
-     "domicile": true,
-     "adversaire": "Ostia Mare",
-     "buts_marques": 2,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/pescara-ostia-mare_coyl5flvtbv2en2vlh6ns2j9w.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-23",
-     "domicile": false,
-     "adversaire": "Pérouse",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/perouse-pescara_cs2tn3mhh7k449r9fsly9qpsk.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-31",
-     "domicile": true,
-     "adversaire": "Torres",
-     "buts_marques": 0,
-     "buts_encaisses": 0,
-     "url_match": "/live-score/pescara-torres_cvw12jhfa9nzrrzk23u2kfuvo.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-08",
-     "domicile": false,
-     "adversaire": "Grosseto",
-     "buts_marques": 3,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/grosseto-pescara_cyo4jigpnnfgy77mgrx46rkes.html",
-     "source": "matchendirect",
-     "provisoire": false
-    }
-   ]
-  },
-  {
    "cle_cache": "https://www.matchendirect.fr/equipe/pianese_8ca6gemvnp931nmvoz46dh6q8.html||italie : série c girone a",
    "competition": "italie : série c girone a",
    "couverte_par_football_data": false,
@@ -42623,6 +43272,54 @@
      "buts_marques": 1,
      "buts_encaisses": 1,
      "url_match": "/live-score/picerno-bari_1aiwrspj7ypzok8qbzrwqvl04.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/pikine_dm51t91o9f3q44xkwom7mvnnh.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-17",
+     "domicile": false,
+     "adversaire": "Generation Foot",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/generation-foot-pikine_774ic0bz4h9lh5jjxczgi48ic.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": true,
+     "adversaire": "Essamaye",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/pikine-essamaye_f2ifj6fedl9269v6per75xnh0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": true,
+     "adversaire": "Teungueth",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/pikine-teungueth_5m53lstkcktk52u89zp7ygaac.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": false,
+     "adversaire": "DSC",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/dsc-pikine_4yymddbck80m2e4x16msd6pzo.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -46734,6 +47431,114 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/real-madrid_vaikl8nl7hdr4y9jj4jyb9ey.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": true,
+     "adversaire": "Atlético Madrid",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/real-madrid-atletico-madrid_1myrvpdewr5t3wblrnje41wd0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-06",
+     "domicile": true,
+     "adversaire": "Eibar",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/real-madrid-eibar_1p5xz1hl4lc36eogleorzg3ro.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-11",
+     "domicile": false,
+     "adversaire": "Deportivo",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/deportivo-real-madrid_1qononou6css5xlgaxxgm3c44.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": true,
+     "adversaire": "Valencia",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/real-madrid-valencia_1um3qii0g8lxt495zhy97ttlg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-26",
+     "domicile": false,
+     "adversaire": "Sociedad",
+     "buts_marques": 5,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/sociedad-real-madrid_1wf6uyheas6yv5luqg2hoot90.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": false,
+     "adversaire": "Barcelone",
+     "buts_marques": 0,
+     "buts_encaisses": 7,
+     "url_match": "/live-score/barcelone-real-madrid_1y8hrsbwqkyz6yhvcckqoul1w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "Espanyol",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/real-madrid-espanyol_21ka48let6ft2boq8mqa08ro4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": true,
+     "adversaire": "Tenerife",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/real-madrid-tenerife_23y6z4ieb7pdr5i6roc428pp0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-01",
+     "domicile": false,
+     "adversaire": "Sevilla",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/sevilla-real-madrid_26d1fz560c8pi3fswzor1hp1w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": false,
+     "adversaire": "Athletic Club",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/athletic-club-real-madrid_26ylajig9ms0d3l2t47xvnggk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/real-murcie_fh1a9w232smtl4ryzv22tili.html||espagne : première division rfef groupe 1",
    "competition": "espagne : première division rfef groupe 1",
    "couverte_par_football_data": false,
@@ -49064,144 +49869,6 @@
      "source": "football-data",
      "provisoire": false,
      "saison": "2627"
-    }
-   ]
-  },
-  {
-   "cle_cache": "https://www.matchendirect.fr/equipe/sambenedettese_33sn9r28sughlsoqcr4y1ok45.html||italie : série c girone a",
-   "competition": "italie : série c girone a",
-   "couverte_par_football_data": false,
-   "raison": "championnat non couvert par Football-Data",
-   "matchs": [
-    {
-     "date": "2026-08-23",
-     "domicile": true,
-     "adversaire": "Forlì",
-     "buts_marques": 2,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/sambenedettese-forli_burpupd22tllwp2p132mtq2vo.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-08-29",
-     "domicile": false,
-     "adversaire": "Torres",
-     "buts_marques": 0,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/torres-sambenedettese_byb1fhmpf4l822beztmd05d78.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-06",
-     "domicile": true,
-     "adversaire": "Spezia",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/sambenedettese-spezia_c1rb6mntpu9700oe92pwa9q1g.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-12",
-     "domicile": false,
-     "adversaire": "Pineto",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/pineto-sambenedettese_c45z1fbaikdwoxj2604lfx79w.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-16",
-     "domicile": true,
-     "adversaire": "Atalanta II",
-     "buts_marques": 2,
-     "buts_encaisses": 3,
-     "url_match": "/live-score/sambenedettese-atalanta-ii_c8bfpzn5a4yp65bos355h9kpg.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-21",
-     "domicile": false,
-     "adversaire": "Pianese",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/pianese-sambenedettese_cbfqc61m432uwc2j081ldbcpg.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-09-26",
-     "domicile": true,
-     "adversaire": "Campobasso",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/sambenedettese-campobasso_cf9e9r46y571j1ii248ffv85w.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-03",
-     "domicile": false,
-     "adversaire": "Grosseto",
-     "buts_marques": 3,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/grosseto-sambenedettese_cgzeo3vmliid6anwu0xc5qiok.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-11",
-     "domicile": true,
-     "adversaire": "Latina",
-     "buts_marques": 1,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/sambenedettese-latina_cltf6uga6c2gxq1e2lcu1kys4.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-17",
-     "domicile": false,
-     "adversaire": "Vado",
-     "buts_marques": 2,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/vado-sambenedettese_cqcepqic93pp8hgflng3uwmxg.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-24",
-     "domicile": true,
-     "adversaire": "Livourne",
-     "buts_marques": 2,
-     "buts_encaisses": 1,
-     "url_match": "/live-score/sambenedettese-livourne_csrkriea4ja0f2mrm1ahggs2c.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-10-30",
-     "domicile": false,
-     "adversaire": "Reggiana",
-     "buts_marques": 0,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/reggiana-sambenedettese_cwl1j4kecktyjzrbth1ba2zh0.html",
-     "source": "matchendirect",
-     "provisoire": false
-    },
-    {
-     "date": "2026-11-08",
-     "domicile": true,
-     "adversaire": "Guidonia 1937",
-     "buts_marques": 1,
-     "buts_encaisses": 2,
-     "url_match": "/live-score/sambenedettese-guidonia-1937_d02201wcc9eesmepm6v4mnsic.html",
-     "source": "matchendirect",
-     "provisoire": false
     }
    ]
   },
@@ -52480,6 +53147,172 @@
      "buts_marques": 1,
      "buts_encaisses": 1,
      "url_match": "/live-score/real-kashmir-sreenidi_2syao903koga14pc6dtgbdel0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/st-gallen_8uvs8eq88daeudu4b5oehmulu.html||suisse : nationalliga a féminine",
+   "competition": "suisse : nationalliga a féminine",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-08",
+     "domicile": false,
+     "adversaire": "Rapperswil",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/rapperswil-st-gallen_3pmiriuz7ds60nsp0yg0ab7ro.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-16",
+     "domicile": true,
+     "adversaire": "Yverdon",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/st-gallen-yverdon_3qstdi4zywm7g0lnq85d89z4k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-28",
+     "domicile": false,
+     "adversaire": "Luzern",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/luzern-st-gallen_3sir6zei8ckdk022lhtdf455g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-04",
+     "domicile": false,
+     "adversaire": "Basel",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/basel-st-gallen_3v8gv0o4fozzghyi0e1rnvj84.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-09",
+     "domicile": true,
+     "adversaire": "Aarau",
+     "buts_marques": 2,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/st-gallen-aarau_3vxcc5ztntnj6zpekwggrkff8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Young Boys",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/young-boys-st-gallen_3yb806lzjj98l3wmqdp6owc9g.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": true,
+     "adversaire": "Grasshopper",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/st-gallen-grasshopper_3zbu2pz3o679zlm0z9mdj2mms.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": true,
+     "adversaire": "Servette",
+     "buts_marques": 0,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/st-gallen-servette_411ua82ygef7j28gdr4zdv5ec.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-16",
+     "domicile": false,
+     "adversaire": "Zürich",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/zurich-st-gallen_442yzr1oi8fy68bbnfn528lqs.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-31",
+     "domicile": true,
+     "adversaire": "Young Boys",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/st-gallen-young-boys_44exmvfmlsw81ds4ss3js2j9w.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": false,
+     "adversaire": "Grasshopper",
+     "buts_marques": 1,
+     "buts_encaisses": 5,
+     "url_match": "/live-score/grasshopper-st-gallen_474193adsg37je1b82k74qpzo.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/stade-mbour_4ifoi67byokze43ij1ft8y9b3.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-17",
+     "domicile": false,
+     "adversaire": "Wally Daan",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/wally-daan-stade-mbour_77s8pbdpegm57vhyeck3c02s4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-25",
+     "domicile": true,
+     "adversaire": "Guediawaye",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/stade-mbour-guediawaye_f2adrfys2iczy94nt1megmn10.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-30",
+     "domicile": false,
+     "adversaire": "HLM",
+     "buts_marques": 2,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/hlm-stade-mbour_5lqhm76wz81aebmh2o1h6baxg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-08",
+     "domicile": true,
+     "adversaire": "Jaraaf",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/stade-mbour-jaraaf_4zp5vjgicndfoefsdtt6xtno4.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -56850,6 +57683,54 @@
    ]
   },
   {
+   "cle_cache": "https://www.matchendirect.fr/equipe/us-goree_5c54apc65yoziowr42poyebcf.html||sénégal : ligue 1",
+   "competition": "sénégal : ligue 1",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-10-17",
+     "domicile": true,
+     "adversaire": "ASC Linguere",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/us-goree-asc-linguere_77kawcchpoqcf5q7ozt5yzztg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-24",
+     "domicile": false,
+     "adversaire": "DSC",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/dsc-us-goree_f1u5gy2103r9my8stiu9rhrtg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-02",
+     "domicile": true,
+     "adversaire": "Ouakam",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/us-goree-ouakam_5mcbs8p6odmdbwdxy0ex0dpg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": true,
+     "adversaire": "Essamaye",
+     "buts_marques": 1,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/us-goree-essamaye_4ypn18w65q9cesznmp1x156ok.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
    "cle_cache": "https://www.matchendirect.fr/equipe/usm-khenchela_cgorrd5ek1jdo2mgo6e62fh60.html||algérie : ligue 1",
    "competition": "algérie : ligue 1",
    "couverte_par_football_data": false,
@@ -57168,6 +58049,114 @@
      "buts_marques": 1,
      "buts_encaisses": 3,
      "url_match": "/live-score/vado-ravenne_d0rqm1hrfe5ja7m5gp6229a8k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/valencia_cd1ottifbgcfrn6pdrdpwt7z0.html||espagne : primera division femmes",
+   "competition": "espagne : primera division femmes",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-30",
+     "domicile": false,
+     "adversaire": "Deportivo Alavés",
+     "buts_marques": 0,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/deportivo-alaves-valencia_1kn2rfhu26a51b8dl6brdo1ec.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": true,
+     "adversaire": "Madrid",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/valencia-madrid_1prtcg7wot8kvafvggvzerjmc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": false,
+     "adversaire": "Logroño",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/logrono-valencia_1qzhsrkw5eyu5hpcxg2ehuvx0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-19",
+     "domicile": false,
+     "adversaire": "Real Madrid",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/real-madrid-valencia_1um3qii0g8lxt495zhy97ttlg.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-27",
+     "domicile": true,
+     "adversaire": "Tenerife",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/valencia-tenerife_1x11hxdg940fgxbiiy636lct0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-04",
+     "domicile": true,
+     "adversaire": "Sociedad",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/valencia-sociedad_1zg5zh0xbop75j5otd2j4hus4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-17",
+     "domicile": false,
+     "adversaire": "Athletic Club",
+     "buts_marques": 0,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/athletic-club-valencia_201zt33ij7qw450psf2pa51qs.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-23",
+     "domicile": false,
+     "adversaire": "Atlético Madrid",
+     "buts_marques": 0,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/atletico-madrid-valencia_22gc8f0a8w8fw2754fvt1qiok.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-31",
+     "domicile": true,
+     "adversaire": "Eibar",
+     "buts_marques": 2,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/valencia-eibar_26nuz7rdh160r3bytyupj4tn8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-09",
+     "domicile": false,
+     "adversaire": "Deportivo",
+     "buts_marques": 2,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/deportivo-valencia_27v42nllbfqgnr4shfvfkb3f8.html",
      "source": "matchendirect",
      "provisoire": false
     }
@@ -61526,6 +62515,124 @@
      "buts_marques": 0,
      "buts_encaisses": 1,
      "url_match": "/live-score/unionistas-zamora_6r8u2huc15yu814oh2xnajxg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    }
+   ]
+  },
+  {
+   "cle_cache": "https://www.matchendirect.fr/equipe/zurich_cb8bq9xkm3xn7kl494d26kog8.html||suisse : nationalliga a féminine",
+   "competition": "suisse : nationalliga a féminine",
+   "couverte_par_football_data": false,
+   "raison": "championnat non couvert par Football-Data",
+   "matchs": [
+    {
+     "date": "2026-08-07",
+     "domicile": false,
+     "adversaire": "Yverdon",
+     "buts_marques": 3,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/yverdon-zurich_3p7hx7wf2upb81iqyo0crjtas.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-16",
+     "domicile": true,
+     "adversaire": "Luzern",
+     "buts_marques": 3,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/zurich-luzern_3s693blybd8u07djdz1bbxpg4.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-08-29",
+     "domicile": false,
+     "adversaire": "Aarau",
+     "buts_marques": 8,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/aarau-zurich_3tvpvfhoxozapv1w0gs3pwu8k.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-05",
+     "domicile": false,
+     "adversaire": "Rapperswil",
+     "buts_marques": 4,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/rapperswil-zurich_3u85cpl9olrnbcte580mc77kk.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-09",
+     "domicile": true,
+     "adversaire": "Young Boys",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/zurich-young-boys_3xab69myu5cny63imlglif3mc.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-13",
+     "domicile": true,
+     "adversaire": "Basel",
+     "buts_marques": 1,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/zurich-basel_3yzg28kirl52bkdqpxoauujv8.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-09-18",
+     "domicile": false,
+     "adversaire": "Servette",
+     "buts_marques": 0,
+     "buts_encaisses": 0,
+     "url_match": "/live-score/servette-zurich_400qjddrtuymwjg4g9k7llvys.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-02",
+     "domicile": false,
+     "adversaire": "Grasshopper",
+     "buts_marques": 1,
+     "buts_encaisses": 4,
+     "url_match": "/live-score/grasshopper-zurich_42ecdkhjb3x4jafkheosjkwt0.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-16",
+     "domicile": true,
+     "adversaire": "St. Gallen",
+     "buts_marques": 3,
+     "buts_encaisses": 1,
+     "url_match": "/live-score/zurich-st-gallen_442yzr1oi8fy68bbnfn528lqs.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-10-30",
+     "domicile": false,
+     "adversaire": "Basel",
+     "buts_marques": 1,
+     "buts_encaisses": 2,
+     "url_match": "/live-score/basel-zurich_45f4mv6h5lqwvnodqt7kdfl78.html",
+     "source": "matchendirect",
+     "provisoire": false
+    },
+    {
+     "date": "2026-11-07",
+     "domicile": true,
+     "adversaire": "Servette",
+     "buts_marques": 1,
+     "buts_encaisses": 3,
+     "url_match": "/live-score/zurich-servette_47g6rmcpx6ilwl3idnkse9vkk.html",
      "source": "matchendirect",
      "provisoire": false
     }
