@@ -216,6 +216,10 @@ jobs:
         run: python -m moteur_selections.collecte
         continue-on-error: true
 
+      - name: Moteur sélections - pronostics
+        run: python -m moteur_selections.pronostics
+        continue-on-error: true
+
       # CORRECTIF 03/10/2026 : le bloc précédent contenait un done sans boucle
       # for correspondante. Cela faisait échouer Bash après tout le traitement.
       - name: Commit et push du résultat
