@@ -150,14 +150,19 @@ class TestCollecte(unittest.TestCase):
 
 
 class TestPronostics(unittest.TestCase):
-    def test_equipe_inconnue_non_evaluable(self):
+    def test_sans_cote_ou_equipe_inconnue_aucun_pari(self):
         from moteur_selections.pronostics import calcule
-        r = calcule([{"match_id": "x", "date": "2026-11-13", "domicile": "Atlantide", "exterieur": "France", "competition": "Europe : Ligue des Nations de l'UEFA"}], None, {})
-        self.assertEqual(r[0]["statut"], "non évaluable"); self.assertIn("Atlantide", r[0]["raison"])
+        m = {"match_id": "x", "date": "2026-11-13", "domicile": "Atlantide", "exterieur": "France", "competition": "Europe : Ligue des Nations de l'UEFA", "heure_cameroun": "20:00"}
+        self.assertEqual(calcule([m], None, {"x": {"1x2": {"1": 2.0}}}, {}), [])        # équipe inconnue
+        self.assertEqual(calcule([{**m, "domicile": "Espagne"}], None, {}, {}), [])      # pas de cote
 
     def test_noms_traduits_existent(self):
         from moteur_selections import noms
         self.assertEqual(noms.FR_EN["Pays-Bas"], "Netherlands"); self.assertEqual(noms.FR_EN["Irlande"], "Republic of Ireland")
+
+    def test_heure_utc(self):
+        from moteur_selections.pronostics import _utc
+        self.assertEqual(_utc("2026-11-13", "20:45"), "2026-11-13T19:45:00Z"); self.assertIsNone(_utc("2026-11-13", None))
 
 if __name__ == "__main__":
     unittest.main()
