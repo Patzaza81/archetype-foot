@@ -10,7 +10,7 @@ liste de libellés figée. Règle structurelle (libellé "Zone : Compétition") 
 Reste : Coupe du monde, qualifications, Euro, CAN, Copa América, Gold Cup,
 Coupe d'Asie, Ligues des Nations, etc.
 """
-ZONES = ("europe", "afrique", "asie", "océanie", "oceanie", "monde", "amérique", "amerique")
+ZONES = ("europe", "afrique", "asie", "océanie", "oceanie", "monde")  # + "Amérique du Nord/Sud/Centrale"
 CLUBS = ("ligue des champions", "ligue europa", "ligue conférence", "ligue conference",
          "libertadores", "sudamericana", "sud-américaine", "coupe de la confédération",
          "coupe de la confederation", "coupe de la caf", "super coupe", "supercoupe",
@@ -24,8 +24,8 @@ def est_selection_officielle(competition):
     if ":" not in c:
         return False
     zone, nom = (p.strip().lower() for p in c.split(":", 1))
-    if not zone.startswith(ZONES):
-        return False
+    if zone not in ZONES and not zone.startswith(("amérique du ", "amerique du ")):
+        return False   # exact : "Afrique du Sud" est un pays, pas la zone Afrique
     mots = nom.replace("-", " ").split()
     if any(j in mots for j in JEUNES):
         return False
