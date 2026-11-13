@@ -112,6 +112,8 @@ class TestCompetitionsOfficielles(unittest.TestCase):
         from moteur_selections.competitions import est_selection_officielle as f
         for c in ("Europe : Ligue des Nations de l'UEFA Ligue A Groupe 1",
                   "Amérique du Nord : Ligue des Nations de la CONCACAF Quarts de Finale",
+                  "Afrique : Coupe d'Afrique des Nations Groupe A",
+                  "Europe : Qualifications Coupe du Monde Groupe C",
                   "Europe :\n   Ligue des Nations de l'UEFA Ligue C Groupe 2"):
             self.assertTrue(f(c), c)
 
@@ -120,7 +122,8 @@ class TestCompetitionsOfficielles(unittest.TestCase):
         for c in ("Monde : Matchs Amicaux Internationaux", "Monde : Matchs Amicaux U21",
                   "Afrique : Afrique U23 Coupe des nations Qualification 2nd Round",
                   "Afrique : Ligue des Champions Féminine de la CAF Finale",
-                  "France : Ligue 1", "Europe : Ligue des Champions Phase de Ligue"):
+                  "France : Ligue 1", "Europe : Ligue des Champions Phase de Ligue",
+                  "Amérique du Sud : Copa Libertadores"):
             self.assertFalse(f(c), c)
 
 if __name__ == "__main__":
