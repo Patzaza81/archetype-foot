@@ -216,6 +216,10 @@ jobs:
         run: python -m moteur_selections.collecte
         continue-on-error: true
 
+      - name: Moteur sélections - cotes Betpawa
+        run: python -m moteur_selections.cotes
+        continue-on-error: true
+
       - name: Moteur sélections - pronostics
         run: python -m moteur_selections.pronostics
         continue-on-error: true

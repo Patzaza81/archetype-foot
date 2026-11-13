@@ -43,40 +43,119 @@
 <div class="ax-conteneur">
   <div class="ax-entete">
     <h1>ÉQUIPE NATIONALE</h1>
-    <div class="om-intro"><span class="om-intro-ico" aria-hidden="true">⚑</span><p>Matchs <b>officiels</b> de sélections nationales, tous tournois confondus (amicaux, jeunes et féminines exclus). Même méthode que la page <b>Verdict</b> : cote <b>1,26 ou plus</b>, <b>4 matchs au même lieu</b> minimum pour chaque équipe.</p></div>
+    <div class="om-intro"><span class="om-intro-ico" aria-hidden="true">⚑</span><p>Matchs <b>officiels</b> de sélections nationales (amicaux, jeunes et féminines exclus). Chaque pari est <b>vérifié sur les résultats réels</b> des deux équipes au même lieu des 5 dernières années : l'équipe à domicile chez elle, l'autre à l'extérieur. Cote <b>1,26 ou plus</b>, au moins <b>4 matchs</b> au même lieu.</p></div>
   </div>
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
-  <main class="ax-liste-matchs" id="sel-liste"></main>
-</div>
-<script>
-(function () {
-  var e = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
-  var LIGNE = function (p) { return '<div class="sel-pari"><div class="sel-pari-t"><b>' + e(p.libelle) + '</b><span class="sel-v sel-' + (p.verdict === "TIENT" ? "ok" : "res") + '">' + e(p.verdict === "TIENT" ? "Tient" : "Tient avec réserve") + '</span></div><div class="sel-pari-p">' + e(p.phrase) + '</div></div>'; };
-  fetch("data/selections/pronostics.json?t=" + Date.now(), { cache: "no-store" })
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (ms) {
-      var maj = document.getElementById("maj"), liste = document.getElementById("sel-liste");
-      if (!ms.length) { maj.textContent = "Aucun match de sélection nationale à venir."; return; }
-      maj.textContent = ms.length + " matchs de sélections nationales";
-      var jours = {};
-      ms.forEach(function (m) { (jours[m.date] = jours[m.date] || []).push(m); });
-      liste.innerHTML = Object.keys(jours).sort().map(function (d) {
-        return '<h2 class="om-titre">' + e(d) + '</h2>' + jours[d].map(function (m) {
-          var corps;
-          if (m.statut !== "analyse") corps = '<p class="om-vide">Non évaluable. ' + e(m.raison) + '</p>';
-          else if (!m.paris.length) corps = '<p class="om-vide">Aucun pari ne tient pour ce match.</p>';
-          else corps = '<div class="sel-paris">' + m.paris.slice(0, 5).map(LIGNE).join("") + '</div>' +
-            (m.paris.length > 5 ? '<details class="sel-plus"><summary>' + (m.paris.length - 5) + ' autres paris qui tiennent</summary>' + m.paris.slice(5).map(LIGNE).join("") + '</details>' : '') +
-            '<p class="om-vide">Cote : pas encore disponible pour les sélections, à vérifier sur Betpawa (minimum 1,26).</p>';
-          return '<section class="ax-carte"><div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">' + e(m.domicile) +
-            '</span><div class="ax-horaire"><strong>' + e(m.heure_cameroun || m.heure) + '</strong><span>' + e(m.date) + '</span></div><span class="ax-equipe ax-ext">' + e(m.exterieur) +
-            '</span></div><div class="ax-match-bas"><p class="ax-competition">' + e(m.competition) + '</p></div></div>' + corps + '</section>';
-        }).join("");
-      }).join("");
-    })
-    .catch(function () { document.getElementById("maj").textContent = "Données indisponibles."; });
-})();
-</script>
-<style>.om-titre{font-size:15px;margin:22px 4px 8px;opacity:.85}.om-vide{margin:6px 18px 12px;font-size:13px;opacity:.7}.sel-paris{padding:2px 16px 4px}.sel-pari{padding:8px 0;border-top:1px solid rgba(128,128,128,.2)}.sel-pari-t{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px}.sel-v{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap}.sel-ok{background:rgba(63,163,106,.25)}.sel-res{background:rgba(196,154,58,.28)}.sel-pari-p{font-size:12px;opacity:.75;margin-top:3px}.sel-plus{padding:0 16px 4px}.sel-plus summary{font-size:13px;cursor:pointer;padding:6px 0;font-weight:700}</style>
+  <section id="vf-bilan"></section>
+  <section id="vf-onglets"></section>
+  <main class="ax-liste-matchs om-tout">
+    <h2 class="om-titre">Matchs à venir</h2>
+    <div id="om-avenir" class="ax-liste-matchs"></div>
+        <h2 class="om-titre">En cours ou résultat attendu</h2>
+    <div id="om-encours" class="ax-liste-matchs"></div>
+    <h2 class="om-titre">Matchs terminés</h2>
+    <div id="om-regles" class="ax-liste-matchs"></div>
+  </main>
+  </div>
+<style>
+.om-tout{display:block}
+.om-titre{font-size:15px;margin:22px 4px 8px;opacity:.85}
+.om-table{width:calc(100% - 28px);margin:8px 14px;border-collapse:collapse;font-size:12px}
+.om-table th,.om-table td{border:1px solid var(--ax-ligne);padding:5px 6px;text-align:center}
+.om-table th{font-size:11px;opacity:.8}
+.om-corps{padding:6px 14px 10px}
+.om-ligne{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+.om-principal{padding:4px 0;font-size:15px;font-weight:700}
+.om-cote{font-weight:800;white-space:nowrap}
+.om-info{font-size:12px;opacity:.8;margin-top:4px}
+.om-sous{display:block;font-size:11px;opacity:.75;font-weight:400}
+.om-sol{display:flex;align-items:baseline;gap:8px;width:fit-content;max-width:100%;margin-top:6px;padding:4px 12px;border-radius:999px;font-size:14px;font-weight:600;line-height:1.2;background:linear-gradient(90deg,rgba(8,127,120,.26) calc(var(--s,0)*1%),rgba(8,127,120,.09) 0)}.om-sol b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:#087F78}.theme-nuit .om-sol{background:linear-gradient(90deg,rgba(79,209,197,.30) calc(var(--s,0)*1%),rgba(79,209,197,.10) 0)}.theme-nuit .om-sol b{color:#4FD1C5}
+.om-vide{margin:6px 18px;font-size:13px;opacity:.7}
+.om-badge{padding:2px 8px;border-radius:999px;font-size:12px;font-weight:800}
+.om-WIN{background:rgba(63,163,106,.25)}.om-LOSS{background:rgba(217,79,145,.22)}
+.om-jauge{height:8px;border-radius:99px;background:rgba(128,128,128,.25);margin:4px 0 6px}
+.om-jauge i{display:block;height:100%;border-radius:99px;background:#087F78}
+.theme-nuit .om-jauge i{background:#4FD1C5}
+.om-pourquoi{margin-top:6px;font-size:12px}.om-pourquoi div{margin-top:3px}
+.om-bloc{font-size:12px}
+.om-bloc-titre{font-weight:800;font-size:12px;margin-bottom:4px}
+.om-croix{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.om-croix>div{border:1px solid var(--ax-ligne);border-radius:10px;padding:6px 8px}
+.om-croix b{display:block;font-size:11px;opacity:.85;margin-bottom:2px}
+.om-buts{font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.om-croix .om-moy{font-size:12px}
+.om-moy-v{font-weight:800;color:#087F78}
+.theme-nuit .om-moy-v{color:#4FD1C5}
+.om-ok{color:#2E7D32;font-weight:700}.om-ko{color:#B86E00;font-weight:700}
+.theme-nuit .om-ok{color:#7BD88F}.theme-nuit .om-ko{color:#F2B24C}
+.om-intro{display:flex;align-items:center;gap:14px;margin:14px 0 4px;padding:14px 16px;border:1px solid rgba(8,127,120,.2);border-radius:18px;background:linear-gradient(135deg,#F1F8F6,#fff);box-shadow:0 4px 18px rgba(15,42,40,.05)}
+.om-intro-ico{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#0A4A46;color:var(--afb-or,#C49A3A);font:800 20px/1 system-ui,-apple-system,"Segoe UI",sans-serif}
+.om-intro p{margin:0;text-align:left;font:600 15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B}
+.theme-nuit .om-intro{background:linear-gradient(135deg,#1B2326,#1B1D22);border-color:rgba(21,152,141,.3)}
+.theme-nuit .om-intro p{color:#F4F2F7}
+.om-dm-grille{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:720px){.om-dm-grille{grid-template-columns:1fr 1fr}}
+.om-dm-eq{border:1px solid rgba(8,127,120,.2);border-radius:16px;background:#fff;padding:12px 12px 6px;box-shadow:0 4px 14px rgba(15,42,40,.05)}
+.om-dm-tete{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.om-dm-nom{font:800 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.om-dm-lieu{flex:0 0 auto;font-size:12px;font-weight:600;color:#5B6763}
+.om-dm-puces{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.om-dm-puces span{padding:3px 10px;border-radius:999px;background:#EEF5F3;color:#174743;font-size:12px;font-weight:600}
+.om-dm-puces b{font-weight:800}
+.om-dm-liste{list-style:none;margin:0;padding:0}
+.om-onglets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.om-onglet{appearance:none;cursor:pointer;min-height:32px;padding:6px 12px;border-radius:999px;border:1px solid rgba(8,127,120,.35);background:#fff;color:#174743;font:700 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif}
+.om-onglet-actif{background:#087F78;border-color:#087F78;color:#fff}
+.om-dm-panneau[hidden]{display:none}
+.theme-nuit .om-onglet{background:#24272E;border-color:rgba(21,152,141,.4);color:#CFE9E5}
+.theme-nuit .om-onglet-actif{background:#15988D;border-color:#15988D;color:#fff}
+.om-dm{display:flex;align-items:center;gap:10px;min-height:42px;border-top:1px solid rgba(23,20,27,.07);font-size:13px}
+.om-dm:first-child{border-top:0}
+.om-dm-date{flex:0 0 52px;color:#5B6763;font-weight:600;font-variant-numeric:tabular-nums}
+.om-dm-adv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:#17141B}
+.om-dm-score{flex:0 0 auto;font-variant-numeric:tabular-nums;font-weight:500;color:#8A949B;font-size:15px}
+.om-dm-score b{font-weight:800;color:#17141B}
+.om-dm-res{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:800;color:#fff}
+.om-v{background:#2E9E6B}.om-n{background:#8A949B}.om-d{background:#D94F6B}
+.theme-nuit .om-dm-eq{background:#1B1D22;border-color:rgba(21,152,141,.3)}
+.theme-nuit .om-dm-nom,.theme-nuit .om-dm-adv,.theme-nuit .om-dm-score b{color:#F4F2F7}
+.theme-nuit .om-dm-lieu,.theme-nuit .om-dm-date{color:#A9B3B8}
+.theme-nuit .om-dm-puces span{background:#24272E;color:#CFE9E5}
+.theme-nuit .om-dm{border-top-color:rgba(255,255,255,.08)}
+.om-hist{display:flex;align-items:center;gap:12px;margin:10px 0 2px;padding:10px 12px;border-radius:14px;background:#F1F8F6;border:1px solid rgba(8,127,120,.18)}
+.om-hist-pct{flex:0 0 auto;font:800 24px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#087F78;font-variant-numeric:tabular-nums}
+.om-hist-txt{font:600 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B}
+.om-hist-txt small{display:block;margin-top:2px;font-weight:500;font-size:12px;color:#5B6763}
+.theme-nuit .om-hist{background:#1E2A2B;border-color:rgba(21,152,141,.3)}
+.theme-nuit .om-hist-pct{color:#4FD1C5}
+.theme-nuit .om-hist-txt{color:#F4F2F7}
+.theme-nuit .om-hist-txt small{color:#A9B3B8}
+.om-pq{display:flex;align-items:center;gap:10px;margin:8px 0 0}
+.om-anneau{flex:0 0 auto;display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:conic-gradient(#087F78 calc(var(--p) * 1%),#DCE7E4 0)}
+.om-anneau span{display:flex;flex-direction:column;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:#fff}
+.om-anneau b{font:800 12px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B;font-variant-numeric:tabular-nums}
+.om-anneau small{margin-top:3px;font:600 10px/1 system-ui,-apple-system,"Segoe UI",sans-serif;color:#5B6763}
+.om-pq-txt{margin:0;font:500 13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B}
+.om-pq-txt b{font-weight:800;color:#087F78}
+.om-attendus{display:block;margin-bottom:4px}
+.theme-nuit .om-anneau{background:conic-gradient(#4FD1C5 calc(var(--p) * 1%),#2C3440 0)}
+.theme-nuit .om-anneau span{background:#1B1D22}
+.theme-nuit .om-anneau b,.theme-nuit .om-pq-txt{color:#F4F2F7}
+.theme-nuit .om-anneau small{color:#A9B3B8}
+.theme-nuit .om-pq-txt b{color:#4FD1C5}
+.om-acc,.om-alerte{display:block;width:fit-content;max-width:100%;margin-top:6px;padding:3px 10px;border-radius:999px;font:700 12.5px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}.om-acc{background:#D7F0EA;color:#06645F}.om-alerte{background:#FBE3E8;color:#A3243F}.theme-nuit .om-acc{background:#12423D;color:#7FE3D6}.theme-nuit .om-alerte{background:#4A1C27;color:#F4A3B4}
+.om-pond{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#F2F7F6;border:1px solid #DCE7E4}
+.om-pond-t{font:700 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#5B6763;margin-bottom:6px}
+.om-pond-l{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font:700 14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:#17141B}
+.om-h{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;font:700 12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.om-h-ok{background:#D7F0EA;color:#06645F}.om-h-diff{background:#F6E7C8;color:#7A5A12}
+.theme-nuit .om-pond{background:#20262C;border-color:#2C3440}.theme-nuit .om-pond-t{color:#A9B3B8}.theme-nuit .om-pond-l{color:#F4F2F7}
+.theme-nuit .om-h-ok{background:#12423D;color:#7FE3D6}.theme-nuit .om-h-diff{background:#4A3A14;color:#F0CF80}
+</style>
+<script src="archetype_selections.js?v=20261113a"></script>
+<script src="drapeaux.js"></script>
+<script src="af-drapeaux-cartes.js"></script>
+<script src="af-date-navigation.js?v=20261027b"></script>
+<script src="af-repli-carte.js?v=20261027a"></script>
 </body>
 </html>
