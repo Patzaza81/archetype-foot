@@ -106,5 +106,22 @@ class Config(unittest.TestCase):
         c = verdict.config(); self.assertEqual((c["cote_min"], c["nmin"]), (1.26, 4)); self.assertIn(c["fenetre_jours"], (365, 730, 1095, 1460, 1825, 2190)); self.assertIsInstance(c["officiels_seulement"], bool)
 
 
+
+class TestCompetitionsOfficielles(unittest.TestCase):
+    def test_officielles(self):
+        from moteur_selections.competitions import est_selection_officielle as f
+        for c in ("Europe : Ligue des Nations de l'UEFA Ligue A Groupe 1",
+                  "Amérique du Nord : Ligue des Nations de la CONCACAF Quarts de Finale",
+                  "Europe :\n   Ligue des Nations de l'UEFA Ligue C Groupe 2"):
+            self.assertTrue(f(c), c)
+
+    def test_exclues(self):
+        from moteur_selections.competitions import est_selection_officielle as f
+        for c in ("Monde : Matchs Amicaux Internationaux", "Monde : Matchs Amicaux U21",
+                  "Afrique : Afrique U23 Coupe des nations Qualification 2nd Round",
+                  "Afrique : Ligue des Champions Féminine de la CAF Finale",
+                  "France : Ligue 1", "Europe : Ligue des Champions Phase de Ligue"):
+            self.assertFalse(f(c), c)
+
 if __name__ == "__main__":
     unittest.main()
