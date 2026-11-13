@@ -44,8 +44,10 @@ body.af-fond{background:var(--afb-fond)}
 }
 .af-nav a svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .af-nav a svg .g{stroke:currentColor;opacity:.5}
-.af-nav a span{display:flex;flex-direction:column;align-items:center;line-height:1.1;max-width:100%}
+.af-nav a span{display:flex;flex-direction:column;align-items:center;line-height:1.1;max-width:100%;min-width:0;overflow:hidden}
 .af-nav a b{font-size:13px;font-weight:800;white-space:nowrap}
+/* 13/11 : un nom long (Megapower, Équipe nationale) ne doit pas déborder de sa carte de 78 px : taille réduite pour ces libellés */
+.af-nav a b.af-long{font-size:11px;letter-spacing:-.02em}
 .af-nav a small{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.75;white-space:nowrap}
 .af-nav a[aria-current="page"]{background:var(--c);border-color:var(--c);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.22)}
 .af-nav a[aria-current="page"] small{opacity:.9}

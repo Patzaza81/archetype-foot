@@ -148,5 +148,16 @@ class TestCollecte(unittest.TestCase):
         self.assertEqual([m["match_id"] for m in r], ["a"])
         self.assertEqual(r[0]["competition"], "Afrique : Coupe des Nations Qualification Groupe A")
 
+
+class TestPronostics(unittest.TestCase):
+    def test_equipe_inconnue_non_evaluable(self):
+        from moteur_selections.pronostics import calcule
+        r = calcule([{"match_id": "x", "date": "2026-11-13", "domicile": "Atlantide", "exterieur": "France", "competition": "Europe : Ligue des Nations de l'UEFA"}], None, {})
+        self.assertEqual(r[0]["statut"], "non évaluable"); self.assertIn("Atlantide", r[0]["raison"])
+
+    def test_noms_traduits_existent(self):
+        from moteur_selections import noms
+        self.assertEqual(noms.FR_EN["Pays-Bas"], "Netherlands"); self.assertEqual(noms.FR_EN["Irlande"], "Republic of Ireland")
+
 if __name__ == "__main__":
     unittest.main()
