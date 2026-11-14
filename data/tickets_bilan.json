@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "genere_le": "2026-11-13T19:59:30.948081+00:00",
+  "genere_le": "2026-11-14T02:14:08.184446+00:00",
   "comptes": {
-    "total": 286,
-    "regles": 214,
-    "en_attente": 70,
+    "total": 292,
+    "regles": 215,
+    "en_attente": 75,
     "exclus": 2
   },
   "par_scenario": {
@@ -248,38 +248,38 @@
       }
     },
     "PRUDENT_2": {
-      "tickets_regles": 48,
-      "paris": 96,
-      "justes_attendus": 74.4,
+      "tickets_regles": 49,
+      "paris": 98,
+      "justes_attendus": 75.93,
       "justes_observes": 54,
       "erreurs": {
         "0": 12,
         "1": 30,
-        "2": 6
+        "2": 7
       },
       "plans": {
         "COMBINE": {
-          "tickets_regles": 48,
-          "taux_rentable_observe": 0.25,
-          "proba_profit_prevue": 0.5993,
-          "roi_observe": -0.4112,
-          "esperance_prevue": 0.3685
+          "tickets_regles": 49,
+          "taux_rentable_observe": 0.2449,
+          "proba_profit_prevue": 0.5989,
+          "roi_observe": -0.4233,
+          "esperance_prevue": 0.3712
         },
         "SIMPLES": {
-          "tickets_regles": 48,
-          "taux_rentable_observe": 0.25,
-          "proba_profit_prevue": 0.5993,
-          "roi_observe": -0.1507,
-          "esperance_prevue": 0.1675
+          "tickets_regles": 49,
+          "taux_rentable_observe": 0.2449,
+          "proba_profit_prevue": 0.5989,
+          "roi_observe": -0.168,
+          "esperance_prevue": 0.1687
         }
       }
     }
   },
   "par_portee": {
     "melange": {
-      "tickets_regles": 112,
+      "tickets_regles": 113,
       "gagnants": 16,
-      "paris": 501,
+      "paris": 503,
       "justes": 307
     },
     "meme_jour": {
@@ -296,9 +296,9 @@
       "proba_moyenne_estimee": 0.6348
     },
     "moteur_v3": {
-      "paris": 285,
-      "taux_reussite": 0.614,
-      "proba_moyenne_estimee": 0.7875
+      "paris": 287,
+      "taux_reussite": 0.6098,
+      "proba_moyenne_estimee": 0.7874
     }
   },
   "avertissement": "Petits échantillons : un écart entre prévu et observé n'est significatif qu'avec beaucoup de tickets réglés."
