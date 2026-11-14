@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-13T08:31:36Z",
+ "genere_le": "2026-11-14T02:36:28Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -9,103 +9,103 @@
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 327,
+  "lignes": 328,
   "anomalies": [],
-  "derniere_empreinte": "053a1e15be82b6a90f30dc8307aa1d6e38c4e3f37807dba4ba87b8d0c9d03883"
+  "derniere_empreinte": "3eba09fa0509470d7930e86410081ad053d955309f371fe7940dfa3e2a823728"
  },
  "apprentissage": {
-  "matchs_termines": 265,
+  "matchs_termines": 266,
   "periode": [
    "2026-11-05",
-   "2026-11-09"
+   "2026-11-13"
   ],
   "corrections_validees": [],
   "texte": "Aucune correction validee : P1 inchange."
  },
  "performance": {
-  "matchs_termines": 265,
+  "matchs_termines": 266,
   "periode": [
    "2026-11-05",
-   "2026-11-09"
+   "2026-11-13"
   ],
   "par_version": {
    "original": {
-    "logloss_1x2": 1.0206732887817478,
-    "brier_1x2": 0.6115202572481656,
-    "favori_correct": 131,
-    "favori_taux": 0.49433962264150944,
-    "favori_erreur_type": 0.030712787584951284,
+    "logloss_1x2": 1.0201388086666885,
+    "brier_1x2": 0.6111509413290361,
+    "favori_correct": 132,
+    "favori_taux": 0.49624060150375937,
+    "favori_erreur_type": 0.030656100407447914,
     "marches": {
      "o15": {
-      "n": 265,
-      "frequence_reelle": 0.7509433962264151,
-      "probabilite_moyenne": 0.7579342139570078,
-      "brier": 0.19096490950646555
+      "n": 266,
+      "frequence_reelle": 0.7518796992481203,
+      "probabilite_moyenne": 0.7572547651555439,
+      "brier": 0.19091902313919468
      },
      "o25": {
-      "n": 265,
-      "frequence_reelle": 0.5169811320754717,
-      "probabilite_moyenne": 0.522577908641867,
-      "brier": 0.24413236145484588
+      "n": 266,
+      "frequence_reelle": 0.518796992481203,
+      "probabilite_moyenne": 0.5217666688070346,
+      "brier": 0.24502112220450925
      },
      "o35": {
-      "n": 265,
-      "frequence_reelle": 0.30566037735849055,
-      "probabilite_moyenne": 0.30736486370364374,
-      "brier": 0.21008420100156128
+      "n": 266,
+      "frequence_reelle": 0.3082706766917293,
+      "probabilite_moyenne": 0.3067056772957067,
+      "brier": 0.2121266929518366
      },
      "btts": {
-      "n": 265,
-      "frequence_reelle": 0.5433962264150943,
-      "probabilite_moyenne": 0.541626006260122,
-      "brier": 0.24938207265175072
+      "n": 266,
+      "frequence_reelle": 0.5451127819548872,
+      "probabilite_moyenne": 0.5410127495266251,
+      "brier": 0.24989666111572434
      }
     }
    },
    "calibre": {
-    "logloss_1x2": 1.0206732887817478,
-    "brier_1x2": 0.6115202572481656,
-    "favori_correct": 131,
-    "favori_taux": 0.49433962264150944,
-    "favori_erreur_type": 0.030712787584951284,
+    "logloss_1x2": 1.0201388086666885,
+    "brier_1x2": 0.6111509413290361,
+    "favori_correct": 132,
+    "favori_taux": 0.49624060150375937,
+    "favori_erreur_type": 0.030656100407447914,
     "marches": {
      "o15": {
-      "n": 265,
-      "frequence_reelle": 0.7509433962264151,
-      "probabilite_moyenne": 0.7579342139570078,
-      "brier": 0.19096490950646555
+      "n": 266,
+      "frequence_reelle": 0.7518796992481203,
+      "probabilite_moyenne": 0.7572547651555439,
+      "brier": 0.19091902313919468
      },
      "o25": {
-      "n": 265,
-      "frequence_reelle": 0.5169811320754717,
-      "probabilite_moyenne": 0.522577908641867,
-      "brier": 0.24413236145484588
+      "n": 266,
+      "frequence_reelle": 0.518796992481203,
+      "probabilite_moyenne": 0.5217666688070346,
+      "brier": 0.24502112220450925
      },
      "o35": {
-      "n": 265,
-      "frequence_reelle": 0.30566037735849055,
-      "probabilite_moyenne": 0.30736486370364374,
-      "brier": 0.21008420100156128
+      "n": 266,
+      "frequence_reelle": 0.3082706766917293,
+      "probabilite_moyenne": 0.3067056772957067,
+      "brier": 0.2121266929518366
      },
      "btts": {
-      "n": 265,
-      "frequence_reelle": 0.5433962264150943,
-      "probabilite_moyenne": 0.541626006260122,
-      "brier": 0.24938207265175072
+      "n": 266,
+      "frequence_reelle": 0.5451127819548872,
+      "probabilite_moyenne": 0.5410127495266251,
+      "brier": 0.24989666111572434
      }
     }
    }
   }
  },
  "performance_paris": {
-  "matchs_termines": 265,
-  "paris": 251,
+  "matchs_termines": 266,
+  "paris": 252,
   "matchs_sans_pari": 14,
   "gagnes": 152,
-  "taux": 0.6055776892430279,
-  "taux_erreur_type": 0.030848127629136853,
-  "rendement_moyen": -0.0298804780876494,
-  "rendement_erreur_type": 0.054137981661638426
+  "taux": 0.6031746031746031,
+  "taux_erreur_type": 0.030819173148715212,
+  "rendement_moyen": -0.03373015873015873,
+  "rendement_erreur_type": 0.054059965049969946
  },
  "matchs": [
   {
@@ -119338,6 +119338,297 @@
       "encaisses": 0
      }
     ]
+   },
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.41540489733074076,
+     "logloss_1x2": 0.8785015781759637,
+     "brier_1x2": 0.5132822227596961,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.1787591358124126,
+      "o25": 0.4805427208653058,
+      "o35": 0.7533870597747924,
+      "btts": 0.3862626040687324
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.41540489733074076,
+     "logloss_1x2": 0.8785015781759637,
+     "brier_1x2": 0.5132822227596961,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.1787591358124126,
+      "o25": 0.4805427208653058,
+      "o35": 0.7533870597747924,
+      "btts": 0.3862626040687324
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
+  },
+  {
+   "match_id": "14fce7hvwsdmy1qezt3segaac",
+   "date": "2026-11-14",
+   "coup_d_envoi_utc": "2026-11-14T12:00:00Z",
+   "competition": "Kenya : Première Ligue",
+   "division": "KE1",
+   "domicile": "APS Bomet",
+   "exterieur": "Bandari",
+   "p1_original": {
+    "dom": 0.3752778172751681,
+    "nul": 0.3351779249669683,
+    "ext": 0.2895442577578636,
+    "o15": 0.5165941117720795,
+    "o25": 0.25121875687944795,
+    "o35": 0.09801812713388958,
+    "btts": 0.333125903186784
+   },
+   "p1_calibre": {
+    "dom": 0.3752778172751681,
+    "nul": 0.3351779249669683,
+    "ext": 0.2895442577578636,
+    "o15": 0.5165941117720795,
+    "o25": 0.25121875687944795,
+    "o35": 0.09801812713388958,
+    "btts": 0.333125903186784
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 0.9432801925262588,
+    "buts_attendus_ext": 0.7886134470418396,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 40,
+    "matchs_anterieurs_ext": 6,
+    "fd_dom": "Aps Bomet",
+    "fd_ext": "Bandari"
+   },
+   "gele_le": "2026-11-14T02:36:25Z",
+   "empreinte": "3eba09fa0509470d7930e86410081ad053d955309f371fe7940dfa3e2a823728",
+   "mode": "parallele",
+   "n_historique_competition": 1259,
+   "pari": {
+    "retenu": {
+     "cle": "o25-",
+     "libelle": "Moins de 2,5 buts",
+     "p1": 0.748781243120552,
+     "cote": 1.39,
+     "valeur": 0.04080592793756721
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire APS Bomet",
+      "p1": 0.3752778172751681,
+      "cote": 2.37,
+      "valeur": -0.1105915730578515
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.3351779249669683,
+      "cote": 2.79,
+      "valeur": -0.06485358934215846
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Bandari",
+      "p1": 0.2895442577578636,
+      "cote": 2.94,
+      "valeur": -0.14873988219188106
+     },
+     {
+      "cle": "1N",
+      "libelle": "APS Bomet ou match nul",
+      "p1": 0.7104557422421365,
+      "cote": 1.31,
+      "valeur": -0.06930297766280114
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Bandari",
+      "p1": 0.6247221827248319,
+      "cote": 1.45,
+      "valeur": -0.09415283504899374
+     },
+     {
+      "cle": "12",
+      "libelle": "APS Bomet ou Bandari (pas de nul)",
+      "p1": 0.6648220750330317,
+      "cote": 1.34,
+      "valeur": -0.10913841945573743
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.5165941117720795,
+      "cote": 1.54,
+      "valeur": -0.2044450678709976
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.4834058882279205,
+      "cote": 2.23,
+      "valeur": 0.0779951307482627
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.25121875687944795,
+      "cote": 2.63,
+      "valeur": -0.3392946694070519
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.748781243120552,
+      "cote": 1.39,
+      "valeur": 0.04080592793756721
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.333125903186784,
+      "cote": 2.15,
+      "valeur": -0.28377930814841446
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.6668740968132161,
+      "cote": 1.55,
+      "valeur": 0.033654850060484964
+     }
+    ],
+    "cotes_disponibles": 12
+   },
+   "cotes_au_gel": {
+    "1": 2.37,
+    "N": 2.79,
+    "2": 2.94,
+    "1N": 1.31,
+    "N2": 1.45,
+    "12": 1.34,
+    "o15+": 1.54,
+    "o15-": 2.23,
+    "o25+": 2.63,
+    "o25-": 1.39,
+    "btts+": 2.15,
+    "btts-": 1.55
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-01",
+      "adversaire": "Murang'a SEAL",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-28",
+      "adversaire": "3K",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Gor Mahia",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-01",
+      "adversaire": "Nairobi Utd",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Gor Mahia",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-14",
+      "adversaire": "Leopards",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-06",
+      "adversaire": "Kenya Com",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Nairobi Utd",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Mathare Utd",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-08",
+      "adversaire": "Tusker",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-28",
+      "adversaire": "Posta Rangers",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-19",
+      "adversaire": "3K",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "h2h": []
    },
    "statut": "a_venir",
    "resultat": null,
