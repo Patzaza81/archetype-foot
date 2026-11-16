@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-15T12:45:43Z",
+  "genere_le": "2026-11-16T01:34:31Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -211,11 +211,15 @@
     "Eibar|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
@@ -916,20 +920,35 @@
     "Cavese|over_under_total_2.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Cavese|over_under_total_3.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Cavese|over_under_total_4.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Haverfordwest|1x2_domicile": {
       "methode": "walk_forward",
@@ -1076,6 +1095,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Novare|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Dep. Pereira|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1193,12 +1218,40 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Feyenoord|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Feyenoord|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Feyenoord|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Zwolle|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Eibar|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -1207,9 +1260,13 @@
     "Eibar|handicap_exterieur_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -1385,6 +1442,18 @@
         }
       }
     },
+    "Pescara|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Pescara|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "San Diego|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1555,6 +1624,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Marquense|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Columbus|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1603,8 +1678,13 @@
     "Ostia Mare|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Ostia Mare|over_under_total_1.5_under": {
       "methode": "walk_forward",
@@ -1660,6 +1740,17 @@
       "par_regime": {}
     },
     "Tornadoes|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Inter Lagos|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1761,14 +1852,24 @@
     "Enyimba|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Ikorodu City|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Helmond|1x2_domicile": {
       "methode": "walk_forward",
@@ -1791,8 +1892,13 @@
     "Eibar|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Volendam|btts_non": {
       "methode": "walk_forward",
@@ -1854,7 +1960,31 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Cittadella|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "US Caratese|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Desenzano|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Cavese|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Cavese|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2136,21 +2266,38 @@
     "Nuremberg|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
     },
     "Nuremberg|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Guastatoya|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
-    "Guastatoya|1x2_exterieur": {
+    "Real Murcie|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Real Murcie|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2209,11 +2356,28 @@
       "observations": 0,
       "par_regime": {}
     },
-    "Nacional|1x2_exterieur": {
+    "Nacional|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Nacional|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Nacional|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Remo|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -2251,6 +2415,12 @@
       "par_regime": {}
     },
     "Chicago Fire|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Vasco Da G.|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2406,27 +2576,32 @@
     "Arsenal|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Arsenal|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 2,
-          "frequence_apres": 0.0
+          "signaux": 3,
+          "frequence_apres": 0.3333
         }
       }
     },
     "Arsenal|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "RECURRENT": {
-          "signaux": 2,
+          "signaux": 3,
           "frequence_apres": 0.0
         }
       }
@@ -2434,9 +2609,13 @@
     "Arsenal|handicap_exterieur_1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 1.0
         }
@@ -2471,11 +2650,11 @@
     "Aston Villa|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 2,
-          "frequence_apres": 0.5
+          "signaux": 3,
+          "frequence_apres": 0.6667
         }
       }
     },
@@ -3614,11 +3793,28 @@
       "observations": 0,
       "par_regime": {}
     },
-    "Charlton|btts_oui": {
+    "Charlton|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Charlton|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Charlton|btts_oui": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Middlesbrough|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -3823,6 +4019,12 @@
       }
     },
     "Everton|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Sport Boys|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
