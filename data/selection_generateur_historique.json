@@ -1,8 +1,8 @@
 {
  "bilan": {
   "avertissement": "Petits échantillons : le taux observé n'est significatif qu'avec beaucoup de paris réglés.",
-  "executions": 153,
-  "genere_le": "2026-11-15T12:46:07.577902+00:00",
+  "executions": 154,
+  "genere_le": "2026-11-16T01:20:32.793316+00:00",
   "par_jour_du_match": {
    "2026-10-09": {
     "cote_moyenne": 1.668,
@@ -293,24 +293,24 @@
     "taux_reussite": 0.5789
    },
    "2026-11-14": {
-    "cote_moyenne": 1.419,
+    "cote_moyenne": 1.422,
     "paris": 40,
-    "proba_moyenne_estimee": 0.7752,
-    "regles": 33,
-    "reussis": 24,
-    "taux_reussite": 0.7273
+    "proba_moyenne_estimee": 0.7737,
+    "regles": 34,
+    "reussis": 25,
+    "taux_reussite": 0.7353
    },
    "2026-11-15": {
-    "cote_moyenne": null,
+    "cote_moyenne": 1.407,
     "paris": 34,
-    "proba_moyenne_estimee": null,
-    "regles": 0,
-    "reussis": 0,
-    "taux_reussite": null
+    "proba_moyenne_estimee": 0.7578,
+    "regles": 34,
+    "reussis": 19,
+    "taux_reussite": 0.5588
    },
    "2026-11-16": {
     "cote_moyenne": null,
-    "paris": 2,
+    "paris": 3,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -326,7 +326,15 @@
    },
    "2026-11-18": {
     "cote_moyenne": null,
-    "paris": 4,
+    "paris": 8,
+    "proba_moyenne_estimee": null,
+    "regles": 0,
+    "reussis": 0,
+    "taux_reussite": null
+   },
+   "2026-11-19": {
+    "cote_moyenne": null,
+    "paris": 3,
     "proba_moyenne_estimee": null,
     "regles": 0,
     "reussis": 0,
@@ -335,12 +343,12 @@
   },
   "par_source": {
    "journal": {
-    "cote_moyenne": 1.5,
-    "paris": 743,
-    "proba_moyenne_estimee": 0.7229,
-    "regles": 653,
-    "reussis": 403,
-    "taux_reussite": 0.6172
+    "cote_moyenne": 1.497,
+    "paris": 748,
+    "proba_moyenne_estimee": 0.7231,
+    "regles": 674,
+    "reussis": 415,
+    "taux_reussite": 0.6157
    },
    "moteur_v2_6_10": {
     "cote_moyenne": 1.923,
@@ -351,16 +359,16 @@
     "taux_reussite": 0.4286
    },
    "moteur_v3": {
-    "cote_moyenne": 1.467,
-    "paris": 484,
-    "proba_moyenne_estimee": 0.7894,
-    "regles": 446,
-    "reussis": 279,
-    "taux_reussite": 0.6256
+    "cote_moyenne": 1.466,
+    "paris": 487,
+    "proba_moyenne_estimee": 0.7895,
+    "regles": 460,
+    "reussis": 287,
+    "taux_reussite": 0.6239
    }
   },
-  "paris_distincts": 1255,
-  "paris_regles": 1127
+  "paris_distincts": 1263,
+  "paris_regles": 1162
  },
  "derniere_erreur": null,
  "executions": [
@@ -186857,6 +186865,382 @@
     "2026-11-15..2026-11-17": 27,
     "2026-11-15..2026-11-18": 29
    }
+  },
+  {
+   "empreinte": "bf9ee51395664a24",
+   "genere_le": "2026-11-16T01:20:32.138875+00:00",
+   "jour_present": "2026-11-16",
+   "paris": [
+    {
+     "competition": "Italie : Série C Girone B",
+     "cote": 1.53,
+     "date": "2026-11-16",
+     "domicile": "Sorrente",
+     "ev_estime": 0.115523,
+     "exterieur": "Monopoli",
+     "heure": "20:30",
+     "id": "match:2026-11-16|sorrente|monopoli|over_under_total_2.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_2.5_under",
+     "marche_canonique": "over_under_total_2.5_under",
+     "marge_modele": 0.075505,
+     "match_id": "1egn9a8a5iat388cm7824rpjo",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-16",
+      "2026-11-16..2026-11-17",
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.7291,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Pérou : Primera Division Cloture",
+     "cote": 1.3,
+     "date": "2026-11-16",
+     "domicile": "Moquegua",
+     "ev_estime": null,
+     "exterieur": "Atl. Grau",
+     "heure": "21:15",
+     "id": "match:2026-11-16|moquegua|atl grau|over_under_total_3.5_under|journal",
+     "journal_observations": 9,
+     "journal_team": "Moquegua",
+     "journal_wins": 7,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-16",
+      "2026-11-16..2026-11-17",
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.660446,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Uruguay : Primera Division Cloture",
+     "cote": 1.27,
+     "date": "2026-11-17",
+     "domicile": "Montevideo",
+     "ev_estime": null,
+     "exterieur": "Juventud",
+     "heure": "00:00",
+     "id": "match:2026-11-17|montevideo|juventud|over_under_total_3.5_under|journal",
+     "journal_observations": 9,
+     "journal_team": "Montevideo",
+     "journal_wins": 8,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-17",
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.754796,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.5,
+     "date": "2026-11-18",
+     "domicile": "Remo",
+     "ev_estime": 0.0974,
+     "exterieur": "Chapecoense",
+     "heure": "00:00",
+     "id": "match:2026-11-18|remo|chapecoense|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.064933,
+     "match_id": "2p76vk219tkzzot192q8mx9uc",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.7316,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.41,
+     "date": "2026-11-18",
+     "domicile": "Cruzeiro MG",
+     "ev_estime": null,
+     "exterieur": "Palmeiras",
+     "heure": "00:30",
+     "id": "match:2026-11-18|cruzeiro mg|palmeiras|double_chance_X2|journal",
+     "journal_observations": 9,
+     "journal_team": "Palmeiras",
+     "journal_wins": 9,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_9_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.822315,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.46,
+     "date": "2026-11-18",
+     "domicile": "Flamengo",
+     "ev_estime": null,
+     "exterieur": "Paranaense",
+     "heure": "00:30",
+     "id": "match:2026-11-18|flamengo|paranaense|over_under_total_2.5_over|journal",
+     "journal_observations": 9,
+     "journal_team": "Flamengo",
+     "journal_wins": 7,
+     "marche": "Match à plus de 2,5 buts",
+     "marche_canonique": "over_under_total_2.5_over",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.561521,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.76,
+     "date": "2026-11-18",
+     "domicile": "Corinthians",
+     "ev_estime": null,
+     "exterieur": "Botafogo RJ",
+     "heure": "01:30",
+     "id": "match:2026-11-18|corinthians|botafogo rj|btts_oui|journal",
+     "journal_observations": 9,
+     "journal_team": "Corinthians",
+     "journal_wins": 7,
+     "marche": "Les deux équipes marquent",
+     "marche_canonique": "btts_oui",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_7_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-18"
+     ],
+     "probabilite_estimee": 0.532179,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.33,
+     "date": "2026-11-18",
+     "domicile": "Corinthians",
+     "ev_estime": null,
+     "exterieur": "Botafogo RJ",
+     "heure": "01:30",
+     "id": "match:2026-11-18|corinthians|botafogo rj|over_under_total_3.5_under|journal",
+     "journal_observations": 10,
+     "journal_team": "Botafogo RJ",
+     "journal_wins": 9,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_9_SUR_10",
+     "plages": [
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.764231,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.33,
+     "date": "2026-11-18",
+     "domicile": "Corinthians",
+     "ev_estime": 0.060808,
+     "exterieur": "Botafogo RJ",
+     "heure": "01:30",
+     "id": "match:2026-11-18|corinthians|botafogo rj|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.04572,
+     "match_id": "2l3xqrbotiwfjjr3ryzxc66fo",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-18"
+     ],
+     "probabilite_estimee": 0.7976,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Pérou : Primera Division Cloture",
+     "cote": 1.31,
+     "date": "2026-11-18",
+     "domicile": "Alianza Atl.",
+     "ev_estime": null,
+     "exterieur": "Melgar",
+     "heure": "21:00",
+     "id": "match:2026-11-18|alianza atl|melgar|double_chance_X2|journal",
+     "journal_observations": 9,
+     "journal_team": "Melgar",
+     "journal_wins": 8,
+     "marche": "Ne perd pas (victoire ou nul)",
+     "marche_canonique": "double_chance_X2",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_9",
+     "plages": [
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.730947,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.42,
+     "date": "2026-11-18",
+     "domicile": "Coritiba",
+     "ev_estime": null,
+     "exterieur": "Santos SP",
+     "heure": "23:30",
+     "id": "match:2026-11-18|coritiba|santos sp|over_under_total_3.5_under|journal",
+     "journal_observations": 10,
+     "journal_team": "Santos SP",
+     "journal_wins": 8,
+     "marche": "Match à moins de 3,5 buts",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": null,
+     "match_id": null,
+     "niveau_confiance": "FORME_8_SUR_10",
+     "plages": [
+      "2026-11-16..2026-11-18",
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.679316,
+     "probabilite_source": "JOURNAL_REGULARITE",
+     "rang": null,
+     "source": "journal"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.53,
+     "date": "2026-11-19",
+     "domicile": "Remo",
+     "ev_estime": 0.119348,
+     "exterieur": "Chapecoense",
+     "heure": "00:00",
+     "id": "match:2026-11-19|remo|chapecoense|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.078005,
+     "match_id": "2p76vk219tkzzot192q8mx9uc",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.7316,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Brésil : Série A",
+     "cote": 1.33,
+     "date": "2026-11-19",
+     "domicile": "Corinthians",
+     "ev_estime": 0.060808,
+     "exterieur": "Botafogo RJ",
+     "heure": "01:30",
+     "id": "match:2026-11-19|corinthians|botafogo rj|over_under_total_3.5_under|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "over_under_total_3.5_under",
+     "marche_canonique": "over_under_total_3.5_under",
+     "marge_modele": 0.04572,
+     "match_id": "2l3xqrbotiwfjjr3ryzxc66fo",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.7976,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    },
+    {
+     "competition": "Etats-Unis : MLS MLS Cup - Play-In Round",
+     "cote": 1.52,
+     "date": "2026-11-19",
+     "domicile": "Orlando City",
+     "ev_estime": 0.213568,
+     "exterieur": "Cincinnati",
+     "heure": "01:30",
+     "id": "match:2026-11-19|orlando city|cincinnati|double_chance_1x|moteur_v3",
+     "journal_observations": null,
+     "journal_team": null,
+     "journal_wins": null,
+     "marche": "double_chance_1X",
+     "marche_canonique": "double_chance_1x",
+     "marge_modele": 0.140505,
+     "match_id": "qb3knp8nlwcz5c2r5ngvy6tw",
+     "niveau_confiance": "OBSERVE",
+     "plages": [
+      "2026-11-16..2026-11-19"
+     ],
+     "probabilite_estimee": 0.7984,
+     "probabilite_source": "HISTORIQUE_MOTEUR_WILSON",
+     "rang": "P1",
+     "source": "moteur_v3"
+    }
+   ],
+   "plages": {
+    "2026-11-16..2026-11-16": 2,
+    "2026-11-16..2026-11-17": 3,
+    "2026-11-16..2026-11-18": 10,
+    "2026-11-16..2026-11-19": 12
+   }
   }
  ],
  "resultats": {
@@ -192400,6 +192784,11 @@
    "resultat": "WIN",
    "score": "1-2"
   },
+  "match:2026-11-14|nacional|albion|handicap3_domicile_-2_2|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
   "match:2026-11-14|oviedo|gerone|over_under_total_3.5_under|journal": {
    "regle_le": "2026-11-15T01:50:04.162208+00:00",
    "resultat": "WIN",
@@ -192494,6 +192883,176 @@
    "regle_le": "2026-11-15T01:50:04.162208+00:00",
    "resultat": "LOSS",
    "score": "4-0"
+  },
+  "match:2026-11-15|algeciras|antequera|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-1"
+  },
+  "match:2026-11-15|alianza|fas|double_chance_1X|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-15|arsenal|london city|handicap3_domicile_-2_2|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-15|arsenal|london city|handicap_exterieur_1.5|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-15|arsenal|london city|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-15|cittadella|us caratese|buts_equipe_domicile_2.5_under|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-15|cittadella|us caratese|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-11-15|cosenza|caserte|buts_equipe_domicile_1.5_under|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "2-1"
+  },
+  "match:2026-11-15|extremadura|pontevedra|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "2-3"
+  },
+  "match:2026-11-15|katsina utd|nasarawa utd|double_chance_X2|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "2-1"
+  },
+  "match:2026-11-15|lugo|mirandes|double_chance_1X|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "1-3"
+  },
+  "match:2026-11-15|lugo|mirandes|handicap_domicile_0.5|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "1-3"
+  },
+  "match:2026-11-15|metapan|angel firpo|double_chance_X2|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-15|novare|lecco|double_chance_X2|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
+  },
+  "match:2026-11-15|pergolettese|pro vercelli|double_chance_1X|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "0-0"
+  },
+  "match:2026-11-15|pescara|sambenedettese|buts_equipe_domicile_2.5_under|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-15|pescara|sambenedettese|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "3-1"
+  },
+  "match:2026-11-15|platense|atl balboa|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-11-15|potenza|scafatese|btts_oui|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "4-0"
+  },
+  "match:2026-11-15|potenza|scafatese|buts_equipe_domicile_1.5_over|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "4-0"
+  },
+  "match:2026-11-15|potenza|scafatese|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "4-0"
+  },
+  "match:2026-11-15|potenza|scafatese|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "4-0"
+  },
+  "match:2026-11-15|ravenne|forli|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-15|real murcie|alcorcon|handicap3_domicile_1_1|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "1-2"
+  },
+  "match:2026-11-15|real murcie|alcorcon|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-2"
+  },
+  "match:2026-11-15|san pedro|marquense|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-15|tenerife|ceuta|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-0"
+  },
+  "match:2026-11-15|tivoli gardens|montego bay|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "0-4"
+  },
+  "match:2026-11-15|twente|psv|over_under_total_2.5_over|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "0-1"
+  },
+  "match:2026-11-15|zamora|real aviles|buts_equipe_exterieur_0.5_over|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-15|zamora|real aviles|encaisse_domicile|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-15|zamora|real aviles|handicap_exterieur_1.5|moteur_v3": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "2-2"
+  },
+  "match:2026-11-15|zamora|real aviles|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "LOSS",
+   "score": "2-2"
+  },
+  "match:2026-11-15|zwolle|utrecht|over_under_total_3.5_under|journal": {
+   "regle_le": "2026-11-16T01:20:32.793316+00:00",
+   "resultat": "WIN",
+   "score": "1-1"
   }
  },
  "version": 1
