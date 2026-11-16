@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-15T02:06:08Z",
+ "genere_le": "2026-11-16T01:27:28Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -9,103 +9,103 @@
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 328,
+  "lignes": 334,
   "anomalies": [],
-  "derniere_empreinte": "3eba09fa0509470d7930e86410081ad053d955309f371fe7940dfa3e2a823728"
+  "derniere_empreinte": "55e407ecad6276e7795bbe9e875ee92a76887f59b4ea67949417e13613c376d8"
  },
  "apprentissage": {
-  "matchs_termines": 308,
+  "matchs_termines": 320,
   "periode": [
    "2026-11-05",
-   "2026-11-14"
+   "2026-11-15"
   ],
   "corrections_validees": [],
   "texte": "Aucune correction validee : P1 inchange."
  },
  "performance": {
-  "matchs_termines": 308,
+  "matchs_termines": 320,
   "periode": [
    "2026-11-05",
-   "2026-11-14"
+   "2026-11-15"
   ],
   "par_version": {
    "original": {
-    "logloss_1x2": 1.0107828287014398,
-    "brier_1x2": 0.6043951114934166,
-    "favori_correct": 155,
-    "favori_taux": 0.5032467532467533,
-    "favori_erreur_type": 0.028489543456188635,
+    "logloss_1x2": 1.0103867993228817,
+    "brier_1x2": 0.6042794813821769,
+    "favori_correct": 163,
+    "favori_taux": 0.509375,
+    "favori_erreur_type": 0.027945936051542004,
     "marches": {
      "o15": {
-      "n": 308,
-      "frequence_reelle": 0.7662337662337663,
-      "probabilite_moyenne": 0.7574663119062244,
-      "brier": 0.18298703557003956
+      "n": 320,
+      "frequence_reelle": 0.765625,
+      "probabilite_moyenne": 0.7563975280438291,
+      "brier": 0.1828060711019354
      },
      "o25": {
-      "n": 308,
-      "frequence_reelle": 0.5292207792207793,
-      "probabilite_moyenne": 0.5221791571236296,
-      "brier": 0.2428193378707962
+      "n": 320,
+      "frequence_reelle": 0.515625,
+      "probabilite_moyenne": 0.5206040033579333,
+      "brier": 0.24212014710114368
      },
      "o35": {
-      "n": 308,
-      "frequence_reelle": 0.30844155844155846,
-      "probabilite_moyenne": 0.307158702621925,
-      "brier": 0.2118648508614591
+      "n": 320,
+      "frequence_reelle": 0.296875,
+      "probabilite_moyenne": 0.3056050147317401,
+      "brier": 0.20669514926477522
      },
      "btts": {
-      "n": 308,
-      "frequence_reelle": 0.5551948051948052,
-      "probabilite_moyenne": 0.5417377479950037,
-      "brier": 0.24943555260923153
+      "n": 320,
+      "frequence_reelle": 0.546875,
+      "probabilite_moyenne": 0.5409015924661075,
+      "brier": 0.24968494314622855
      }
     }
    },
    "calibre": {
-    "logloss_1x2": 1.0107828287014398,
-    "brier_1x2": 0.6043951114934166,
-    "favori_correct": 155,
-    "favori_taux": 0.5032467532467533,
-    "favori_erreur_type": 0.028489543456188635,
+    "logloss_1x2": 1.0103867993228817,
+    "brier_1x2": 0.6042794813821769,
+    "favori_correct": 163,
+    "favori_taux": 0.509375,
+    "favori_erreur_type": 0.027945936051542004,
     "marches": {
      "o15": {
-      "n": 308,
-      "frequence_reelle": 0.7662337662337663,
-      "probabilite_moyenne": 0.7574663119062244,
-      "brier": 0.18298703557003956
+      "n": 320,
+      "frequence_reelle": 0.765625,
+      "probabilite_moyenne": 0.7563975280438291,
+      "brier": 0.1828060711019354
      },
      "o25": {
-      "n": 308,
-      "frequence_reelle": 0.5292207792207793,
-      "probabilite_moyenne": 0.5221791571236296,
-      "brier": 0.2428193378707962
+      "n": 320,
+      "frequence_reelle": 0.515625,
+      "probabilite_moyenne": 0.5206040033579333,
+      "brier": 0.24212014710114368
      },
      "o35": {
-      "n": 308,
-      "frequence_reelle": 0.30844155844155846,
-      "probabilite_moyenne": 0.307158702621925,
-      "brier": 0.2118648508614591
+      "n": 320,
+      "frequence_reelle": 0.296875,
+      "probabilite_moyenne": 0.3056050147317401,
+      "brier": 0.20669514926477522
      },
      "btts": {
-      "n": 308,
-      "frequence_reelle": 0.5551948051948052,
-      "probabilite_moyenne": 0.5417377479950037,
-      "brier": 0.24943555260923153
+      "n": 320,
+      "frequence_reelle": 0.546875,
+      "probabilite_moyenne": 0.5409015924661075,
+      "brier": 0.24968494314622855
      }
     }
    }
   }
  },
  "performance_paris": {
-  "matchs_termines": 308,
-  "paris": 290,
-  "matchs_sans_pari": 18,
-  "gagnes": 173,
-  "taux": 0.596551724137931,
-  "taux_erreur_type": 0.028808389855901884,
-  "rendement_moyen": -0.040999999999999995,
-  "rendement_erreur_type": 0.051449344790251116
+  "matchs_termines": 320,
+  "paris": 300,
+  "matchs_sans_pari": 20,
+  "gagnes": 179,
+  "taux": 0.5966666666666667,
+  "taux_erreur_type": 0.028322873886404698,
+  "rendement_moyen": -0.04409999999999999,
+  "rendement_erreur_type": 0.05030921742443954
  },
  "matchs": [
   {
@@ -137754,9 +137754,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4042491124066854,
+     "logloss_1x2": 0.9057239761817892,
+     "brier_1x2": 0.536549260938711,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.5910011262346181,
+      "o25": 0.2812480537130974,
+      "o35": 0.09477720742335302,
+      "btts": 0.3207403071737952
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4042491124066854,
+     "logloss_1x2": 0.9057239761817892,
+     "brier_1x2": 0.536549260938711,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.5910011262346181,
+      "o25": 0.2812480537130974,
+      "o35": 0.09477720742335302,
+      "btts": 0.3207403071737952
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.54
+    }
+   }
   },
   {
    "match_id": "j5be29l23kiaraw0lfhtbvo4",
@@ -138347,9 +138392,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3844756148874892,
+     "logloss_1x2": 0.9558749123662155,
+     "brier_1x2": 0.5764846469784881,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.040749708068634885,
+      "o25": 0.3280383040596618,
+      "o35": 0.12160335857784887,
+      "btts": 0.3604019345645855
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3844756148874892,
+     "logloss_1x2": 0.9558749123662155,
+     "brier_1x2": 0.5764846469784881,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.040749708068634885,
+      "o25": 0.3280383040596618,
+      "o35": 0.12160335857784887,
+      "btts": 0.3604019345645855
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "bc8mqzr24nluakahi4al2zqc4",
@@ -138657,9 +138747,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.27115810801893203,
+     "logloss_1x2": 1.3050532038041949,
+     "brier_1x2": 0.7981428630522782,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08552876241836112,
+      "o25": 0.20229729033842606,
+      "o35": 0.056219757355842837,
+      "btts": 0.24689174129919042
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.27115810801893203,
+     "logloss_1x2": 1.3050532038041949,
+     "brier_1x2": 0.7981428630522782,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08552876241836112,
+      "o25": 0.20229729033842606,
+      "o35": 0.056219757355842837,
+      "btts": 0.24689174129919042
+     }
+    },
+    "pari": {
+     "cle": "o15+",
+     "gagne": true,
+     "gain": 0.43999999999999995
+    }
+   }
   },
   {
    "match_id": "bedgh35u200js5df26sbkqjo4",
@@ -138980,9 +139115,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3921036326472893,
+     "logloss_1x2": 0.9362291051328133,
+     "brier_1x2": 0.5583685545474718,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06352322905757014,
+      "o25": 0.25183455321018916,
+      "o35": 0.07942926092899956,
+      "btts": 0.29657987162702276
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3921036326472893,
+     "logloss_1x2": 0.9362291051328133,
+     "brier_1x2": 0.5583685545474718,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06352322905757014,
+      "o25": 0.25183455321018916,
+      "o35": 0.07942926092899956,
+      "btts": 0.29657987162702276
+     }
+    },
+    "pari": {
+     "cle": "o25+",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4fdplgt6tb1nxisrh0rpivyfo",
@@ -139250,9 +139430,49 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5178598010863644,
+     "logloss_1x2": 0.6580507276295597,
+     "brier_1x2": 0.3495940575839329,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10001609615297392,
+      "o25": 0.17722941256579464,
+      "o35": 0.04574816214799571,
+      "btts": 0.20340440754586056
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5178598010863644,
+     "logloss_1x2": 0.6580507276295597,
+     "brier_1x2": 0.3495940575839329,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10001609615297392,
+      "o25": 0.17722941256579464,
+      "o35": 0.04574816214799571,
+      "btts": 0.20340440754586056
+     }
+    }
+   }
   },
   {
    "match_id": "dyguvxtgtut6p0d0kmc2dicr8",
@@ -139615,9 +139835,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.43054848127203904,
+     "logloss_1x2": 0.8426953452598666,
+     "brier_1x2": 0.4907420916462423,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03572712780619171,
+      "o25": 0.16631511492224504,
+      "o35": 0.1356580413216991,
+      "btts": 0.15008260673367502
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.43054848127203904,
+     "logloss_1x2": 0.8426953452598666,
+     "brier_1x2": 0.4907420916462423,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03572712780619171,
+      "o25": 0.16631511492224504,
+      "o35": 0.1356580413216991,
+      "btts": 0.15008260673367502
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": true,
+     "gain": 0.6599999999999999
+    }
+   }
   },
   {
    "match_id": "be2m9dywwgey95vg7l8ofwlxw",
@@ -139925,9 +140190,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.28587912635039936,
+     "logloss_1x2": 1.2521861926361502,
+     "brier_1x2": 0.7661087603435014,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.4368341758471465,
+      "o25": 0.1557017202449764,
+      "o35": 0.037451509714919236,
+      "btts": 0.2102831524193372
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.28587912635039936,
+     "logloss_1x2": 1.2521861926361502,
+     "brier_1x2": 0.7661087603435014,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.4368341758471465,
+      "o25": 0.1557017202449764,
+      "o35": 0.037451509714919236,
+      "btts": 0.2102831524193372
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.25
+    }
+   }
   },
   {
    "match_id": "4dt92de65y8ysenlrkk5oh6ac",
@@ -140290,9 +140600,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.43185848815738753,
+     "logloss_1x2": 0.839657318111765,
+     "brier_1x2": 0.4843194563278558,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.4667360640741345,
+      "o25": 0.17666681581916924,
+      "o35": 0.045523097823455566,
+      "btts": 0.22464993313015247
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.43185848815738753,
+     "logloss_1x2": 0.839657318111765,
+     "brier_1x2": 0.4843194563278558,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.4667360640741345,
+      "o25": 0.17666681581916924,
+      "o35": 0.045523097823455566,
+      "btts": 0.22464993313015247
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.3700000000000001
+    }
+   }
   },
   {
    "match_id": "bdgwootsjrcq0ef9350o2191w",
@@ -140594,9 +140949,49 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.31992532725272643,
+     "logloss_1x2": 1.1396676627544873,
+     "brier_1x2": 0.7051880391349746,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07530493989596575,
+      "o25": 0.27826507831054714,
+      "o35": 0.06563056939724618,
+      "btts": 0.23121074471913167
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.31992532725272643,
+     "logloss_1x2": 1.1396676627544873,
+     "brier_1x2": 0.7051880391349746,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07530493989596575,
+      "o25": 0.27826507831054714,
+      "o35": 0.06563056939724618,
+      "btts": 0.23121074471913167
+     }
+    }
+   }
   },
   {
    "match_id": "4d6mznn7kmaepkd5howat4e8k",
@@ -140959,9 +141354,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2447481413843361,
+     "logloss_1x2": 1.4075255915356482,
+     "brier_1x2": 0.9218166910885887,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08121303995189144,
+      "o25": 0.2107650433399403,
+      "o35": 0.05995147035636067,
+      "btts": 0.2842419518146954
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2447481413843361,
+     "logloss_1x2": 1.4075255915356482,
+     "brier_1x2": 0.9218166910885887,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08121303995189144,
+      "o25": 0.2107650433399403,
+      "o35": 0.05995147035636067,
+      "btts": 0.2842419518146954
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.3999999999999999
+    }
+   }
   },
   {
    "match_id": "4di2apakgjy5hjfampzwgoys4",
@@ -141305,9 +141745,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.37721210484678486,
+     "logloss_1x2": 0.9749476374154148,
+     "brier_1x2": 0.5830833848595608,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11502446973331745,
+      "o25": 0.1556240817686077,
+      "o35": 0.03742276898233368,
+      "btts": 0.2104111483067537
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.37721210484678486,
+     "logloss_1x2": 0.9749476374154148,
+     "brier_1x2": 0.5830833848595608,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11502446973331745,
+      "o25": 0.1556240817686077,
+      "o35": 0.03742276898233368,
+      "btts": 0.2104111483067537
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "bd5ygoy0cyka1y18288t8rmdw",
@@ -141636,6 +142121,3879 @@
       "date": "2021-01-16",
       "domicile": true,
       "marques": 1,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45609558716883075,
+     "logloss_1x2": 0.7850528704508817,
+     "brier_1x2": 0.4453418958226944,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.046277057806327127,
+      "o25": 0.3061055398680994,
+      "o35": 0.10865849536861791,
+      "btts": 0.33413380381561963
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45609558716883075,
+     "logloss_1x2": 0.7850528704508817,
+     "brier_1x2": 0.4453418958226944,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.046277057806327127,
+      "o25": 0.3061055398680994,
+      "o35": 0.10865849536861791,
+      "btts": 0.33413380381561963
+     }
+    },
+    "pari": {
+     "cle": "o25+",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
+  },
+  {
+   "match_id": "2nvweq9lcl19k7nv0qwunsx78",
+   "date": "2026-11-18",
+   "coup_d_envoi_utc": "2026-11-18T22:30:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Coritiba",
+   "exterieur": "Santos SP",
+   "p1_original": {
+    "dom": 0.41823609731516287,
+    "nul": 0.25338129295758083,
+    "ext": 0.3283826097272564,
+    "o15": 0.7624060302481986,
+    "o25": 0.5214861219760284,
+    "o35": 0.29966357232411406,
+    "btts": 0.5581015255907756
+   },
+   "p1_calibre": {
+    "dom": 0.41823609731516287,
+    "nul": 0.25338129295758083,
+    "ext": 0.3283826097272564,
+    "o15": 0.7624060302481986,
+    "o25": 0.5214861219760284,
+    "o35": 0.29966357232411406,
+    "btts": 0.5581015255907756
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.4797183761046113,
+    "buts_attendus_ext": 1.2824761379492309,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 110,
+    "matchs_anterieurs_ext": 186,
+    "fd_dom": "Coritiba",
+    "fd_ext": "Santos"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "e1de2336bbd55d87156c9f0033eeb9dbfd97f88f487778d7e29265c14b6aa25e",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7003364276758859,
+     "cote": 1.47,
+     "valeur": 0.02949454868355228
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Coritiba",
+      "p1": 0.41823609731516287,
+      "cote": 3.41,
+      "valeur": 0.42618509184470543
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.25338129295758083,
+      "cote": 3.58,
+      "valeur": -0.09289497121186063
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Santos SP",
+      "p1": 0.3283826097272564,
+      "cote": 2.05,
+      "valeur": -0.3268156500591244
+     },
+     {
+      "cle": "1N",
+      "libelle": "Coritiba ou match nul",
+      "p1": 0.6716173902727437,
+      "cote": 1.73,
+      "valeur": 0.16189808517184656
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Santos SP",
+      "p1": 0.5817639026848372,
+      "cote": 1.32,
+      "valeur": -0.2320716484560148
+     },
+     {
+      "cle": "12",
+      "libelle": "Coritiba ou Santos SP (pas de nul)",
+      "p1": 0.7466187070424193,
+      "cote": 1.31,
+      "valeur": -0.021929493774430653
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7624060302481986,
+      "cote": 1.19,
+      "valeur": -0.09273682400464367
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.23759396975180136,
+      "cote": 4.38,
+      "valeur": 0.04066158751288995
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5214861219760284,
+      "cote": 1.65,
+      "valeur": -0.1395478987395532
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4785138780239716,
+      "cote": 2.16,
+      "valeur": 0.03358997653177864
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.29966357232411406,
+      "cote": 2.57,
+      "valeur": -0.22986461912702694
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7003364276758859,
+      "cote": 1.47,
+      "valeur": 0.02949454868355228
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5581015255907756,
+      "cote": 1.55,
+      "valeur": -0.13494263533429773
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.44189847440922436,
+      "cote": 2.29,
+      "valeur": 0.01194750639712372
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.41,
+    "N": 3.58,
+    "2": 2.05,
+    "1N": 1.73,
+    "N2": 1.32,
+    "12": 1.31,
+    "o15+": 1.19,
+    "o15-": 4.38,
+    "o25+": 1.65,
+    "o25-": 2.16,
+    "o35+": 2.57,
+    "o35-": 1.47,
+    "btts+": 1.55,
+    "btts-": 2.29
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Athletico-PR",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-22",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-26",
+      "adversaire": "Bahia",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-09",
+      "adversaire": "Internacional",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Atletico-MG",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-02",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Internacional",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Vasco",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-16",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-23",
+      "adversaire": "Gremio",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-02",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-25",
+      "adversaire": "Bahia",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-11",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 4
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-04",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Atletico-MG",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Fluminense",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Vasco",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Remo",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Santos",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-02",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Chapecoense-SC",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-02-06",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-28",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-08",
+      "adversaire": "Flamengo RJ",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-31",
+      "adversaire": "Vitoria",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Coritiba",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-19",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-26",
+      "adversaire": "Vasco",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-04",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-10-27",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2023-06-10",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-08-09",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2022-04-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2p76vk219tkzzot192q8mx9uc",
+   "date": "2026-11-19",
+   "coup_d_envoi_utc": "2026-11-18T23:00:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Remo",
+   "exterieur": "Chapecoense",
+   "p1_original": {
+    "dom": 0.5490608006628833,
+    "nul": 0.22748289655228984,
+    "ext": 0.2234563027848268,
+    "o15": 0.7913470985320826,
+    "o25": 0.5627020845524512,
+    "o35": 0.33880730384526153,
+    "btts": 0.5598681937054797
+   },
+   "p1_calibre": {
+    "dom": 0.5490608006628833,
+    "nul": 0.22748289655228984,
+    "ext": 0.2234563027848268,
+    "o15": 0.7913470985320826,
+    "o25": 0.5627020845524512,
+    "o35": 0.33880730384526153,
+    "btts": 0.5598681937054797
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.8437368868712107,
+    "buts_attendus_ext": 1.0939363666614703,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 34,
+    "matchs_anterieurs_ext": 71,
+    "fd_dom": "Remo",
+    "fd_ext": "Chapecoense-SC"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "55e407ecad6276e7795bbe9e875ee92a76887f59b4ea67949417e13613c376d8",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6611926961547385,
+     "cote": 1.53,
+     "valeur": 0.011624825116749893
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Remo",
+      "p1": 0.5490608006628833,
+      "cote": 1.62,
+      "valeur": -0.11052150292612894
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.22748289655228984,
+      "cote": 4.21,
+      "valeur": -0.04229700551485982
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Chapecoense",
+      "p1": 0.2234563027848268,
+      "cote": 4.87,
+      "valeur": 0.08823219456210651
+     },
+     {
+      "cle": "1N",
+      "libelle": "Remo ou match nul",
+      "p1": 0.7765436972151731,
+      "cote": 1.2,
+      "valeur": -0.06814756334179228
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Chapecoense",
+      "p1": 0.4509391993371167,
+      "cote": 2.18,
+      "valeur": -0.01695254544508551
+     },
+     {
+      "cle": "12",
+      "libelle": "Remo ou Chapecoense (pas de nul)",
+      "p1": 0.7725171034477101,
+      "cote": 1.24,
+      "valeur": -0.042078791724839526
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7913470985320826,
+      "cote": 1.16,
+      "valeur": -0.08203736570278419
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.20865290146791737,
+      "cote": 4.74,
+      "valeur": -0.0109852470420716
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5627020845524512,
+      "cote": 1.56,
+      "valeur": -0.12218474809817614
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4372979154475488,
+      "cote": 2.33,
+      "valeur": 0.018904142992788753
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.33880730384526153,
+      "cote": 2.4,
+      "valeur": -0.1868624707713723
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6611926961547385,
+      "cote": 1.53,
+      "valeur": 0.011624825116749893
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5598681937054797,
+      "cote": 1.6,
+      "valeur": -0.10421089007123241
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4401318062945203,
+      "cote": 2.19,
+      "valeur": -0.03611134421500051
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.62,
+    "N": 4.21,
+    "2": 4.87,
+    "1N": 1.2,
+    "N2": 2.18,
+    "12": 1.24,
+    "o15+": 1.16,
+    "o15-": 4.74,
+    "o25+": 1.56,
+    "o25-": 2.33,
+    "o35+": 2.4,
+    "o35-": 1.53,
+    "btts+": 1.6,
+    "btts-": 2.19
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-07",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Coritiba",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Atletico-MG",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-06-01",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-25",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-11",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Bahia",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Fluminense",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-04",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-28",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Botafogo RJ",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-08",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Bahia",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-31",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-27",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-05",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-05",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 6
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Vasco",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-18",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-29",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Chapecoense-SC",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-02",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-04-06",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-19",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Coritiba",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Atletico-MG",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-03",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Bahia",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-18",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Atletico-MG",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-03-20",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-16",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Coritiba",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Santos",
+      "marques": 4,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2mgeqnjjyiogsc210xpfipbtg",
+   "date": "2026-11-19",
+   "coup_d_envoi_utc": "2026-11-18T23:30:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Cruzeiro MG",
+   "exterieur": "Palmeiras",
+   "p1_original": {
+    "dom": 0.34036733053147233,
+    "nul": 0.2714779472458679,
+    "ext": 0.3881547222226595,
+    "o15": 0.7067331567753992,
+    "o25": 0.4487683588671772,
+    "o35": 0.23627745173857195,
+    "btts": 0.5024309476489286
+   },
+   "p1_calibre": {
+    "dom": 0.34036733053147233,
+    "nul": 0.2714779472458679,
+    "ext": 0.3881547222226595,
+    "o15": 0.7067331567753992,
+    "o25": 0.4487683588671772,
+    "o35": 0.23627745173857195,
+    "btts": 0.5024309476489286
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.1856798418240928,
+    "buts_attendus_ext": 1.285481830446455,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 148,
+    "matchs_anterieurs_ext": 224,
+    "fd_dom": "Cruzeiro",
+    "fd_ext": "Palmeiras"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "7ae4a4d80aff05078ddefa23104368c76d43368e66537e5d48db712c092bdd30",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.763722548261428,
+     "cote": 1.4,
+     "valeur": 0.06921156756599922
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Cruzeiro MG",
+      "p1": 0.34036733053147233,
+      "cote": 2.91,
+      "valeur": -0.009531068153415423
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2714779472458679,
+      "cote": 3.48,
+      "valeur": -0.05525674358437982
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Palmeiras",
+      "p1": 0.3881547222226595,
+      "cote": 2.33,
+      "valeur": -0.09559949722120331
+     },
+     {
+      "cle": "1N",
+      "libelle": "Cruzeiro MG ou match nul",
+      "p1": 0.6118452777773402,
+      "cote": 1.58,
+      "valeur": -0.03328446111180239
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Palmeiras",
+      "p1": 0.6596326694685274,
+      "cote": 1.41,
+      "valeur": -0.06991793604937646
+     },
+     {
+      "cle": "12",
+      "libelle": "Cruzeiro MG ou Palmeiras (pas de nul)",
+      "p1": 0.7285220527541318,
+      "cote": 1.32,
+      "valeur": -0.038350890364545975
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7067331567753992,
+      "cote": 1.22,
+      "valeur": -0.13778554873401305
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.29326684322460084,
+      "cote": 4.0,
+      "valeur": 0.17306737289840335
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4487683588671772,
+      "cote": 1.73,
+      "valeur": -0.2236307391597835
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5512316411328229,
+      "cote": 2.03,
+      "valeur": 0.11900023149963035
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.23627745173857195,
+      "cote": 2.8,
+      "valeur": -0.3384231351319986
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.763722548261428,
+      "cote": 1.4,
+      "valeur": 0.06921156756599922
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5024309476489286,
+      "cote": 1.59,
+      "valeur": -0.2011347932382035
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4975690523510714,
+      "cote": 2.21,
+      "valeur": 0.09962760569586782
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.91,
+    "N": 3.48,
+    "2": 2.33,
+    "1N": 1.58,
+    "N2": 1.41,
+    "12": 1.32,
+    "o15+": 1.22,
+    "o15-": 4.0,
+    "o25+": 1.73,
+    "o25-": 2.03,
+    "o35+": 2.8,
+    "o35-": 1.4,
+    "btts+": 1.59,
+    "btts-": 2.21
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-06",
+      "adversaire": "Bahia",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-08",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Athletico-PR",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Flamengo RJ",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Mirassol",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Botafogo RJ",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-06-01",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Gremio",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Vitoria",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Vasco",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-06",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-28",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Athletico-PR",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Botafogo RJ",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-30",
+      "adversaire": "Vitoria",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-22",
+      "adversaire": "Coritiba",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Flamengo RJ",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Bahia",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-13",
+      "adversaire": "Internacional",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Atletico-MG",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Gremio",
+      "marques": 4,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-13",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Vitoria",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-31",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Internacional",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Bahia",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-25",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-04",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-01-30",
+      "adversaire": "Botafogo RJ",
+      "marques": 0,
+      "encaisses": 4
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-05",
+      "adversaire": "Remo",
+      "marques": 6,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Corinthians",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Vasco",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-31",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-02",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-03",
+      "adversaire": "Gremio",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-26",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-05",
+      "adversaire": "Vitoria",
+      "marques": 5,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-10-26",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2025-06-01",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-12-05",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-07-21",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2023-12-07",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-08-14",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2jm5ewjb0k4hjl8xcvhz39ces",
+   "date": "2026-11-19",
+   "coup_d_envoi_utc": "2026-11-18T23:30:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Flamengo",
+   "exterieur": "Paranaense",
+   "p1_original": {
+    "dom": 0.6601779449821151,
+    "nul": 0.19544875263917175,
+    "ext": 0.14437330237871318,
+    "o15": 0.8019672254279091,
+    "o25": 0.5784852026314875,
+    "o35": 0.35444539295293137,
+    "btts": 0.5156460403852887
+   },
+   "p1_calibre": {
+    "dom": 0.6601779449821151,
+    "nul": 0.19544875263917175,
+    "ext": 0.14437330237871318,
+    "o15": 0.8019672254279091,
+    "o25": 0.5784852026314875,
+    "o35": 0.35444539295293137,
+    "btts": 0.5156460403852887
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 2.126981647994432,
+    "buts_attendus_ext": 0.8805060265194492,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 224,
+    "matchs_anterieurs_ext": 186,
+    "fd_dom": "Flamengo RJ",
+    "fd_ext": "Athletico-PR"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "fad3a6ee17a53da64b31327b22f2e4c22d8f0e42eb3440af62acbd7090654dda",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6455546070470686,
+     "cote": 1.65,
+     "valeur": 0.06516510162766309
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Flamengo",
+      "p1": 0.6601779449821151,
+      "cote": 1.22,
+      "valeur": -0.19458290712181958
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.19544875263917175,
+      "cote": 6.69,
+      "valeur": 0.30755215515605916
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Paranaense",
+      "p1": 0.14437330237871318,
+      "cote": 11.38,
+      "valeur": 0.6429681810697561
+     },
+     {
+      "cle": "1N",
+      "libelle": "Flamengo ou match nul",
+      "p1": 0.8556266976212868,
+      "cote": 1.06,
+      "valeur": -0.09303570052143595
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Paranaense",
+      "p1": 0.3398220550178849,
+      "cote": 3.72,
+      "valeur": 0.264138044666532
+     },
+     {
+      "cle": "12",
+      "libelle": "Flamengo ou Paranaense (pas de nul)",
+      "p1": 0.8045512473608283,
+      "cote": 1.12,
+      "valeur": -0.09890260295587228
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.8019672254279091,
+      "cote": 1.13,
+      "valeur": -0.09377703526646275
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.1980327745720909,
+      "cote": 5.39,
+      "valeur": 0.06739665494356983
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5784852026314875,
+      "cote": 1.45,
+      "valeur": -0.1611964561843432
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4215147973685125,
+      "cote": 2.61,
+      "valeur": 0.10015362113181747
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.35444539295293137,
+      "cote": 2.16,
+      "valeur": -0.23439795122166818
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6455546070470686,
+      "cote": 1.65,
+      "valeur": 0.06516510162766309
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5156460403852887,
+      "cote": 1.95,
+      "valeur": 0.005509778751312977
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4843539596147113,
+      "cote": 1.76,
+      "valeur": -0.14753703107810812
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.22,
+    "N": 6.69,
+    "2": 11.38,
+    "1N": 1.06,
+    "N2": 3.72,
+    "12": 1.12,
+    "o15+": 1.13,
+    "o15-": 5.39,
+    "o25+": 1.45,
+    "o25-": 2.61,
+    "o35+": 2.16,
+    "o35-": 1.65,
+    "btts+": 1.95,
+    "btts-": 1.76
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-04",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Atletico-MG",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Botafogo RJ",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Coritiba",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Vasco",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Bahia",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Santos",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-19",
+      "adversaire": "Remo",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-04",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Chapecoense-SC",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Coritiba",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-25",
+      "adversaire": "Botafogo RJ",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-30",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-11",
+      "adversaire": "Vasco",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Bahia",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Vasco",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Bahia",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-08",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Mirassol",
+      "marques": 5,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-29",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Chapecoense-SC",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-27",
+      "adversaire": "Atletico-MG",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Fluminense",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-03",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-14",
+      "adversaire": "Botafogo RJ",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-01-29",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-04",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Atletico-MG",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Bahia",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Fluminense",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-25",
+      "adversaire": "Internacional",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Gremio",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Vitoria",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-29",
+      "adversaire": "Botafogo RJ",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Coritiba",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-19",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-09-30",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2024-06-16",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-09-14",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2023-05-07",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2022-08-14",
+      "domicile": true,
+      "marques": 5,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-04-23",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2021-11-02",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-10-03",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2l3xqrbotiwfjjr3ryzxc66fo",
+   "date": "2026-11-19",
+   "coup_d_envoi_utc": "2026-11-19T00:30:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Corinthians",
+   "exterieur": "Botafogo RJ",
+   "p1_original": {
+    "dom": 0.4219517488985606,
+    "nul": 0.2668722860595837,
+    "ext": 0.3111759650418558,
+    "o15": 0.7157534479944253,
+    "o25": 0.4600119361986724,
+    "o35": 0.24562092510809225,
+    "btts": 0.5082385740013815
+   },
+   "p1_calibre": {
+    "dom": 0.4219517488985606,
+    "nul": 0.2668722860595837,
+    "ext": 0.3111759650418558,
+    "o15": 0.7157534479944253,
+    "o25": 0.4600119361986724,
+    "o35": 0.24562092510809225,
+    "btts": 0.5082385740013815
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.3742507078157675,
+    "buts_attendus_ext": 1.1406833314629576,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 224,
+    "matchs_anterieurs_ext": 186,
+    "fd_dom": "Corinthians",
+    "fd_ext": "Botafogo RJ"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "8885478f140d6e41e3ec4482e812713692ab9cb8520edbb14cef222dd01db46f",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7543790748919077,
+     "cote": 1.33,
+     "valeur": 0.0033241696062373816
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Corinthians",
+      "p1": 0.4219517488985606,
+      "cote": 1.84,
+      "valeur": -0.22360878202664847
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2668722860595837,
+      "cote": 3.63,
+      "valeur": -0.03125360160371127
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Botafogo RJ",
+      "p1": 0.3111759650418558,
+      "cote": 4.17,
+      "valeur": 0.29760377422453854
+     },
+     {
+      "cle": "1N",
+      "libelle": "Corinthians ou match nul",
+      "p1": 0.6888240349581443,
+      "cote": 1.24,
+      "valeur": -0.14585819665190114
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Botafogo RJ",
+      "p1": 0.5780482511014395,
+      "cote": 1.9,
+      "valeur": 0.09829167709273512
+     },
+     {
+      "cle": "12",
+      "libelle": "Corinthians ou Botafogo RJ (pas de nul)",
+      "p1": 0.7331277139404164,
+      "cote": 1.3,
+      "valeur": -0.046933971877458625
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7157534479944253,
+      "cote": 1.26,
+      "valeur": -0.09815065552702407
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2842465520055747,
+      "cote": 3.58,
+      "valeur": 0.017602656179957377
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4600119361986724,
+      "cote": 1.85,
+      "valeur": -0.14897791803245597
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5399880638013276,
+      "cote": 1.88,
+      "valeur": 0.015177559946495833
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.24562092510809225,
+      "cote": 3.13,
+      "valeur": -0.23120650441167134
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7543790748919077,
+      "cote": 1.33,
+      "valeur": 0.0033241696062373816
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5082385740013815,
+      "cote": 1.76,
+      "valeur": -0.10550010975756852
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4917614259986185,
+      "cote": 1.95,
+      "valeur": -0.04106521930269391
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.84,
+    "N": 3.63,
+    "2": 4.17,
+    "1N": 1.24,
+    "N2": 1.9,
+    "12": 1.3,
+    "o15+": 1.26,
+    "o15-": 3.58,
+    "o25+": 1.85,
+    "o25-": 1.88,
+    "o35+": 3.13,
+    "o35-": 1.33,
+    "btts+": 1.76,
+    "btts-": 1.95
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-30",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Remo",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Sao Paulo",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Coritiba",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-12",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Mirassol",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-23",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-18",
+      "adversaire": "Chapecoense-SC",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Vasco",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-29",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-03-21",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Fluminense",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-05",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 5
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-05",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Vasco",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-07",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-04",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-20",
+      "adversaire": "Chapecoense-SC",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-19",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-05",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-08",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-16",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-25",
+      "adversaire": "Athletico-PR",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-16",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Corinthians",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-02",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-25",
+      "adversaire": "Internacional",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Coritiba",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-01",
+      "adversaire": "Mirassol",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-14",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-01-30",
+      "adversaire": "Cruzeiro",
+      "marques": 4,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2025-11-30",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2025-07-26",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-09-15",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-06-02",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-09-23",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-05-11",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2022-07-30",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-04-10",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2n32sj7umx4s6z3zhc6rv7vh0",
+   "date": "2026-11-19",
+   "coup_d_envoi_utc": "2026-11-19T00:30:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Grêmio",
+   "exterieur": "Bahia",
+   "p1_original": {
+    "dom": 0.4360452888149473,
+    "nul": 0.2546230092450463,
+    "ext": 0.30933170194000636,
+    "o15": 0.7536866318075264,
+    "o25": 0.5095516068406976,
+    "o35": 0.2887731813676452,
+    "btts": 0.5462869032092194
+   },
+   "p1_calibre": {
+    "dom": 0.4360452888149473,
+    "nul": 0.2546230092450463,
+    "ext": 0.30933170194000636,
+    "o15": 0.7536866318075264,
+    "o25": 0.5095516068406976,
+    "o35": 0.2887731813676452,
+    "btts": 0.5462869032092194
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.494690954579676,
+    "buts_attendus_ext": 1.2182965674243873,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 186,
+    "matchs_anterieurs_ext": 186,
+    "fd_dom": "Gremio",
+    "fd_ext": "Bahia"
+   },
+   "gele_le": "2026-11-16T01:27:26Z",
+   "empreinte": "fcfe16bdbe7960fc315e95a3bb196ae92b735077fd04996c066d58bc64513673",
+   "mode": "parallele",
+   "n_historique_competition": 2239,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7112268186323548,
+     "cote": 1.43,
+     "valeur": 0.017054350644267302
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Grêmio",
+      "p1": 0.4360452888149473,
+      "cote": 2.24,
+      "valeur": -0.02325855305451796
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2546230092450463,
+      "cote": 3.53,
+      "valeur": -0.10118077736498676
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Bahia",
+      "p1": 0.30933170194000636,
+      "cote": 3.02,
+      "valeur": -0.06581826014118075
+     },
+     {
+      "cle": "1N",
+      "libelle": "Grêmio ou match nul",
+      "p1": 0.6906682980599936,
+      "cote": 1.39,
+      "valeur": -0.03997106569660891
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Bahia",
+      "p1": 0.5639547111850527,
+      "cote": 1.62,
+      "valeur": -0.08639336788021457
+     },
+     {
+      "cle": "12",
+      "libelle": "Grêmio ou Bahia (pas de nul)",
+      "p1": 0.7453769907549537,
+      "cote": 1.31,
+      "valeur": -0.023556142111010647
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7536866318075264,
+      "cote": 1.21,
+      "valeur": -0.08803917551289309
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.24631336819247363,
+      "cote": 4.16,
+      "valeur": 0.024663611680690423
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5095516068406976,
+      "cote": 1.69,
+      "valeur": -0.13885778443922114
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.49044839315930244,
+      "cote": 2.09,
+      "valeur": 0.025037141702942023
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2887731813676452,
+      "cote": 2.69,
+      "valeur": -0.22320014212103445
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7112268186323548,
+      "cote": 1.43,
+      "valeur": 0.017054350644267302
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5462869032092194,
+      "cote": 1.57,
+      "valeur": -0.14232956196152557
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.45371309679078065,
+      "cote": 2.26,
+      "valeur": 0.025391598747164235
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.24,
+    "N": 3.53,
+    "2": 3.02,
+    "1N": 1.39,
+    "N2": 1.62,
+    "12": 1.31,
+    "o15+": 1.21,
+    "o15-": 4.16,
+    "o25+": 1.69,
+    "o25-": 2.09,
+    "o35+": 2.69,
+    "o35-": 1.43,
+    "btts+": 1.57,
+    "btts-": 2.26
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-30",
+      "adversaire": "Athletico-PR",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Chapecoense-SC",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-23",
+      "adversaire": "Santos",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-06",
+      "adversaire": "Remo",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-19",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-13",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-26",
+      "adversaire": "Atletico-MG",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-05",
+      "adversaire": "Botafogo RJ",
+      "marques": 5,
+      "encaisses": 3
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-06",
+      "adversaire": "Cruzeiro",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Bragantino",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Chapecoense-SC",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-30",
+      "adversaire": "Fluminense",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-21",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-26",
+      "adversaire": "Coritiba",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Sao Paulo",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-11",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Corinthians",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-04",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-07",
+      "adversaire": "Remo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-16",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-08",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Atletico-MG",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-07-18",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-03",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-03-16",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Sao Paulo",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Internacional",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Vasco",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Corinthians",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-07-17",
+      "adversaire": "Chapecoense-SC",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Botafogo RJ",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-25",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Athletico-PR",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-11",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-05",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-17",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-10-20",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2025-05-25",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2024-08-17",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-04-28",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-11-04",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-07-01",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2021-11-26",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2021-08-21",
+      "domicile": true,
+      "marques": 2,
       "encaisses": 0
      }
     ]
