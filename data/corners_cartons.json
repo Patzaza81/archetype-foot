@@ -1,8 +1,8 @@
 {
  "version": "1.2.0",
- "genere_le": "2026-11-16 01:20 UTC",
+ "genere_le": "2026-11-17 04:33 UTC",
  "saison_football_data": "2627",
- "matchs_football_data_utilises": 5551,
+ "matchs_football_data_utilises": 5605,
  "parametres": {
   "corners": {
    "k": 40,
@@ -19,71 +19,2699 @@
  },
  "definition_cartons": "jaunes + rouges (un rouge compte pour un carton)",
  "note": "Cotes BetPawa affichées à titre d'information, quand BetPawa publie un marché équivalent. Aucune espérance de gain, aucun pari retenu : le modèle n'a pas encore été comparé au marché.",
- "matchs_avec_cotes": 0,
+ "matchs_avec_cotes": 8,
  "refus": {
-  "equipes_non_reliees_a_football_data": 104,
-  "corners_cartons_non_publies_pour_ce_championnat": 9
+  "equipes_non_reliees_a_football_data": 249,
+  "corners_cartons_non_publies_pour_ce_championnat": 21
  },
  "bilan": {
-  "matchs_regles": 823,
+  "matchs_regles": 862,
   "familles": {
    "cartons_domicile": {
-    "lignes_evaluees": 2469,
-    "proba_moyenne_annoncee": 0.5782,
-    "taux_observe": 0.5788,
-    "brier": 0.1865,
-    "logloss": 0.5534,
-    "logloss_moyenne_division_seule": 0.5558
+    "lignes_evaluees": 2586,
+    "proba_moyenne_annoncee": 0.5796,
+    "taux_observe": 0.5781,
+    "brier": 0.1859,
+    "logloss": 0.5518,
+    "logloss_moyenne_division_seule": 0.5541
    },
    "cartons_exterieur": {
-    "lignes_evaluees": 2469,
-    "proba_moyenne_annoncee": 0.6285,
-    "taux_observe": 0.6687,
-    "brier": 0.1789,
-    "logloss": 0.5322,
-    "logloss_moyenne_division_seule": 0.5362
+    "lignes_evaluees": 2586,
+    "proba_moyenne_annoncee": 0.6309,
+    "taux_observe": 0.6725,
+    "brier": 0.178,
+    "logloss": 0.5297,
+    "logloss_moyenne_division_seule": 0.5339
    },
    "cartons_total": {
-    "lignes_evaluees": 4115,
-    "proba_moyenne_annoncee": 0.4221,
-    "taux_observe": 0.4469,
-    "brier": 0.195,
-    "logloss": 0.5747,
-    "logloss_moyenne_division_seule": 0.5796
+    "lignes_evaluees": 4310,
+    "proba_moyenne_annoncee": 0.4251,
+    "taux_observe": 0.4485,
+    "brier": 0.1945,
+    "logloss": 0.5734,
+    "logloss_moyenne_division_seule": 0.5777
    },
    "corners_domicile": {
-    "lignes_evaluees": 3292,
-    "proba_moyenne_annoncee": 0.5021,
-    "taux_observe": 0.5079,
-    "brier": 0.2251,
-    "logloss": 0.6417,
-    "logloss_moyenne_division_seule": 0.6478
+    "lignes_evaluees": 3448,
+    "proba_moyenne_annoncee": 0.5027,
+    "taux_observe": 0.5046,
+    "brier": 0.2255,
+    "logloss": 0.6426,
+    "logloss_moyenne_division_seule": 0.6483
    },
    "corners_exterieur": {
-    "lignes_evaluees": 3292,
-    "proba_moyenne_annoncee": 0.403,
-    "taux_observe": 0.4028,
-    "brier": 0.2153,
-    "logloss": 0.6198,
-    "logloss_moyenne_division_seule": 0.629
+    "lignes_evaluees": 3448,
+    "proba_moyenne_annoncee": 0.4026,
+    "taux_observe": 0.4086,
+    "brier": 0.2167,
+    "logloss": 0.6229,
+    "logloss_moyenne_division_seule": 0.6321
    },
    "corners_total": {
-    "lignes_evaluees": 4938,
-    "proba_moyenne_annoncee": 0.4735,
-    "taux_observe": 0.4753,
+    "lignes_evaluees": 5172,
+    "proba_moyenne_annoncee": 0.4736,
+    "taux_observe": 0.4768,
     "brier": 0.2136,
-    "logloss": 0.6164,
-    "logloss_moyenne_division_seule": 0.618
+    "logloss": 0.6165,
+    "logloss_moyenne_division_seule": 0.6181
    },
    "rouge_match": {
-    "lignes_evaluees": 823,
-    "proba_moyenne_annoncee": 0.1541,
-    "taux_observe": 0.1689,
-    "brier": 0.14,
-    "logloss": 0.4546,
+    "lignes_evaluees": 862,
+    "proba_moyenne_annoncee": 0.155,
+    "taux_observe": 0.1705,
+    "brier": 0.141,
+    "logloss": 0.4568,
     "logloss_moyenne_division_seule": null
    }
   }
  },
- "matchs": []
+ "matchs": [
+  {
+   "match_id": "e2ydun2v9yunywa2555p1kglw",
+   "date": "2026-11-20",
+   "heure": "18:30",
+   "competition": "Allemagne : 2. Bundesliga",
+   "division": "D2",
+   "domicile": "A. Bielefeld",
+   "exterieur": "Magdebourg",
+   "nom_fd_domicile": "Bielefeld",
+   "nom_fd_exterieur": "Magdeburg",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.406,
+     "attendu_exterieur": 5.162,
+     "attendu_total": 10.567,
+     "total": {
+      "7.5": 0.7992,
+      "8.5": 0.702,
+      "9.5": 0.5928,
+      "10.5": 0.4805,
+      "11.5": 0.3737,
+      "12.5": 0.279
+     },
+     "domicile": {
+      "3.5": 0.7163,
+      "4.5": 0.5745,
+      "5.5": 0.4365,
+      "6.5": 0.3158
+     },
+     "exterieur": {
+      "3.5": 0.6896,
+      "4.5": 0.5425,
+      "5.5": 0.4034,
+      "6.5": 0.2851
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 1.973,
+     "attendu_exterieur": 2.385,
+     "attendu_total": 4.358,
+     "total": {
+      "2.5": 0.7999,
+      "3.5": 0.6251,
+      "4.5": 0.4384,
+      "5.5": 0.2767,
+      "6.5": 0.158
+     },
+     "domicile": {
+      "0.5": 0.861,
+      "1.5": 0.5867,
+      "2.5": 0.3161
+     },
+     "exterieur": {
+      "0.5": 0.9079,
+      "1.5": 0.6883,
+      "2.5": 0.4264
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.1551,
+     "oui": 0.1436
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.553,
+     5.28
+    ],
+    "cartons": [
+     1.941,
+     2.35
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7992,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7999,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.46,
+       "seuil_plus": 0.6849,
+       "moins": 2.3,
+       "seuil_moins": 0.4348,
+       "modele_au_dessus": "plus"
+      },
+      "9.5": {
+       "plus": 1.77,
+       "seuil_plus": 0.565,
+       "moins": 1.8,
+       "seuil_moins": 0.5556,
+       "modele_au_dessus": "plus"
+      },
+      "10.5": {
+       "plus": 2.23,
+       "seuil_plus": 0.4484,
+       "moins": 1.49,
+       "seuil_moins": 0.6711,
+       "modele_au_dessus": "plus"
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "e1kq0tbrhci2j4jgrqcuplvys",
+   "date": "2026-11-20",
+   "heure": "18:30",
+   "competition": "Allemagne : 2. Bundesliga",
+   "division": "D2",
+   "domicile": "Darmstadt",
+   "exterieur": "Heidenheim",
+   "nom_fd_domicile": "Darmstadt",
+   "nom_fd_exterieur": "Heidenheim",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.585,
+     "attendu_exterieur": 5.7,
+     "attendu_total": 11.285,
+     "total": {
+      "7.5": 0.8467,
+      "8.5": 0.7635,
+      "9.5": 0.665,
+      "10.5": 0.5581,
+      "11.5": 0.4509,
+      "12.5": 0.3505
+     },
+     "domicile": {
+      "3.5": 0.7345,
+      "4.5": 0.5969,
+      "5.5": 0.4603,
+      "6.5": 0.3384
+     },
+     "exterieur": {
+      "3.5": 0.7456,
+      "4.5": 0.6108,
+      "5.5": 0.4753,
+      "6.5": 0.3528
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 2.114,
+     "attendu_exterieur": 2.28,
+     "attendu_total": 4.394,
+     "total": {
+      "2.5": 0.8042,
+      "3.5": 0.6311,
+      "4.5": 0.445,
+      "5.5": 0.2825,
+      "6.5": 0.1623
+     },
+     "domicile": {
+      "0.5": 0.8793,
+      "1.5": 0.624,
+      "2.5": 0.3542
+     },
+     "exterieur": {
+      "0.5": 0.8977,
+      "1.5": 0.6645,
+      "2.5": 0.3986
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.1551,
+     "oui": 0.1436
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.553,
+     5.28
+    ],
+    "cartons": [
+     1.941,
+     2.35
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.7635,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "3.5",
+     "cote": "plus",
+     "proba": 0.6311,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "9.5": {
+       "plus": 1.41,
+       "seuil_plus": 0.7092,
+       "moins": 2.44,
+       "seuil_moins": 0.4098,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 1.67,
+       "seuil_plus": 0.5988,
+       "moins": 1.92,
+       "seuil_moins": 0.5208,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.05,
+       "seuil_plus": 0.4878,
+       "moins": 1.58,
+       "seuil_moins": 0.6329,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "4206ry9osn6lg87eqn3awha8k",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Annecy",
+   "exterieur": "Clermont",
+   "nom_fd_domicile": "Annecy",
+   "nom_fd_exterieur": "Clermont",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.235,
+     "attendu_exterieur": 4.323,
+     "attendu_total": 9.557,
+     "total": {
+      "7.5": 0.7134,
+      "8.5": 0.5981,
+      "9.5": 0.479,
+      "10.5": 0.3662,
+      "11.5": 0.2675,
+      "12.5": 0.1869
+     },
+     "domicile": {
+      "3.5": 0.6978,
+      "4.5": 0.5522,
+      "5.5": 0.4134,
+      "6.5": 0.2943
+     },
+     "exterieur": {
+      "3.5": 0.5799,
+      "4.5": 0.4201,
+      "5.5": 0.2853,
+      "6.5": 0.1831
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.705,
+     "attendu_exterieur": 2.017,
+     "attendu_total": 3.722,
+     "total": {
+      "2.5": 0.7098,
+      "3.5": 0.5061,
+      "4.5": 0.3186,
+      "5.5": 0.1784,
+      "6.5": 0.0898
+     },
+     "domicile": {
+      "0.5": 0.8183,
+      "1.5": 0.5084,
+      "2.5": 0.2442
+     },
+     "exterieur": {
+      "0.5": 0.8669,
+      "1.5": 0.5986,
+      "2.5": 0.3279
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7134,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "4.5",
+     "cote": "moins",
+     "proba": 0.6814,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "42bh90gkep416i9pt585wat5g",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "EA Guingamp",
+   "exterieur": "Rodez",
+   "nom_fd_domicile": "Guingamp",
+   "nom_fd_exterieur": "Rodez",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.904,
+     "attendu_exterieur": 4.443,
+     "attendu_total": 9.347,
+     "total": {
+      "7.5": 0.6926,
+      "8.5": 0.5741,
+      "9.5": 0.454,
+      "10.5": 0.3424,
+      "11.5": 0.2464,
+      "12.5": 0.1696
+     },
+     "domicile": {
+      "3.5": 0.6589,
+      "4.5": 0.5068,
+      "5.5": 0.3675,
+      "6.5": 0.2529
+     },
+     "exterieur": {
+      "3.5": 0.5975,
+      "4.5": 0.4387,
+      "5.5": 0.3024,
+      "6.5": 0.1972
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.759,
+     "attendu_exterieur": 2.091,
+     "attendu_total": 3.85,
+     "total": {
+      "2.5": 0.7301,
+      "3.5": 0.5314,
+      "4.5": 0.3427,
+      "5.5": 0.197,
+      "6.5": 0.1019
+     },
+     "domicile": {
+      "0.5": 0.8278,
+      "1.5": 0.5249,
+      "2.5": 0.2585
+     },
+     "exterieur": {
+      "0.5": 0.8764,
+      "1.5": 0.618,
+      "2.5": 0.3478
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.6926,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7301,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "42y5ilav9ow3oh3ute6l1p0yc",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Metz",
+   "exterieur": "US Boulogne",
+   "nom_fd_domicile": "Metz",
+   "nom_fd_exterieur": "Boulogne",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.124,
+     "attendu_exterieur": 4.258,
+     "attendu_total": 9.382,
+     "total": {
+      "7.5": 0.6961,
+      "8.5": 0.5781,
+      "9.5": 0.4581,
+      "10.5": 0.3463,
+      "11.5": 0.2499,
+      "12.5": 0.1723
+     },
+     "domicile": {
+      "3.5": 0.6852,
+      "4.5": 0.5374,
+      "5.5": 0.3982,
+      "6.5": 0.2804
+     },
+     "exterieur": {
+      "3.5": 0.5702,
+      "4.5": 0.4099,
+      "5.5": 0.2761,
+      "6.5": 0.1757
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.86,
+     "attendu_exterieur": 2.405,
+     "attendu_total": 4.264,
+     "total": {
+      "2.5": 0.7883,
+      "3.5": 0.6086,
+      "4.5": 0.4208,
+      "5.5": 0.2613,
+      "6.5": 0.1467
+     },
+     "domicile": {
+      "0.5": 0.8443,
+      "1.5": 0.5546,
+      "2.5": 0.2854
+     },
+     "exterieur": {
+      "0.5": 0.9097,
+      "1.5": 0.6925,
+      "2.5": 0.4315
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.6961,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7883,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "439iyd7i428s20cg9l6spyec4",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Nancy",
+   "exterieur": "Dijon FCO",
+   "nom_fd_domicile": "Nancy",
+   "nom_fd_exterieur": "Dijon",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.9,
+     "attendu_exterieur": 4.102,
+     "attendu_total": 9.003,
+     "total": {
+      "7.5": 0.6563,
+      "8.5": 0.5334,
+      "9.5": 0.4126,
+      "10.5": 0.3038,
+      "11.5": 0.2133,
+      "12.5": 0.1429
+     },
+     "domicile": {
+      "3.5": 0.6585,
+      "4.5": 0.5063,
+      "5.5": 0.3671,
+      "6.5": 0.2525
+     },
+     "exterieur": {
+      "3.5": 0.5463,
+      "4.5": 0.3853,
+      "5.5": 0.2542,
+      "6.5": 0.1583
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.717,
+     "attendu_exterieur": 2.297,
+     "attendu_total": 4.014,
+     "total": {
+      "2.5": 0.7546,
+      "3.5": 0.563,
+      "4.5": 0.3738,
+      "5.5": 0.2218,
+      "6.5": 0.1187
+     },
+     "domicile": {
+      "0.5": 0.8204,
+      "1.5": 0.512,
+      "2.5": 0.2473
+     },
+     "exterieur": {
+      "0.5": 0.8994,
+      "1.5": 0.6684,
+      "2.5": 0.4032
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7867,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7782,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "43wf08aclyys13jadlffnq044",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Red Star",
+   "exterieur": "Pau",
+   "nom_fd_domicile": "Red Star",
+   "nom_fd_exterieur": "Pau FC",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.17,
+     "attendu_exterieur": 3.995,
+     "attendu_total": 9.166,
+     "total": {
+      "7.5": 0.6738,
+      "8.5": 0.5529,
+      "9.5": 0.4322,
+      "10.5": 0.322,
+      "11.5": 0.2287,
+      "12.5": 0.1552
+     },
+     "domicile": {
+      "3.5": 0.6905,
+      "4.5": 0.5437,
+      "5.5": 0.4046,
+      "6.5": 0.2862
+     },
+     "exterieur": {
+      "3.5": 0.5293,
+      "4.5": 0.3681,
+      "5.5": 0.2392,
+      "6.5": 0.1466
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 2.075,
+     "attendu_exterieur": 2.531,
+     "attendu_total": 4.607,
+     "total": {
+      "2.5": 0.8279,
+      "3.5": 0.6659,
+      "4.5": 0.4839,
+      "5.5": 0.3177,
+      "6.5": 0.1894
+     },
+     "domicile": {
+      "0.5": 0.8745,
+      "1.5": 0.6139,
+      "2.5": 0.3436
+     },
+     "exterieur": {
+      "0.5": 0.9205,
+      "1.5": 0.7191,
+      "2.5": 0.4642
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.6738,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.6823,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "5rwr0a7gofe2vvqeal3kkp7h0",
+   "date": "2026-11-20",
+   "heure": "20:30",
+   "competition": "Allemagne : Bundesliga",
+   "division": "D1",
+   "domicile": "Bayern Munich",
+   "exterieur": "Cologne",
+   "nom_fd_domicile": "Bayern Munich",
+   "nom_fd_exterieur": "FC Koln",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 6.244,
+     "attendu_exterieur": 4.481,
+     "attendu_total": 10.725,
+     "total": {
+      "7.5": 0.8106,
+      "8.5": 0.7164,
+      "9.5": 0.6093,
+      "10.5": 0.498,
+      "11.5": 0.3907,
+      "12.5": 0.2944
+     },
+     "domicile": {
+      "3.5": 0.7924,
+      "4.5": 0.6712,
+      "5.5": 0.5425,
+      "6.5": 0.4198
+     },
+     "exterieur": {
+      "3.5": 0.6028,
+      "4.5": 0.4444,
+      "5.5": 0.3077,
+      "6.5": 0.2016
+     },
+     "matchs_domicile": 9,
+     "matchs_exterieur": 9
+    },
+    "cartons": {
+     "attendu_domicile": 1.754,
+     "attendu_exterieur": 2.269,
+     "attendu_total": 4.023,
+     "total": {
+      "2.5": 0.7559,
+      "3.5": 0.5647,
+      "4.5": 0.3755,
+      "5.5": 0.2232,
+      "6.5": 0.1196
+     },
+     "domicile": {
+      "0.5": 0.827,
+      "1.5": 0.5234,
+      "2.5": 0.2572
+     },
+     "exterieur": {
+      "0.5": 0.8966,
+      "1.5": 0.6619,
+      "2.5": 0.3957
+     },
+     "matchs_domicile": 9,
+     "matchs_exterieur": 9
+    },
+    "rouge": {
+     "taux_division": 0.1431,
+     "oui": 0.1333
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.652,
+     4.666
+    ],
+    "cartons": [
+     1.822,
+     2.075
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "8.5",
+     "cote": "plus",
+     "proba": 0.7164,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7768,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 4,
+     "matchs_exterieur": 4
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "10.5": {
+       "plus": 1.68,
+       "seuil_plus": 0.5952,
+       "moins": 2.06,
+       "seuil_moins": 0.4854,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.05,
+       "seuil_plus": 0.4878,
+       "moins": 1.69,
+       "seuil_moins": 0.5917,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 2.57,
+       "seuil_plus": 0.3891,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
+       "modele_au_dessus": "moins"
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 1.45,
+       "seuil_plus": 0.6897,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 10.42,
+       "seuil_plus": 0.096,
+       "modele_au_dessus": "plus"
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "4g05ozyz1hnxkitr0bfwd7llg",
+   "date": "2026-11-20",
+   "heure": "20:30",
+   "competition": "Espagne : Segunda Division",
+   "division": "SP2",
+   "domicile": "FC Andorra",
+   "exterieur": "Leganes",
+   "nom_fd_domicile": "Andorra",
+   "nom_fd_exterieur": "Leganes",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.511,
+     "attendu_exterieur": 4.029,
+     "attendu_total": 9.54,
+     "total": {
+      "7.5": 0.7117,
+      "8.5": 0.5962,
+      "9.5": 0.4769,
+      "10.5": 0.3642,
+      "11.5": 0.2657,
+      "12.5": 0.1854
+     },
+     "domicile": {
+      "3.5": 0.7271,
+      "4.5": 0.5878,
+      "5.5": 0.4506,
+      "6.5": 0.3291
+     },
+     "exterieur": {
+      "3.5": 0.5347,
+      "4.5": 0.3735,
+      "5.5": 0.2439,
+      "6.5": 0.1502
+     },
+     "matchs_domicile": 13,
+     "matchs_exterieur": 14
+    },
+    "cartons": {
+     "attendu_domicile": 2.799,
+     "attendu_exterieur": 3.464,
+     "attendu_total": 6.262,
+     "total": {
+      "2.5": 0.9406,
+      "3.5": 0.8581,
+      "4.5": 0.7351,
+      "5.5": 0.5862,
+      "6.5": 0.4337
+     },
+     "domicile": {
+      "0.5": 0.9391,
+      "1.5": 0.7687,
+      "2.5": 0.5302
+     },
+     "exterieur": {
+      "0.5": 0.9687,
+      "1.5": 0.8602,
+      "2.5": 0.6724
+     },
+     "matchs_domicile": 13,
+     "matchs_exterieur": 14
+    },
+    "rouge": {
+     "taux_division": 0.2483,
+     "oui": 0.2198
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.21,
+     4.247
+    ],
+    "cartons": [
+     2.48,
+     3.045
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7343,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "6.5",
+     "cote": "moins",
+     "proba": 0.5663,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.49,
+       "seuil_plus": 0.6711,
+       "moins": 2.22,
+       "seuil_moins": 0.4505,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 1.83,
+       "seuil_plus": 0.5464,
+       "moins": 1.75,
+       "seuil_moins": 0.5714,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.31,
+       "seuil_plus": 0.4329,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "e5ktiwgdmwl80uozrrewp2pec",
+   "date": "2026-11-20",
+   "heure": "20:30",
+   "competition": "Italie : Série B",
+   "division": "I2",
+   "domicile": "Hellas Verone",
+   "exterieur": "Cesena",
+   "nom_fd_domicile": "Verona",
+   "nom_fd_exterieur": "Cesena",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.323,
+     "attendu_exterieur": 4.386,
+     "attendu_total": 9.709,
+     "total": {
+      "7.5": 0.7278,
+      "8.5": 0.6149,
+      "9.5": 0.4967,
+      "10.5": 0.3834,
+      "11.5": 0.2829,
+      "12.5": 0.1998
+     },
+     "domicile": {
+      "3.5": 0.7074,
+      "4.5": 0.5638,
+      "5.5": 0.4254,
+      "6.5": 0.3054
+     },
+     "exterieur": {
+      "3.5": 0.5892,
+      "4.5": 0.4299,
+      "5.5": 0.2943,
+      "6.5": 0.1905
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 1.842,
+     "attendu_exterieur": 2.089,
+     "attendu_total": 3.931,
+     "total": {
+      "2.5": 0.7425,
+      "3.5": 0.5472,
+      "4.5": 0.358,
+      "5.5": 0.2091,
+      "6.5": 0.11
+     },
+     "domicile": {
+      "0.5": 0.8415,
+      "1.5": 0.5495,
+      "2.5": 0.2807
+     },
+     "exterieur": {
+      "0.5": 0.8762,
+      "1.5": 0.6175,
+      "2.5": 0.3473
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.1727,
+     "oui": 0.1586
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     4.999,
+     4.625
+    ],
+    "cartons": [
+     2.023,
+     2.043
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7171,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7909,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.45,
+       "seuil_plus": 0.6897,
+       "moins": 2.33,
+       "seuil_moins": 0.4292,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 1.75,
+       "seuil_plus": 0.5714,
+       "moins": 1.83,
+       "seuil_moins": 0.5464,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.19,
+       "seuil_plus": 0.4566,
+       "moins": 1.51,
+       "seuil_moins": 0.6623,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "392t25jcqfq7zr22jof8qlkpg",
+   "date": "2026-11-20",
+   "heure": "20:30",
+   "competition": "Écosse : Première Division",
+   "division": "SC1",
+   "domicile": "Inverness CT",
+   "exterieur": "Ayr Utd",
+   "nom_fd_domicile": "Inverness C",
+   "nom_fd_exterieur": "Ayr",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.401,
+     "attendu_exterieur": 4.265,
+     "attendu_total": 9.666,
+     "total": {
+      "7.5": 0.7238,
+      "8.5": 0.6102,
+      "9.5": 0.4918,
+      "10.5": 0.3786,
+      "11.5": 0.2786,
+      "12.5": 0.1961
+     },
+     "domicile": {
+      "3.5": 0.7158,
+      "4.5": 0.5739,
+      "5.5": 0.4359,
+      "6.5": 0.3152
+     },
+     "exterieur": {
+      "3.5": 0.5714,
+      "4.5": 0.4111,
+      "5.5": 0.2772,
+      "6.5": 0.1765
+     },
+     "matchs_domicile": 15,
+     "matchs_exterieur": 14
+    },
+    "cartons": {
+     "attendu_domicile": 1.893,
+     "attendu_exterieur": 2.251,
+     "attendu_total": 4.144,
+     "total": {
+      "2.5": 0.7726,
+      "3.5": 0.5871,
+      "4.5": 0.3982,
+      "5.5": 0.2421,
+      "6.5": 0.1328
+     },
+     "domicile": {
+      "0.5": 0.8494,
+      "1.5": 0.5643,
+      "2.5": 0.2944
+     },
+     "exterieur": {
+      "0.5": 0.8947,
+      "1.5": 0.6576,
+      "2.5": 0.3908
+     },
+     "matchs_domicile": 15,
+     "matchs_exterieur": 14
+    },
+    "rouge": {
+     "taux_division": 0.1339,
+     "oui": 0.1253
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.074,
+     4.584
+    ],
+    "cartons": [
+     1.753,
+     2.232
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7214,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7726,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "8qd5zu5zarju4v6b1djwrtams",
+   "date": "2026-11-20",
+   "heure": "20:45",
+   "competition": "Angleterre : Ligue Nationale",
+   "division": "EC",
+   "domicile": "Southend Utd",
+   "exterieur": "Boreham Wood",
+   "nom_fd_domicile": "Southend",
+   "nom_fd_exterieur": "Boreham Wood",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.184,
+     "attendu_exterieur": 4.605,
+     "attendu_total": 9.789,
+     "total": {
+      "7.5": 0.7352,
+      "8.5": 0.6236,
+      "9.5": 0.5061,
+      "10.5": 0.3926,
+      "11.5": 0.2912,
+      "12.5": 0.2068
+     },
+     "domicile": {
+      "3.5": 0.6921,
+      "4.5": 0.5455,
+      "5.5": 0.4065,
+      "6.5": 0.2879
+     },
+     "exterieur": {
+      "3.5": 0.62,
+      "4.5": 0.4632,
+      "5.5": 0.3253,
+      "6.5": 0.2164
+     },
+     "matchs_domicile": 17,
+     "matchs_exterieur": 17
+    },
+    "cartons": {
+     "attendu_domicile": 1.951,
+     "attendu_exterieur": 2.097,
+     "attendu_total": 4.048,
+     "total": {
+      "2.5": 0.7594,
+      "3.5": 0.5694,
+      "4.5": 0.3802,
+      "5.5": 0.2271,
+      "6.5": 0.1223
+     },
+     "domicile": {
+      "0.5": 0.8579,
+      "1.5": 0.5806,
+      "2.5": 0.3101
+     },
+     "exterieur": {
+      "0.5": 0.8771,
+      "1.5": 0.6195,
+      "2.5": 0.3495
+     },
+     "matchs_domicile": 17,
+     "matchs_exterieur": 17
+    },
+    "rouge": {
+     "taux_division": 0.2021,
+     "oui": 0.183
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.54,
+     4.442
+    ],
+    "cartons": [
+     1.996,
+     2.28
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7352,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7729,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "5gdujdjx9bu1r401onh3s0lqs",
+   "date": "2026-11-20",
+   "heure": "20:45",
+   "competition": "Belgique : Pro Ligue",
+   "division": "B1",
+   "domicile": "Cercle Bruges",
+   "exterieur": "Westerlo",
+   "nom_fd_domicile": "Cercle Brugge",
+   "nom_fd_exterieur": "Westerlo",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.732,
+     "attendu_exterieur": 4.535,
+     "attendu_total": 10.268,
+     "total": {
+      "7.5": 0.7762,
+      "8.5": 0.6732,
+      "9.5": 0.5603,
+      "10.5": 0.4469,
+      "11.5": 0.3416,
+      "12.5": 0.2503
+     },
+     "domicile": {
+      "3.5": 0.7487,
+      "4.5": 0.6146,
+      "5.5": 0.4794,
+      "6.5": 0.3568
+     },
+     "exterieur": {
+      "3.5": 0.6104,
+      "4.5": 0.4527,
+      "5.5": 0.3155,
+      "6.5": 0.2081
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 1.63,
+     "attendu_exterieur": 2.099,
+     "attendu_total": 3.73,
+     "total": {
+      "2.5": 0.711,
+      "3.5": 0.5075,
+      "4.5": 0.32,
+      "5.5": 0.1795,
+      "6.5": 0.0904
+     },
+     "domicile": {
+      "0.5": 0.8041,
+      "1.5": 0.4848,
+      "2.5": 0.2245
+     },
+     "exterieur": {
+      "0.5": 0.8775,
+      "1.5": 0.6202,
+      "2.5": 0.3502
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.2391,
+     "oui": 0.2127
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.461,
+     4.767
+    ],
+    "cartons": [
+     1.681,
+     2.182
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7762,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "4.5",
+     "cote": "moins",
+     "proba": 0.68,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "9.5": {
+       "plus": 1.64,
+       "seuil_plus": 0.6098,
+       "moins": 2.12,
+       "seuil_moins": 0.4717,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.01,
+       "seuil_plus": 0.4975,
+       "moins": 1.71,
+       "seuil_moins": 0.5848,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.54,
+       "seuil_plus": 0.3937,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 4.09,
+       "seuil_plus": 0.2445,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "a7sd9lvb0i7ehshj7ghxyscus",
+   "date": "2026-11-20",
+   "heure": "20:45",
+   "competition": "France : Ligue 1 McDonald's",
+   "division": "F1",
+   "domicile": "Troyes",
+   "exterieur": "Havre AC",
+   "nom_fd_domicile": "Troyes",
+   "nom_fd_exterieur": "Le Havre",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.818,
+     "attendu_exterieur": 4.168,
+     "attendu_total": 8.986,
+     "total": {
+      "7.5": 0.6544,
+      "8.5": 0.5313,
+      "9.5": 0.4105,
+      "10.5": 0.3019,
+      "11.5": 0.2117,
+      "12.5": 0.1417
+     },
+     "domicile": {
+      "3.5": 0.6481,
+      "4.5": 0.4945,
+      "5.5": 0.3555,
+      "6.5": 0.2424
+     },
+     "exterieur": {
+      "3.5": 0.5565,
+      "4.5": 0.3956,
+      "5.5": 0.2633,
+      "6.5": 0.1655
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "cartons": {
+     "attendu_domicile": 1.727,
+     "attendu_exterieur": 1.982,
+     "attendu_total": 3.708,
+     "total": {
+      "2.5": 0.7075,
+      "3.5": 0.5032,
+      "4.5": 0.316,
+      "5.5": 0.1764,
+      "6.5": 0.0885
+     },
+     "domicile": {
+      "0.5": 0.8221,
+      "1.5": 0.5149,
+      "2.5": 0.2498
+     },
+     "exterieur": {
+      "0.5": 0.8622,
+      "1.5": 0.589,
+      "2.5": 0.3184
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "rouge": {
+     "taux_division": 0.1405,
+     "oui": 0.1311
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     4.817,
+     4.412
+    ],
+    "cartons": [
+     1.809,
+     1.915
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7883,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 4
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7075,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 4
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "7.5": {
+       "plus": 1.47,
+       "seuil_plus": 0.6803,
+       "moins": 2.5,
+       "seuil_moins": 0.4,
+       "modele_au_dessus": null
+      },
+      "8.5": {
+       "plus": 1.79,
+       "seuil_plus": 0.5587,
+       "moins": 1.92,
+       "seuil_moins": 0.5208,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 2.27,
+       "seuil_plus": 0.4405,
+       "moins": 1.56,
+       "seuil_moins": 0.641,
+       "modele_au_dessus": null
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 3.48,
+       "seuil_plus": 0.2874,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 6.66,
+       "seuil_plus": 0.1502,
+       "modele_au_dessus": "plus"
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  },
+  {
+   "match_id": "21mfhrhzm4c87r2vzqwn0dedw",
+   "date": "2026-11-20",
+   "heure": "21:00",
+   "competition": "Angleterre : League One",
+   "division": "E2",
+   "domicile": "Barnsley",
+   "exterieur": "S. Wednesday",
+   "nom_fd_domicile": "Barnsley",
+   "nom_fd_exterieur": "Sheffield Weds",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 6.406,
+     "attendu_exterieur": 5.675,
+     "attendu_total": 12.081,
+     "total": {
+      "7.5": 0.8879,
+      "8.5": 0.8199,
+      "9.5": 0.7348,
+      "10.5": 0.6373,
+      "11.5": 0.534,
+      "12.5": 0.4318
+     },
+     "domicile": {
+      "3.5": 0.8045,
+      "4.5": 0.6874,
+      "5.5": 0.5613,
+      "6.5": 0.4391
+     },
+     "exterieur": {
+      "3.5": 0.7432,
+      "4.5": 0.6078,
+      "5.5": 0.472,
+      "6.5": 0.3496
+     },
+     "matchs_domicile": 13,
+     "matchs_exterieur": 14
+    },
+    "cartons": {
+     "attendu_domicile": 1.886,
+     "attendu_exterieur": 2.343,
+     "attendu_total": 4.229,
+     "total": {
+      "2.5": 0.7838,
+      "3.5": 0.6024,
+      "4.5": 0.4143,
+      "5.5": 0.2557,
+      "6.5": 0.1426
+     },
+     "domicile": {
+      "0.5": 0.8484,
+      "1.5": 0.5623,
+      "2.5": 0.2926
+     },
+     "exterieur": {
+      "0.5": 0.9039,
+      "1.5": 0.6789,
+      "2.5": 0.4153
+     },
+     "matchs_domicile": 13,
+     "matchs_exterieur": 14
+    },
+    "rouge": {
+     "taux_division": 0.1172,
+     "oui": 0.1106
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.775,
+     5.313
+    ],
+    "cartons": [
+     1.771,
+     2.107
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "12.5": {
+      "plus": 1,
+      "moins": 0
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "9.5",
+     "cote": "plus",
+     "proba": 0.7348,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7838,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "828rogo7p3et735q5pmlh2tck",
+   "date": "2026-11-20",
+   "heure": "21:00",
+   "competition": "Espagne : LaLiga",
+   "division": "SP1",
+   "domicile": "Ath. Bilbao",
+   "exterieur": "Espanyol",
+   "nom_fd_domicile": "Ath Bilbao",
+   "nom_fd_exterieur": "Espanol",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.622,
+     "attendu_exterieur": 4.156,
+     "attendu_total": 9.778,
+     "total": {
+      "7.5": 0.7342,
+      "8.5": 0.6224,
+      "9.5": 0.5048,
+      "10.5": 0.3913,
+      "11.5": 0.2901,
+      "12.5": 0.2058
+     },
+     "domicile": {
+      "3.5": 0.7381,
+      "4.5": 0.6014,
+      "5.5": 0.4652,
+      "6.5": 0.343
+     },
+     "exterieur": {
+      "3.5": 0.5547,
+      "4.5": 0.3938,
+      "5.5": 0.2617,
+      "6.5": 0.1642
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 2.417,
+     "attendu_exterieur": 2.618,
+     "attendu_total": 5.035,
+     "total": {
+      "2.5": 0.8682,
+      "3.5": 0.7287,
+      "4.5": 0.5585,
+      "5.5": 0.3898,
+      "6.5": 0.2484
+     },
+     "domicile": {
+      "0.5": 0.9108,
+      "1.5": 0.6953,
+      "2.5": 0.4348
+     },
+     "exterieur": {
+      "0.5": 0.927,
+      "1.5": 0.736,
+      "2.5": 0.486
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2479,
+     "oui": 0.2195
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.308,
+     4.441
+    ],
+    "cartons": [
+     2.281,
+     2.335
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7942,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "3.5",
+     "cote": "plus",
+     "proba": 0.7287,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "exterieur": {
+      "6.5": {
+       "plus": 9.8,
+       "seuil_plus": 0.102,
+       "modele_au_dessus": "plus"
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-17T04:27:04Z"
+  }
+ ]
 }
