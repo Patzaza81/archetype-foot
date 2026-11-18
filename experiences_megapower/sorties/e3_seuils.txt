@@ -1,0 +1,66 @@
+=== Brier / log-loss sur C (période de test) : base | moyenne simple | Megapower brut | Megapower calibré | méthode du marché
+1                    n= 596 taux=0.445 | 0.2469/0.687 | 0.2381/0.670 | 0.2361/0.665 | 0.2338/0.659 | 0.2334/0.658 | Δ méthode-vs-calibré -4.2±10.2e-4 vars=['ppm', 'pc']
+N                    n= 596 taux=0.250 | 0.1875/0.562 | 0.1863/0.559 | 0.1871/0.562 | 0.1870/0.561 | 0.1874/0.562 | Δ méthode-vs-calibré +4.3±4.0e-4 vars=['def_def']
+2                    n= 596 taux=0.305 | 0.2121/0.615 | 0.2002/0.586 | 0.1944/0.574 | 0.1938/0.573 | 0.1921/0.567 | Δ méthode-vs-calibré -17.2±14.6e-4 vars=['gd', 'att_att', 'def_def']
+1N                   n= 596 taux=0.695 | 0.2121/0.615 | 0.2002/0.586 | 0.1944/0.574 | 0.1938/0.573 | 0.1921/0.567 | Δ méthode-vs-calibré -17.2±14.6e-4 vars=['gd', 'att_att', 'def_def']
+N2                   n= 596 taux=0.555 | 0.2469/0.687 | 0.2381/0.670 | 0.2361/0.665 | 0.2338/0.659 | 0.2335/0.658 | Δ méthode-vs-calibré -2.8±9.6e-4 vars=['ppm']
+12                   n= 596 taux=0.750 | 0.1875/0.562 | 0.1863/0.559 | 0.1871/0.562 | 0.1870/0.561 | 0.1874/0.562 | Δ méthode-vs-calibré +4.3±4.0e-4 vars=['def_def']
+total_plus_0.5       n= 596 taux=0.941 | 0.0553/0.224 | 0.0559/0.225 | 0.0550/0.221 | 0.0551/0.222 | 0.0553/0.223 | Δ méthode-vs-calibré +1.7±2.8e-4 vars=['disp', 'xgd']
+total_plus_1.5       n= 596 taux=0.748 | 0.1901/0.569 | 0.1979/0.590 | 0.1905/0.570 | 0.1899/0.569 | 0.1902/0.569 | Δ méthode-vs-calibré +2.7±6.3e-4 vars=['ppm', 'pc']
+total_plus_2.5       n= 596 taux=0.520 | 0.2506/0.694 | 0.2557/0.706 | 0.2474/0.688 | 0.2474/0.688 | 0.2474/0.688 | Δ méthode-vs-calibré +0.0±0.0e-4 vars=[]
+total_moins_2.5      n= 596 taux=0.480 | 0.2506/0.694 | 0.2557/0.706 | 0.2474/0.688 | 0.2474/0.688 | 0.2474/0.688 | Δ méthode-vs-calibré +0.0±0.0e-4 vars=[]
+total_moins_3.5      n= 596 taux=0.690 | 0.2143/0.620 | 0.2157/0.626 | 0.2108/0.612 | 0.2105/0.611 | 0.2105/0.611 | Δ méthode-vs-calibré -0.1±4.5e-4 vars=['att_att']
+total_moins_4.5      n= 596 taux=0.844 | 0.1321/0.435 | 0.1318/0.437 | 0.1287/0.424 | 0.1292/0.425 | 0.1292/0.425 | Δ méthode-vs-calibré +0.0±0.0e-4 vars=[]
+btts_oui             n= 596 taux=0.530 | 0.2501/0.693 | 0.2610/0.718 | 0.2521/0.697 | 0.2506/0.694 | 0.2515/0.696 | Δ méthode-vs-calibré +8.2±13.3e-4 vars=['xgd']
+btts_non             n= 596 taux=0.470 | 0.2501/0.693 | 0.2610/0.718 | 0.2521/0.697 | 0.2506/0.694 | 0.2515/0.696 | Δ méthode-vs-calibré +8.2±13.3e-4 vars=['xgd']
+dom_plus_0.5         n= 596 taux=0.782 | 0.1708/0.525 | 0.1752/0.537 | 0.1706/0.525 | 0.1696/0.524 | 0.1685/0.520 | Δ méthode-vs-calibré -10.8±8.0e-4 vars=['xgd', 'gd']
+ext_plus_0.5         n= 596 taux=0.690 | 0.2146/0.621 | 0.2141/0.621 | 0.2090/0.608 | 0.2088/0.607 | 0.2105/0.612 | Δ méthode-vs-calibré +17.4±16.7e-4 vars=['ppm', 'xgd']
+multibuts_1-3        n= 596 taux=0.631 | 0.2330/0.659 | 0.2339/0.661 | 0.2315/0.656 | 0.2311/0.655 | 0.2301/0.653 | Δ méthode-vs-calibré -9.9±8.0e-4 vars=['disp']
+multibuts_2-4        n= 596 taux=0.592 | 0.2420/0.677 | 0.2434/0.680 | 0.2422/0.677 | 0.2420/0.677 | 0.2420/0.677 | Δ méthode-vs-calibré +0.2±13.1e-4 vars=['disp', 'gd']
+multibuts_1-4        n= 596 taux=0.785 | 0.1688/0.521 | 0.1691/0.521 | 0.1672/0.517 | 0.1671/0.516 | 0.1671/0.516 | Δ méthode-vs-calibré +0.0±0.0e-4 vars=[]
+1N&total_plus_1.5    n= 596 taux=0.517 | 0.2510/0.695 | 0.2437/0.680 | 0.2376/0.668 | 0.2376/0.668 | 0.2371/0.667 | Δ méthode-vs-calibré -5.7±13.6e-4 vars=['disp', 'gd', 'lam_B']
+N2&total_plus_1.5    n= 596 taux=0.423 | 0.2441/0.681 | 0.2354/0.663 | 0.2327/0.658 | 0.2318/0.655 | 0.2319/0.656 | Δ méthode-vs-calibré +1.3±12.5e-4 vars=['gd']
+1N&total_moins_3.5   n= 596 taux=0.482 | 0.2498/0.693 | 0.2427/0.677 | 0.2387/0.669 | 0.2388/0.669 | 0.2370/0.665 | Δ méthode-vs-calibré -18.1±13.0e-4 vars=['gd', 'lam_B']
+N2&total_moins_3.5   n= 596 taux=0.378 | 0.2350/0.663 | 0.2337/0.660 | 0.2286/0.650 | 0.2276/0.648 | 0.2274/0.647 | Δ méthode-vs-calibré -2.4±9.5e-4 vars=['gd', 'lam_B', 'xpts']
+
+=== Points de fonctionnement par marché (choisis sur B : borne basse de Wilson maximale, n_B>=30) et confirmation sur C
+1                    t*=0.68 | B n=  40 taux=0.750 LB=0.598 | C n=  27 taux=0.704 IC=[0.515;0.841] | semaines 2 min=0.724 max=0.765 | ligues≥30: 0 faibles: 0
+N                    aucun seuil avec 30 picks sur B
+2                    t*=0.50 | B n=  70 taux=0.643 LB=0.526 | C n=  72 taux=0.569 IC=[0.454;0.677] | semaines 3 min=0.500 max=0.631 | ligues≥30: 0 faibles: 0
+1N                   t*=0.84 | B n= 111 taux=0.856 LB=0.779 | C n=  79 taux=0.886 IC=[0.797;0.939] | semaines 3 min=0.861 max=0.877 | ligues≥30: 0 faibles: 0
+N2                   t*=0.66 | B n= 138 taux=0.775 LB=0.699 | C n= 142 taux=0.711 IC=[0.632;0.779] | semaines 3 min=0.677 max=0.758 | ligues≥30: 0 faibles: 0
+12                   t*=0.76 | B n= 182 taux=0.824 LB=0.762 | C n= 214 taux=0.776 IC=[0.715;0.826] | semaines 3 min=0.694 max=0.816 | ligues≥30: 0 faibles: 0
+total_plus_0.5       t*=0.94 | B n= 450 taux=0.971 LB=0.951 | C n= 427 taux=0.939 IC=[0.912;0.958] | semaines 3 min=0.920 max=0.969 | ligues≥30: 3 faibles: 1
+total_plus_1.5       t*=0.80 | B n= 231 taux=0.853 LB=0.801 | C n= 189 taux=0.820 IC=[0.759;0.868] | semaines 3 min=0.813 max=0.865 | ligues≥30: 1 faibles: 0
+total_plus_2.5       t*=0.54 | B n= 355 taux=0.614 LB=0.562 | C n= 320 taux=0.547 IC=[0.492;0.601] | semaines 3 min=0.515 max=0.612 | ligues≥30: 1 faibles: 0
+total_moins_2.5      t*=0.50 | B n=  92 taux=0.424 LB=0.328 | C n=  96 taux=0.521 IC=[0.422;0.618] | semaines 3 min=0.383 max=0.603 | ligues≥30: 0 faibles: 0
+total_moins_3.5      t*=0.66 | B n= 355 taux=0.727 LB=0.678 | C n= 386 taux=0.723 IC=[0.676;0.765] | semaines 3 min=0.693 max=0.729 | ligues≥30: 2 faibles: 1
+total_moins_4.5      t*=0.88 | B n=  34 taux=0.971 LB=0.851 | C n=  42 taux=0.881 IC=[0.750;0.948] | semaines 3 min=0.750 max=0.971 | ligues≥30: 0 faibles: 0
+btts_oui             t*=0.56 | B n= 338 taux=0.598 LB=0.545 | C n= 277 taux=0.509 IC=[0.450;0.567] | semaines 3 min=0.516 max=0.591 | ligues≥30: 2 faibles: 0
+btts_non             aucun seuil avec 30 picks sur B
+dom_plus_0.5         t*=0.84 | B n= 213 taux=0.892 LB=0.843 | C n= 188 taux=0.851 IC=[0.793;0.895] | semaines 3 min=0.848 max=0.883 | ligues≥30: 0 faibles: 0
+ext_plus_0.5         t*=0.84 | B n=  40 taux=0.925 LB=0.801 | C n=  34 taux=0.824 IC=[0.665;0.917] | semaines 2 min=0.829 max=0.914 | ligues≥30: 0 faibles: 0
+multibuts_1-3        t*=0.62 | B n= 337 taux=0.659 LB=0.607 | C n= 361 taux=0.662 IC=[0.612;0.709] | semaines 3 min=0.600 max=0.683 | ligues≥30: 2 faibles: 1
+multibuts_2-4        t*=0.60 | B n= 364 taux=0.659 LB=0.609 | C n= 379 taux=0.604 IC=[0.554;0.652] | semaines 3 min=0.604 max=0.661 | ligues≥30: 2 faibles: 0
+multibuts_1-4        t*=0.78 | B n= 278 taux=0.813 LB=0.763 | C n= 331 taux=0.804 IC=[0.757;0.843] | semaines 3 min=0.779 max=0.813 | ligues≥30: 2 faibles: 1
+1N&total_plus_1.5    t*=0.66 | B n= 130 taux=0.731 LB=0.649 | C n= 100 taux=0.670 IC=[0.573;0.754] | semaines 3 min=0.659 max=0.737 | ligues≥30: 0 faibles: 0
+N2&total_plus_1.5    t*=0.50 | B n= 152 taux=0.651 LB=0.573 | C n= 163 taux=0.589 IC=[0.512;0.662] | semaines 3 min=0.541 max=0.639 | ligues≥30: 0 faibles: 0
+1N&total_moins_3.5   t*=0.52 | B n= 170 taux=0.647 LB=0.573 | C n= 198 taux=0.581 IC=[0.511;0.647] | semaines 3 min=0.579 max=0.632 | ligues≥30: 0 faibles: 0
+N2&total_moins_3.5   t*=0.50 | B n=  59 taux=0.525 LB=0.400 | C n=  47 taux=0.596 IC=[0.453;0.724] | semaines 2 min=0.538 max=0.578 | ligues≥30: 0 faibles: 0
+
+=== Paires de marchés très corrélées (|phi| >= 0,7)
+-1.00 1 / N2
+-1.00 N / 12
+-1.00 total_plus_2.5 / total_moins_2.5
+-1.00 btts_oui / btts_non
+-1.00 2 / 1N
++0.89 total_moins_3.5 / multibuts_1-3
++0.84 total_moins_4.5 / multibuts_1-4
+-0.78 1 / N2&total_plus_1.5
++0.78 N2 / N2&total_plus_1.5
+-0.73 2 / 1N&total_plus_1.5
++0.73 1N / 1N&total_plus_1.5
++0.72 btts_oui / ext_plus_0.5
+-0.72 btts_non / ext_plus_0.5
+-0.70 1 / N2&total_moins_3.5
++0.70 N2 / N2&total_moins_3.5

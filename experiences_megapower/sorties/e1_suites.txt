@@ -1,0 +1,38 @@
+{'A': 1181, 'B': 602, 'C': 596} coupes 2026-10-26 2026-11-04 11
+sans suite {'A': 2.974801895608807, 'B': 3.037453310130447, 'C': 2.9805999466447646} 33
+sans_suite {'A': 2.974801895608807, 'B': 3.037453310130447, 'C': 2.9805999466447646} 
+arith|brute {'A': 3.00696, 'B': 3.05233, 'C': 2.99962} {'type': 'arith', 'theta': 0.1, 'win': 10, 'norm': False, 'decay': 0.8}
+arith|normalisee {'A': 3.00116, 'B': 3.0468, 'C': 2.99382} {'type': 'arith', 'theta': 0.1, 'win': 10, 'norm': True, 'decay': 0.8}
+geo|brute {'A': 2.99686, 'B': 3.04683, 'C': 2.99408} {'type': 'geo', 'theta': 0.1, 'win': 6, 'norm': False, 'decay': 0.8}
+geo|normalisee {'A': 2.99543, 'B': 3.0434, 'C': 2.9897} {'type': 'geo', 'theta': 0.1, 'win': 6, 'norm': True, 'decay': 0.8}
+both|brute {'A': 3.00163, 'B': 3.04946, 'C': 2.99717} {'type': 'both', 'theta': 0.1, 'win': 6, 'norm': False, 'decay': 0.8}
+both|normalisee {'A': 2.99812, 'B': 3.0457, 'C': 2.99119} {'type': 'both', 'theta': 0.1, 'win': 6, 'norm': True, 'decay': 0.8}
+ols|brute {'A': 2.99404, 'B': 3.04324, 'C': 2.99071} {'type': 'ols', 'theta': 0.1, 'win': 10, 'norm': False, 'decay': 0.8}
+ols|normalisee {'A': 2.98973, 'B': 3.04185, 'C': 2.98907} {'type': 'ols', 'theta': 0.1, 'win': 10, 'norm': True, 'decay': 0.8}
+ewma|brute {'A': 2.97488, 'B': 3.03702, 'C': 2.98043} {'type': 'ewma', 'theta': 0.1, 'win': 3, 'norm': False, 'decay': 0.85}
+ewma|normalisee {'A': 2.97486, 'B': 3.03698, 'C': 2.98034} {'type': 'ewma', 'theta': 0.1, 'win': 3, 'norm': True, 'decay': 0.85}
+\nMarché | meilleure variante sur B (choisie) | écart B (±se) | écart C (±se) | verdict
+1                     |ewma_norm      | +1.42 ±1.25 | -1.42 ±1.42 | inutile
+N                     |ewma_norm      | -0.22 ±0.40 | +0.20 ±0.42 | inutile
+2                     |ewma_norm      | +0.66 ±1.10 | -0.09 ±1.35 | inutile
+1N                    |ewma_norm      | +0.66 ±1.10 | -0.09 ±1.35 | inutile
+N2                    |ewma_norm      | +1.42 ±1.25 | -1.42 ±1.42 | inutile
+12                    |ewma_norm      | -0.22 ±0.40 | +0.20 ±0.42 | inutile
+total_plus_0.5        |C_geo_brute    | -0.51 ±2.77 | +3.46 ±2.65 | inutile
+total_plus_1.5        |ewma_brute     | +0.03 ±0.99 | -0.14 ±1.06 | inutile
+total_plus_2.5        |ewma_brute     | -1.30 ±1.63 | +0.74 ±1.65 | inutile
+total_moins_2.5       |ewma_brute     | -1.30 ±1.63 | +0.74 ±1.65 | inutile
+total_moins_3.5       |C_geo_brute    | -3.65 ±20.87 | +11.17 ±19.64 | inutile
+total_moins_4.5       |ewma_brute     | -1.37 ±0.97 | -0.83 ±0.90 | inutile
+btts_oui              |ols_norm       | -6.27 ±13.03 | +0.34 ±12.91 | inutile
+btts_non              |ols_norm       | -6.27 ±13.03 | +0.34 ±12.91 | inutile
+dom_plus_0.5          |B_arith_brute  | -14.25 ±13.55 | +18.51 ±14.55 | inutile
+ext_plus_0.5          |ewma_norm      | -0.19 ±1.04 | +0.81 ±1.07 | inutile
+multibuts_1-3         |E_norm_arith   | -3.57 ±18.25 | +6.90 ±17.28 | inutile
+multibuts_2-4         |ols_brute      | -0.83 ±5.40 | +1.80 ±5.32 | inutile
+multibuts_1-4         |E_norm_geo     | -0.80 ±11.70 | +8.59 ±10.34 | inutile
+1N&total_plus_1.5     |ewma_norm      | +0.92 ±1.22 | -0.68 ±1.26 | inutile
+N2&total_plus_1.5     |ewma_brute     | +1.28 ±1.35 | -0.07 ±1.57 | inutile
+1N&total_moins_3.5    |ewma_brute     | -1.07 ±1.46 | +0.71 ±1.53 | inutile
+N2&total_moins_3.5    |ewma_norm      | -0.11 ±1.14 | -0.64 ±1.19 | inutile
+37 s

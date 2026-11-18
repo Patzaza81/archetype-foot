@@ -1,0 +1,44 @@
+référence megapower v2 2379 {'A': 2.9748, 'B': 3.03745, 'C': 2.9806}
+
+-- attaque/défense : xG vs buts
+poids du xG = 0.0                                {'A': 2.985, 'B': 3.0382, 'C': 2.98268} Δ vs réf B/C: 0.00075 0.00208
+poids du xG = 0.5                                {'A': 2.97915, 'B': 3.03674, 'C': 2.98066} Δ vs réf B/C: -0.00072 6e-05
+poids du xG = 1.0                                {'A': 2.9748, 'B': 3.03745, 'C': 2.9806} Δ vs réf B/C: 0.0 0.0
+
+-- référentiel du championnat (rapprochement de la ligue vers la moyenne générale : 0 = moyenne propre à la ligue)
+pseudo-matchs de ligue = 0.0                     {'A': 2.98487, 'B': 3.0433, 'C': 2.99073} Δ vs réf B/C: 0.00584 0.01013
+pseudo-matchs de ligue = 20.0                    {'A': 2.98136, 'B': 3.0412, 'C': 2.98791} Δ vs réf B/C: 0.00374 0.00731
+pseudo-matchs de ligue = 100.0                   {'A': 2.97735, 'B': 3.03867, 'C': 2.98424} Δ vs réf B/C: 0.00122 0.00364
+pseudo-matchs de ligue = 500.0                   {'A': 2.97529, 'B': 3.03758, 'C': 2.98173} Δ vs réf B/C: 0.00013 0.00113
+pseudo-matchs de ligue = 2342.0                  {'A': 2.97487, 'B': 3.03746, 'C': 2.98083} Δ vs réf B/C: 1e-05 0.00023
+pseudo-matchs de ligue = 10000.0                 {'A': 2.9748, 'B': 3.03745, 'C': 2.9806} Δ vs réf B/C: 0.0 0.0
+
+-- rapprochement des équipes (pseudo-matchs neutres)
+pseudo-matchs d'équipe = 4.0                     {'A': 3.06179, 'B': 3.11892, 'C': 3.07314} Δ vs réf B/C: 0.08146 0.09254
+pseudo-matchs d'équipe = 8.0                     {'A': 3.0039, 'B': 3.06528, 'C': 3.01271} Δ vs réf B/C: 0.02783 0.03211
+pseudo-matchs d'équipe = 16.0                    {'A': 2.9748, 'B': 3.03745, 'C': 2.9806} Δ vs réf B/C: 0.0 0.0
+pseudo-matchs d'équipe = 32.0                    {'A': 2.96722, 'B': 3.02953, 'C': 2.97088} Δ vs réf B/C: -0.00792 -0.00972
+pseudo-matchs d'équipe = 64.0                    {'A': 2.96932, 'B': 3.03094, 'C': 2.97164} Δ vs réf B/C: -0.00652 -0.00896
+
+-- situation compétitive (coefficient ajusté sur A, évalué sur B et C)
+sans classement                                  A=3.00417 B=3.07765 C=2.99009
+écart ppm                                        β=+0.376 A=2.97876 B=3.04118 C=2.97763
+écart gd                                         β=+0.274 A=2.97355 B=3.03737 C=2.97585
+écart xgd                                        β=+0.386 A=2.99813 B=3.06475 C=2.98032
+écart xpts                                       β=+0.743 A=2.99730 B=3.06461 C=2.97999
+écart surperf                                    β=-0.105 A=3.00396 B=3.08084 C=2.99090
+
+-- tendance : valeurs de θ plus petites que celles du premier balayage (arith/géo, normalisée, fenêtre 6)
+arith  θ=0.0   A=2.97480 B=3.03745 C=2.98060
+arith  θ=0.02  A=2.97647 B=3.03611 C=2.97992
+arith  θ=0.05  A=2.98249 B=3.03749 C=2.98197
+arith  θ=0.1   A=3.00176 B=3.04885 C=2.99343
+geo    θ=0.0   A=2.97480 B=3.03745 C=2.98060
+geo    θ=0.02  A=2.97624 B=3.03591 C=2.97992
+geo    θ=0.05  A=2.98097 B=3.03619 C=2.98129
+geo    θ=0.1   A=2.99543 B=3.04340 C=2.98970
+ewma   θ=0.0   A=2.97480 B=3.03745 C=2.98060
+ewma   θ=0.02  A=2.97481 B=3.03728 C=2.98054
+ewma   θ=0.05  A=2.97485 B=3.03706 C=2.98049
+ewma   θ=0.1   A=2.97499 B=3.03675 C=2.98046
+42 s

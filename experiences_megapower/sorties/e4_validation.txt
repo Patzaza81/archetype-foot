@@ -1,0 +1,142 @@
+marché | seuil B | taux de base C | C : n, réussis, taux, IC95 | lift | verdict
+1                    | t=0.68 | base=0.445 | n= 27 h= 19 taux=0.704 IC=[0.515;0.841] | lift=+25.9 pts z=+2.7 | VALIDÉ
+N                    | aucun seuil exploitable
+2                    | t=0.50 | base=0.305 | n= 72 h= 41 taux=0.569 IC=[0.454;0.677] | lift=+26.4 pts z=+4.9 | VALIDÉ
+1N                   | t=0.84 | base=0.695 | n= 79 h= 70 taux=0.886 IC=[0.797;0.939] | lift=+19.1 pts z=+3.7 | VALIDÉ
+N2                   | t=0.66 | base=0.555 | n=142 h=101 taux=0.711 IC=[0.632;0.779] | lift=+15.6 pts z=+3.7 | VALIDÉ
+12                   | t=0.76 | base=0.750 | n=214 h=166 taux=0.776 IC=[0.715;0.826] | lift=+2.6 pts z=+0.9 | non validé
+total_plus_0.5       | t=0.94 | base=0.941 | n=427 h=401 taux=0.939 IC=[0.912;0.958] | lift=-0.2 pts z=-0.2 | non validé
+total_plus_1.5       | t=0.80 | base=0.748 | n=189 h=155 taux=0.820 IC=[0.759;0.868] | lift=+7.2 pts z=+2.3 | VALIDÉ
+total_plus_2.5       | t=0.54 | base=0.520 | n=320 h=175 taux=0.547 IC=[0.492;0.601] | lift=+2.7 pts z=+1.0 | non validé
+total_moins_2.5      | t=0.50 | base=0.480 | n= 96 h= 50 taux=0.521 IC=[0.422;0.618] | lift=+4.1 pts z=+0.8 | non validé
+total_moins_3.5      | t=0.66 | base=0.690 | n=386 h=279 taux=0.723 IC=[0.676;0.765] | lift=+3.3 pts z=+1.4 | non validé
+total_moins_4.5      | t=0.88 | base=0.844 | n= 42 h= 37 taux=0.881 IC=[0.750;0.948] | lift=+3.7 pts z=+0.7 | non validé
+btts_oui             | t=0.56 | base=0.530 | n=277 h=141 taux=0.509 IC=[0.450;0.567] | lift=-2.1 pts z=-0.7 | non validé
+btts_non             | aucun seuil exploitable
+dom_plus_0.5         | t=0.84 | base=0.782 | n=188 h=160 taux=0.851 IC=[0.793;0.895] | lift=+6.9 pts z=+2.3 | VALIDÉ
+ext_plus_0.5         | t=0.84 | base=0.690 | n= 34 h= 28 taux=0.824 IC=[0.665;0.917] | lift=+13.4 pts z=+1.7 | non validé
+multibuts_1-3        | t=0.62 | base=0.631 | n=361 h=239 taux=0.662 IC=[0.612;0.709] | lift=+3.1 pts z=+1.2 | non validé
+multibuts_2-4        | t=0.60 | base=0.592 | n=379 h=229 taux=0.604 IC=[0.554;0.652] | lift=+1.2 pts z=+0.5 | non validé
+multibuts_1-4        | t=0.78 | base=0.785 | n=331 h=266 taux=0.804 IC=[0.757;0.843] | lift=+1.8 pts z=+0.8 | non validé
+1N&total_plus_1.5    | t=0.66 | base=0.517 | n=100 h= 67 taux=0.670 IC=[0.573;0.754] | lift=+15.3 pts z=+3.1 | VALIDÉ
+N2&total_plus_1.5    | t=0.50 | base=0.423 | n=163 h= 96 taux=0.589 IC=[0.512;0.662] | lift=+16.6 pts z=+4.3 | VALIDÉ
+1N&total_moins_3.5   | t=0.52 | base=0.482 | n=198 h=115 taux=0.581 IC=[0.511;0.647] | lift=+9.9 pts z=+2.8 | VALIDÉ
+N2&total_moins_3.5   | t=0.50 | base=0.378 | n= 47 h= 28 taux=0.596 IC=[0.453;0.724] | lift=+21.8 pts z=+3.1 | VALIDÉ
+validés: ['1', '2', '1N', 'N2', 'total_plus_1.5', 'dom_plus_0.5', '1N&total_plus_1.5', 'N2&total_plus_1.5', '1N&total_moins_3.5', 'N2&total_moins_3.5']
+
+-- 1N
+  B [0.50;0.60) n=  81 rate=0.5926 IC=[0.4838;0.693]
+  C [0.50;0.60) n=  79 rate=0.557 IC=[0.4473;0.6613]
+  B [0.60;0.70) n= 119 rate=0.6807 IC=[0.5924;0.7577]
+  C [0.60;0.70) n= 136 rate=0.6838 IC=[0.6015;0.756]
+  B [0.70;0.75) n=  61 rate=0.7869 IC=[0.6688;0.871]
+  C [0.70;0.75) n=  76 rate=0.6974 IC=[0.5867;0.7891]
+  B [0.75;0.80) n= 101 rate=0.7822 IC=[0.6922;0.8515]
+  C [0.75;0.80) n=  92 rate=0.8152 IC=[0.7239;0.8813]
+  B [0.80;0.85) n=  77 rate=0.8182 IC=[0.7176;0.8885]
+  C [0.80;0.85) n=  76 rate=0.7763 IC=[0.6707;0.8554]
+  B [0.85;0.90) n=  51 rate=0.8235 IC=[0.6975;0.9043]
+  C [0.85;0.90) n=  42 rate=0.9048 IC=[0.7793;0.9623]
+  B [0.90;0.95) n=  38 rate=0.8421 IC=[0.6958;0.9256]
+  C [0.90;0.95) n=  22 rate=0.9091 IC=[0.7218;0.9747]
+  B [0.95;1.00) n=   4 rate=1.0 IC=[0.5101;1.0]
+  C [0.95;1.00) n=   1 rate=1.0 IC=[0.2065;1.0]
+
+-- 12
+  B [0.60;0.70) n=   7 rate=0.8571 IC=[0.4869;0.9743]
+  C [0.60;0.70) n=   6 rate=1.0 IC=[0.6097;1.0]
+  B [0.70;0.75) n= 343 rate=0.7434 IC=[0.6947;0.7868]
+  C [0.70;0.75) n= 276 rate=0.7283 IC=[0.6729;0.7773]
+  B [0.75;0.80) n= 198 rate=0.8232 IC=[0.7641;0.8701]
+  C [0.75;0.80) n= 261 rate=0.7586 IC=[0.7032;0.8065]
+  B [0.80;0.85) n=  48 rate=0.8125 IC=[0.6806;0.8981]
+  C [0.80;0.85) n=  39 rate=0.7949 IC=[0.6447;0.8922]
+  B [0.85;0.90) n=   6 rate=1.0 IC=[0.6097;1.0]
+  C [0.85;0.90) n=  11 rate=0.7273 IC=[0.4343;0.9025]
+  C [0.90;0.95) n=   3 rate=1.0 IC=[0.4385;1.0]
+
+-- total_plus_1.5
+  B [0.60;0.70) n=   5 rate=1.0 IC=[0.5655;1.0]
+  C [0.60;0.70) n=   2 rate=1.0 IC=[0.3424;1.0]
+  B [0.70;0.75) n=  71 rate=0.8169 IC=[0.7115;0.8898]
+  C [0.70;0.75) n=  63 rate=0.7937 IC=[0.6783;0.8752]
+  B [0.75;0.80) n= 295 rate=0.7831 IC=[0.7325;0.8263]
+  C [0.75;0.80) n= 342 rate=0.6988 IC=[0.6482;0.745]
+  B [0.80;0.85) n= 201 rate=0.8607 IC=[0.806;0.9018]
+  C [0.80;0.85) n= 169 rate=0.8166 IC=[0.7514;0.8677]
+  B [0.85;0.90) n=  25 rate=0.84 IC=[0.6535;0.936]
+  C [0.85;0.90) n=  20 rate=0.85 IC=[0.6396;0.9476]
+  B [0.90;0.95) n=   5 rate=0.6 IC=[0.2307;0.8824]
+
+-- dom_plus_0.5
+  B [0.50;0.60) n=   8 rate=0.25 IC=[0.0715;0.5907]
+  C [0.50;0.60) n=  13 rate=0.3846 IC=[0.1771;0.6448]
+  B [0.60;0.70) n=  57 rate=0.6491 IC=[0.5194;0.76]
+  C [0.60;0.70) n=  53 rate=0.7358 IC=[0.6042;0.8356]
+  B [0.70;0.75) n=  82 rate=0.7073 IC=[0.6013;0.7947]
+  C [0.70;0.75) n=  94 rate=0.8085 IC=[0.7175;0.8753]
+  B [0.75;0.80) n= 129 rate=0.814 IC=[0.7381;0.8717]
+  C [0.75;0.80) n= 146 rate=0.7329 IC=[0.6558;0.798]
+  B [0.80;0.85) n= 137 rate=0.8467 IC=[0.777;0.8975]
+  C [0.80;0.85) n= 129 rate=0.7907 IC=[0.7126;0.852]
+  B [0.85;0.90) n= 114 rate=0.8772 IC=[0.8044;0.9254]
+  C [0.85;0.90) n= 118 rate=0.839 IC=[0.7622;0.8944]
+  B [0.90;0.95) n=  63 rate=0.9206 IC=[0.8273;0.9656]
+  C [0.90;0.95) n=  34 rate=0.8824 IC=[0.7338;0.9533]
+  B [0.95;1.00) n=  12 rate=0.8333 IC=[0.552;0.953]
+  C [0.95;1.00) n=   8 rate=0.875 IC=[0.5291;0.9776]
+
+-- total_moins_3.5
+  B [0.50;0.60) n=  65 rate=0.5538 IC=[0.4334;0.6683]
+  C [0.50;0.60) n=  60 rate=0.5667 IC=[0.441;0.6843]
+  B [0.60;0.70) n= 346 rate=0.6676 IC=[0.6164;0.7152]
+  C [0.60;0.70) n= 306 rate=0.7026 IC=[0.6491;0.7511]
+  B [0.70;0.75) n= 134 rate=0.7388 IC=[0.6585;0.8058]
+  C [0.70;0.75) n= 182 rate=0.7143 IC=[0.6448;0.775]
+  B [0.75;0.80) n=  37 rate=0.6486 IC=[0.4876;0.7817]
+  C [0.75;0.80) n=  34 rate=0.7353 IC=[0.5688;0.854]
+  B [0.80;0.85) n=   6 rate=1.0 IC=[0.6097;1.0]
+  C [0.80;0.85) n=   4 rate=1.0 IC=[0.5101;1.0]
+  B [0.85;0.90) n=   1 rate=0.0 IC=[0.0;0.7935]
+
+-- multibuts_1-4
+  B [0.50;0.60) n=   3 rate=1.0 IC=[0.4385;1.0]
+  C [0.50;0.60) n=   4 rate=0.5 IC=[0.15;0.85]
+  B [0.60;0.70) n=  27 rate=0.5185 IC=[0.3399;0.6926]
+  C [0.60;0.70) n=  30 rate=0.7667 IC=[0.5907;0.8821]
+  B [0.70;0.75) n=  91 rate=0.7692 IC=[0.6728;0.8438]
+  C [0.70;0.75) n=  70 rate=0.7429 IC=[0.6297;0.8307]
+  B [0.75;0.80) n= 433 rate=0.7829 IC=[0.7417;0.8192]
+  C [0.75;0.80) n= 354 rate=0.791 IC=[0.7456;0.8301]
+  B [0.80;0.85) n=  48 rate=0.7917 IC=[0.6574;0.8827]
+  C [0.80;0.85) n= 137 rate=0.8102 IC=[0.7364;0.8671]
+
+-- 1
+  B [0.50;0.60) n= 137 rate=0.6277 IC=[0.5443;0.7042]
+  C [0.50;0.60) n= 133 rate=0.5338 IC=[0.4493;0.6165]
+  B [0.60;0.70) n=  60 rate=0.5 IC=[0.3773;0.6227]
+  C [0.60;0.70) n=  52 rate=0.5962 IC=[0.4607;0.7184]
+  B [0.70;0.75) n=  14 rate=0.8571 IC=[0.6006;0.9599]
+  C [0.70;0.75) n=  14 rate=0.7857 IC=[0.5241;0.9243]
+  B [0.75;0.80) n=  10 rate=0.7 IC=[0.3968;0.8922]
+  C [0.75;0.80) n=   6 rate=0.5 IC=[0.1876;0.8124]
+  B [0.80;0.85) n=   5 rate=1.0 IC=[0.5655;1.0]
+  C [0.80;0.85) n=   1 rate=1.0 IC=[0.2065;1.0]
+  C [0.85;0.90) n=   1 rate=1.0 IC=[0.2065;1.0]
+
+== Championnats (marchés validés, au seuil retenu, B∪C) : championnat | matchs | pronostics | réussite | réussite annoncée
+total [2519, 1851]
+Italie : Série C Girone A                  n= 121 réussite=0.686 IC=[0.599;0.762] annoncé=0.684
+Etats-Unis : MLS                           n= 109 réussite=0.817 IC=[0.734;0.878] annoncé=0.823
+Angleterre : Championnat                   n=  88 réussite=0.716 IC=[0.614;0.800] annoncé=0.721
+Angleterre : Ligue Nationale               n=  76 réussite=0.750 IC=[0.642;0.834] annoncé=0.741
+Pays-Bas : Eerste Divisie                  n=  67 réussite=0.776 IC=[0.663;0.859] annoncé=0.790
+Portugal : Primeira Liga                   n=  61 réussite=0.770 IC=[0.651;0.858] annoncé=0.720
+Pays de Galles : Cymru Premier             n=  55 réussite=0.727 IC=[0.598;0.827] annoncé=0.763
+Slovaquie : Super Ligue                    n=  51 réussite=0.882 IC=[0.766;0.945] annoncé=0.753
+Turquie : Super Ligue                      n=  50 réussite=0.860 IC=[0.738;0.930] annoncé=0.743
+Espagne : LaLiga                           n=  49 réussite=0.837 IC=[0.710;0.915] annoncé=0.721
+Italie : Serie A                           n=  47 réussite=0.723 IC=[0.582;0.831] annoncé=0.734
+Brésil : Série A                           n=  45 réussite=0.778 IC=[0.637;0.875] annoncé=0.703
+Turquie : TFF 1. Ligue                     n=  44 réussite=0.523 IC=[0.379;0.662] annoncé=0.693
+Espagne : Première Division RFEF Groupe 1  n=  44 réussite=0.477 IC=[0.338;0.621] annoncé=0.658
