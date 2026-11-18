@@ -1,13 +1,8 @@
-// Page du moteur MEGAPOWER : lecture seule de data/megapower/pronostics.json (écrit par `python -m megapower.suivi`). Aucun calcul ici.
+// Page du moteur MEGAPOWER v2 (aucune cote) : lecture seule de data/megapower/pronostics.json (écrit par `python -m megapower.suivi`). Aucun calcul ici.
 const MP_CLE_THEME = "archetype_theme_nuit";
 function mpE(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
-function mpCote(x) { const n = Number(x); return Number.isFinite(n) && n > 1 ? n.toFixed(2).replace(".", ",") : "—"; }
 function mpPct(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 100) + " %" : "—"; }
-function mpSigne(x) {
-  const n = Number(x);
-  if (!Number.isFinite(n)) return "—";
-  return `<span class="${n >= 0 ? "mp-pos" : "mp-neg"}">${n >= 0 ? "+" : "−"}${Math.abs(n * 100).toFixed(1).replace(".", ",")}</span>`;
-}
+function mpNb(x) { const n = Number(x); return Number.isFinite(n) ? n.toFixed(1).replace(".", ",") : "—"; }
 function mpHoraire(ko) {          // coup d'envoi UTC -> heure du Cameroun (UTC+1)
   const d = new Date(ko);
   if (Number.isNaN(d.getTime())) return { heure: "", date: "" };
@@ -15,17 +10,19 @@ function mpHoraire(ko) {          // coup d'envoi UTC -> heure du Cameroun (UTC+
   const p = (n) => String(n).padStart(2, "0");
   return { heure: `${p(l.getUTCHours())}:${p(l.getUTCMinutes())}`, date: `${p(l.getUTCDate())}/${p(l.getUTCMonth() + 1)}` };
 }
-function mpPourquoi(p) {
-  const pour = (p.lectures || []).filter((x) => x.pour).map((x) => x.moteur), contre = (p.lectures || []).filter((x) => !x.pour).map((x) => x.moteur);
-  const l = [];
-  l.push(`<div class="om-info">Sur les matchs déjà joués, un pari de ce type à cette cote passe <b>${mpPct(p.reussite_apprise)}</b> du temps. Il faut <b>${mpPct(p.reussite_pour_rembourser)}</b> pour ne pas perdre d'argent à la cote ${mpCote(p.cote)}.</div>`);
-  l.push(`<div class="om-info">Gain attendu pour 100 misés : ${mpSigne(p.gain_attendu)} (au pire, selon les données : ${mpSigne(p.gain_attendu_bas)}).</div>`);
-  if (pour.length || contre.length) l.push(`<div class="om-info">Moteurs qui voient ce pari plus probable que la cote : <b>${pour.length ? pour.map(mpE).join(", ") : "aucun"}</b>${contre.length ? ` · moins probable : ${contre.map(mpE).join(", ")}` : ""}.</div>`);
-  return l.join("");
+function mpSur10(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 10) : null; }
+function mpLigne(p) {
+  const badge = p.resultat ? `<span class="om-badge om-${mpE(p.resultat)}">${p.resultat === "WIN" ? "GAGNÉ" : "PERDU"}</span>` : "";
+  const s = mpSur10(p.fiabilite);
+  return `<div class="om-ligne mp-pari"><span>${mpE(p.libelle)}</span><span><span class="mp-fiab">${s == null ? "—" : s + " sur 10"}</span> ${badge}</span></div>`;
+}
+function mpDetail(f) {
+  const l = (f.paris || []).map((p) => `<tr><td style="text-align:left">${mpE(p.libelle)}</td><td>${mpPct(p.fiabilite)}</td><td>${mpPct(p.modele)}</td><td>${mpPct(p.catastrophe)}</td></tr>`).join("");
+  return `<details class="mp-det"><summary>Les chiffres</summary><div class="mp-table-zone"><table class="om-table"><tr><th>Pronostic</th><th>Fiabilité mesurée</th><th>Cas normal</th><th>Pire cas</th></tr>${l}</table></div>` +
+    `<div class="om-info">Fiabilité mesurée = part des pronostics de ce type qui se sont réalisés sur des matchs comparables jamais vus par le moteur.</div></details>`;
 }
 function mpCarte(f) {
-  const p = f.pari || {}, h = mpHoraire(f.coup_d_envoi_utc), prouve = p.statut === "prouvé";
-  const badge = f.resultat ? `<span class="om-badge om-${mpE(f.resultat)}">${f.resultat === "WIN" ? "GAGNÉ" : "PERDU"}</span>` : "";
+  const h = mpHoraire(f.coup_d_envoi_utc), ba = f.buts_attendus || [];
   const s = document.createElement("section");
   s.className = "ax-carte";
   s.innerHTML =
@@ -33,9 +30,8 @@ function mpCarte(f) {
     `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mpE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
     `<div class="om-corps">` + (f.score ? `<div class="om-info">Score final <strong>${mpE(f.score.join("-"))}</strong></div>` : "") +
-    `<div class="om-ligne om-principal"><span>${mpE(p.libelle)}</span><span><span class="om-cote">Cote ${mpCote(p.cote)}</span> ${badge}</span></div>` +
-    `<span class="mp-tag ${prouve ? "mp-tag-ok" : "mp-tag-non"}">${prouve ? "Pari prouvé : le gain reste positif même dans le pire cas mesuré" : "Sous observation : gain non prouvé, à ne pas jouer"}</span>` +
-    mpPourquoi(p) + `</div>`;
+    (ba.length === 2 ? `<div class="om-info">Buts attendus : ${mpE(f.domicile)} ${mpNb(ba[0])} · ${mpE(f.exterieur)} ${mpNb(ba[1])} (sur ${f.n_domicile} matchs à domicile et ${f.n_exterieur} à l'extérieur)</div>` : "") +
+    (f.paris || []).map(mpLigne).join("") + mpDetail(f) + `</div>`;
   return s;
 }
 function mpListe(id, liste, vide) {
@@ -46,46 +42,43 @@ function mpListe(id, liste, vide) {
 }
 function mpVerdict(d) {
   const n = (d.a_venir || []).length, a = Number(d.matchs_a_venir_analyses) || 0;
-  if (n) return `<div class="mp-verdict mp-ok"><b class="mp-gros">${n} pari${n > 1 ? "s" : ""} prouvé${n > 1 ? "s" : ""} à venir</b><p>Sur ${a} match${a > 1 ? "s" : ""} analysé${a > 1 ? "s" : ""}.</p></div>`;
-  return `<div class="mp-verdict"><b class="mp-gros">Aujourd'hui : ne rien jouer</b>` +
-    `<p>${a} match${a > 1 ? "s" : ""} à venir analysé${a > 1 ? "s" : ""}. Aucun pari ne rapporte de façon prouvée : la cote du bookmaker est trop basse par rapport à la réussite réelle.</p></div>`;
+  if (n) return `<div class="mp-verdict mp-ok"><b class="mp-gros">${n} match${n > 1 ? "s" : ""} avec des pronostics fiables</b><p>Sur ${a} match${a > 1 ? "s" : ""} analysé${a > 1 ? "s" : ""}. Chaque pronostic est classé du plus fiable au moins fiable.</p></div>`;
+  return `<div class="mp-verdict"><b class="mp-gros">Aucun pronostic assez fiable pour l'instant</b><p>${a} match${a > 1 ? "s" : ""} à venir analysé${a > 1 ? "s" : ""}.</p></div>`;
 }
-function mpLigneBilan(nom, s) {
-  return s && s.paris > 0 ? `<tr><td>${nom}</td><td>${s.paris}</td><td>${mpPct(s.reussite)}</td><td>${mpCote(s.cote_moyenne)}</td><td>${mpSigne(s.rendement)}</td></tr>`
-    : `<tr><td>${nom}</td><td>0</td><td>—</td><td>—</td><td>—</td></tr>`;
+function mpTable(titre, note, entetes, lignes) {
+  return `<div class="om-bloc"><div class="om-bloc-titre">${titre}</div>${note ? `<div class="om-info">${note}</div>` : ""}<div class="mp-table-zone"><table class="om-table"><tr>${entetes.map((e) => `<th>${e}</th>`).join("")}</tr>${lignes.join("")}</table></div></div>`;
 }
 function mpChiffres(d) {
-  const b = d.bilan || {}, v = d.marche_avant || {}, m = d.modele || {}, blocs = [];
-  blocs.push(`<div class="om-bloc"><div class="om-bloc-titre">Résultats réels de Megapower (paris enregistrés avant le coup d'envoi, matchs terminés)</div><div class="mp-table-zone"><table class="om-table">` +
-    `<tr><th>Paris</th><th>Nombre</th><th>Réussite</th><th>Cote moy.</th><th>Gain ou perte pour 100 misés</th></tr>${mpLigneBilan("Prouvés", b["prouvé"])}${mpLigneBilan("Sous observation", b["sous observation"])}</table></div></div>`);
-  if (v.periode_testee) {
-    blocs.push(`<div class="om-bloc"><div class="om-bloc-titre">Test sur des matchs jamais vus (${mpE(v.periode_testee[0])} → ${mpE(v.periode_testee[1])})</div>` +
-      `<div class="om-info">Chaque jour, le moteur apprend sur les jours d'avant puis juge les matchs du jour. Ce n'est pas un résultat réel : ces paris n'étaient pas enregistrés à l'avance.</div>` +
-      `<div class="mp-table-zone"><table class="om-table"><tr><th>Paris</th><th>Nombre</th><th>Réussite</th><th>Cote moy.</th><th>Gain ou perte pour 100 misés</th></tr>` +
-      `${mpLigneBilan("Prouvés", v.prouves)}${mpLigneBilan("Sous observation", v.sous_observation)}</table></div></div>`);
+  const b = d.bilan || {}, v = d.marche_avant || {}, blocs = [];
+  if (b.pronostics > 0) {
+    blocs.push(mpTable("Résultats réels de Megapower", `Pronostics enregistrés avant le coup d'envoi, matchs terminés (${mpE(b.du)} → ${mpE(b.au)}).`,
+      ["Matchs", "Pronostics", "Réussite", "Fiabilité annoncée"], [`<tr><td>${b.matchs}</td><td>${b.pronostics}</td><td>${mpPct(b.reussite)}</td><td>${mpPct(b.fiabilite_annoncee)}</td></tr>`]));
+  } else {
+    blocs.push(`<div class="om-bloc"><div class="om-bloc-titre">Résultats réels de Megapower</div><div class="om-info">Aucun match terminé avec des pronostics enregistrés à l'avance pour l'instant.</div></div>`);
   }
-  const fam = Object.entries(m.familles || {}).sort((x, y) => y[1].rendement_de_tout_jouer - x[1].rendement_de_tout_jouer);
-  if (fam.length) {
-    blocs.push(`<div class="om-bloc"><div class="om-bloc-titre">Ce que coûte chaque type de pari (${m.matchs} matchs joués, cotes de ${mpCote(m.cote_min)} et plus)</div>` +
-      `<div class="om-info">Si on avait joué tous les paris de ce type : gain ou perte pour 100 misés. Plus la perte est forte, plus le bookmaker se sert sur ce type de pari.</div>` +
-      `<div class="mp-table-zone"><table class="om-table"><tr><th>Type de pari</th><th>Paris</th><th>Réussite</th><th>Gain ou perte pour 100 misés</th><th>Les moteurs aident ?</th></tr>` +
-      fam.map(([nom, r]) => `<tr><td style="text-align:left">${mpE(nom)}</td><td>${r.paris}</td><td>${mpPct(r.reussite)}</td><td>${mpSigne(r.rendement_de_tout_jouer)}</td><td>${r.accord_garde ? (r.poids_accord > 0 ? "un peu" : "non, à contresens") : "non"}</td></tr>`).join("") +
-      `</table></div></div>`);
+  if (v.periode) {
+    const h = v.par_moitie || [];
+    blocs.push(mpTable(`Test sur des matchs jamais vus (${mpE(v.periode[0])} → ${mpE(v.periode[1])})`,
+      "Chaque jour, le moteur apprend sur les jours d'avant puis juge les matchs du jour. Ce n'est pas un résultat réel : ces pronostics n'étaient pas enregistrés à l'avance.",
+      ["Matchs", "Pronostics", "Réussite", "1re moitié", "2e moitié"],
+      [`<tr><td>${v.matchs}</td><td>${v.pronostics}</td><td>${mpPct(v.reussite)}</td><td>${h[0] ? mpPct(h[0].reussite) : "—"}</td><td>${h[1] ? mpPct(h[1].reussite) : "—"}</td></tr>`]));
+    const fam = Object.entries(v.par_famille || {}).sort((x, y) => y[1].reussite - x[1].reussite);
+    if (fam.length) blocs.push(mpTable("Réussite par type de pronostic", "Un type en dessous du niveau demandé est écarté.", ["Type", "Pronostics", "Réussite", "Gardé"],
+      fam.map(([n, r]) => `<tr><td style="text-align:left">${mpE(n)}</td><td>${r.pronostics}</td><td>${mpPct(r.reussite)}</td><td>${r.autorisee ? "oui" : "non"}</td></tr>`)));
   }
-  const tri = (d.tri_moteurs || []).filter((x) => x.paris > 0);
-  if (tri.length) {
-    blocs.push(`<div class="om-bloc"><div class="om-bloc-titre">Résultats réels des autres moteurs (paris enregistrés avant le match)</div><div class="mp-table-zone"><table class="om-table">` +
-      `<tr><th>Moteur</th><th>Paris</th><th>Réussite</th><th>Cote moy.</th><th>Gain ou perte pour 100 misés</th></tr>` +
-      tri.map((x) => `<tr><td style="text-align:left">${mpE(x.moteur)}</td><td>${x.paris}</td><td>${mpPct(x.reussite)}</td><td>${mpCote(x.cote_moyenne)}</td><td>${mpSigne(x.rendement)}</td></tr>`).join("") + `</table></div></div>`);
+  const ab = (d.modele || {}).ablation_seconde_moitie;
+  if (ab) {
+    const noms = { complet: "Moteur complet", sans_xg: "Sans le xG (buts seuls)", sans_tendance: "Sans tendance", sans_classement: "Sans le classement", sans_correction_adversaires: "Sans correction des adversaires" };
+    blocs.push(mpTable("Ce que chaque ingrédient apporte", "Erreur du modèle de buts sur la 2e moitié des matchs (plus bas = meilleur).", ["Variante", "Erreur"],
+      Object.entries(ab).map(([k, x]) => `<tr><td style="text-align:left">${mpE(noms[k] || k)}</td><td>${Number(x).toFixed(4).replace(".", ",")}</td></tr>`)));
   }
   return blocs.join("<br>");
 }
 function mpAffiche(d) {
   document.getElementById("mp-verdict").innerHTML = mpVerdict(d);
-  mpListe("mp-avenir", d.a_venir, "Aucun pari prouvé à venir.");
-  mpListe("mp-observation", d.sous_observation, "Aucun pari sous observation.");
+  mpListe("mp-avenir", d.a_venir, "Aucun pronostic fiable à venir.");
   mpListe("mp-encours", d.en_cours, "Aucun match en cours.");
-  mpListe("mp-regles", d.reglees, "Aucun pari réglé pour l'instant.");
+  mpListe("mp-regles", d.reglees, "Aucun pronostic réglé pour l'instant.");
   document.getElementById("mp-chiffres").innerHTML = mpChiffres(d);
   const g = d.genere_le ? new Date(d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime())
@@ -116,4 +109,4 @@ if (typeof document !== "undefined") {
       .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
   }
 }
-if (typeof module !== "undefined") module.exports = { mpVerdict, mpChiffres, mpPourquoi, mpSigne };
+if (typeof module !== "undefined") module.exports = { mpVerdict, mpChiffres, mpLigne, mpSur10 };
