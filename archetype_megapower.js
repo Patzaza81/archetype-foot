@@ -1,4 +1,4 @@
-// Page du moteur MEGAPOWER v2 (aucune cote) : lecture seule de data/megapower/pronostics.json (écrit par `python -m megapower.suivi`). Aucun calcul ici.
+// Page du moteur MEGAPOWER v2 (le modèle n'utilise aucune cote ; la cote Betpawa ≥ 1,26 est seulement un filtre d'affichage) : lecture seule de data/megapower/pronostics.json (écrit par `python -m megapower.suivi`). Aucun calcul ici.
 const MP_CLE_THEME = "archetype_theme_nuit";
 function mpE(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function mpPct(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 100) + " %" : "—"; }
@@ -8,17 +8,19 @@ function mpHoraire(ko) {          // coup d'envoi UTC -> heure du Cameroun (UTC+
   if (Number.isNaN(d.getTime())) return { heure: "", date: "" };
   const l = new Date(d.getTime() + 3600000);
   const p = (n) => String(n).padStart(2, "0");
-  return { heure: `${p(l.getUTCHours())}:${p(l.getUTCMinutes())}`, date: `${p(l.getUTCDate())}/${p(l.getUTCMonth() + 1)}` };
+  const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+  return { heure: `${p(l.getUTCHours())}:${p(l.getUTCMinutes())}`, date: `${p(l.getUTCDate())}/${p(l.getUTCMonth() + 1)}`, jour: jours[l.getUTCDay()] };
 }
+function mpCote(x) { const n = Number(x); return x != null && Number.isFinite(n) && n > 1 ? "cote " + n.toFixed(2).replace(".", ",") : ""; }
 function mpSur10(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 10) : null; }
 function mpLigne(p) {
   const badge = p.resultat ? `<span class="om-badge om-${mpE(p.resultat)}">${p.resultat === "WIN" ? "GAGNÉ" : "PERDU"}</span>` : "";
   const s = mpSur10(p.fiabilite);
-  return `<div class="om-ligne mp-pari"><span>${mpE(p.libelle)}</span><span><span class="mp-fiab">${s == null ? "—" : s + " sur 10"}</span> ${badge}</span></div>`;
+  return `<div class="om-ligne mp-pari"><span>${mpE(p.libelle)}</span><span><b class="om-cote">${mpCote(p.cote)}</b> · <span class="mp-fiab">${s == null ? "—" : s + " sur 10"}</span> ${badge}</span></div>`;
 }
 function mpDetail(f) {
-  const l = (f.paris || []).map((p) => `<tr><td style="text-align:left">${mpE(p.libelle)}</td><td>${mpPct(p.fiabilite)}</td><td>${mpPct(p.modele)}</td><td>${mpPct(p.catastrophe)}</td></tr>`).join("");
-  return `<details class="mp-det"><summary>Les chiffres</summary><div class="mp-table-zone"><table class="om-table"><tr><th>Pronostic</th><th>Fiabilité mesurée</th><th>Cas normal</th><th>Pire cas</th></tr>${l}</table></div>` +
+  const l = (f.paris || []).map((p) => `<tr><td style="text-align:left">${mpE(p.libelle)}</td><td>${mpCote(p.cote).replace("cote ", "")}</td><td>${mpPct(p.fiabilite)}</td><td>${mpPct(p.modele)}</td><td>${mpPct(p.catastrophe)}</td></tr>`).join("");
+  return `<details class="mp-det"><summary>Les chiffres</summary><div class="mp-table-zone"><table class="om-table"><tr><th>Pronostic</th><th>Cote</th><th>Fiabilité mesurée</th><th>Cas normal</th><th>Pire cas</th></tr>${l}</table></div>` +
     `<div class="om-info">Fiabilité mesurée = part des pronostics de ce type qui se sont réalisés sur des matchs comparables jamais vus par le moteur.</div></details>`;
 }
 function mpCarte(f) {
@@ -27,7 +29,7 @@ function mpCarte(f) {
   s.className = "ax-carte";
   s.innerHTML =
     `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${mpE(f.domicile)}</span>` +
-    `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
+    `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.jour)} ${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mpE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
     `<div class="om-corps">` + (f.score ? `<div class="om-info">Score final <strong>${mpE(f.score.join("-"))}</strong></div>` : "") +
     (ba.length === 2 ? `<div class="om-info">Buts attendus : ${mpE(f.domicile)} ${mpNb(ba[0])} · ${mpE(f.exterieur)} ${mpNb(ba[1])} (sur ${f.n_domicile} matchs à domicile et ${f.n_exterieur} à l'extérieur)</div>` : "") +
@@ -109,4 +111,4 @@ if (typeof document !== "undefined") {
       .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
   }
 }
-if (typeof module !== "undefined") module.exports = { mpVerdict, mpChiffres, mpLigne, mpSur10 };
+if (typeof module !== "undefined") module.exports = { mpVerdict, mpChiffres, mpLigne, mpSur10, mpHoraire, mpCote };

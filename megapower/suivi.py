@@ -26,6 +26,7 @@ PAGE = DOSSIER / "pronostics.json"
 MODELE = DOSSIER / "modele_v2.json"
 CONFIG = ROOT / "config" / "megapower.json"
 VERSION = "megapower-2"
+COTE_MIN = 1.26                                # règle de Patrick (07/11) : filtre opérationnel, jamais une variable du modèle
 JOURS_REGLES_AFFICHES = 7
 LISSAGE_NATURE = 100.0                         # matchs « virtuels » du modèle mélangés à la fréquence du championnat (meilleur de 10 / 30 / 100 sur la seconde moitié de l archive : réussite 78,7 % -> 79,3 %)
 
@@ -67,7 +68,8 @@ def prevoir(matchs: list[dict], P: dict) -> dict:
         L.append((c, *M.lambdas(c, P)))
     la, lb, sa, sb = (np.array([l[i] for l in L]) for i in (1, 2, 3, 4))
     pn, pf, pc = M.scenarios(la, lb, sa, sb) if len(L) else (np.zeros((0, M.NB)),) * 3
-    return {"matchs": garde, "comp": [l[0] for l in L], "la": la, "lb": lb, "pn": pn, "pf": pf, "pc": pc, "pl": nature(garde, lig, pn)}
+    return {"matchs": garde, "comp": [l[0] for l in L], "la": la, "lb": lb, "pn": pn, "pf": pf, "pc": pc, "pl": nature(garde, lig, pn),
+            "cote": np.array([[m.get("cotes", {}).get(n, np.nan) for n in M.NOMS] for m in garde]).reshape(len(garde), M.NB)}
 
 
 def nature(matchs: list[dict], lig: dict, pn: np.ndarray, lissage: float = LISSAGE_NATURE) -> np.ndarray:
@@ -105,12 +107,17 @@ def _lignes(F, joue, Y, masque_matchs):
     t = np.repeat(np.arange(N), K)
     mk = np.tile(np.arange(K), N)
     s = masque_matchs[t]
+    if F.get("cote") is not None:        # le calibrage ne s'apprend que sur les marchés proposables (cote ≥ 1,26) : la fiabilité annoncée est celle de la population réellement proposée
+        s = s & (np.nan_to_num(F["cote"].ravel(), nan=0.0) >= COTE_MIN)
     return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s], (F["pl"].ravel()[s] if F.get("pl") is not None else None)
 
 
-def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str] | None = None) -> list[int]:
-    """Marchés retenus d'un match : fiabilité calibrée (borne basse) au moins égale à `seuil`, dans une famille autorisée, sans doublon d'événement."""
+def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str] | None = None, cotes: np.ndarray | None = None) -> list[int]:
+    """Marchés retenus d'un match : fiabilité calibrée (borne basse) au moins égale à `seuil`, dans une famille autorisée, sans doublon d'événement.
+    Si `cotes` est fourni : le marché doit avoir une cote Betpawa au moins égale à COTE_MIN (sans cote = pas proposable)."""
     ok = ~np.isnan(q_bas) & (q_bas >= seuil)
+    if cotes is not None:
+        ok &= np.nan_to_num(cotes, nan=0.0) >= COTE_MIN
     if autorisees is not None:
         ok &= np.isin(C.FAMILLE, sorted(autorisees))
     return C.choisir(np.nan_to_num(q), ok)
@@ -133,7 +140,7 @@ def marche_avant(F: dict, joue: np.ndarray, Y: np.ndarray, seuil: float) -> dict
         cal = C.apprendre(*_lignes(F, joue, Y, joue & (jours < d)))
         for t in np.nonzero(joue & (jours == d))[0]:
             q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
-            for k in retenus(bas, q, seuil):
+            for k in retenus(bas, q, seuil, None, F["cote"][t] if F.get("cote") is not None else None):
                 rec.append((d, C.FAMILLE[k], int(Y[t, k]))); couv.add(t)
     if not rec:
         return {**vide, "periode": [test[0], test[-1]], "matchs": int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0]))}
@@ -166,11 +173,11 @@ def _txt(x: float) -> float:
 def fiche(m: dict, t: int, F: dict, cal: dict, seuil: float, autorisees: set[str] | None = None) -> dict:
     K = M.NB
     q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
-    sel = retenus(bas, q, seuil, autorisees)
+    sel = retenus(bas, q, seuil, autorisees, F["cote"][t] if F.get("cote") is not None else None)
     c = F["comp"][t]
     base = {"match_id": m["id"], "jour": m["jour"], "heure": m.get("heure"), "coup_d_envoi_utc": m.get("ko"), "competition": m.get("competition"), "domicile": m["domicile"], "exterieur": m["exterieur"],
             "n_domicile": c["n_dom"], "n_exterieur": c["n_ext"], "buts_attendus": [_txt(F["la"][t]), _txt(F["lb"][t])]}
-    paris = [{"marche": M.NOMS[k], "libelle": V.libelle(M.NOMS[k], m["domicile"], m["exterieur"]), "famille": C.FAMILLE[k], "fiabilite": round(float(q[k]), 4), "fiabilite_basse": round(float(bas[k]), 4),
+    paris = [{"marche": M.NOMS[k], "libelle": V.libelle(M.NOMS[k], m["domicile"], m["exterieur"]), "famille": C.FAMILLE[k], "cote": (round(float(F["cote"][t, k]), 2) if F.get("cote") is not None and not np.isnan(F["cote"][t, k]) else None), "fiabilite": round(float(q[k]), 4), "fiabilite_basse": round(float(bas[k]), 4),
               "modele": round(float(F["pn"][t, k]), 4), "catastrophe": round(float(F["pc"][t, k]), 4), "favorable": round(float(F["pf"][t, k]), 4)} for k in sel]
     return {**base, "paris": paris}
 

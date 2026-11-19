@@ -11,6 +11,8 @@ import json
 import re
 from pathlib import Path
 
+import verif_pronostic as V
+
 ROOT = Path(__file__).resolve().parent.parent
 FLUX = ROOT / "data" / "archive_test"
 
@@ -59,5 +61,6 @@ def lire_flux(jour_min: str | None = None) -> list[dict]:
             par_id[k] = {"id": k, "jour": x["date"], "ko": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "saison": saison,
                          "domicile": x.get("domicile"), "exterieur": x.get("exterieur"), "heure": x.get("heure_cameroun"),
                          "cle_dom": ed.get("nom_football_data") or x.get("domicile"), "cle_ext": ee.get("nom_football_data") or x.get("exterieur"),
-                         "md": _records(ed, saison, x["date"]), "me": _records(ee, saison, x["date"])}
+                         "md": _records(ed, saison, x["date"]), "me": _records(ee, saison, x["date"]),
+                         "cotes": V.cotes_betpawa(x.get("cotes_betpawa"))}      # cotes Betpawa : FILTRE d'affichage seulement (≥ 1,26), jamais lues par le modèle
     return sorted(par_id.values(), key=lambda m: (m["jour"], m["id"]))
