@@ -1,0 +1,22 @@
+n=11127 A=5563 B=2782 C=2782 (2025-02-28→2026-01-31 | 2026-01-31→2026-04-13 | 2026-04-13→2026-10-16) ; variables de base 99
+configurations testées par marché : 5049 ; seuil de Bonferroni Z ≥ 4.42
+marché | qualifiées (Z≥seuil) | retenues (non redondantes) | Δ sur C vs base (±se) | Δ base vs modèle actuel sur C | blocs de C | configurations retenues (Z)
+1                     7 | 4 |   +5.5±13.9 | +28 -11 +0 |   +2.9 | d34 (+5.4), ppm_gap (+5.2), B_homeadv (-5.0), gap_ga (-4.9)
+N                     5 | 1 |  -14.2± 7.5 | -13 -5 -25 |   -0.7 | bga_a*p0a_a (-4.6)
+2                     3 | 2 |  +12.1±11.5 | -10 -9 +56 |   -0.3 | B_homeadv (+5.2), d12 (+4.6)
+12                    5 | 1 |  -14.2± 7.5 | -13 -5 -25 |   -0.7 | bga_a*p0a_a (+4.6)
+total_plus_0.5        0 | 0 |      —       |  |   +3.0 | 
+total_plus_1.5        1 | 1 |  +13.3±10.2 | +24 -6 +22 |  +34.3 | sd34 (+4.6)
+total_plus_2.5        4 | 3 |  +22.4±11.6 | +28 -3 +42 |  +24.8 | sd34 (+5.1), agf_A (+5.1), x3 (+5.0)
+total_moins_3.5       2 | 1 |  +18.4±10.8 | +34 -9 +30 |  +31.7 | agf_A (-5.5)
+total_moins_4.5       0 | 0 |      —       |  |  +25.4 | 
+btts_oui              0 | 0 |      —       |  |  +19.7 | 
+dom_plus_0.5          2 | 2 |  +16.5±10.3 | +16 -3 +37 |  +11.6 | x3 (+4.6), agf_A (+4.5)
+ext_plus_0.5          0 | 0 |      —       |  |   -0.2 | 
+multibuts_1-3         0 | 0 |      —       |  |  +10.6 | 
+multibuts_2-4         0 | 0 |      —       |  |   +0.7 | 
+multibuts_1-4         0 | 0 |      —       |  |   +4.6 | 
+1N&total_plus_1.5     3 | 2 |  +18.6±10.7 | +33 -3 +26 |   +5.6 | ld34 (+4.7), B_homeadv (-4.5)
+N2&total_plus_1.5     0 | 0 |      —       |  |   -0.1 | 
+1N&total_moins_3.5    0 | 0 |      —       |  |  +11.5 | 
+N2&total_moins_3.5    3 | 2 |  +16.2±11.3 | +30 +3 +15 |   +1.0 | x3 (-5.2), d34 (-4.9)

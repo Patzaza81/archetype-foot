@@ -1,0 +1,22 @@
+n=5676 A=2838 B=1419 C=1419 (2025-09-20→2026-02-07 | 2026-02-07→2026-04-03 | 2026-04-03→2026-10-14) ; variables de base 25
+configurations testées par marché : 350 ; seuil de Bonferroni Z ≥ 3.80
+marché | qualifiées (Z≥seuil) | retenues (non redondantes) | Δ sur C vs base (±se) | Δ base vs modèle actuel sur C | blocs de C | configurations retenues (Z)
+1                     3 | 3 |  +21.3±22.8 | -24 +28 +60 |   +2.9 | A_sh_f (+4.7), A_co_a (-4.1), A_co_f (+4.0)
+N                     1 | 1 |  -18.5± 9.9 | -13 -18 -25 |   -1.3 | bga_a*bga_a (+4.1)
+2                     1 | 1 |  +12.9±15.7 | -15 +7 +46 |   -4.1 | A_co_f (-3.8)
+12                    1 | 1 |  -18.5± 9.9 | -13 -18 -25 |   -1.3 | bga_a*bga_a (-4.1)
+total_plus_0.5        0 | 0 |      —       |  |   -1.6 | 
+total_plus_1.5        2 | 2 |   -3.6±14.9 | +7 +13 -31 |  +16.6 | B_sot_f (+3.9), B_sh_f (+3.8)
+total_plus_2.5        3 | 3 |  +15.4±20.2 | -21 +72 -4 |   +0.8 | bga_a (-3.9), A_sh_f*A_sot_f (+3.9), A_sot_f (+3.9)
+total_moins_3.5       4 | 4 |  +22.1±27.0 | +19 +47 +0 |   +5.6 | agf_A (-4.6), A_sot_f (-4.2), A_sot_f*A_sot_f (-3.9), agf_A*agf_A (-3.8)
+total_moins_4.5       1 | 1 |   -3.5±11.2 | -10 -8 +8 |   +1.0 | hga*sd34 (+4.0)
+btts_oui              0 | 0 |      —       |  |   -0.4 | 
+dom_plus_0.5          3 | 3 |  +38.4±19.7 | +6 +34 +75 |   +1.1 | A_sot_f (+4.4), bga_a (-4.3), A_co_f (+4.0)
+ext_plus_0.5          1 | 1 |  +10.2±14.3 | +27 +21 -17 |   -0.3 | B_sh_f (+4.0)
+multibuts_1-3         0 | 0 |      —       |  |   +1.6 | 
+multibuts_2-4         0 | 0 |      —       |  |   +0.1 | 
+multibuts_1-4         0 | 0 |      —       |  |   +0.3 | 
+1N&total_plus_1.5     1 | 1 |  +27.7±18.5 | +15 +48 +21 |   +0.9 | A_sot_f (+4.9)
+N2&total_plus_1.5     3 | 3 |  +12.9±25.3 | +51 +54 -66 |   +1.6 | B_sh_f (+4.5), B_sot_f (+4.0), A_co_a (+3.8)
+1N&total_moins_3.5    1 | 1 |   -1.1±14.6 | +27 +3 -33 |   -5.0 | B_sh_f (-4.2)
+N2&total_moins_3.5    4 | 4 |   -0.4±26.7 | -15 +27 -13 |   -0.5 | bga_a (+5.4), agf_A (-4.3), A_sot_f (-4.1), A_sh_f (-3.8)

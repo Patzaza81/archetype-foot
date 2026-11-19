@@ -130,6 +130,13 @@ def perte_scores(la, lb, h, a):
     return -OM.log_vraisemblance(np.asarray(la), np.asarray(lb), np.asarray(h), np.asarray(a), RHO) / max(len(la), 1)
 
 
+def _ex(r, cote):
+    """Statistiques complémentaires du bloc (mi-temps, tirs, tirs cadrés, corners, cartons jaunes) du point de vue de l'équipe ; None si absentes."""
+    st = r.get("stats") or {}; o = "ext" if cote == "dom" else "dom"
+    g = lambda k: st.get(f"{k}_{cote}"); h = lambda k: st.get(f"{k}_{o}")
+    return {"ht_f": g("mt"), "ht_a": h("mt"), "sh_f": g("tirs"), "sh_a": h("tirs"), "sot_f": g("cadres"), "sot_a": h("cadres"), "co_f": g("corners"), "co_a": h("corners"), "yc_f": g("jaunes")}
+
+
 def charger_bloc():
     """Bloc de saisons Football-Data (data/bloc_saisons) : 16 558 matchs, 38 divisions, buts seulement (pas de xG). Les cotes du bloc ne sont JAMAIS lues.
     Retourne (matchs, scores, ligues) dans le même format que charger()."""
@@ -148,7 +155,7 @@ def charger_bloc():
                            "cle_dom": r["domicile"], "cle_ext": r["exterieur"], "md": list(hist[kd]), "me": list(hist[ke])})
             sc[r["id"]] = (r["buts_dom"], r["buts_ext"])
         for r in jours[jour]:          # l'historique n'est complété qu'APRÈS tous les matchs du jour : aucune fuite
-            hist[(r["saison"], r["division"], r["domicile"])].append({"date": jour, "dom": True, "adv": r["exterieur"], "gf": r["buts_dom"], "ga": r["buts_ext"], "xgf": None, "xga": None})
-            hist[(r["saison"], r["division"], r["exterieur"])].append({"date": jour, "dom": False, "adv": r["domicile"], "gf": r["buts_ext"], "ga": r["buts_dom"], "xgf": None, "xga": None})
+            hist[(r["saison"], r["division"], r["domicile"])].append({"date": jour, "dom": True, "adv": r["exterieur"], "gf": r["buts_dom"], "ga": r["buts_ext"], "xgf": None, "xga": None, **_ex(r, "dom")})
+            hist[(r["saison"], r["division"], r["exterieur"])].append({"date": jour, "dom": False, "adv": r["domicile"], "gf": r["buts_ext"], "ga": r["buts_dom"], "xgf": None, "xga": None, **_ex(r, "ext")})
     lig = {k: M.Ligue(v) for k, v in M.index_ligues(matchs).items()}
     return matchs, sc, lig
