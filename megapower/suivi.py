@@ -112,9 +112,20 @@ def _lignes(F, joue, Y, masque_matchs):
     return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s], (F["pl"].ravel()[s] if F.get("pl") is not None else None)
 
 
-def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str] | None = None, cotes: np.ndarray | None = None) -> list[int]:
-    """Marchés retenus d'un match : fiabilité calibrée (borne basse) au moins égale à `seuil`, dans une famille autorisée, sans doublon d'événement.
-    Si `cotes` est fourni : le marché doit avoir une cote Betpawa au moins égale à COTE_MIN (sans cote = pas proposable)."""
+GRILLE_SEUILS = (0.55, 0.60, 0.65, 0.68, 0.70, 0.72, 0.75, 0.78, 0.82)
+N_MIN_FAMILLE = 100                                           # pronostics minimum pour juger une famille
+
+
+def vecteur_seuils(seuils: dict | None, defaut: float) -> np.ndarray:
+    """Seuil de fiabilité de chaque marché d'après sa famille ; `inf` = famille non proposable. Sans dictionnaire : `defaut` partout."""
+    if seuils is None:
+        return np.full(M.NB, defaut)
+    return np.array([seuils.get(str(f), np.inf) for f in C.FAMILLE], float)
+
+
+def retenus(q_bas: np.ndarray, q: np.ndarray, seuil, autorisees: set[str] | None = None, cotes: np.ndarray | None = None) -> list[int]:
+    """Marchés retenus d'un match : fiabilité calibrée (borne basse) au moins égale au seuil de la famille du marché (`seuil` : nombre, ou vecteur par marché),
+    sans doublon d'événement. Si `cotes` est fourni : le marché doit avoir une cote Betpawa au moins égale à COTE_MIN (sans cote = pas proposable)."""
     ok = ~np.isnan(q_bas) & (q_bas >= seuil)
     if cotes is not None:
         ok &= np.nan_to_num(cotes, nan=0.0) >= COTE_MIN
@@ -123,46 +134,59 @@ def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str]
     return C.choisir(np.nan_to_num(q), ok)
 
 
+def seuils_par_famille(rec: list, demande: float) -> dict:
+    """Pour chaque famille : le plus petit seuil de la grille dont la réussite réelle (au moins N_MIN_FAMILLE pronostics) atteint `demande`. Aucune famille hors de ce cas n'est proposée.
+    rec = lignes (jour, famille, gagné, borne basse)."""
+    out = {}
+    for f in {r[1] for r in rec}:
+        for s in GRILLE_SEUILS:
+            R = [r[2] for r in rec if r[1] == f and r[3] >= s]
+            if len(R) >= N_MIN_FAMILLE and sum(R) / len(R) >= demande:
+                out[f] = s
+                break
+    return out
+
+
 def marche_avant(F: dict, joue: np.ndarray, Y: np.ndarray, seuil: float) -> dict:
     """Chaque jour de la seconde moitié des matchs joués : apprendre le calibrage sur les jours d'avant, juger les pronostics du jour (jamais vus).
-    Une famille de marchés est ensuite écartée si sa réussite réelle sur cette période est sous le niveau demandé ; ce choix est vérifié hors échantillon :
-    famille choisie sur la première moitié de la période de test, résultat mesuré sur la seconde."""
+    `seuil` = réussite réelle demandée. Pour chaque famille de marchés (victoire, double chance, buts…), le seuil de fiabilité propre à la famille est le plus petit
+    dont la réussite réelle atteint `seuil` sur ce test ; une famille qui n'y arrive jamais n'est pas proposée. Contrôle hors échantillon : seuils choisis sur la première
+    moitié de la période de test, résultat mesuré sur la seconde."""
     jours = np.array([m["jour"] for m in F["matchs"]])
     dj = sorted(set(jours[joue]))
-    vide = {"matchs": 0, "pronostics": 0, "familles_autorisees": sorted(C.FAMILLES)}
+    vide = {"matchs": 0, "pronostics": 0, "familles_autorisees": [], "seuils_famille": {}}
     if len(dj) < 6:
         return vide
     test = dj[len(dj) // 2:]
     milieu = test[len(test) // 2]
     K = F["pn"].shape[1]
-    rec, couv = [], set()                                        # (jour, famille, gagné)
+    base = min(GRILLE_SEUILS)
+    rec, couv = [], set()                                        # (jour, famille, gagné, borne basse)
     for d in test:
         cal = C.apprendre(*_lignes(F, joue, Y, joue & (jours < d)))
         for t in np.nonzero(joue & (jours == d))[0]:
             q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
-            for k in retenus(bas, q, seuil, None, F["cote"][t] if F.get("cote") is not None else None):
-                rec.append((d, C.FAMILLE[k], int(Y[t, k]))); couv.add(t)
+            for k in retenus(bas, q, base, None, F["cote"][t] if F.get("cote") is not None else None):
+                rec.append((d, str(C.FAMILLE[k]), int(Y[t, k]), float(bas[k]), t))
+    nb_test = int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0]))
     if not rec:
-        return {**vide, "periode": [test[0], test[-1]], "matchs": int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0]))}
-
-    def taux(R):
-        return (round(sum(g for *_, g in R) / len(R), 4) if R else None)
-
-    def par_fam(R):
-        out = {}
-        for _, f, g in R:
-            a = out.setdefault(f, [0, 0]); a[0] += 1; a[1] += g
-        return out
-    autorisees = {f for f, (n, g) in par_fam(rec).items() if g / n >= seuil}
+        return {**vide, "periode": [test[0], test[-1]], "matchs": nb_test}
+    seuils = seuils_par_famille(rec, seuil)
+    prises = [r for r in rec if r[1] in seuils and r[3] >= seuils[r[1]]]
+    taux = lambda R: (round(sum(r[2] for r in R) / len(R), 4) if R else None)
     A, B = [r for r in rec if r[0] < milieu], [r for r in rec if r[0] >= milieu]
-    choix_A = {f for f, (n, g) in par_fam(A).items() if g / n >= seuil}
-    B_filtre = [r for r in B if r[1] in choix_A]
-    return {"periode": [test[0], test[-1]], "matchs": int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0])), "matchs_avec_pronostic": len(couv),
-            "pronostics": len(rec), "reussite": taux(rec), "par_moitie": [{"pronostics": len(A), "reussite": taux(A)}, {"pronostics": len(B), "reussite": taux(B)}],
-            "par_famille": {f: {"pronostics": n, "reussite": round(g / n, 4), "autorisee": f in autorisees} for f, (n, g) in sorted(par_fam(rec).items())},
-            "familles_autorisees": sorted(autorisees),
-            "controle_hors_echantillon": {"familles_choisies_sur": [test[0], milieu], "mesure_sur": [milieu, test[-1]], "pronostics_sans_filtre": len(B), "reussite_sans_filtre": taux(B),
-                                          "pronostics_avec_filtre": len(B_filtre), "reussite_avec_filtre": taux(B_filtre)}}
+    seuils_A = seuils_par_famille(A, seuil)
+    B_ctrl = [r for r in B if r[1] in seuils_A and r[3] >= seuils_A[r[1]]]
+    par_fam = {}
+    for f in sorted({r[1] for r in rec}):
+        P = [r for r in prises if r[1] == f]
+        par_fam[f] = {"pronostics": len(P), "reussite": taux(P), "seuil": seuils.get(f), "autorisee": f in seuils}
+    return {"periode": [test[0], test[-1]], "matchs": nb_test, "matchs_avec_pronostic": len({r[4] for r in prises}), "pronostics": len(prises), "reussite": taux(prises),
+            "par_moitie": [{"pronostics": len([r for r in prises if r[0] < milieu]), "reussite": taux([r for r in prises if r[0] < milieu])},
+                           {"pronostics": len([r for r in prises if r[0] >= milieu]), "reussite": taux([r for r in prises if r[0] >= milieu])}],
+            "par_famille": par_fam, "familles_autorisees": sorted(seuils), "seuils_famille": seuils,
+            "controle_hors_echantillon": {"seuils_choisis_sur": [test[0], milieu], "mesure_sur": [milieu, test[-1]], "pronostics_avec_filtre": len(B_ctrl), "reussite_avec_filtre": taux(B_ctrl),
+                                          "pronostics_sans_filtre": len(B), "reussite_sans_filtre": taux(B)}}
 
 
 # ------------------------------------------------------------------------------------------------ fiches et journal
@@ -170,7 +194,7 @@ def _txt(x: float) -> float:
     return round(float(x), 2)
 
 
-def fiche(m: dict, t: int, F: dict, cal: dict, seuil: float, autorisees: set[str] | None = None) -> dict:
+def fiche(m: dict, t: int, F: dict, cal: dict, seuil, autorisees: set[str] | None = None) -> dict:
     K = M.NB
     q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
     sel = retenus(bas, q, seuil, autorisees, F["cote"][t] if F.get("cote") is not None else None)
@@ -182,7 +206,7 @@ def fiche(m: dict, t: int, F: dict, cal: dict, seuil: float, autorisees: set[str
     return {**base, "paris": paris}
 
 
-def geler(F: dict, cal: dict, sc: dict, maintenant: datetime, seuil: float, autorisees: set[str] | None = None, journal: Path = JOURNAL) -> tuple[int, int]:
+def geler(F: dict, cal: dict, sc: dict, maintenant: datetime, seuil, autorisees: set[str] | None = None, journal: Path = JOURNAL) -> tuple[int, int]:
     """Gèle les pronostics de chaque match à venir. -> (nouvelles lignes, matchs à venir analysés)."""
     dernier = {}
     for l in _lire(journal):
@@ -304,8 +328,8 @@ def pipeline() -> None:
     MODELE.write_text(json.dumps({"version": VERSION, "appris_le": maintenant.isoformat(timespec="seconds"), "fiabilite_demandee": seuil, "modele": R,
                                   "calibrage": {f: {k: v for k, v in r.items() if k != "cov"} for f, r in cal.items()}}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     validation = marche_avant(F, joue, Y, seuil)
-    autorisees = set(validation.get("familles_autorisees") or C.FAMILLES)
-    n, analyses = geler(F, cal, sc, maintenant, seuil, autorisees)
+    seuils = validation.get("seuils_famille") or {}
+    n, analyses = geler(F, cal, sc, maintenant, vecteur_seuils(seuils, np.inf), None)
     r = resultats(sc)
     p = page(F, R, validation, analyses, maintenant, seuil)
     print(f"megapower v2 : appris sur {int(joue.sum())} matchs joués ; {analyses} match(s) à venir analysés, {len(p['a_venir'])} avec pronostics, {n} gel(s), {r} résultat(s)")
