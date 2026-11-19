@@ -1,9 +1,9 @@
 {
- "genere_le": "2026-11-18",
- "calibre_le": "2026-11-12",
- "prochain_recalibrage": "2026-11-19",
- "recalibre_aujourdhui": false,
- "nb_paris_calibrage": 3196,
+ "genere_le": "2026-11-19",
+ "calibre_le": "2026-11-19",
+ "prochain_recalibrage": "2026-11-26",
+ "recalibre_aujourdhui": true,
+ "nb_paris_calibrage": 3368,
  "m_tests": 175,
  "seuil_confirme": 0.00028571428571428574,
  "seuil_observation": 0.005714285714285714,
@@ -15,12 +15,12 @@
    "etoiles_min": 2,
    "statut": "confirme",
    "stable_dans_le_temps": true,
-   "borne_basse": 0.6559033203634712,
-   "n": 328,
-   "gagnes": 232,
-   "reussite": 0.7073170731707317,
-   "base": 0.45789473684210524,
-   "p": 1.5860681824448882e-17
+   "borne_basse": 0.6629793332465965,
+   "n": 348,
+   "gagnes": 248,
+   "reussite": 0.7126436781609196,
+   "base": 0.45599635202918376,
+   "p": 1.7827631967766514e-19
   },
   {
    "moteur": "V3",
@@ -29,12 +29,12 @@
    "etoiles_min": 1,
    "statut": "observation",
    "stable_dans_le_temps": true,
-   "borne_basse": 0.6252228520235206,
-   "n": 300,
-   "gagnes": 204,
-   "reussite": 0.68,
-   "base": 0.5494505494505495,
-   "p": 0.0027798708650370674
+   "borne_basse": 0.6207354181844554,
+   "n": 319,
+   "gagnes": 215,
+   "reussite": 0.6739811912225705,
+   "base": 0.5532994923857868,
+   "p": 0.003976942243734922
   }
  ],
  "bilan_historique": {
@@ -49,8 +49,8 @@
    "n": 348,
    "gagnes": 248,
    "reussite": 0.7126436781609196,
-   "base": 0.4554997717937015,
-   "p": 1.5349957234241008e-19
+   "base": 0.45599635202918376,
+   "p": 1.7827631967766514e-19
   }
  },
  "hors_echantillon": {
@@ -65,8 +65,8 @@
    "n": 253,
    "gagnes": 176,
    "reussite": 0.6956521739130435,
-   "base": 0.4178343949044586,
-   "p": 1.145168702555244e-16
+   "base": 0.4189446916719644,
+   "p": 1.4932662378700275e-16
   }
  },
  "rejeu": {
@@ -83,44 +83,12 @@
     "n": 409,
     "gagnes": 273,
     "reussite": 0.6674816625916871,
-    "base": 0.4281120808451998,
-    "p": 3.1560174395501786e-19
+    "base": 0.4288990825688073,
+    "p": 4.072934389567139e-19
    }
   }
  },
  "selections": [
-  {
-   "moteur": "V2",
-   "match_id": "e1kq0tbrhci2j4jgrqcuplvys",
-   "date": "2026-11-20",
-   "heure": "18:30",
-   "competition": "Allemagne :\n                        2. Bundesliga",
-   "domicile": "Darmstadt",
-   "exterieur": "Heidenheim",
-   "rang_moteur": "P1",
-   "marche": "handicap_-1.5_1",
-   "marche_affiche": "handicap_domicile_1.5",
-   "libelle": null,
-   "cote": 1.29,
-   "probabilite": 0.8963371173894716,
-   "pct": 90,
-   "etoiles": 3,
-   "indice": 4,
-   "sur": 4,
-   "groupe": {
-    "moteur": "V2",
-    "indice_min": 0.25,
-    "pct_min": 80,
-    "etoiles_min": 2,
-    "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
-   },
-   "rang": 1
-  },
   {
    "moteur": "V2",
    "match_id": "e1ycbokjgdouc3xyr6235fkes",
@@ -133,7 +101,7 @@
    "marche": "handicap_-1.5_1",
    "marche_affiche": "handicap_domicile_1.5",
    "libelle": null,
-   "cote": 1.31,
+   "cote": 1.29,
    "probabilite": 0.9036022869775188,
    "pct": 90,
    "etoiles": 3,
@@ -145,11 +113,43 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 1
+  },
+  {
+   "moteur": "V2",
+   "match_id": "e19bxq0dpvnvr9i2srny5yn10",
+   "date": "2026-11-20",
+   "heure": "20:00",
+   "competition": "Pays-Bas :\n                        Eerste Divisie",
+   "domicile": "Heracles",
+   "exterieur": "Jong PSV",
+   "rang_moteur": "P1",
+   "marche": "under_5_5",
+   "marche_affiche": "over_under_total_5.5_under",
+   "libelle": null,
+   "cote": 1.29,
+   "probabilite": 0.8828768132844037,
+   "pct": 88,
+   "etoiles": 3,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
    "rang": 2
   },
@@ -177,11 +177,11 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
    "rang": 3
   },
@@ -209,13 +209,77 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
    "rang": 4
+  },
+  {
+   "moteur": "V2",
+   "match_id": "cqfmsxkbpu4yg0io04t6mmvbo",
+   "date": "2026-11-22",
+   "heure": "20:00",
+   "competition": "Bolivie :\n                        Primera Division",
+   "domicile": "Real Potosí",
+   "exterieur": "Bolívar",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.3,
+   "probabilite": 0.8756497805266305,
+   "pct": 88,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 5
+  },
+  {
+   "moteur": "V2",
+   "match_id": "14p144hf5bux0xbfbkvtgh4pg",
+   "date": "2026-11-22",
+   "heure": "16:30",
+   "competition": "Roumanie :\n                        Liga 1",
+   "domicile": "UTA Arad",
+   "exterieur": "Univ. Craiova",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.34,
+   "probabilite": 0.8790555476683857,
+   "pct": 88,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 6
   },
   {
    "moteur": "V2",
@@ -229,7 +293,7 @@
    "marche": "under_4_5",
    "marche_affiche": "over_under_total_4.5_under",
    "libelle": null,
-   "cote": 1.34,
+   "cote": 1.31,
    "probabilite": 0.8684782389734188,
    "pct": 87,
    "etoiles": 3,
@@ -241,13 +305,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 5
+   "rang": 7
   },
   {
    "moteur": "V2",
@@ -273,13 +337,109 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 6
+   "rang": 8
+  },
+  {
+   "moteur": "V2",
+   "match_id": "cqypihkje8ph6kg36e1jvsutw",
+   "date": "2026-11-22",
+   "heure": "00:30",
+   "competition": "Bolivie :\n                        Primera Division",
+   "domicile": "San Antonio BB",
+   "exterieur": "Always Ready",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.34,
+   "probabilite": 0.8572773118779992,
+   "pct": 86,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 9
+  },
+  {
+   "moteur": "V2",
+   "match_id": "dak4nponinu9255iztqrgbztg",
+   "date": "2026-11-22",
+   "heure": "14:00",
+   "competition": "Turquie :\n                        TFF 1. Ligue",
+   "domicile": "Esenler Erokspor",
+   "exterieur": "Antalyaspor",
+   "rang_moteur": "P1",
+   "marche": "handicap_1.5_2",
+   "marche_affiche": "handicap_exterieur_1.5",
+   "libelle": null,
+   "cote": 1.35,
+   "probabilite": 0.864282014913699,
+   "pct": 86,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 10
+  },
+  {
+   "moteur": "V2",
+   "match_id": "82k5i1q9r1t13h6d9s5jwh34k",
+   "date": "2026-11-22",
+   "heure": "14:00",
+   "competition": "Espagne :\n                        LaLiga",
+   "domicile": "Barcelone",
+   "exterieur": "Villarreal",
+   "rang_moteur": "P1",
+   "marche": "under_5_5",
+   "marche_affiche": "over_under_total_5.5_under",
+   "libelle": null,
+   "cote": 1.33,
+   "probabilite": 0.8602455569822671,
+   "pct": 86,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 11
   },
   {
    "moteur": "V2",
@@ -305,13 +465,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 7
+   "rang": 12
   },
   {
    "moteur": "V2",
@@ -337,13 +497,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 8
+   "rang": 13
   },
   {
    "moteur": "V2",
@@ -369,13 +529,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 9
+   "rang": 14
   },
   {
    "moteur": "V2",
@@ -401,13 +561,141 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 10
+   "rang": 15
+  },
+  {
+   "moteur": "V2",
+   "match_id": "5psap7c6d4d7cbkhqb09p96hg",
+   "date": "2026-11-22",
+   "heure": "22:00",
+   "competition": "Paraguay :\n                        Professionnel de la Division Clôture",
+   "domicile": "Rubio NU",
+   "exterieur": "Libertad",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.36,
+   "probabilite": 0.847387921187251,
+   "pct": 85,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 16
+  },
+  {
+   "moteur": "V2",
+   "match_id": "3cu708b7qw24b9j14fabrsm50",
+   "date": "2026-11-20",
+   "heure": "14:00",
+   "competition": "Qatar :\n                        Division 1",
+   "domicile": "AL Duhail",
+   "exterieur": "Qatar",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.31,
+   "probabilite": 0.8440399810593049,
+   "pct": 84,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 17
+  },
+  {
+   "moteur": "V2",
+   "match_id": "d7dn4rkks1r90pfbgk4o8mn10",
+   "date": "2026-11-22",
+   "heure": "14:30",
+   "competition": "Italie :\n                        Série C Girone A",
+   "domicile": "Torres",
+   "exterieur": "Spezia",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.36,
+   "probabilite": 0.8382592317459453,
+   "pct": 84,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 18
+  },
+  {
+   "moteur": "V2",
+   "match_id": "93muyaa7wra70ckq6zypc4opg",
+   "date": "2026-11-22",
+   "heure": "15:00",
+   "competition": "Croatie :\n                        HNL",
+   "domicile": "D. Zagreb",
+   "exterieur": "Istra",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.35,
+   "probabilite": 0.8350077766307065,
+   "pct": 84,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 19
   },
   {
    "moteur": "V2",
@@ -433,13 +721,77 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 11
+   "rang": 20
+  },
+  {
+   "moteur": "V2",
+   "match_id": "5digoc0ldej1uw4c920dqx53o",
+   "date": "2026-11-21",
+   "heure": "17:30",
+   "competition": "Pologne :\n                        Ekstraklasa",
+   "domicile": "Zaglebie Lubin",
+   "exterieur": "Górnik Zabrze",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.29,
+   "probabilite": 0.843132797497366,
+   "pct": 84,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 21
+  },
+  {
+   "moteur": "V2",
+   "match_id": "a5r7gki6u0kmsj9cy4pwe42z8",
+   "date": "2026-11-22",
+   "heure": "17:15",
+   "competition": "France :\n                        Ligue 1 McDonald's",
+   "domicile": "Lorient",
+   "exterieur": "Rennes",
+   "rang_moteur": "P1",
+   "marche": "home_over_0_5",
+   "marche_affiche": "buts_equipe_domicile_0.5_over",
+   "libelle": null,
+   "cote": 1.3,
+   "probabilite": 0.8445002431626645,
+   "pct": 84,
+   "etoiles": 3,
+   "indice": 1,
+   "sur": 2,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 22
   },
   {
    "moteur": "V2",
@@ -465,13 +817,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 12
+   "rang": 23
   },
   {
    "moteur": "V2",
@@ -485,7 +837,7 @@
    "marche": "handicap_-1.5_1",
    "marche_affiche": "handicap_domicile_1.5",
    "libelle": null,
-   "cote": 1.38,
+   "cote": 1.37,
    "probabilite": 0.8345658742642081,
    "pct": 83,
    "etoiles": 3,
@@ -497,13 +849,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 13
+   "rang": 24
   },
   {
    "moteur": "V2",
@@ -529,13 +881,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 14
+   "rang": 25
   },
   {
    "moteur": "V2",
@@ -561,13 +913,45 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 15
+   "rang": 26
+  },
+  {
+   "moteur": "V2",
+   "match_id": "aupsvorrk2oshzhha6gi7eivo",
+   "date": "2026-11-22",
+   "heure": "23:00",
+   "competition": "Argentine :\n                        Copa de la Liga Profesional Clausura – Huitièmes de finale",
+   "domicile": "River Plate",
+   "exterieur": "Lanús",
+   "rang_moteur": "P1",
+   "marche": "handicap_1.5_2",
+   "marche_affiche": "handicap_exterieur_1.5",
+   "libelle": null,
+   "cote": 1.38,
+   "probabilite": 0.8263702393751374,
+   "pct": 83,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 27
   },
   {
    "moteur": "V2",
@@ -593,13 +977,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 16
+   "rang": 28
   },
   {
    "moteur": "V2",
@@ -625,13 +1009,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 17
+   "rang": 29
   },
   {
    "moteur": "V2",
@@ -645,7 +1029,7 @@
    "marche": "under_3_5",
    "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
-   "cote": 1.33,
+   "cote": 1.3,
    "probabilite": 0.8239800598895533,
    "pct": 82,
    "etoiles": 3,
@@ -657,13 +1041,77 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 18
+   "rang": 30
+  },
+  {
+   "moteur": "V2",
+   "match_id": "7uqldjza8udrm8ujbwlaqov84",
+   "date": "2026-11-22",
+   "heure": "15:00",
+   "competition": "Italie :\n                        Serie A",
+   "domicile": "Sassuolo",
+   "exterieur": "Genoa",
+   "rang_moteur": "P1",
+   "marche": "over_1_5",
+   "marche_affiche": "over_under_total_1.5_over",
+   "libelle": null,
+   "cote": 1.29,
+   "probabilite": 0.8249559246032893,
+   "pct": 82,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 31
+  },
+  {
+   "moteur": "V2",
+   "match_id": "973387q2p0v1i4064enkcg4d0",
+   "date": "2026-11-20",
+   "heure": "13:00",
+   "competition": "Hong Kong :\n                        Premier Ligue",
+   "domicile": "Lee Man",
+   "exterieur": "North District",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.34,
+   "probabilite": 0.8195124916038218,
+   "pct": 82,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 32
   },
   {
    "moteur": "V2",
@@ -677,7 +1125,7 @@
    "marche": "home_over_0_5",
    "marche_affiche": "buts_equipe_domicile_0.5_over",
    "libelle": null,
-   "cote": 1.37,
+   "cote": 1.39,
    "probabilite": 0.8225677914476244,
    "pct": 82,
    "etoiles": 3,
@@ -689,13 +1137,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 19
+   "rang": 33
   },
   {
    "moteur": "V2",
@@ -721,13 +1169,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 20
+   "rang": 34
   },
   {
    "moteur": "V2",
@@ -753,13 +1201,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 21
+   "rang": 35
   },
   {
    "moteur": "V2",
@@ -785,13 +1233,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 22
+   "rang": 36
   },
   {
    "moteur": "V2",
@@ -817,28 +1265,60 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 23
+   "rang": 37
   },
   {
    "moteur": "V2",
-   "match_id": "8rp67az5l32rq4xmmsgwltlas",
-   "date": "2026-11-21",
-   "heure": "16:00",
-   "competition": "Angleterre :\n                        Ligue Nationale",
-   "domicile": "Gateshead",
-   "exterieur": "Hartlepool",
+   "match_id": "9cku4jz79u89ikyxvkahrpo9g",
+   "date": "2026-11-22",
+   "heure": "12:00",
+   "competition": "Bulgarie :\n                        Parva Liga",
+   "domicile": "Botev Vratsa",
+   "exterieur": "CSKA 1948",
    "rang_moteur": "P1",
    "marche": "handicap_-1.5_1",
    "marche_affiche": "handicap_domicile_1.5",
    "libelle": null,
-   "cote": 1.32,
-   "probabilite": 0.8181892380352758,
+   "cote": 1.31,
+   "probabilite": 0.8242599560265652,
+   "pct": 82,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 38
+  },
+  {
+   "moteur": "V2",
+   "match_id": "83u0icd3b8doe95t75ypcp1xw",
+   "date": "2026-11-22",
+   "heure": "16:15",
+   "competition": "Espagne :\n                        LaLiga",
+   "domicile": "Santander",
+   "exterieur": "Real Sociedad",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.3,
+   "probabilite": 0.8172849649620988,
    "pct": 82,
    "etoiles": 3,
    "indice": 1,
@@ -849,13 +1329,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 24
+   "rang": 39
   },
   {
    "moteur": "V2",
@@ -881,13 +1361,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 25
+   "rang": 40
   },
   {
    "moteur": "V2",
@@ -901,7 +1381,7 @@
    "marche": "handicap_1.5_2",
    "marche_affiche": "handicap_exterieur_1.5",
    "libelle": null,
-   "cote": 1.36,
+   "cote": 1.34,
    "probabilite": 0.8063742093577141,
    "pct": 81,
    "etoiles": 3,
@@ -913,13 +1393,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 26
+   "rang": 41
   },
   {
    "moteur": "V2",
@@ -933,7 +1413,7 @@
    "marche": "under_4_5",
    "marche_affiche": "over_under_total_4.5_under",
    "libelle": null,
-   "cote": 1.35,
+   "cote": 1.38,
    "probabilite": 0.8103858586918707,
    "pct": 81,
    "etoiles": 3,
@@ -945,13 +1425,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 27
+   "rang": 42
   },
   {
    "moteur": "V2",
@@ -977,13 +1457,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 28
+   "rang": 43
   },
   {
    "moteur": "V2",
@@ -1009,13 +1489,77 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 29
+   "rang": 44
+  },
+  {
+   "moteur": "V2",
+   "match_id": "6cwmokt5hvlyv0y7t6yf3vthw",
+   "date": "2026-11-22",
+   "heure": "02:10",
+   "competition": "Guatemala :\n                        Ligue Nationale Ouverture",
+   "domicile": "Marquense",
+   "exterieur": "Aurora",
+   "rang_moteur": "P1",
+   "marche": "handicap_1.5_2",
+   "marche_affiche": "handicap_exterieur_1.5",
+   "libelle": null,
+   "cote": 1.33,
+   "probabilite": 0.806228288802016,
+   "pct": 81,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 45
+  },
+  {
+   "moteur": "V2",
+   "match_id": "2iekel79rqycgnywcv5x52044",
+   "date": "2026-11-20",
+   "heure": "17:00",
+   "competition": "Ukraine :\n                        Première Ligue",
+   "domicile": "Shakhtar",
+   "exterieur": "Livyi Bereh",
+   "rang_moteur": "P1",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
+   "libelle": null,
+   "cote": 1.35,
+   "probabilite": 0.8114306948294951,
+   "pct": 81,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 46
   },
   {
    "moteur": "V2",
@@ -1041,13 +1585,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 30
+   "rang": 47
   },
   {
    "moteur": "V2",
@@ -1061,7 +1605,7 @@
    "marche": "away_under_1_5",
    "marche_affiche": "buts_equipe_exterieur_1.5_under",
    "libelle": null,
-   "cote": 1.32,
+   "cote": 1.33,
    "probabilite": 0.8057935404510372,
    "pct": 81,
    "etoiles": 3,
@@ -1073,13 +1617,77 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 31
+   "rang": 48
+  },
+  {
+   "moteur": "V2",
+   "match_id": "9cw5rf9y85voxhy4b55ewfm6s",
+   "date": "2026-11-22",
+   "heure": "17:00",
+   "competition": "Bulgarie :\n                        Parva Liga",
+   "domicile": "Botev Plovdiv",
+   "exterieur": "CSKA Sofia",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.39,
+   "probabilite": 0.8136613292803905,
+   "pct": 81,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 49
+  },
+  {
+   "moteur": "V2",
+   "match_id": "5dfld7w38h6z4t5h47eepiwic",
+   "date": "2026-11-22",
+   "heure": "22:30",
+   "competition": "Venezuela :\n                        Primera Division Clausura - Quadrangular Groupe A",
+   "domicile": "Carabobo",
+   "exterieur": "Portuguesa",
+   "rang_moteur": "P1",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
+   "libelle": null,
+   "cote": 1.36,
+   "probabilite": 0.8119290382501362,
+   "pct": 81,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 50
   },
   {
    "moteur": "V2",
@@ -1093,7 +1701,7 @@
    "marche": "btts_yes",
    "marche_affiche": "btts_oui",
    "libelle": null,
-   "cote": 1.32,
+   "cote": 1.33,
    "probabilite": 0.8041774498293018,
    "pct": 80,
    "etoiles": 3,
@@ -1105,31 +1713,31 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 32
+   "rang": 51
   },
   {
    "moteur": "V2",
-   "match_id": "e2asuvdoz3es694xlh884ptlg",
-   "date": "2026-11-20",
-   "heure": "20:00",
-   "competition": "Pays-Bas :\n                        Eerste Divisie",
-   "domicile": "Vitesse",
-   "exterieur": "Jong AZ",
+   "match_id": "1qhdczmvthnykuzijtz5vexw4",
+   "date": "2026-11-22",
+   "heure": "09:30",
+   "competition": "Indonésie :\n                        Ligue 1",
+   "domicile": "Isenmulang",
+   "exterieur": "Borneo",
    "rang_moteur": "P1",
-   "marche": "handicap_1.5_2",
-   "marche_affiche": "handicap_exterieur_1.5",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
-   "cote": 1.33,
-   "probabilite": 0.8046043218758784,
+   "cote": 1.38,
+   "probabilite": 0.8022450936184734,
    "pct": 80,
    "etoiles": 3,
-   "indice": 3,
+   "indice": 4,
    "sur": 4,
    "groupe": {
     "moteur": "V2",
@@ -1137,13 +1745,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 33
+   "rang": 52
   },
   {
    "moteur": "V2",
@@ -1169,13 +1777,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 34
+   "rang": 53
   },
   {
    "moteur": "V2",
@@ -1201,13 +1809,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 35
+   "rang": 54
   },
   {
    "moteur": "V2",
@@ -1221,7 +1829,7 @@
    "marche": "handicap_1.5_2",
    "marche_affiche": "handicap_exterieur_1.5",
    "libelle": null,
-   "cote": 1.43,
+   "cote": 1.44,
    "probabilite": 0.7972554097818355,
    "pct": 80,
    "etoiles": 3,
@@ -1233,13 +1841,45 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 36
+   "rang": 55
+  },
+  {
+   "moteur": "V2",
+   "match_id": "a913yqe5rz4re4oc3eovrmdqs",
+   "date": "2026-11-22",
+   "heure": "00:30",
+   "competition": "Etats-Unis :\n                        MLS 1er Tour",
+   "domicile": "Chicago Fire",
+   "exterieur": "Charlotte",
+   "rang_moteur": "P1",
+   "marche": "handicap_1.5_2",
+   "marche_affiche": "handicap_exterieur_1.5",
+   "libelle": null,
+   "cote": 1.5,
+   "probabilite": 0.7973499961361501,
+   "pct": 80,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 56
   },
   {
    "moteur": "V2",
@@ -1253,7 +1893,7 @@
    "marche": "handicap_1.5_2",
    "marche_affiche": "handicap_exterieur_1.5",
    "libelle": null,
-   "cote": 1.41,
+   "cote": 1.4,
    "probabilite": 0.7963647014842262,
    "pct": 80,
    "etoiles": 3,
@@ -1265,13 +1905,13 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 37
+   "rang": 57
   },
   {
    "moteur": "V2",
@@ -1297,13 +1937,45 @@
     "pct_min": 80,
     "etoiles_min": 2,
     "statut": "confirme",
-    "n": 328,
-    "gagnes": 232,
-    "reussite": 0.7073170731707317,
-    "borne_basse": 0.6559033203634712,
-    "p": 1.5860681824448882e-17
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
    },
-   "rang": 38
+   "rang": 58
+  },
+  {
+   "moteur": "V2",
+   "match_id": "89fl6o3rvx3hxd623pl22j7dg",
+   "date": "2026-11-22",
+   "heure": "14:00",
+   "competition": "Chypre :\n                        1. Division",
+   "domicile": "Oly Nicosia",
+   "exterieur": "AEK Larnaca",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": null,
+   "cote": 1.49,
+   "probabilite": 0.7950870046240569,
+   "pct": 80,
+   "etoiles": 3,
+   "indice": 2,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V2",
+    "indice_min": 0.25,
+    "pct_min": 80,
+    "etoiles_min": 2,
+    "statut": "confirme",
+    "n": 348,
+    "gagnes": 248,
+    "reussite": 0.7126436781609196,
+    "borne_basse": 0.6629793332465965,
+    "p": 1.7827631967766514e-19
+   },
+   "rang": 59
   },
   {
    "moteur": "V3",
@@ -1317,8 +1989,8 @@
    "marche": "clean_home_no",
    "marche_affiche": "encaisse_domicile",
    "libelle": null,
-   "cote": 1.26,
-   "probabilite": 0.9103,
+   "cote": 1.27,
+   "probabilite": 0.9104,
    "pct": 91,
    "etoiles": 2,
    "indice": 2,
@@ -1329,13 +2001,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 39
+   "rang": 60
   },
   {
    "moteur": "V3",
@@ -1349,8 +2021,8 @@
    "marche": "btts_yes",
    "marche_affiche": "btts_oui",
    "libelle": null,
-   "cote": 1.32,
-   "probabilite": 0.9035,
+   "cote": 1.33,
+   "probabilite": 0.9036,
    "pct": 90,
    "etoiles": 2,
    "indice": 4,
@@ -1361,13 +2033,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 40
+   "rang": 61
+  },
+  {
+   "moteur": "V3",
+   "match_id": "6xbhi56p94y47jvygwd4kqfpw",
+   "date": "2026-11-22",
+   "heure": "12:00",
+   "competition": "Espagne : Première Division RFEF Groupe 1",
+   "domicile": "UD Ourense",
+   "exterieur": "Racing de Ferrol",
+   "rang_moteur": "P1",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
+   "libelle": null,
+   "cote": 1.27,
+   "probabilite": 0.9026,
+   "pct": 90,
+   "etoiles": 2,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 62
   },
   {
    "moteur": "V3",
@@ -1381,7 +2085,7 @@
    "marche": "over_3_5",
    "marche_affiche": "over_under_total_3.5_over",
    "libelle": null,
-   "cote": 1.52,
+   "cote": 1.53,
    "probabilite": 0.8979,
    "pct": 90,
    "etoiles": 2,
@@ -1393,13 +2097,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 41
+   "rang": 63
   },
   {
    "moteur": "V3",
@@ -1413,7 +2117,7 @@
    "marche": "handicap_-1.5_1",
    "marche_affiche": "handicap_domicile_1.5",
    "libelle": "Handicap TOP Oss +1,5 : TOP Oss ne perd pas par 2 buts ou plus",
-   "cote": 1.31,
+   "cote": 1.29,
    "probabilite": 0.882,
    "pct": 88,
    "etoiles": 2,
@@ -1425,13 +2129,77 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 42
+   "rang": 64
+  },
+  {
+   "moteur": "V3",
+   "match_id": "4wrsp64aq5fpx9pq0b76gdlhw",
+   "date": "2026-11-22",
+   "heure": "17:30",
+   "competition": "Angleterre : Premier League",
+   "domicile": "Liverpool",
+   "exterieur": "Man United",
+   "rang_moteur": "P1",
+   "marche": "under_4_5",
+   "marche_affiche": "over_under_total_4.5_under",
+   "libelle": null,
+   "cote": 1.28,
+   "probabilite": 0.8812,
+   "pct": 88,
+   "etoiles": 2,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 65
+  },
+  {
+   "moteur": "V3",
+   "match_id": "5hd74gibwraj5h33g57l3caac",
+   "date": "2026-11-22",
+   "heure": "19:15",
+   "competition": "Belgique : Pro Ligue",
+   "domicile": "Lommel SK",
+   "exterieur": "Standard",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": "Handicap Lommel SK +1,5 : Lommel SK ne perd pas par 2 buts ou plus",
+   "cote": 1.26,
+   "probabilite": 0.8779,
+   "pct": 88,
+   "etoiles": 2,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 66
   },
   {
    "moteur": "V3",
@@ -1457,13 +2225,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 43
+   "rang": 67
   },
   {
    "moteur": "V3",
@@ -1489,13 +2257,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 44
+   "rang": 68
   },
   {
    "moteur": "V3",
@@ -1510,7 +2278,7 @@
    "marche_affiche": "over_under_total_2.5_over",
    "libelle": null,
    "cote": 1.35,
-   "probabilite": 0.8592,
+   "probabilite": 0.8593,
    "pct": 86,
    "etoiles": 4,
    "indice": 3,
@@ -1521,13 +2289,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 45
+   "rang": 69
+  },
+  {
+   "moteur": "V3",
+   "match_id": "a77rxl7gq4ldrh0kyvuj0b7dg",
+   "date": "2026-11-22",
+   "heure": "00:00",
+   "competition": "Etats-Unis : MLS 1er Tour",
+   "domicile": "Inter Miami",
+   "exterieur": "Columbus",
+   "rang_moteur": "P1",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.35,
+   "probabilite": 0.8593,
+   "pct": 86,
+   "etoiles": 4,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 70
   },
   {
    "moteur": "V3",
@@ -1553,13 +2353,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 46
+   "rang": 71
   },
   {
    "moteur": "V3",
@@ -1573,8 +2373,8 @@
    "marche": "under_3_5",
    "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
-   "cote": 1.33,
-   "probabilite": 0.8503,
+   "cote": 1.3,
+   "probabilite": 0.8505,
    "pct": 85,
    "etoiles": 2,
    "indice": 4,
@@ -1585,13 +2385,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 47
+   "rang": 72
   },
   {
    "moteur": "V3",
@@ -1605,8 +2405,8 @@
    "marche": "dc_1X",
    "marche_affiche": "double_chance_1X",
    "libelle": null,
-   "cote": 1.3,
-   "probabilite": 0.853,
+   "cote": 1.31,
+   "probabilite": 0.8531,
    "pct": 85,
    "etoiles": 2,
    "indice": 3,
@@ -1617,13 +2417,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 48
+   "rang": 73
   },
   {
    "moteur": "V3",
@@ -1638,7 +2438,7 @@
    "marche_affiche": "over_under_total_4.5_under",
    "libelle": null,
    "cote": 1.29,
-   "probabilite": 0.8512,
+   "probabilite": 0.8513,
    "pct": 85,
    "etoiles": 2,
    "indice": 3,
@@ -1649,13 +2449,109 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 49
+   "rang": 74
+  },
+  {
+   "moteur": "V3",
+   "match_id": "83ihhupbrznxj8emnypfelhjo",
+   "date": "2026-11-22",
+   "heure": "18:30",
+   "competition": "Espagne : LaLiga",
+   "domicile": "Osasuna",
+   "exterieur": "Malaga",
+   "rang_moteur": "P1",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
+   "libelle": null,
+   "cote": 1.3,
+   "probabilite": 0.8442,
+   "pct": 84,
+   "etoiles": 2,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 75
+  },
+  {
+   "moteur": "V3",
+   "match_id": "1qhdczmvthnykuzijtz5vexw4",
+   "date": "2026-11-22",
+   "heure": "09:30",
+   "competition": "Indonésie : Ligue 1",
+   "domicile": "Isenmulang",
+   "exterieur": "Borneo",
+   "rang_moteur": "P2",
+   "marche": "under_3_5",
+   "marche_affiche": "over_under_total_3.5_under",
+   "libelle": null,
+   "cote": 1.38,
+   "probabilite": 0.8356,
+   "pct": 84,
+   "etoiles": 1,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 76
+  },
+  {
+   "moteur": "V3",
+   "match_id": "8a3301z2ixlwldlbnomyrlyqc",
+   "date": "2026-11-22",
+   "heure": "18:00",
+   "competition": "Chypre : 1. Division",
+   "domicile": "Apollon Limassol",
+   "exterieur": "ALS Omonia",
+   "rang_moteur": "P3",
+   "marche": "over_2_5",
+   "marche_affiche": "over_under_total_2.5_over",
+   "libelle": null,
+   "cote": 1.39,
+   "probabilite": 0.8425,
+   "pct": 84,
+   "etoiles": 1,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 77
   },
   {
    "moteur": "V3",
@@ -1681,13 +2577,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 50
+   "rang": 78
   },
   {
    "moteur": "V3",
@@ -1713,13 +2609,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 51
+   "rang": 79
   },
   {
    "moteur": "V3",
@@ -1745,13 +2641,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 52
+   "rang": 80
   },
   {
    "moteur": "V3",
@@ -1777,13 +2673,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 53
+   "rang": 81
   },
   {
    "moteur": "V3",
@@ -1798,7 +2694,7 @@
    "marche_affiche": "buts_equipe_domicile_1.5_over",
    "libelle": null,
    "cote": 1.72,
-   "probabilite": 0.8055,
+   "probabilite": 0.8058,
    "pct": 81,
    "etoiles": 2,
    "indice": 2,
@@ -1809,13 +2705,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 54
+   "rang": 82
+  },
+  {
+   "moteur": "V3",
+   "match_id": "8a3301z2ixlwldlbnomyrlyqc",
+   "date": "2026-11-22",
+   "heure": "18:00",
+   "competition": "Chypre : 1. Division",
+   "domicile": "Apollon Limassol",
+   "exterieur": "ALS Omonia",
+   "rang_moteur": "P2",
+   "marche": "away_over_0_5",
+   "marche_affiche": "buts_equipe_exterieur_0.5_over",
+   "libelle": null,
+   "cote": 1.63,
+   "probabilite": 0.8081,
+   "pct": 81,
+   "etoiles": 1,
+   "indice": 2,
+   "sur": 2,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 83
   },
   {
    "moteur": "V3",
@@ -1830,7 +2758,7 @@
    "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
    "cote": 1.44,
-   "probabilite": 0.8099,
+   "probabilite": 0.81,
    "pct": 81,
    "etoiles": 2,
    "indice": 3,
@@ -1841,13 +2769,141 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 55
+   "rang": 84
+  },
+  {
+   "moteur": "V3",
+   "match_id": "b0etb6qirapatzbjxkkc4sjkk",
+   "date": "2026-11-22",
+   "heure": "16:45",
+   "competition": "Pays-Bas : Eredivisie",
+   "domicile": "Go Ahead Eagles",
+   "exterieur": "Fortuna",
+   "rang_moteur": "P2",
+   "marche": "clean_home_no",
+   "marche_affiche": "encaisse_domicile",
+   "libelle": null,
+   "cote": 1.35,
+   "probabilite": 0.8046,
+   "pct": 80,
+   "etoiles": 2,
+   "indice": 2,
+   "sur": 2,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 85
+  },
+  {
+   "moteur": "V3",
+   "match_id": "x14o2r85nr4bnagrwaw4ig44",
+   "date": "2026-11-21",
+   "heure": "18:30",
+   "competition": "Grèce : Super Ligue",
+   "domicile": "PS PAE Kalamata",
+   "exterieur": "AEK",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1.5_1",
+   "marche_affiche": "handicap_domicile_1.5",
+   "libelle": "Handicap PS PAE Kalamata +1,5 : PS PAE Kalamata ne perd pas par 2 buts ou plus",
+   "cote": 1.74,
+   "probabilite": 0.8047,
+   "pct": 80,
+   "etoiles": 1,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 86
+  },
+  {
+   "moteur": "V3",
+   "match_id": "1qhdczmvthnykuzijtz5vexw4",
+   "date": "2026-11-22",
+   "heure": "09:30",
+   "competition": "Indonésie : Ligue 1",
+   "domicile": "Isenmulang",
+   "exterieur": "Borneo",
+   "rang_moteur": "P1",
+   "marche": "handicap_-2_1",
+   "marche_affiche": "handicap3_domicile_2_1",
+   "libelle": "Handicap 3 choix Isenmulang +2 (1) : Isenmulang ne perd pas par 2 buts ou plus",
+   "cote": 1.53,
+   "probabilite": 0.8048,
+   "pct": 80,
+   "etoiles": 1,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 87
+  },
+  {
+   "moteur": "V3",
+   "match_id": "8a3301z2ixlwldlbnomyrlyqc",
+   "date": "2026-11-22",
+   "heure": "18:00",
+   "competition": "Chypre : 1. Division",
+   "domicile": "Apollon Limassol",
+   "exterieur": "ALS Omonia",
+   "rang_moteur": "P1",
+   "marche": "btts_yes",
+   "marche_affiche": "btts_oui",
+   "libelle": null,
+   "cote": 1.74,
+   "probabilite": 0.795,
+   "pct": 80,
+   "etoiles": 1,
+   "indice": 4,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 88
   },
   {
    "moteur": "V3",
@@ -1862,7 +2918,7 @@
    "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
    "cote": 1.44,
-   "probabilite": 0.7975,
+   "probabilite": 0.7978,
    "pct": 80,
    "etoiles": 4,
    "indice": 3,
@@ -1873,13 +2929,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 56
+   "rang": 89
+  },
+  {
+   "moteur": "V3",
+   "match_id": "6cwmokt5hvlyv0y7t6yf3vthw",
+   "date": "2026-11-22",
+   "heure": "02:10",
+   "competition": "Guatemala : Ligue Nationale Ouverture",
+   "domicile": "Marquense",
+   "exterieur": "Aurora",
+   "rang_moteur": "P1",
+   "marche": "handicap_2_2",
+   "marche_affiche": "handicap3_domicile_-2_2",
+   "libelle": "Handicap 3 choix Marquense −2 (2) : Aurora ne perd pas par 2 buts ou plus",
+   "cote": 1.33,
+   "probabilite": 0.7977,
+   "pct": 80,
+   "etoiles": 3,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 90
   },
   {
    "moteur": "V3",
@@ -1894,7 +2982,7 @@
    "marche_affiche": "double_chance_X2",
    "libelle": null,
    "cote": 1.69,
-   "probabilite": 0.7985,
+   "probabilite": 0.7988,
    "pct": 80,
    "etoiles": 2,
    "indice": 3,
@@ -1905,13 +2993,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 57
+   "rang": 91
   },
   {
    "moteur": "V3",
@@ -1937,13 +3025,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 58
+   "rang": 92
+  },
+  {
+   "moteur": "V3",
+   "match_id": "vv62vwug291sozkklibl5tlg",
+   "date": "2026-11-22",
+   "heure": "17:00",
+   "competition": "Hongrie : NB II",
+   "domicile": "Soroksár",
+   "exterieur": "Szeged-Csanád",
+   "rang_moteur": "P1",
+   "marche": "handicap_-1_1",
+   "marche_affiche": "handicap3_domicile_1_1",
+   "libelle": "Handicap 3 choix Soroksár +1 (1) : Soroksár ne perd pas",
+   "cote": 1.35,
+   "probabilite": 0.7992,
+   "pct": 80,
+   "etoiles": 2,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 93
   },
   {
    "moteur": "V3",
@@ -1958,7 +3078,7 @@
    "marche_affiche": "buts_equipe_exterieur_1.5_under",
    "libelle": null,
    "cote": 1.43,
-   "probabilite": 0.7939,
+   "probabilite": 0.7946,
    "pct": 79,
    "etoiles": 2,
    "indice": 2,
@@ -1969,13 +3089,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 59
+   "rang": 94
   },
   {
    "moteur": "V3",
@@ -1986,11 +3106,11 @@
    "domicile": "Cali",
    "exterieur": "Millonarios FC",
    "rang_moteur": "P1",
-   "marche": "handicap_-0.5_1",
-   "marche_affiche": "handicap_domicile_0.5",
-   "libelle": "Handicap Cali +0,5 : Cali ne perd pas",
-   "cote": 1.43,
-   "probabilite": 0.7928,
+   "marche": "handicap_-1_1",
+   "marche_affiche": "handicap3_domicile_1_1",
+   "libelle": "Handicap 3 choix Cali +1 (1) : Cali ne perd pas",
+   "cote": 1.42,
+   "probabilite": 0.7934,
    "pct": 79,
    "etoiles": 4,
    "indice": 3,
@@ -2001,13 +3121,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 60
+   "rang": 95
   },
   {
    "moteur": "V3",
@@ -2022,7 +3142,7 @@
    "marche_affiche": "handicap_exterieur_1.5",
    "libelle": "Handicap Pergolettese +1,5 : Pergolettese ne perd pas par 2 buts ou plus",
    "cote": 1.34,
-   "probabilite": 0.7872,
+   "probabilite": 0.7874,
    "pct": 79,
    "etoiles": 2,
    "indice": 3,
@@ -2033,13 +3153,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 61
+   "rang": 96
   },
   {
    "moteur": "V3",
@@ -2054,7 +3174,7 @@
    "marche_affiche": "double_chance_1X",
    "libelle": null,
    "cote": 1.43,
-   "probabilite": 0.7901,
+   "probabilite": 0.7903,
    "pct": 79,
    "etoiles": 2,
    "indice": 3,
@@ -2065,13 +3185,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 62
+   "rang": 97
   },
   {
    "moteur": "V3",
@@ -2085,7 +3205,7 @@
    "marche": "clean_home_no",
    "marche_affiche": "encaisse_domicile",
    "libelle": null,
-   "cote": 1.48,
+   "cote": 1.51,
    "probabilite": 0.7796,
    "pct": 78,
    "etoiles": 1,
@@ -2097,13 +3217,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 63
+   "rang": 98
+  },
+  {
+   "moteur": "V3",
+   "match_id": "a913yqe5rz4re4oc3eovrmdqs",
+   "date": "2026-11-22",
+   "heure": "00:30",
+   "competition": "Etats-Unis : MLS 1er Tour",
+   "domicile": "Chicago Fire",
+   "exterieur": "Charlotte",
+   "rang_moteur": "P1",
+   "marche": "handicap_1.5_2",
+   "marche_affiche": "handicap_exterieur_1.5",
+   "libelle": "Handicap Charlotte +1,5 : Charlotte ne perd pas par 2 buts ou plus",
+   "cote": 1.5,
+   "probabilite": 0.7675,
+   "pct": 77,
+   "etoiles": 4,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 99
   },
   {
    "moteur": "V3",
@@ -2118,7 +3270,7 @@
    "marche_affiche": "handicap_exterieur_1.5",
    "libelle": "Handicap Juve Stabia +1,5 : Juve Stabia ne perd pas par 2 buts ou plus",
    "cote": 1.46,
-   "probabilite": 0.7701,
+   "probabilite": 0.7698,
    "pct": 77,
    "etoiles": 2,
    "indice": 3,
@@ -2129,45 +3281,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 64
+   "rang": 100
   },
   {
    "moteur": "V3",
-   "match_id": "3bkxz8u2etn9k4nxmdqn2kxsk",
-   "date": "2026-11-21",
+   "match_id": "89fl6o3rvx3hxd623pl22j7dg",
+   "date": "2026-11-22",
    "heure": "14:00",
-   "competition": "Qatar : Division 1",
-   "domicile": "Al Wakrah",
-   "exterieur": "Sailiya",
+   "competition": "Chypre : 1. Division",
+   "domicile": "Oly Nicosia",
+   "exterieur": "AEK Larnaca",
    "rang_moteur": "P1",
-   "marche": "over_2_5",
-   "marche_affiche": "over_under_total_2.5_over",
+   "marche": "home_over_0_5",
+   "marche_affiche": "buts_equipe_domicile_0.5_over",
    "libelle": null,
-   "cote": 1.42,
-   "probabilite": 0.7705,
-   "pct": 77,
+   "cote": 1.55,
+   "probabilite": 0.7614,
+   "pct": 76,
    "etoiles": 1,
-   "indice": 3,
-   "sur": 4,
+   "indice": 2,
+   "sur": 2,
    "groupe": {
     "moteur": "V3",
     "indice_min": 0.75,
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 65
+   "rang": 101
   },
   {
    "moteur": "V3",
@@ -2182,8 +3334,8 @@
    "marche_affiche": "over_under_total_3.5_under",
    "libelle": null,
    "cote": 1.46,
-   "probabilite": 0.7549,
-   "pct": 75,
+   "probabilite": 0.7561,
+   "pct": 76,
    "etoiles": 2,
    "indice": 3,
    "sur": 4,
@@ -2193,13 +3345,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 66
+   "rang": 102
   },
   {
    "moteur": "V3",
@@ -2210,11 +3362,11 @@
    "domicile": "Man City",
    "exterieur": "Fulham",
    "rang_moteur": "P1",
-   "marche": "handicap_1.5_2",
-   "marche_affiche": "handicap_exterieur_1.5",
-   "libelle": "Handicap Fulham +1,5 : Fulham ne perd pas par 2 buts ou plus",
+   "marche": "handicap_2_2",
+   "marche_affiche": "handicap3_domicile_-2_2",
+   "libelle": "Handicap 3 choix Man City −2 (2) : Fulham ne perd pas par 2 buts ou plus",
    "cote": 1.73,
-   "probabilite": 0.7311,
+   "probabilite": 0.7315,
    "pct": 73,
    "etoiles": 2,
    "indice": 3,
@@ -2225,13 +3377,45 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 67
+   "rang": 103
+  },
+  {
+   "moteur": "V3",
+   "match_id": "b0etb6qirapatzbjxkkc4sjkk",
+   "date": "2026-11-22",
+   "heure": "16:45",
+   "competition": "Pays-Bas : Eredivisie",
+   "domicile": "Go Ahead Eagles",
+   "exterieur": "Fortuna",
+   "rang_moteur": "P1",
+   "marche": "btts_yes",
+   "marche_affiche": "btts_oui",
+   "libelle": null,
+   "cote": 1.54,
+   "probabilite": 0.731,
+   "pct": 73,
+   "etoiles": 2,
+   "indice": 3,
+   "sur": 4,
+   "groupe": {
+    "moteur": "V3",
+    "indice_min": 0.75,
+    "pct_min": 70,
+    "etoiles_min": 1,
+    "statut": "observation",
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
+   },
+   "rang": 104
   },
   {
    "moteur": "V3",
@@ -2246,7 +3430,7 @@
    "marche_affiche": "btts_oui",
    "libelle": null,
    "cote": 1.57,
-   "probabilite": 0.7235,
+   "probabilite": 0.7233,
    "pct": 72,
    "etoiles": 2,
    "indice": 3,
@@ -2257,13 +3441,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 68
+   "rang": 105
   },
   {
    "moteur": "V3",
@@ -2278,7 +3462,7 @@
    "marche_affiche": "over_under_total_2.5_over",
    "libelle": null,
    "cote": 1.52,
-   "probabilite": 0.7232,
+   "probabilite": 0.7229,
    "pct": 72,
    "etoiles": 1,
    "indice": 3,
@@ -2289,13 +3473,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 69
+   "rang": 106
   },
   {
    "moteur": "V3",
@@ -2310,7 +3494,7 @@
    "marche_affiche": "over_under_total_2.5_over",
    "libelle": null,
    "cote": 1.57,
-   "probabilite": 0.7184,
+   "probabilite": 0.7178,
    "pct": 72,
    "etoiles": 1,
    "indice": 3,
@@ -2321,13 +3505,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 70
+   "rang": 107
   },
   {
    "moteur": "V3",
@@ -2337,11 +3521,11 @@
    "competition": "France : Ligue 1 McDonald's",
    "domicile": "AS Monaco",
    "exterieur": "AJ Auxerre",
-   "rang_moteur": "P1",
-   "marche": "away_over_0_5",
-   "marche_affiche": "buts_equipe_exterieur_0.5_over",
+   "rang_moteur": "P2",
+   "marche": "clean_home_no",
+   "marche_affiche": "encaisse_domicile",
    "libelle": null,
-   "cote": 1.55,
+   "cote": 1.52,
    "probabilite": 0.7122,
    "pct": 71,
    "etoiles": 1,
@@ -2353,13 +3537,13 @@
     "pct_min": 70,
     "etoiles_min": 1,
     "statut": "observation",
-    "n": 300,
-    "gagnes": 204,
-    "reussite": 0.68,
-    "borne_basse": 0.6252228520235206,
-    "p": 0.0027798708650370674
+    "n": 319,
+    "gagnes": 215,
+    "reussite": 0.6739811912225705,
+    "borne_basse": 0.6207354181844554,
+    "p": 0.003976942243734922
    },
-   "rang": 71
+   "rang": 108
   }
  ]
 }
