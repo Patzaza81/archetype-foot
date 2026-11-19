@@ -15,8 +15,27 @@ function mpCote(x) { const n = Number(x); return x != null && Number.isFinite(n)
 function mpSur10(x) { const n = Number(x); return Number.isFinite(n) ? Math.round(n * 10) : null; }
 function mpLigne(p) {
   const badge = p.resultat ? `<span class="om-badge om-${mpE(p.resultat)}">${p.resultat === "WIN" ? "GAGNÉ" : "PERDU"}</span>` : "";
-  const s = mpSur10(p.fiabilite);
-  return `<div class="om-ligne mp-pari"><span>${mpE(p.libelle)}</span><span><b class="om-cote">${mpCote(p.cote)}</b> · <span class="mp-fiab">${s == null ? "—" : s + " sur 10"}</span> ${badge}</span></div>`;
+  const c = mpCote(p.cote).replace("cote ", "");
+  return `<div class="mp-pari-fort"><span class="mp-pari-nom">${mpE(p.libelle)}</span><span class="mp-pari-droite">${badge}<b class="mp-cote">${c}</b></span></div>`;
+}
+function mpRes(m, e) { return m > e ? ["V", "om-v"] : m < e ? ["D", "om-d"] : ["N", "om-n"]; }
+function mpJourCourt(iso) { const d = new Date(`${iso}T12:00:00`); return Number.isNaN(d.getTime()) ? mpE(iso || "") : mpE(d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }).replace(/\./g, "")); }
+function mpEquipe(nom, lieu, liste, total, domicile) {
+  const l = Array.isArray(liste) ? liste : [];
+  const moy = (k) => (l.length ? (l.reduce((a, x) => a + Number(x[k] || 0), 0) / l.length).toFixed(1).replace(".", ",") : "—");
+  const lignes = l.map((x) => {
+    const [lettre, cls] = mpRes(x.marques, x.encaisses), m = Number(x.marques), e = Number(x.encaisses);
+    const score = domicile ? `<b>${m}</b> – ${e}` : `${e} – <b>${m}</b>`;
+    return `<li class="om-dm"><span class="om-dm-date">${mpJourCourt(x.date)}</span><span class="om-dm-adv">${mpE(x.adversaire || "Adversaire inconnu")}</span><span class="om-dm-score">${score}</span><span class="om-dm-res ${cls}">${lettre}</span></li>`;
+  }).join("");
+  return `<div class="om-dm-eq"><div class="om-dm-tete"><span class="om-dm-nom">${mpE(nom)}</span><span class="om-dm-lieu">${lieu} · ${total || l.length} match${(total || l.length) > 1 ? "s" : ""}</span></div>` +
+    (l.length ? `<div class="om-dm-puces"><span>Marque <b>${moy("marques")}</b></span><span>Encaisse <b>${moy("encaisses")}</b></span></div><ul class="om-dm-liste">${lignes}</ul>` : `<p class="om-info">Matchs indisponibles.</p>`) + `</div>`;
+}
+function mpHistorique(f) {
+  const d = f.derniers_matchs || {};
+  if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
+  return `<details class="mp-det"><summary>Historique des équipes</summary><div class="om-dm-grille">` +
+    mpEquipe(f.domicile, "À domicile", d.dom, f.n_domicile, true) + mpEquipe(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></details>`;
 }
 function mpDetail(f) {
   const l = (f.paris || []).map((p) => `<tr><td style="text-align:left">${mpE(p.libelle)}</td><td>${mpCote(p.cote).replace("cote ", "")}</td><td>${mpPct(p.fiabilite)}</td><td>${mpPct(p.modele)}</td><td>${mpPct(p.catastrophe)}</td></tr>`).join("");
@@ -29,11 +48,10 @@ function mpCarte(f) {
   s.className = "ax-carte";
   s.innerHTML =
     `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${mpE(f.domicile)}</span>` +
-    `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.jour)} ${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
+    `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.jour)}</span><span>${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mpE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
     `<div class="om-corps">` + (f.score ? `<div class="om-info">Score final <strong>${mpE(f.score.join("-"))}</strong></div>` : "") +
-    (ba.length === 2 ? `<div class="om-info">Buts attendus : ${mpE(f.domicile)} ${mpNb(ba[0])} · ${mpE(f.exterieur)} ${mpNb(ba[1])} (sur ${f.n_domicile} matchs à domicile et ${f.n_exterieur} à l'extérieur)</div>` : "") +
-    (f.paris || []).map(mpLigne).join("") + mpDetail(f) + `</div>`;
+    (f.paris || []).map(mpLigne).join("") + mpHistorique(f) + mpDetail(f) + `</div>`;
   return s;
 }
 function mpListe(id, liste, vide) {
@@ -111,4 +129,4 @@ if (typeof document !== "undefined") {
       .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
   }
 }
-if (typeof module !== "undefined") module.exports = { mpVerdict, mpChiffres, mpLigne, mpSur10, mpHoraire, mpCote };
+if (typeof module !== "undefined") module.exports = { mpHistorique, mpVerdict, mpChiffres, mpLigne, mpSur10, mpHoraire, mpCote };

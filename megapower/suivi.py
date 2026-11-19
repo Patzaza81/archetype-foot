@@ -209,13 +209,19 @@ def _txt(x: float) -> float:
     return round(float(x), 2)
 
 
+def _derniers(recs: list[dict], n: int = 10) -> list[dict]:
+    """Derniers matchs au même lieu (ceux que lit le modèle), du plus ancien au plus récent : date, adversaire, buts marqués, buts encaissés."""
+    return [{"date": r["date"], "adversaire": r["adv"], "marques": r["gf"], "encaisses": r["ga"]} for r in recs[-n:]]
+
+
 def fiche(m: dict, t: int, F: dict, cal: dict, seuil, autorisees: set[str] | None = None) -> dict:
     K = M.NB
     q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
     sel = retenus(bas, q, seuil, autorisees, F["cote"][t] if F.get("cote") is not None else None)
     c = F["comp"][t]
     base = {"match_id": m["id"], "jour": m["jour"], "heure": m.get("heure"), "coup_d_envoi_utc": m.get("ko"), "competition": m.get("competition"), "domicile": m["domicile"], "exterieur": m["exterieur"],
-            "n_domicile": c["n_dom"], "n_exterieur": c["n_ext"], "buts_attendus": [_txt(F["la"][t]), _txt(F["lb"][t])]}
+            "n_domicile": c["n_dom"], "n_exterieur": c["n_ext"], "buts_attendus": [_txt(F["la"][t]), _txt(F["lb"][t])],
+            "derniers_matchs": {"dom": _derniers([r for r in m["md"] if r["dom"]]), "ext": _derniers([r for r in m["me"] if not r["dom"]])}}
     paris = [{"marche": M.NOMS[k], "libelle": V.libelle(M.NOMS[k], m["domicile"], m["exterieur"]), "famille": C.FAMILLE[k], "cote": (round(float(F["cote"][t, k]), 2) if F.get("cote") is not None and not np.isnan(F["cote"][t, k]) else None), "fiabilite": round(float(q[k]), 4), "fiabilite_basse": round(float(bas[k]), 4),
               "modele": round(float(F["pn"][t, k]), 4), "catastrophe": round(float(F["pc"][t, k]), 4), "favorable": round(float(F["pf"][t, k]), 4)} for k in sel]
     return {**base, "paris": paris}
@@ -226,7 +232,7 @@ def geler(F: dict, cal: dict, sc: dict, maintenant: datetime, seuil, autorisees:
     dernier = {}
     for l in _lire(journal):
         if l["type"] == "pronostic":
-            dernier[l["match_id"]] = json.dumps([p["marche"] for p in l["fiche"]["paris"]])
+            dernier[l["match_id"]] = json.dumps([p["marche"] for p in l["fiche"]["paris"]]) + ("" if "derniers_matchs" in l["fiche"] else "|sans_historique")
     nouveaux, analyses = [], 0
     for t, m in enumerate(F["matchs"]):
         ko = _ko(m.get("ko"))
