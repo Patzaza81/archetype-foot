@@ -1,12 +1,12 @@
-"""Suivi de MEGAPOWER. Usage : python -m megapower.suivi [pipeline]
+"""Suivi de MEGAPOWER v2 (sans aucune cote). Usage : python -m megapower.suivi [pipeline]
 
 Chaque passage :
-  1. relit tous les matchs du flux commun (data/archive_test) et réapprend le modèle sur les matchs joués (rien n'est figé à la main) ;
-  2. refait le test « marche avant » : apprendre sur le passé, juger les matchs suivants jamais vus (le seul chiffre honnête avant les résultats réels) ;
-  3. gèle AVANT le coup d'envoi le pari retenu de chaque match à venir (journal data/megapower/journal.jsonl, ajout seul) ; « aucun pari » est une réponse valide.
-     Seul un pari « prouvé » est proposé ; un pari « sous observation » est gelé et suivi, mais la page dit de ne pas le jouer ;
-  4. règle les paris des matchs terminés ;
-  5. écrit data/megapower/pronostics.json pour la page (bilan réel = paris gelés avant le coup d'envoi, matchs terminés, rien d'autre).
+  1. relit tous les matchs du flux commun (data/archive_test) et réapprend les paramètres du modèle de buts sur les matchs joués (modele.ajuster) ;
+  2. calcule, pour chaque match, la probabilité de tous les marchés dans trois scénarios (favorable / normal / catastrophe), puis la calibre sur les résultats connus ;
+  3. refait le test « marche avant » : apprendre sur le passé, juger les jours suivants jamais vus (le seul chiffre honnête avant les résultats réels) ;
+  4. gèle AVANT le coup d'envoi les pronostics retenus de chaque match à venir (journal data/megapower/journal_v2.jsonl, ajout seul) ; « aucun pronostic » est valide ;
+  5. règle les matchs terminés et écrit data/megapower/pronostics.json pour la page (bilan réel = gel valide avant le coup d'envoi, match terminé, rien d'autre).
+L'ancien journal (data/megapower/journal.jsonl, version 1 fondée sur les cotes) n'est plus alimenté ; il reste en place pour comparer.
 """
 from __future__ import annotations
 
@@ -17,16 +17,21 @@ from pathlib import Path
 import numpy as np
 
 import verif_pronostic as V
-from . import coeur as C, donnees as D, signaux as S, tri_moteurs as TM
+from . import calibration as C, donnees as D, modele as M
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "megapower"
-JOURNAL = DOSSIER / "journal.jsonl"
+JOURNAL = DOSSIER / "journal_v2.jsonl"
 PAGE = DOSSIER / "pronostics.json"
-MODELE = DOSSIER / "modele.json"
-VERSION = "megapower-1"
+MODELE = DOSSIER / "modele_v2.json"
+CONFIG = ROOT / "config" / "megapower.json"
+VERSION = "megapower-2"
 JOURS_REGLES_AFFICHES = 7
-NOMS_STATUT = {2: "prouvé", 1: "sous observation"}
+LISSAGE_NATURE = 100.0                         # matchs « virtuels » du modèle mélangés à la fréquence du championnat (meilleur de 10 / 30 / 100 sur la seconde moitié de l archive : réussite 78,7 % -> 79,3 %)
+
+
+def fiabilite_demandee() -> float:
+    return float(json.loads(CONFIG.read_text(encoding="utf-8"))["fiabilite_demandee"])
 
 
 def _ko(s):
@@ -49,86 +54,143 @@ def _ajouter(journal: Path, lignes: list[dict]) -> None:
             f.write(json.dumps(l, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
-def cote_min() -> float:
-    return float(V.config()["cote_min"])
+# ------------------------------------------------------------------------------------------------ prévisions
+def prevoir(matchs: list[dict], P: dict) -> dict:
+    """Pour chaque match analysable (4 matchs au même lieu au moins pour chaque équipe) : buts attendus et probabilités des trois scénarios."""
+    lig = {k: M.Ligue(v) for k, v in M.index_ligues(matchs).items()}
+    garde, L = [], []
+    for m in matchs:
+        c = M.composantes(m, lig[(m["competition"], m["saison"])], P["w_xg"], P["m_equipe"], P["m_ligue"])
+        if c is None:
+            continue
+        garde.append(m)
+        L.append((c, *M.lambdas(c, P)))
+    la, lb, sa, sb = (np.array([l[i] for l in L]) for i in (1, 2, 3, 4))
+    pn, pf, pc = M.scenarios(la, lb, sa, sb) if len(L) else (np.zeros((0, M.NB)),) * 3
+    return {"matchs": garde, "comp": [l[0] for l in L], "la": la, "lb": lb, "pn": pn, "pf": pf, "pc": pc, "pl": nature(garde, lig, pn)}
 
 
-def _resume(T, idx, J=None) -> dict:
-    if len(idx) == 0:
-        return {"paris": 0}
-    g = np.where(T["y"][idx] == 1, T["cote"][idx] - 1, -1.0)
-    return {"paris": int(len(idx)), "matchs": int(len(np.unique(T["match"][idx]))), "reussite": round(float(T["y"][idx].mean()), 4), "cote_moyenne": round(float(T["cote"][idx].mean()), 3),
-            "rendement": round(float(g.mean()), 4), "marge": round(float(2 * g.std() / np.sqrt(len(g))), 4)}
-
-
-def marche_avant(T: dict, jours: np.ndarray, cmin: float) -> dict:
-    """Exactement ce que fait le moteur chaque nuit, rejoué sur le passé : pour chaque jour de la seconde moitié de la période, apprendre sur tous les jours d'avant,
-    puis parier sur les matchs de ce jour, jamais vus. Ce n'est pas un bilan réel (les paris n'étaient pas gelés) : c'est le test le plus honnête possible avant les vrais résultats."""
-    from datetime import date
-    joue = ~np.isnan(T["y"])
-    dj = [str(j) for j in np.unique(jours[joue])]
-    vide = {"jours_testes": 0, "sous_observation": {"paris": 0}, "prouves": {"paris": 0}, "periode_testee": None, "par_semaine": []}
-    if len(dj) < 4:
-        return vide
-    d0, d1 = date.fromisoformat(dj[0]), date.fromisoformat(dj[-1])
-    milieu = (d0 + (d1 - d0) / 2).isoformat()
-    tout, par_jour = {1: [], 2: []}, {}
-    testes = [j for j in dj if j >= milieu]
-    for j in testes:
-        tr, te = joue & (jours < j), joue & (jours == j)
-        mod = C.apprendre({k: v[tr] for k, v in T.items()}, jours[tr], cmin)
-        Tt = {k: v[te] for k, v in T.items()}
-        Jt = C.juger(Tt, mod)
-        for s in (1, 2):
-            i = np.nonzero(te)[0][C.meilleur_par_match(Tt, Jt, s)] if (Jt["statut"] >= s).any() else np.array([], dtype=int)
-            tout[s] += list(i)
-            if s == 1:
-                par_jour[j] = list(i)
-    lundi = lambda j: (date.fromisoformat(j) - timedelta(days=date.fromisoformat(j).weekday())).isoformat()
-    semaines = {}
-    for j, i in par_jour.items():
-        semaines.setdefault(lundi(j), []).extend(i)
-    return {"jours_testes": len(testes), "periode_testee": [testes[0], testes[-1]], "sous_observation": _resume(T, np.array(tout[1], dtype=int)), "prouves": _resume(T, np.array(tout[2], dtype=int)),
-            "par_semaine": [{"semaine_du": k, **_resume(T, np.array(v, dtype=int))} for k, v in sorted(semaines.items())]}
-
-
-def _lectures(m: dict, k: int, cote: float) -> list[dict]:
-    out = []
-    for nom, a, b in C.LECTURES:
-        v = (m["signaux"][a][k] + m["signaux"][b][k]) / 2
-        if not np.isnan(v):
-            out.append({"moteur": nom, "lecture": round(float(v), 4), "pour": bool(v > 1 / cote)})
+def nature(matchs: list[dict], lig: dict, pn: np.ndarray, lissage: float = LISSAGE_NATURE) -> np.ndarray:
+    """Nature du championnat (étude du 19/11/2026) : fréquence réelle de chaque marché dans le championnat, sur ses matchs joués strictement avant le match,
+    rapprochée de la probabilité du modèle par `lissage` matchs (peu de matchs = on garde le modèle). Aucune cote."""
+    out = pn.copy()
+    cache = {}
+    for t, m in enumerate(matchs):
+        k = (m["competition"], m["saison"])
+        if k not in cache:
+            L = lig[k].matchs
+            h = np.array([x["r"]["gf"] if x["r"]["dom"] else x["r"]["ga"] for x in L], int)
+            a = np.array([x["r"]["ga"] if x["r"]["dom"] else x["r"]["gf"] for x in L], int)
+            O = M.TABLE[np.minimum(h, V.CAP), np.minimum(a, V.CAP)].astype(float) if len(L) else np.zeros((0, M.NB))
+            cache[k] = ([x["date"] for x in L], np.vstack([np.zeros((1, M.NB)), np.cumsum(O, axis=0)]))
+        dates, cum = cache[k]
+        n = int(np.searchsorted(dates, m["jour"], side="left"))
+        out[t] = (cum[n] + lissage * pn[t]) / (n + lissage)
     return out
 
 
-def fiche(m: dict, T: dict, J: dict, i: int | None) -> dict:
+def _resultats(F: dict, sc: dict) -> tuple[np.ndarray, np.ndarray]:
+    joue = np.array([m["id"] in sc for m in F["matchs"]], dtype=bool)
+    Y = np.full(F["pn"].shape, np.nan)
+    for t, m in enumerate(F["matchs"]):
+        if joue[t]:
+            h, a = sc[m["id"]]
+            Y[t] = M.TABLE[min(h, V.CAP), min(a, M.V.CAP)]
+    return joue, Y
+
+
+def _lignes(F, joue, Y, masque_matchs):
+    """Lignes (match, marché) des matchs retenus : pn, pc, y, marché, match."""
+    N, K = F["pn"].shape
+    t = np.repeat(np.arange(N), K)
+    mk = np.tile(np.arange(K), N)
+    s = masque_matchs[t]
+    return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s], (F["pl"].ravel()[s] if F.get("pl") is not None else None)
+
+
+def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str] | None = None) -> list[int]:
+    """Marchés retenus d'un match : fiabilité calibrée (borne basse) au moins égale à `seuil`, dans une famille autorisée, sans doublon d'événement."""
+    ok = ~np.isnan(q_bas) & (q_bas >= seuil)
+    if autorisees is not None:
+        ok &= np.isin(C.FAMILLE, sorted(autorisees))
+    return C.choisir(np.nan_to_num(q), ok)
+
+
+def marche_avant(F: dict, joue: np.ndarray, Y: np.ndarray, seuil: float) -> dict:
+    """Chaque jour de la seconde moitié des matchs joués : apprendre le calibrage sur les jours d'avant, juger les pronostics du jour (jamais vus).
+    Une famille de marchés est ensuite écartée si sa réussite réelle sur cette période est sous le niveau demandé ; ce choix est vérifié hors échantillon :
+    famille choisie sur la première moitié de la période de test, résultat mesuré sur la seconde."""
+    jours = np.array([m["jour"] for m in F["matchs"]])
+    dj = sorted(set(jours[joue]))
+    vide = {"matchs": 0, "pronostics": 0, "familles_autorisees": sorted(C.FAMILLES)}
+    if len(dj) < 6:
+        return vide
+    test = dj[len(dj) // 2:]
+    milieu = test[len(test) // 2]
+    K = F["pn"].shape[1]
+    rec, couv = [], set()                                        # (jour, famille, gagné)
+    for d in test:
+        cal = C.apprendre(*_lignes(F, joue, Y, joue & (jours < d)))
+        for t in np.nonzero(joue & (jours == d))[0]:
+            q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
+            for k in retenus(bas, q, seuil):
+                rec.append((d, C.FAMILLE[k], int(Y[t, k]))); couv.add(t)
+    if not rec:
+        return {**vide, "periode": [test[0], test[-1]], "matchs": int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0]))}
+
+    def taux(R):
+        return (round(sum(g for *_, g in R) / len(R), 4) if R else None)
+
+    def par_fam(R):
+        out = {}
+        for _, f, g in R:
+            a = out.setdefault(f, [0, 0]); a[0] += 1; a[1] += g
+        return out
+    autorisees = {f for f, (n, g) in par_fam(rec).items() if g / n >= seuil}
+    A, B = [r for r in rec if r[0] < milieu], [r for r in rec if r[0] >= milieu]
+    choix_A = {f for f, (n, g) in par_fam(A).items() if g / n >= seuil}
+    B_filtre = [r for r in B if r[1] in choix_A]
+    return {"periode": [test[0], test[-1]], "matchs": int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0])), "matchs_avec_pronostic": len(couv),
+            "pronostics": len(rec), "reussite": taux(rec), "par_moitie": [{"pronostics": len(A), "reussite": taux(A)}, {"pronostics": len(B), "reussite": taux(B)}],
+            "par_famille": {f: {"pronostics": n, "reussite": round(g / n, 4), "autorisee": f in autorisees} for f, (n, g) in sorted(par_fam(rec).items())},
+            "familles_autorisees": sorted(autorisees),
+            "controle_hors_echantillon": {"familles_choisies_sur": [test[0], milieu], "mesure_sur": [milieu, test[-1]], "pronostics_sans_filtre": len(B), "reussite_sans_filtre": taux(B),
+                                          "pronostics_avec_filtre": len(B_filtre), "reussite_avec_filtre": taux(B_filtre)}}
+
+
+# ------------------------------------------------------------------------------------------------ fiches et journal
+def _txt(x: float) -> float:
+    return round(float(x), 2)
+
+
+def fiche(m: dict, t: int, F: dict, cal: dict, seuil: float, autorisees: set[str] | None = None) -> dict:
+    K = M.NB
+    q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
+    sel = retenus(bas, q, seuil, autorisees)
+    c = F["comp"][t]
     base = {"match_id": m["id"], "jour": m["jour"], "heure": m.get("heure"), "coup_d_envoi_utc": m.get("ko"), "competition": m.get("competition"), "domicile": m["domicile"], "exterieur": m["exterieur"],
-            "n_domicile": m["n_dom"], "n_exterieur": m["n_ext"]}
-    if i is None:
-        return {**base, "pari": None}
-    k = int(T["marche"][i]); nom = S.NOMS[k]; cote = float(T["cote"][i])
-    return {**base, "pari": {"marche": nom, "libelle": V.libelle(nom, m["domicile"], m["exterieur"]), "famille": C.famille(nom), "cote": cote, "statut": NOMS_STATUT[int(J["statut"][i])],
-                             "reussite_apprise": round(float(J["p"][i]), 4), "reussite_pour_rembourser": round(1 / cote, 4), "gain_attendu": round(float(J["gain"][i]), 4),
-                             "gain_attendu_bas": round(float(J["gain_bas"][i]), 4), "lectures": _lectures(m, k, cote)}}
+            "n_domicile": c["n_dom"], "n_exterieur": c["n_ext"], "buts_attendus": [_txt(F["la"][t]), _txt(F["lb"][t])]}
+    paris = [{"marche": M.NOMS[k], "libelle": V.libelle(M.NOMS[k], m["domicile"], m["exterieur"]), "famille": C.FAMILLE[k], "fiabilite": round(float(q[k]), 4), "fiabilite_basse": round(float(bas[k]), 4),
+              "modele": round(float(F["pn"][t, k]), 4), "catastrophe": round(float(F["pc"][t, k]), 4), "favorable": round(float(F["pf"][t, k]), 4)} for k in sel]
+    return {**base, "paris": paris}
 
 
-def geler(matchs: list[dict], T: dict, J: dict, sc: dict, maintenant: datetime, journal: Path = JOURNAL) -> tuple[int, int]:
-    """Gèle le pari retenu de chaque match à venir. -> (nouvelles lignes, matchs à venir analysés)."""
-    choisi = {int(T["match"][i]): int(i) for i in C.meilleur_par_match(T, J, 1)} if (J["statut"] >= 1).any() else {}
+def geler(F: dict, cal: dict, sc: dict, maintenant: datetime, seuil: float, autorisees: set[str] | None = None, journal: Path = JOURNAL) -> tuple[int, int]:
+    """Gèle les pronostics de chaque match à venir. -> (nouvelles lignes, matchs à venir analysés)."""
     dernier = {}
     for l in _lire(journal):
         if l["type"] == "pronostic":
-            dernier[l["match_id"]] = json.dumps(l["fiche"].get("pari"), sort_keys=True)
+            dernier[l["match_id"]] = json.dumps([p["marche"] for p in l["fiche"]["paris"]])
     nouveaux, analyses = [], 0
-    for t, m in enumerate(matchs):
+    for t, m in enumerate(F["matchs"]):
         ko = _ko(m.get("ko"))
         if ko is None or ko <= maintenant or m["id"] in sc:
             continue
         analyses += 1
-        f = fiche(m, T, J, choisi.get(t))
-        sig = json.dumps(f["pari"], sort_keys=True)
-        if f["pari"] is None and m["id"] not in dernier:
-            continue                                            # rien à geler : pas de pari, et aucun pari annoncé avant
+        f = fiche(m, t, F, cal, seuil, autorisees)
+        sig = json.dumps([p["marche"] for p in f["paris"]])
+        if not f["paris"] and m["id"] not in dernier:
+            continue
         if dernier.get(m["id"]) == sig:
             continue
         nouveaux.append({"type": "pronostic", "match_id": m["id"], "gele_le": maintenant.isoformat(timespec="seconds"), "version": VERSION, "fiche": f})
@@ -153,73 +215,71 @@ def resultats(sc: dict, journal: Path = JOURNAL) -> int:
     faits = {l["match_id"] for l in lignes if l["type"] == "resultat"}
     nouveaux = []
     for mid, l in gels_valides(lignes).items():
-        p = l["fiche"].get("pari")
-        if mid in faits or mid not in sc or not p:
+        paris = l["fiche"].get("paris") or []
+        if mid in faits or mid not in sc or not paris:
             continue
         h, a = sc[mid]
         nouveaux.append({"type": "resultat", "match_id": mid, "score": [h, a], "regle_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                         "marche": p["marche"], "cote": p["cote"], "gagne": bool(S.TABLE[min(h, S.CAP), min(a, S.CAP), V.IDX[p["marche"]]])})
+                         "paris": [{"marche": p["marche"], "gagne": bool(M.TABLE[min(h, V.CAP), min(a, V.CAP), V.IDX[p["marche"]]])} for p in paris]})
     _ajouter(journal, nouveaux)
     return len(nouveaux)
 
 
 def bilan(lignes: list[dict]) -> dict:
-    """Bilan RÉEL : paris gelés avant le coup d'envoi, matchs terminés."""
+    """Bilan RÉEL : pronostics gelés avant le coup d'envoi, matchs terminés."""
     gels, res = gels_valides(lignes), {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
-    out = {}
-    for s in NOMS_STATUT.values():
-        P = [(r["cote"], r["gagne"], g["fiche"]["jour"]) for mid, g in gels.items() if (r := res.get(mid)) and (g["fiche"].get("pari") or {}).get("statut") == s and g["fiche"]["pari"]["marche"] == r["marche"]]
-        if not P:
-            out[s] = {"paris": 0}
+    n = g = 0
+    fiab = 0.0
+    jours, matchs = [], set()
+    fam: dict[str, list[int]] = {}
+    for mid, gel in gels.items():
+        r = res.get(mid)
+        if not r:
             continue
-        gains = [(c - 1) if g else -1.0 for c, g, _ in P]
-        out[s] = {"paris": len(P), "reussite": round(sum(g for _, g, _ in P) / len(P), 4), "cote_moyenne": round(sum(c for c, _, _ in P) / len(P), 3),
-                  "rendement": round(sum(gains) / len(P), 4), "du": min(j for *_, j in P), "au": max(j for *_, j in P)}
-    return out
+        gagne = {p["marche"]: p["gagne"] for p in r["paris"]}
+        for p in gel["fiche"]["paris"]:
+            if p["marche"] not in gagne:
+                continue
+            n += 1; g += gagne[p["marche"]]; fiab += p["fiabilite"]
+            a = fam.setdefault(p["famille"], [0, 0]); a[0] += 1; a[1] += gagne[p["marche"]]
+        matchs.add(mid); jours.append(gel["fiche"]["jour"])
+    if not n:
+        return {"pronostics": 0, "matchs": 0}
+    return {"pronostics": n, "matchs": len(matchs), "reussite": round(g / n, 4), "fiabilite_annoncee": round(fiab / n, 4), "du": min(jours), "au": max(jours),
+            "par_famille": {f: {"pronostics": a, "reussite": round(b / a, 4)} for f, (a, b) in sorted(fam.items())}}
 
 
-def _modele_public(mod: dict) -> dict:
-    fam = {}
-    for f, r in mod["familles"].items():
-        fam[f] = {"paris": r["paris"], "matchs": r["matchs"], "reussite": round(r["reussite"], 4), "rendement_de_tout_jouer": round(r["rendement_de_tout_jouer"], 4),
-                  "accord_garde": r["avec_accord"], "poids_accord": round(r["w"][2], 4) if r["avec_accord"] else None}
-    return {"du": mod["du"], "au": mod["au"], "matchs": mod["matchs"], "paris": mod["paris"], "cote_min": mod["cote_min"], "familles": fam}
-
-
-def page(matchs: list[dict], mod: dict, validation: dict, analyses: int, maintenant: datetime, journal: Path = JOURNAL, sortie: Path = PAGE) -> dict:
+def page(F: dict, R: dict, validation: dict, analyses: int, maintenant: datetime, seuil: float, journal: Path = JOURNAL, sortie: Path = PAGE) -> dict:
     lignes = _lire(journal)
     res = {l["match_id"]: l for l in lignes if l["type"] == "resultat"}
-    avenir, observation, encours, reglees = [], [], [], []
-    limite = (maintenant - timedelta(days=JOURS_REGLES_AFFICHES)).date().isoformat()
-    derniers = {}
-    for l in lignes:
-        if l["type"] == "pronostic":
-            derniers[l["match_id"]] = l
+    derniers = {l["match_id"]: l for l in lignes if l["type"] == "pronostic"}
     valides = gels_valides(lignes)
+    avenir, encours, reglees = [], [], []
+    limite = (maintenant - timedelta(days=JOURS_REGLES_AFFICHES)).date().isoformat()
     for mid, l in derniers.items():
         f = dict(l["fiche"]); f["gele_le"] = l["gele_le"]
         ko = _ko(f.get("coup_d_envoi_utc"))
         if ko and ko > maintenant:
-            if f.get("pari"):
-                (avenir if f["pari"]["statut"] == "prouvé" else observation).append(f)
+            if f["paris"]:
+                avenir.append(f)
             continue
         v = valides.get(mid)
-        if not v or not v["fiche"].get("pari"):
+        if not v or not v["fiche"].get("paris"):
             continue
         f = dict(v["fiche"]); f["gele_le"] = v["gele_le"]
         r = res.get(mid)
         if r:
             if f["jour"] >= limite:
-                reglees.append({**f, "score": r["score"], "resultat": "WIN" if r["gagne"] else "LOSS"})
+                gagne = {p["marche"]: p["gagne"] for p in r["paris"]}
+                f["paris"] = [{**p, "resultat": "WIN" if gagne.get(p["marche"]) else "LOSS"} for p in f["paris"]]
+                reglees.append({**f, "score": r["score"]})
         else:
             encours.append(f)
     cle = lambda f: (f.get("coup_d_envoi_utc") or "", f["match_id"])
-    try:
-        tri = TM.mesures()
-    except Exception as e:                                      # noqa: BLE001 : le tri des autres moteurs ne bloque jamais MEGAPOWER
-        tri = [{"moteur": f"tri indisponible ({type(e).__name__})", "paris": 0}]
-    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": VERSION, "matchs_a_venir_analyses": analyses, "a_venir": sorted(avenir, key=cle), "sous_observation": sorted(observation, key=cle), "en_cours": sorted(encours, key=cle),
-           "reglees": sorted(reglees, key=cle, reverse=True), "bilan": bilan(lignes), "modele": _modele_public(mod), "marche_avant": validation, "tri_moteurs": tri}
+    out = {"genere_le": maintenant.isoformat(timespec="seconds"), "version": VERSION, "fiabilite_demandee": seuil, "matchs_a_venir_analyses": analyses,
+           "a_venir": sorted(avenir, key=cle), "en_cours": sorted(encours, key=cle), "reglees": sorted(reglees, key=cle, reverse=True), "bilan": bilan(lignes),
+           "modele": {"parametres": R["parametres"], "ablation_seconde_moitie": R["ablation_seconde_moitie"], "classement": R["classement"], "matchs_appris": R["matchs_A"] + R["matchs_B"]},
+           "marche_avant": validation}
     sortie.parent.mkdir(parents=True, exist_ok=True)
     sortie.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     return out
@@ -227,23 +287,22 @@ def page(matchs: list[dict], mod: dict, validation: dict, analyses: int, mainten
 
 def pipeline() -> None:
     maintenant = datetime.now(timezone.utc)
-    cmin = cote_min()
-    matchs = D.lire_flux()
-    sc = D.scores()
-    T = D.tableau(matchs, sc)
-    jours = np.array([m["jour"] for m in matchs])[T["match"]] if len(matchs) else np.array([])
-    joue = ~np.isnan(T["y"])
-    mod = C.apprendre({k: v[joue] for k, v in T.items()}, jours[joue], cmin)
+    seuil = fiabilite_demandee()
+    matchs, sc = D.lire_flux(), D.scores()
+    R = M.ajuster(matchs, sc)
+    F = prevoir(matchs, R["parametres"])
+    joue, Y = _resultats(F, sc)
+    cal = C.apprendre(*_lignes(F, joue, Y, joue))
     DOSSIER.mkdir(parents=True, exist_ok=True)
-    MODELE.write_text(json.dumps({"version": VERSION, "appris_le": maintenant.isoformat(timespec="seconds"), **mod}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    validation = marche_avant(T, jours, cmin)
-    J = C.juger(T, mod)
-    n, analyses = geler(matchs, T, J, sc, maintenant)
+    MODELE.write_text(json.dumps({"version": VERSION, "appris_le": maintenant.isoformat(timespec="seconds"), "fiabilite_demandee": seuil, "modele": R,
+                                  "calibrage": {f: {k: v for k, v in r.items() if k != "cov"} for f, r in cal.items()}}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    validation = marche_avant(F, joue, Y, seuil)
+    autorisees = set(validation.get("familles_autorisees") or C.FAMILLES)
+    n, analyses = geler(F, cal, sc, maintenant, seuil, autorisees)
     r = resultats(sc)
-    p = page(matchs, mod, validation, analyses, maintenant)
-    print(f"megapower : appris sur {mod['matchs']} matchs joués ({mod['du']} → {mod['au']}) ; {analyses} match(s) à venir analysés, {len(p['a_venir'])} pari(s) prouvé(s), {len(p['sous_observation'])} sous observation, {n} gel(s), {r} résultat(s)")
-    so = validation["sous_observation"]
-    print(f"  marche avant : sous observation {so.get('paris', 0)} paris, rendement {so.get('rendement')} ; prouvés {validation['prouves'].get('paris', 0)} paris")
+    p = page(F, R, validation, analyses, maintenant, seuil)
+    print(f"megapower v2 : appris sur {int(joue.sum())} matchs joués ; {analyses} match(s) à venir analysés, {len(p['a_venir'])} avec pronostics, {n} gel(s), {r} résultat(s)")
+    print(f"  marche avant : {validation.get('matchs')} matchs, {validation.get('pronostics')} pronostics, réussite {validation.get('reussite')}")
 
 
 if __name__ == "__main__":

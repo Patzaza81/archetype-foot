@@ -42,18 +42,16 @@
 <div class="ax-conteneur">
   <div class="ax-entete">
     <h1>MOTEUR MEGAPOWER</h1>
-    <div class="om-intro"><span class="om-intro-ico" aria-hidden="true">⚡</span><p>Megapower réunit Analyse Verdict, Alpha, Omega et Gamma, puis vérifie sur les résultats connus si un pari paie vraiment face à sa cote. Il ne propose un pari que si le gain est prouvé. Sinon il le dit : ne rien jouer.</p></div>
+    <div class="om-intro"><span class="om-intro-ico" aria-hidden="true">⚡</span><p>Megapower estime les buts de chaque équipe (xG, force des adversaires, classement), calcule la probabilité de chaque marché, puis ne garde que les pronostics dont la réussite réelle est mesurée assez haut, y compris dans le pire scénario. Classés du plus fiable au moins fiable.</p></div>
   </div>
   <p id="maj" class="ax-maj" role="status" aria-live="polite">Chargement…</p>
   <section id="mp-verdict"></section>
   <main class="ax-liste-matchs om-tout">
-    <h2 class="om-titre">Paris prouvés à venir</h2>
+    <h2 class="om-titre">Pronostics à venir</h2>
     <div id="mp-avenir" class="ax-liste-matchs"></div>
-    <h2 class="om-titre">Sous observation (à ne pas jouer)</h2>
-    <div id="mp-observation" class="ax-liste-matchs"></div>
     <h2 class="om-titre">En cours</h2>
     <div id="mp-encours" class="ax-liste-matchs"></div>
-    <h2 class="om-titre">Paris réglés (7 derniers jours)</h2>
+    <h2 class="om-titre">Pronostics réglés (7 derniers jours)</h2>
     <div id="mp-regles" class="ax-liste-matchs"></div>
     <h2 class="om-titre">Ce que disent les chiffres</h2>
     <section id="mp-chiffres"></section>
@@ -159,11 +157,12 @@
 .mp-tag{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:999px;font:700 12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
 .mp-tag-ok{background:#D7F0EA;color:#06645F}.mp-tag-non{background:#FBE3E8;color:#A3243F}
 .theme-nuit .mp-tag-ok{background:#12423D;color:#7FE3D6}.theme-nuit .mp-tag-non{background:#4A1F2A;color:#F5A9B8}
+.mp-fiab{font-weight:800;color:#087F78;white-space:nowrap}.mp-pari{padding:3px 0;border-top:1px solid rgba(23,20,27,.07)}.mp-det{margin-top:8px;font-size:12.5px}.mp-det summary{cursor:pointer;font-weight:700}
 .mp-neg{color:#B3261E;font-weight:700}.mp-pos{color:#1E7B4F;font-weight:700}
 .theme-nuit .mp-neg{color:#F28B82}.theme-nuit .mp-pos{color:#7BD88F}
 .mp-table-zone{overflow-x:auto}
 </style>
-<script src="archetype_megapower.js?v=20261110a"></script>
+<script src="archetype_megapower.js?v=20261118a"></script>
 <script src="drapeaux.js"></script>
 <script src="af-drapeaux-cartes.js"></script>
 </body>

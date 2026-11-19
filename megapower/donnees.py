@@ -1,19 +1,15 @@
-"""Base d'apprentissage de MEGAPOWER : tous les matchs joués du flux commun (cotes Betpawa + historiques + score), un signal par moteur et par marché."""
+"""Données de MEGAPOWER v2 : matchs du flux commun (data/archive_test) avec l'historique des deux équipes, et scores connus.
+
+Aucune cote n'est lue. Seul ce qui était connu AVANT le coup d'envoi entre dans un match (règle anti-fuite de l'archive : aucun match d'équipe daté du jour du match ou après).
+Un xG manquant reste manquant (jamais inventé) : l'observation est alors lue sur les buts seulement.
+"""
 from __future__ import annotations
 
 import glob
 import gzip
 import json
-import os
 import re
-from datetime import datetime
-from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
-
-import numpy as np
-
-import verif_pronostic as V
-from . import signaux as S
 
 ROOT = Path(__file__).resolve().parent.parent
 FLUX = ROOT / "data" / "archive_test"
@@ -28,56 +24,40 @@ def scores() -> dict[str, tuple[int, int]]:
     return out
 
 
-def cotes_avant_match(x: dict) -> bool:
-    """Vrai seulement si les cotes ont été relevées AVANT le coup d'envoi (heure de prise du flux < coup d'envoi, les deux connus).
-    Constat du 11/11/2026 : 45 matchs joués de la base avaient des cotes relevées pendant le match, et 162 n'avaient pas d'heure de coup d'envoi (cotes « en direct » possibles,
-    ex. un nul coté 1,36 sur un 0-0 en cours). Une cote relevée pendant le match connaît déjà une partie du résultat : elle fausse tout apprentissage."""
-    ko, pris = x.get("coup_d_envoi_utc"), (x.get("run") or {}).get("pris_le")
-    if not ko or not pris:
-        return False
-    try:
-        return datetime.fromisoformat(str(pris).replace("Z", "+00:00")) < datetime.fromisoformat(str(ko).replace("Z", "+00:00"))
-    except ValueError:
-        return False
-
-
-def _fichier(f: str) -> list[dict]:
-    cfg = V.config()
-    out = []
-    for k, x in json.load(gzip.open(f)).items():
-        if not x.get("cotes_betpawa") or not x.get("date") or not cotes_avant_match(x):
+def _records(equipe: dict | None, saison: str | None, jour: str) -> list[dict]:
+    """Matchs de la saison en cours d'une équipe, strictement avant `jour`, triés par date. Champs : date, dom, adv, gf, ga, xgf, xga (None si absents)."""
+    out, vus = [], set()
+    for m in (equipe or {}).get("matchs") or []:
+        d = str(m.get("date") or "")[:10]
+        if not d or d >= jour or m.get("provisoire") or d in vus:
             continue
-        try:
-            r = S.lire(x, cfg)
-        except Exception:                                   # noqa: BLE001 : un match illisible n'arrête pas la base
-            r = None
-        if r is None:
+        if saison and m.get("saison") and m["saison"] != saison:
             continue
-        out.append({"id": k, "jour": x["date"], "ko": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x.get("domicile"), "exterieur": x.get("exterieur"),
-                    "heure": x.get("heure_cameroun"), **r})
-    return out
+        if not isinstance(m.get("buts_marques"), int) or not isinstance(m.get("buts_encaisses"), int) or m.get("domicile") is None:
+            continue
+        vus.add(d)
+        ok = isinstance(m.get("xg"), (int, float)) and isinstance(m.get("xg_concede"), (int, float))
+        out.append({"date": d, "dom": bool(m["domicile"]), "adv": m.get("adversaire"), "gf": m["buts_marques"], "ga": m["buts_encaisses"],
+                    "xgf": float(m["xg"]) if ok else None, "xga": float(m["xg_concede"]) if ok else None})
+    return sorted(out, key=lambda r: r["date"])
 
 
-def lire_flux(jour_min: str | None = None, jour_max: str | None = None) -> list[dict]:
-    """Un enregistrement par match (dernière apparition dans le flux)."""
-    fichiers = [f for f in sorted(glob.glob(str(FLUX / "*.json.gz"))) if (not jour_min or os.path.basename(f)[:10] >= jour_min) and (not jour_max or os.path.basename(f)[:10] <= jour_max)]
+def lire_flux(jour_min: str | None = None) -> list[dict]:
+    """Un enregistrement par match (dernière apparition dans le flux), trié par jour. Les matchs sans historique exploitable des deux équipes sont écartés."""
     par_id: dict[str, dict] = {}
-    with ProcessPoolExecutor(max_workers=min(8, os.cpu_count() or 2)) as ex:
-        for lot in ex.map(_fichier, fichiers):
-            for m in lot:
-                par_id[m["id"]] = m
+    for f in sorted(glob.glob(str(FLUX / "*.json.gz"))):
+        if jour_min and Path(f).name[:10] < jour_min:
+            continue
+        for k, x in json.load(gzip.open(f)).items():
+            a = x.get("assemblage") or {}
+            if a.get("statut") != "OK" or not x.get("date"):
+                continue
+            ed, ee = a.get("equipe_dom") or {}, a.get("equipe_ext") or {}
+            if ed.get("statut") != "OK" or ee.get("statut") != "OK":
+                continue
+            saison = a.get("saison_football_data")
+            par_id[k] = {"id": k, "jour": x["date"], "ko": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "saison": saison,
+                         "domicile": x.get("domicile"), "exterieur": x.get("exterieur"), "heure": x.get("heure_cameroun"),
+                         "cle_dom": ed.get("nom_football_data") or x.get("domicile"), "cle_ext": ee.get("nom_football_data") or x.get("exterieur"),
+                         "md": _records(ed, saison, x["date"]), "me": _records(ee, saison, x["date"])}
     return sorted(par_id.values(), key=lambda m: (m["jour"], m["id"]))
-
-
-def tableau(matchs: list[dict], sc: dict[str, tuple[int, int]] | None = None) -> dict[str, np.ndarray]:
-    """Lignes (match, marché coté) : signaux, cote, résultat (NaN si le match n'est pas joué)."""
-    sc = scores() if sc is None else sc
-    L = {k: [] for k in ("match", "marche", "cote", "y", *S.SIGNAUX)}
-    for t, m in enumerate(matchs):
-        idx = np.nonzero(~np.isnan(m["cote"]))[0]
-        s = sc.get(m["id"])
-        L["match"].append(np.full(len(idx), t)); L["marche"].append(idx); L["cote"].append(m["cote"][idx])
-        L["y"].append(S.TABLE[min(s[0], S.CAP), min(s[1], S.CAP), idx].astype(float) if s else np.full(len(idx), np.nan))
-        for k in S.SIGNAUX:
-            L[k].append(m["signaux"][k][idx])
-    return {k: np.concatenate(v) if v else np.array([]) for k, v in L.items()}

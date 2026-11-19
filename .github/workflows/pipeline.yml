@@ -159,7 +159,7 @@ jobs:
         continue-on-error: true
         run: if python -m megapower.actifs dc; then python -m moteur_dc.suivi pipeline; fi
 
-      # AJOUT 10/11/2026 : moteur Megapower (réunit Analyse Verdict, Alpha, Omega et Gamma ; réapprend chaque nuit sur les résultats connus ; ne propose que des paris prouvés).
+      # AJOUT 10/11/2026, REFONTE 18/11/2026 : moteur Megapower v2 (sans aucune cote ; buts attendus -> probabilités calibrées -> pronostics constants ; réapprend chaque nuit).
       - name: Moteur Megapower (apprentissage, pronostics et journal gelé, hors tickets)
         if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.panier_id == '')
         continue-on-error: true

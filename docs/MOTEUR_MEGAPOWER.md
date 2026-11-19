@@ -1,77 +1,47 @@
-# Moteur MEGAPOWER (10/11/2026)
+# Moteur MEGAPOWER v2 (18/11/2026) — refonte sans aucune cote
 
-Page `pronostics_megapower.html` · code `megapower/` · données `data/megapower/` · étape du pipeline nocturne `python -m megapower.suivi pipeline`.
+Page `pronostics_megapower.html` · code `megapower/` · données `data/megapower/` · config `config/megapower.json` · étape du pipeline nocturne `python -m megapower.suivi pipeline`.
 
-## But
+## But (décision de Patrick, 18/11/2026)
 
-Réunir Analyse Verdict, Alpha, Omega et Gamma, apprendre sur les résultats connus ce qu'un pari vaut vraiment face à sa cote, et ne proposer que ce qui paie.
+Trouver le **maximum de pronostics vrais et constants**. Le but n'est pas de battre la cote du bookmaker : **aucune cote n'entre dans le moteur, n'est lue, ni affichée** (test `test_aucune_cote_dans_le_code_du_moteur`). La version 1 (fondée sur les cotes, 10/11/2026) n'est plus alimentée ; son journal `data/megapower/journal.jsonl` reste en place pour comparer.
 
-## Ce que MEGAPOWER reprend de chaque moteur (`megapower/signaux.py`)
+## Architecture (audit du 18/11/2026)
 
-Tous les marchés dépendent du score final. Chaque moteur donne donc une répartition de scores, lue sur les 112 marchés du catalogue d'Analyse Verdict.
-
-| Moteur | Ce qui est repris | Code réutilisé tel quel |
+| Couche | Fichier | Ce qu'elle fait |
 |---|---|---|
-| Analyse Verdict | scores de la saison au même lieu (4 matchs minimum), buts attendus, xG, verdict par marché, cote minimale | `verif_pronostic.constat`, `config/verif_pronostic.json` |
-| Alpha | séries appariées des 7 derniers matchs au même lieu (scénario des attaques, scénario des défenses) | `alpha_serie.coeur.serie_lieu`, `scenarios` |
-| Omega | buts attendus rapprochés de la moyenne, grille Poisson / Dixon-Coles | `moteur_omega.modele`, `moteur_omega/parametres.json` |
-| Gamma | tous les croisements attaque × attaque (19 derniers au plus), palier strict avec les défenses, fréquence robuste (une observation retirée) | même calcul que `moteur_omega_v3.coeur`, sur les mêmes séquences |
+| Données | `donnees.py` | matchs du flux commun (`data/archive_test`), historique saison des deux équipes (avant le match seulement), scores connus. xG manquant = jamais inventé (buts seuls). |
+| Référentiel + force + adversaires + tendance + classement | `modele.py` | μ domicile/extérieur de la ligue ; attaque et vulnérabilité défensive de chaque équipe AU MÊME LIEU ; chaque observation divisée par ce que l'adversaire laisse normalement (notes de ligue calculées avec les matchs d'avant) ; tendance arithmétique (u+r) ou géométrique (q·u) ; écarts de points / buts / xG par match. |
+| Croisement | `modele.lambdas` | λA = μdom × ATT(A, dom) × DEF(B, ext) ; λB = μext × ATT(B, ext) × DEF(A, dom). Les quatre branches sont lues ensemble (une seule estimation, jamais quatre projections additionnées). |
+| Probabilités | `modele.probas` | grille Poisson + Dixon-Coles (ρ d'Omega) → probabilité des 112 marchés du catalogue d'Analyse Verdict. |
+| Scénarios | `modele.scenarios` | favorable / normal / catastrophe : les forces bougent d'un écart-type de leur incertitude, on garde le pire et le meilleur **pour chaque marché**. |
+| Calibrage | `calibration.py` | par famille de marchés, régression logistique `logit(réussite réelle) = a + b·logit(P normale) + c·logit(P catastrophe)` : la constance entre dans la prévision seulement si elle aide. |
+| Sélection | `calibration.choisir`, `suivi.retenus` | un marché est retenu si sa fiabilité calibrée (borne basse à 95 %) ≥ `fiabilite_demandee`, dans une famille autorisée. Jamais deux fois le même événement : si un marché plus précis (qui implique l'autre) est retenu, le plus large est retiré. Classé du plus fiable au moins fiable. « Aucun pronostic » est valide. |
+| Suivi | `suivi.py` | gel avant le coup d'envoi (`journal_v2.jsonl`, ajout seul), règlement, bilan réel, page, test marche avant. |
 
-## Comment il décide (`megapower/coeur.py`)
+## Règles
 
-1. Par famille de marchés (11 familles), il apprend la vraie réussite d'un pari selon sa cote.
-2. L'accord des quatre lectures (la majorité voit-elle le pari plus probable que la cote ?) n'entre dans une famille que s'il améliore la prévision de la 2e moitié des matchs à partir de la 1re.
-3. Réussite apprise × cote − 1 = gain attendu pour 1 misé.
-4. **Prouvé** : la borne basse (95 %) du gain attendu est positive. Seuls ces paris sont proposés.
-5. **Sous observation** : gain attendu positif sur toute la période et sur chacune de ses deux moitiés. Gelé et suivi, mais la page dit de ne pas le jouer.
-6. Un seul pari par match. « Aucun pari » est une réponse valide.
+- Minimum 4 matchs au même lieu (domicile pour l'un, extérieur pour l'autre), sinon pas d'analyse (règle de Patrick du 07/11).
+- **Aucun paramètre du modèle n'est posé à la main** : poids du xG, force du rapprochement vers 1, rapprochement de la ligue vers la moyenne générale, poids de la tendance (0 = aucune), coefficient du classement (0 = ignoré) sont choisis sur la 1re moitié des matchs joués et vérifiés sur la 2e (`modele.ajuster`). Un ingrédient qui n'améliore pas la prévision est mis à 0 (tendance : mise à 0 le 18/11).
+- Seule valeur posée à la main : `fiabilite_demandee` = 0,72 (seuil de réussite fixé par Patrick pour alpha le 24/10/2026), modifiable dans `config/megapower.json`.
+- Une famille de marchés dont la réussite mesurée en marche avant est sous ce niveau est écartée automatiquement (recalculé chaque nuit).
+- Bilan réel = gel valide avant le coup d'envoi, match terminé, rien d'autre (règle `CLAUDE.md`). Les chiffres « marche avant » ne sont pas des résultats réels.
 
-Aucun seuil posé à la main. Seules valeurs fixées : la cote minimale (règle de Patrick, lue dans `config/verif_pronostic.json`) et le niveau de preuve de 95 %.
+## Mesures du 18/11/2026 (base : 3 558 matchs joués du flux commun, 28/09 → 17/11 ; 2 379 analysables avec 4 matchs au même lieu pour chaque équipe)
 
-## Suivi (`megapower/suivi.py`)
+Paramètres retenus : xG pleinement utilisé, rapprochement d'équipe 16 matchs neutres, ligue très rapprochée de la moyenne générale, **tendance rejetée (0)**, **écart de buts au classement retenu** (coefficient 0,33).
 
-Chaque nuit : réapprentissage sur tous les matchs joués, test « marche avant », gel avant le coup d'envoi (`data/megapower/journal.jsonl`, ajout seul), règlement, page (`data/megapower/pronostics.json`).
-Bilan réel = dernier gel avant le coup d'envoi, match terminé. Rien d'autre.
+Erreur du modèle de buts sur la 2e moitié (plus bas = meilleur) : complet 3,0074 ; sans xG 3,0121 ; sans classement 3,0255 ; sans correction des adversaires 3,0076 ; sans tendance 3,0074 (identique, tendance à 0). Le classement est l'ingrédient le plus utile après le xG ; la correction des adversaires et la tendance n'apportent presque rien sur cette base (la base ne contient que les matchs des équipes déjà vues).
 
-## Résultats mesurés le 11/11/2026
+Test marche avant (chaque jour du 23/10 au 17/11 : calibrage appris sur les jours d'avant, pronostics du jour jamais vus) à fiabilité demandée 0,72 : **1 591 matchs, 9 071 pronostics (≈ 5,7 par match), 79,6 % réussis** ; 80,1 % sur la 1re moitié, 78,7 % sur la 2e. Probabilités calibrées : par tranche, la fréquence réelle suit la probabilité annoncée (ex. 74,8 % annoncé → 74,4 % observé). Familles : buts de l'extérieur 82 %, buts du domicile 81 %, total de buts 80 %, cage inviolée 79 %, double chance 78 % ; écartées : victoire ou nul (69 %, 36 pronostics), double chance + total de buts (69 %, 182 pronostics). Le contrôle hors échantillon du choix des familles n'en a écarté aucune sur la 1re moitié : il ne prouve donc rien sur ce filtre.
 
-Base : 2 092 matchs joués du flux commun (28/09 → 10/11), 105 046 paris cotés à 1,26 ou plus, cotes relevées avant le coup d'envoi seulement.
+Compromis niveau/volume à d'autres fiabilités demandées (marche avant, borne basse) : 0,75 → 7 612 pronostics, 82,1 % ; 0,80 → 5 871, 86,8 % ; 0,85 → 4 581, 90,5 % ; 0,90 → 3 190, 93,4 %.
 
-- **Aucun pari prouvé**, ni sur toute la base, ni dans le test marche avant.
-- Test marche avant (chaque jour du 19/10 au 10/11, apprendre sur les jours d'avant, juger le jour) : 220 paris « sous observation », 44,6 % de réussite, cote moyenne 4,00, **23,5 perdus pour 100 misés** (± 15,6). Ce n'est pas un bilan réel.
-- Jouer tous les paris d'une famille perd de 7,7 (les deux marquent) à 21,1 (victoire + les deux marquent) pour 100 misés. Les combinés double chance + total perdent 11,4.
-- Marge du bookmaker mesurée le 10/11 (avant nettoyage des cotes) : 7,8 % sur le 1X2 et sur plus/moins de 2,5 buts, 9,0 % sur « les deux marquent ».
-- Mesures du 10/11 (avant nettoyage, 2 238 matchs) : les quatre lectures n'ajoutent pas d'information à la cote (log-loss 0,52501 avec la cote seule, 0,52579 avec les quatre moteurs, 99 713 lignes jamais vues) ; modèle combiné linéaire −9,2 % (3 124 paris), arbres de décision −17,4 % (10 380 paris), 151 règles simples : les 6 positives à l'apprentissage donnent −4,4 % ensuite (1 079 paris).
-
-Conclusion : avec les seuls historiques des équipes, aucun système ne bat la cote. MEGAPOWER le dit au lieu de forcer une sélection, et se réévalue chaque nuit.
-
-## Défaut de données corrigé le 11/11/2026 : cotes relevées pendant le match
-
-Dans le flux commun, 45 matchs joués avaient des cotes relevées APRÈS le coup d'envoi et 162 n'avaient pas d'heure de coup d'envoi (exemple du 31/10 : nul coté 1,36 sur un 0-0 en cours).
-Une cote relevée pendant le match connaît déjà une partie du résultat. `megapower.donnees.cotes_avant_match` écarte ces matchs. Les autres moteurs lisent le même flux sans ce filtre.
-
-Garde ajoutée le même jour : jamais de pari à une cote plus haute que la plus haute cote déjà gagnée dans la famille (au-delà, le modèle devine).
-
-## Étude du 11/11/2026 : information extérieure (cotes d'autres bookmakers, Football-Data)
-
-Question : quand Betpawa paie plus que le prix « juste » d'un marché de référence, est-ce rentable ? 780 matchs rapprochés (même division, mêmes équipes, même score), 28/09 → 08/11, marchés 1X2, double chance, plus/moins de 2,5 buts.
-
-| Référence | Paris où Betpawa paie plus | Pour 100 misés |
-|---|---|---|
-| Moyenne des bookmakers, avant-match | 355 | −14,9 (± 18,6) |
-| Bet365, avant-match | 396 | −16,7 (± 15,8) |
-| Betfair Exchange, avant-match | 355 | −1,4 (± 17,2) ; moitiés : +28,0 puis −21,7 |
-| Betfair Exchange, clôture | 699 | +3,5 (± 9,4) ; avantage ≥ 2 % : 388 paris, +12,6 (± 12,8) |
-
-Lecture : la seule piste positive est le prix Betfair de clôture. Mais ce prix n'existe qu'au coup d'envoi, alors que la cote Betpawa de l'archive a été relevée des heures avant : c'est de la triche (information du futur), pas un système jouable.
-Pour la rendre jouable, il faut relever le prix Betfair (ou Pinnacle) au même moment que la cote Betpawa, puis geler et suivre. Le dépôt ne collecte pas ces prix en direct aujourd'hui.
-
-## Tri des moteurs (`python -m megapower.tri_moteurs`)
-
-Mesure sur les paris réellement enregistrés avant le coup d'envoi, matchs terminés. Sortie : `data/megapower/tri_moteurs.json`.
-Moteurs désactivés : `config/moteurs_desactives.json` (v2r, v, dc, mixte). Désactivé = plus calculé la nuit, retiré du menu ; code, données et page conservés. Réactiver = retirer la ligne du fichier et remettre le lien dans le menu.
-V2, V3 et le Journal perdent aussi, mais restent : les Tickets, l'accueil et le pipeline en dépendent.
+Limites : période de 8 semaines, une seule saison ; plusieurs pronostics d'un même match sont corrélés (le nombre de pronostics n'est pas le nombre de matchs indépendants) ; aucun résultat réel enregistré avant le déploiement.
 
 ## Tests
 
-`tests/test_megapower.py` (cœur, gel avant le coup d'envoi, règlement, page, moteurs désactivés) : données fabriquées, aucune donnée du jour.
+`tests/test_megapower.py` : aucune cote dans le code, règle des 4 matchs (3 cas qui passent, 3 qui échouent), xG jamais inventé, anti-fuite des notes de ligue, cohérence des probabilités et des scénarios, sélection sans doublon d'événement, barre de fiabilité et familles, calibrage, gel avant le coup d'envoi, règlement et bilan. Données fabriquées.
+
+## Nature du championnat (19/11/2026)
+Le calibrage de chaque famille reçoit un 4e terme : logit de la fréquence réelle récente du marché dans le championnat (matchs joués avant le match, lissée vers le modèle par 100 matchs). Poids appris, aucune cote. Essai marche avant sur l'archive (2 379 matchs joués) : réussite 79,6 % -> 80,4 % (9 071 -> 9 196 pronostics) ; seconde moitié 78,7 % -> 79,3 %. Étude : `docs/ETUDE_COMPLETE_MEGAPOWER.md` (branche megapower-audit). Non retenu car sans gain démontré : classement/écart de points, goal-average, réciproque au même lieu.
