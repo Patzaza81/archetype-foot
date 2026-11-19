@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-18T14:07:42Z",
+  "genere_le": "2026-11-19T05:11:01Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -3329,6 +3329,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Melgar|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Dunfermline|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3788,6 +3794,29 @@
       "par_regime": {}
     },
     "JS El Biar|over_under_total_2.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "JS El Biar|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "JS El Biar|over_under_total_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "CS Constantine|over_under_total_2.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
