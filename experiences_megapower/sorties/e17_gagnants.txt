@@ -1,0 +1,257 @@
+archive : 2379 matchs analysables et joués ; 2026-09-28 → 2026-11-17
+
+[1] éligibles 2194 (A=1097, B=548, C=549) ; réussite des éligibles : A 0.410 B 0.445 C 0.428 ; cote médiane 2.21
+   commun aux gagnants : gd_gap    médiane gagnants +0.17 contre perdants -0.27 | AUC A/B/C 0.627 0.657 0.627
+   commun aux gagnants : gd_all    médiane gagnants +0.17 contre perdants -0.27 | AUC A/B/C 0.627 0.657 0.627
+   commun aux gagnants : lda       médiane gagnants +0.13 contre perdants -0.21 | AUC A/B/C 0.626 0.657 0.626
+   commun aux gagnants : da        médiane gagnants +0.13 contre perdants -0.19 | AUC A/B/C 0.625 0.651 0.633
+   commun aux gagnants : ppm_gap   médiane gagnants +0.11 contre perdants -0.20 | AUC A/B/C 0.621 0.635 0.619
+   commun aux gagnants : d34       médiane gagnants +0.05 contre perdants -0.15 | AUC A/B/C 0.610 0.640 0.605
+   C : AUC modèle actuel 0.627 → nouveau 0.627 | top 20% (n=109) réussite 0.578 → 0.578 [-12.8 ; +11.5] | top 40% (n=219) réussite 0.548 → 0.548 [-7.8 ; +8.5]
+   variables utiles (coef) : aucune
+
+[2] éligibles 2281 (A=1140, B=570, C=571) ; réussite des éligibles : A 0.316 B 0.291 C 0.296 ; cote médiane 3.18
+   commun aux gagnants : lda       médiane gagnants -0.32 contre perdants +0.11 | AUC A/B/C 0.320 0.317 0.322
+   commun aux gagnants : gd_gap    médiane gagnants -0.44 contre perdants +0.17 | AUC A/B/C 0.320 0.322 0.320
+   commun aux gagnants : gd_all    médiane gagnants -0.44 contre perdants +0.17 | AUC A/B/C 0.320 0.322 0.320
+   commun aux gagnants : da        médiane gagnants -0.30 contre perdants +0.12 | AUC A/B/C 0.322 0.327 0.315
+   commun aux gagnants : ppm_gap   médiane gagnants -0.32 contre perdants +0.11 | AUC A/B/C 0.327 0.339 0.330
+   commun aux gagnants : gap_ga    médiane gagnants +0.25 contre perdants +0.80 | AUC A/B/C 0.355 0.352 0.364
+   C : AUC modèle actuel 0.677 → nouveau 0.677 | top 20% (n=114) réussite 0.500 → 0.500 [-11.4 ; +12.7] | top 40% (n=228) réussite 0.425 → 0.425 [-8.3 ; +8.8]
+   variables utiles (coef) : aucune
+
+[1N] éligibles 1509 (A=754, B=377, C=378) ; réussite des éligibles : A 0.586 B 0.581 C 0.606 ; cote médiane 1.46
+   commun aux gagnants : gd_gap    médiane gagnants -0.30 contre perdants -0.62 | AUC A/B/C 0.615 0.596 0.609
+   commun aux gagnants : gd_all    médiane gagnants -0.30 contre perdants -0.62 | AUC A/B/C 0.615 0.596 0.609
+   commun aux gagnants : da        médiane gagnants -0.22 contre perdants -0.41 | AUC A/B/C 0.613 0.592 0.617
+   commun aux gagnants : lda       médiane gagnants -0.23 contre perdants -0.46 | AUC A/B/C 0.611 0.604 0.599
+   commun aux gagnants : bgf_h     médiane gagnants +1.03 contre perdants +1.11 | AUC A/B/C 0.395 0.468 0.422
+   commun aux gagnants : ppm_gap   médiane gagnants -0.22 contre perdants -0.42 | AUC A/B/C 0.601 0.585 0.596
+   C : AUC modèle actuel 0.607 → nouveau 0.607 | top 20% (n=75) réussite 0.680 → 0.680 [-14.7 ; +16.0] | top 40% (n=151) réussite 0.682 → 0.682 [-9.6 ; +11.3]
+   variables utiles (coef) : aucune
+
+[N2] éligibles 1992 (A=996, B=498, C=498) ; réussite des éligibles : A 0.535 B 0.496 C 0.518 ; cote médiane 1.68
+   commun aux gagnants : gd_gap    médiane gagnants -0.09 contre perdants +0.27 | AUC A/B/C 0.402 0.352 0.394
+   commun aux gagnants : gd_all    médiane gagnants -0.09 contre perdants +0.27 | AUC A/B/C 0.402 0.352 0.394
+   commun aux gagnants : lda       médiane gagnants -0.08 contre perdants +0.19 | AUC A/B/C 0.405 0.353 0.394
+   commun aux gagnants : da        médiane gagnants -0.06 contre perdants +0.19 | AUC A/B/C 0.405 0.359 0.388
+   commun aux gagnants : ppm_gap   médiane gagnants +0.00 contre perdants +0.20 | AUC A/B/C 0.406 0.370 0.406
+   commun aux gagnants : ld34      médiane gagnants -0.05 contre perdants +0.12 | AUC A/B/C 0.419 0.365 0.428
+   C : AUC modèle actuel 0.605 → nouveau 0.605 | top 20% (n=99) réussite 0.616 → 0.616 [-12.7 ; +11.6] | top 40% (n=199) réussite 0.613 → 0.613 [-9.0 ; +9.8]
+   variables utiles (coef) : agf_A:-0.00, ld34:-0.00
+
+[12] éligibles 1519 (A=759, B=380, C=380) ; réussite des éligibles : A 0.725 B 0.739 C 0.732 ; cote médiane 1.30
+   commun aux gagnants : p0f_h     médiane gagnants +0.21 contre perdants +0.20 | AUC A/B/C 0.549 0.513 0.541
+   commun aux gagnants : d12       médiane gagnants -0.08 contre perdants -0.03 | AUC A/B/C 0.457 0.478 0.495
+   commun aux gagnants : hgf       médiane gagnants +0.89 contre perdants +0.93 | AUC A/B/C 0.457 0.495 0.462
+   commun aux gagnants : gaver_h   médiane gagnants +0.17 contre perdants +0.25 | AUC A/B/C 0.461 0.444 0.468
+   commun aux gagnants : ppm_h     médiane gagnants +1.50 contre perdants +1.54 | AUC A/B/C 0.464 0.460 0.474
+   commun aux gagnants : ld12      médiane gagnants -0.10 contre perdants -0.03 | AUC A/B/C 0.465 0.485 0.480
+   C : AUC modèle actuel 0.555 → nouveau 0.559 | top 20% (n=76) réussite 0.750 → 0.776 [-10.5 ; +15.8] | top 40% (n=152) réussite 0.783 → 0.776 [-9.6 ; +7.9]
+   variables utiles (coef) : gaver_h:-0.02
+
+[total_plus_1.5] éligibles 819 (A=409, B=205, C=205) ; réussite des éligibles : A 0.736 B 0.717 C 0.707 ; cote médiane 1.32
+   aucune variable avec le même sens sur A, B et C
+   C : AUC modèle actuel 0.414 → nouveau 0.414 | top 20% (n=41) réussite 0.634 → 0.634 [-19.5 ; +19.5] | top 40% (n=82) réussite 0.634 → 0.634 [-15.3 ; +15.9]
+   variables utiles (coef) : aucune
+
+[total_moins_3.5] éligibles 1836 (A=918, B=459, C=459) ; réussite des éligibles : A 0.647 B 0.647 C 0.671 ; cote médiane 1.43
+   commun aux gagnants : hga       médiane gagnants +1.03 contre perdants +0.99 | AUC A/B/C 0.547 0.507 0.514
+   commun aux gagnants : hga5      médiane gagnants +1.03 contre perdants +0.99 | AUC A/B/C 0.547 0.504 0.511
+   commun aux gagnants : gaver_h   médiane gagnants +0.25 contre perdants +0.40 | AUC A/B/C 0.456 0.491 0.448
+   commun aux gagnants : ppm_h     médiane gagnants +1.57 contre perdants +1.67 | AUC A/B/C 0.463 0.485 0.457
+   commun aux gagnants : p0f_a     médiane gagnants +0.25 contre perdants +0.25 | AUC A/B/C 0.532 0.515 0.540
+   commun aux gagnants : bgf5      médiane gagnants +0.99 contre perdants +1.03 | AUC A/B/C 0.469 0.472 0.404
+   C : AUC modèle actuel 0.559 → nouveau 0.528 | top 20% (n=91) réussite 0.670 → 0.659 [-12.7 ; +13.2] | top 40% (n=183) réussite 0.705 → 0.678 [-10.9 ; +6.8]
+   variables utiles (coef) : sd_bga:-0.10, lig_tot:-0.09, p3_a:+0.09, tot_h:+0.08, bga_h:-0.06
+
+[total_moins_4.5] éligibles 332 (A=166, B=83, C=83) ; réussite des éligibles : A 0.687 B 0.687 C 0.699 ; cote médiane 1.32
+   commun aux gagnants : hga       médiane gagnants +1.15 contre perdants +0.99 | AUC A/B/C 0.583 0.512 0.590
+   commun aux gagnants : bga5      médiane gagnants +1.19 contre perdants +1.16 | AUC A/B/C 0.551 0.524 0.501
+   commun aux gagnants : hga5      médiane gagnants +1.15 contre perdants +0.99 | AUC A/B/C 0.540 0.507 0.564
+   commun aux gagnants : Aga_all   médiane gagnants +1.15 contre perdants +1.14 | AUC A/B/C 0.537 0.564 0.505
+   commun aux gagnants : ppm_h     médiane gagnants +1.75 contre perdants +1.93 | AUC A/B/C 0.467 0.412 0.468
+   commun aux gagnants : r_def     médiane gagnants +0.97 contre perdants +0.90 | AUC A/B/C 0.532 0.507 0.528
+   C : AUC modèle actuel 0.521 → nouveau 0.521 | top 20% (n=16) réussite 0.812 → 0.812 [-25.0 ; +18.8] | top 40% (n=33) réussite 0.727 → 0.727 [-18.2 ; +21.2]
+   variables utiles (coef) : aucune
+
+[total_plus_2.5] éligibles 2231 (A=1115, B=558, C=558) ; réussite des éligibles : A 0.540 B 0.541 C 0.523 ; cote médiane 1.73
+   commun aux gagnants : sda       médiane gagnants +2.10 contre perdants +1.97 | AUC A/B/C 0.555 0.575 0.574
+   commun aux gagnants : sd12      médiane gagnants +2.06 contre perdants +1.92 | AUC A/B/C 0.555 0.537 0.560
+   commun aux gagnants : lig_tot   médiane gagnants +2.72 contre perdants +2.72 | AUC A/B/C 0.551 0.568 0.551
+   commun aux gagnants : bga_h     médiane gagnants +1.01 contre perdants +0.98 | AUC A/B/C 0.547 0.557 0.507
+   commun aux gagnants : x3        médiane gagnants +0.99 contre perdants +0.94 | AUC A/B/C 0.547 0.562 0.534
+   commun aux gagnants : tot_a     médiane gagnants +1.03 contre perdants +0.99 | AUC A/B/C 0.546 0.536 0.544
+   C : AUC modèle actuel 0.565 → nouveau 0.572 | top 20% (n=111) réussite 0.649 → 0.640 [-13.1 ; +9.0] | top 40% (n=223) réussite 0.587 → 0.565 [-11.7 ; +6.5]
+   variables utiles (coef) : ppm_gap:-0.09, bga_h:+0.09, sd_bga:+0.06, x3:+0.06, tot_h:-0.05
+
+[total_moins_2.5] éligibles 2241 (A=1120, B=560, C=561) ; réussite des éligibles : A 0.459 B 0.439 C 0.480 ; cote médiane 2.01
+   commun aux gagnants : sd12      médiane gagnants +1.93 contre perdants +2.08 | AUC A/B/C 0.446 0.465 0.434
+   commun aux gagnants : sda       médiane gagnants +1.98 contre perdants +2.11 | AUC A/B/C 0.447 0.425 0.422
+   commun aux gagnants : lig_tot   médiane gagnants +2.72 contre perdants +2.72 | AUC A/B/C 0.451 0.434 0.445
+   commun aux gagnants : bga_h     médiane gagnants +0.98 contre perdants +1.01 | AUC A/B/C 0.453 0.452 0.494
+   commun aux gagnants : x3        médiane gagnants +0.95 contre perdants +0.99 | AUC A/B/C 0.453 0.439 0.466
+   commun aux gagnants : tot_a     médiane gagnants +1.00 contre perdants +1.03 | AUC A/B/C 0.455 0.463 0.452
+   C : AUC modèle actuel 0.571 → nouveau 0.574 | top 20% (n=112) réussite 0.545 → 0.554 [-11.6 ; +15.2] | top 40% (n=224) réussite 0.522 → 0.540 [-7.4 ; +10.5]
+   variables utiles (coef) : ppm_gap:+0.08, sd_bga:-0.08, bga_h:-0.07, x3:-0.07, tot_h:+0.05
+
+[btts_oui] éligibles 2279 (A=1139, B=570, C=570) ; réussite des éligibles : A 0.557 B 0.533 C 0.532 ; cote médiane 1.69
+   commun aux gagnants : aga_A     médiane gagnants +1.03 contre perdants +1.00 | AUC A/B/C 0.550 0.516 0.508
+   commun aux gagnants : sd34      médiane gagnants +2.05 contre perdants +2.01 | AUC A/B/C 0.546 0.537 0.510
+   commun aux gagnants : lig_tot   médiane gagnants +2.72 contre perdants +2.72 | AUC A/B/C 0.545 0.563 0.526
+   commun aux gagnants : x4        médiane gagnants +1.02 contre perdants +0.97 | AUC A/B/C 0.544 0.528 0.529
+   commun aux gagnants : xa2       médiane gagnants +1.01 contre perdants +0.95 | AUC A/B/C 0.543 0.524 0.535
+   commun aux gagnants : sda       médiane gagnants +2.08 contre perdants +2.00 | AUC A/B/C 0.536 0.551 0.501
+   C : AUC modèle actuel 0.511 → nouveau 0.506 | top 20% (n=114) réussite 0.553 → 0.561 [-11.9 ; +15.4] | top 40% (n=228) réussite 0.539 → 0.535 [-9.2 ; +10.1]
+   variables utiles (coef) : x4:+0.11, p3_h:-0.07, bga_h:+0.07, lda:+0.06, n_h:+0.06
+
+[btts_non] éligibles 2262 (A=1131, B=565, C=566) ; réussite des éligibles : A 0.441 B 0.458 C 0.466 ; cote médiane 2.01
+   commun aux gagnants : aga_A     médiane gagnants +1.00 contre perdants +1.03 | AUC A/B/C 0.448 0.490 0.489
+   commun aux gagnants : sd34      médiane gagnants +2.01 contre perdants +2.05 | AUC A/B/C 0.450 0.471 0.488
+   commun aux gagnants : lig_tot   médiane gagnants +2.72 contre perdants +2.72 | AUC A/B/C 0.453 0.444 0.474
+   commun aux gagnants : x4        médiane gagnants +0.97 contre perdants +1.02 | AUC A/B/C 0.455 0.481 0.469
+   commun aux gagnants : xa2       médiane gagnants +0.96 contre perdants +1.02 | AUC A/B/C 0.457 0.486 0.462
+   commun aux gagnants : sda       médiane gagnants +2.00 contre perdants +2.08 | AUC A/B/C 0.460 0.461 0.497
+   C : AUC modèle actuel 0.511 → nouveau 0.511 | top 20% (n=113) réussite 0.451 → 0.469 [-11.5 ; +15.0] | top 40% (n=226) réussite 0.473 → 0.473 [-8.8 ; +8.2]
+   variables utiles (coef) : x4:-0.09, p3_h:+0.08, bga_h:-0.07, hgf5:-0.06, aga_A:-0.06
+
+[dom_moins_2.5] éligibles 539 (A=269, B=135, C=135) ; réussite des éligibles : A 0.658 B 0.659 C 0.689 ; cote médiane 1.40
+   commun aux gagnants : x3        médiane gagnants +1.25 contre perdants +1.29 | AUC A/B/C 0.432 0.466 0.474
+   commun aux gagnants : bga_a     médiane gagnants +1.20 contre perdants +1.22 | AUC A/B/C 0.448 0.495 0.490
+   commun aux gagnants : n_a       médiane gagnants +5.00 contre perdants +6.00 | AUC A/B/C 0.455 0.463 0.462
+   commun aux gagnants : n_h       médiane gagnants +6.00 contre perdants +6.00 | AUC A/B/C 0.456 0.423 0.456
+   commun aux gagnants : sd_bga    médiane gagnants +1.09 contre perdants +1.12 | AUC A/B/C 0.461 0.459 0.466
+   C : AUC modèle actuel 0.481 → nouveau 0.441 | top 20% (n=27) réussite 0.630 → 0.741 [-11.1 ; +33.3] | top 40% (n=54) réussite 0.685 → 0.648 [-22.2 ; +14.8]
+   variables utiles (coef) : bga_h:-0.13, Agf_all:+0.13, p3_a:+0.10, sd_bgf:+0.07, n_h:-0.03
+
+[ext_moins_2.5] éligibles 210 (A=105, B=52, C=53) ; réussite des éligibles : A 0.714 B 0.654 C 0.679 ; cote médiane 1.37
+   commun aux gagnants : gaver_h   médiane gagnants -0.25 contre perdants +0.00 | AUC A/B/C 0.402 0.434 0.456
+   commun aux gagnants : Bgf_all   médiane gagnants +1.40 contre perdants +1.63 | AUC A/B/C 0.403 0.376 0.283
+   commun aux gagnants : bgf5      médiane gagnants +1.31 contre perdants +1.64 | AUC A/B/C 0.406 0.336 0.189
+   commun aux gagnants : Aga_all   médiane gagnants +1.32 contre perdants +1.21 | AUC A/B/C 0.592 0.520 0.607
+   commun aux gagnants : p0a_h     médiane gagnants +0.17 contre perdants +0.20 | AUC A/B/C 0.408 0.467 0.437
+   commun aux gagnants : hga       médiane gagnants +1.29 contre perdants +1.23 | AUC A/B/C 0.592 0.619 0.632
+   C : AUC modèle actuel 0.619 → nouveau 0.662 | top 20% (n=10) réussite 0.800 → 0.900 [-15.2 ; +40.0] | top 40% (n=21) réussite 0.810 → 0.857 [-14.3 ; +28.6]
+   variables utiles (coef) : ppm_h:-0.31, tot_h:+0.30, p0f_h:+0.20, x1:+0.04, n_h:+0.04
+
+[dom_moins_1.5] éligibles 1691 (A=845, B=423, C=423) ; réussite des éligibles : A 0.514 B 0.520 C 0.544 ; cote médiane 1.70
+   commun aux gagnants : xa1       médiane gagnants +0.93 contre perdants +1.10 | AUC A/B/C 0.415 0.388 0.389
+   commun aux gagnants : gd_gap    médiane gagnants -0.11 contre perdants +0.19 | AUC A/B/C 0.425 0.387 0.406
+   commun aux gagnants : gd_all    médiane gagnants -0.11 contre perdants +0.19 | AUC A/B/C 0.425 0.387 0.406
+   commun aux gagnants : da        médiane gagnants -0.09 contre perdants +0.13 | AUC A/B/C 0.426 0.387 0.397
+   commun aux gagnants : lda       médiane gagnants -0.09 contre perdants +0.13 | AUC A/B/C 0.427 0.383 0.402
+   commun aux gagnants : x3        médiane gagnants +0.95 contre perdants +1.06 | AUC A/B/C 0.428 0.382 0.421
+   C : AUC modèle actuel 0.603 → nouveau 0.603 | top 20% (n=84) réussite 0.667 → 0.667 [-13.1 ; +15.5] | top 40% (n=169) réussite 0.645 → 0.645 [-12.7 ; +10.1]
+   variables utiles (coef) : aucune
+
+[ext_moins_1.5] éligibles 1416 (A=708, B=354, C=354) ; réussite des éligibles : A 0.593 B 0.576 C 0.596 ; cote médiane 1.51
+   commun aux gagnants : x2        médiane gagnants +0.99 contre perdants +1.12 | AUC A/B/C 0.426 0.429 0.427
+   commun aux gagnants : xa2       médiane gagnants +1.07 contre perdants +1.21 | AUC A/B/C 0.429 0.416 0.417
+   commun aux gagnants : Bgf_all   médiane gagnants +1.03 contre perdants +1.13 | AUC A/B/C 0.433 0.420 0.428
+   commun aux gagnants : sda       médiane gagnants +2.08 contre perdants +2.16 | AUC A/B/C 0.437 0.496 0.484
+   commun aux gagnants : d12       médiane gagnants -0.05 contre perdants -0.22 | AUC A/B/C 0.561 0.599 0.606
+   commun aux gagnants : sd12      médiane gagnants +2.05 contre perdants +2.15 | AUC A/B/C 0.439 0.479 0.475
+   C : AUC modèle actuel 0.603 → nouveau 0.603 | top 20% (n=70) réussite 0.700 → 0.700 [-15.0 ; +16.5] | top 40% (n=141) réussite 0.652 → 0.652 [-11.3 ; +10.6]
+   variables utiles (coef) : aucune
+
+[cage_dom_non] éligibles 1187 (A=593, B=297, C=297) ; réussite des éligibles : A 0.641 B 0.613 C 0.653 ; cote médiane 1.41
+   commun aux gagnants : ppm_gap   médiane gagnants +0.20 contre perdants +0.30 | AUC A/B/C 0.441 0.448 0.450
+   commun aux gagnants : x4        médiane gagnants +0.92 contre perdants +0.87 | AUC A/B/C 0.556 0.538 0.554
+   commun aux gagnants : aga_A     médiane gagnants +0.97 contre perdants +0.93 | AUC A/B/C 0.556 0.554 0.573
+   commun aux gagnants : gd_gap    médiane gagnants +0.25 contre perdants +0.44 | AUC A/B/C 0.450 0.457 0.409
+   commun aux gagnants : gd_all    médiane gagnants +0.25 contre perdants +0.44 | AUC A/B/C 0.450 0.457 0.409
+   commun aux gagnants : lda       médiane gagnants +0.19 contre perdants +0.31 | AUC A/B/C 0.453 0.458 0.408
+   C : AUC modèle actuel 0.575 → nouveau 0.575 | top 20% (n=59) réussite 0.661 → 0.661 [-18.6 ; +15.3] | top 40% (n=118) réussite 0.703 → 0.703 [-11.9 ; +11.0]
+   variables utiles (coef) : aucune
+
+[cage_ext_non] éligibles 674 (A=337, B=168, C=169) ; réussite des éligibles : A 0.697 B 0.655 C 0.686 ; cote médiane 1.36
+   commun aux gagnants : n_h       médiane gagnants +6.00 contre perdants +5.00 | AUC A/B/C 0.564 0.566 0.513
+   commun aux gagnants : p0f_a     médiane gagnants +0.25 contre perdants +0.25 | AUC A/B/C 0.539 0.568 0.541
+   commun aux gagnants : x2        médiane gagnants +1.06 contre perdants +1.18 | AUC A/B/C 0.465 0.489 0.443
+   C : AUC modèle actuel 0.464 → nouveau 0.432 | top 20% (n=33) réussite 0.606 → 0.545 [-27.3 ; +18.2] | top 40% (n=67) réussite 0.627 → 0.642 [-14.2 ; +19.4]
+   variables utiles (coef) : ppm_a:+0.24, sd_hgf:+0.20, p3_h:-0.20, p0f_a:+0.18, x4:+0.18
+
+[dom_plus_0.5] éligibles 599 (A=299, B=150, C=150) ; réussite des éligibles : A 0.672 B 0.620 C 0.673 ; cote médiane 1.36
+   aucune variable avec le même sens sur A, B et C
+   C : AUC modèle actuel 0.461 → nouveau 0.461 | top 20% (n=30) réussite 0.567 → 0.567 [-23.3 ; +26.7] | top 40% (n=60) réussite 0.600 → 0.600 [-15.9 ; +17.5]
+   variables utiles (coef) : aucune
+
+[ext_plus_0.5] éligibles 1129 (A=564, B=282, C=283) ; réussite des éligibles : A 0.633 B 0.599 C 0.640 ; cote médiane 1.42
+   commun aux gagnants : Aga_all   médiane gagnants +0.94 contre perdants +0.89 | AUC A/B/C 0.552 0.539 0.548
+   commun aux gagnants : ppm_gap   médiane gagnants +0.25 contre perdants +0.33 | AUC A/B/C 0.449 0.454 0.442
+   commun aux gagnants : gd_gap    médiane gagnants +0.30 contre perdants +0.51 | AUC A/B/C 0.450 0.465 0.407
+   commun aux gagnants : gd_all    médiane gagnants +0.30 contre perdants +0.51 | AUC A/B/C 0.450 0.465 0.407
+   commun aux gagnants : x4        médiane gagnants +0.89 contre perdants +0.86 | AUC A/B/C 0.547 0.528 0.559
+   commun aux gagnants : aga_A     médiane gagnants +0.96 contre perdants +0.92 | AUC A/B/C 0.546 0.542 0.567
+   C : AUC modèle actuel 0.566 → nouveau 0.566 | top 20% (n=56) réussite 0.625 → 0.625 [-18.8 ; +19.6] | top 40% (n=113) réussite 0.681 → 0.681 [-12.4 ; +12.0]
+   variables utiles (coef) : aucune
+
+[1N&total_plus_1.5] éligibles 924 (A=462, B=231, C=231) ; réussite des éligibles : A 0.543 B 0.437 C 0.550 ; cote médiane 1.74
+   commun aux gagnants : lda       médiane gagnants +0.09 contre perdants -0.19 | AUC A/B/C 0.630 0.578 0.598
+   commun aux gagnants : gd_gap    médiane gagnants +0.11 contre perdants -0.27 | AUC A/B/C 0.624 0.573 0.592
+   commun aux gagnants : gd_all    médiane gagnants +0.11 contre perdants -0.27 | AUC A/B/C 0.624 0.573 0.592
+   commun aux gagnants : da        médiane gagnants +0.08 contre perdants -0.18 | AUC A/B/C 0.620 0.590 0.597
+   commun aux gagnants : xa1       médiane gagnants +1.03 contre perdants +0.88 | AUC A/B/C 0.610 0.545 0.576
+   commun aux gagnants : gap_ga    médiane gagnants +0.76 contre perdants +0.43 | AUC A/B/C 0.609 0.566 0.582
+   C : AUC modèle actuel 0.592 → nouveau 0.592 | top 20% (n=46) réussite 0.630 → 0.630 [-18.5 ; +18.5] | top 40% (n=92) réussite 0.641 → 0.641 [-15.2 ; +13.0]
+   variables utiles (coef) : aucune
+
+[N2&total_plus_1.5] éligibles 964 (A=482, B=241, C=241) ; réussite des éligibles : A 0.417 B 0.440 C 0.415 ; cote médiane 2.21
+   commun aux gagnants : r_att     médiane gagnants +0.93 contre perdants +1.10 | AUC A/B/C 0.373 0.411 0.439
+   commun aux gagnants : bgf_a     médiane gagnants +1.04 contre perdants +0.89 | AUC A/B/C 0.623 0.562 0.549
+   commun aux gagnants : ppm_gap   médiane gagnants -0.16 contre perdants +0.12 | AUC A/B/C 0.379 0.403 0.406
+   commun aux gagnants : gd_gap    médiane gagnants -0.25 contre perdants +0.18 | AUC A/B/C 0.380 0.378 0.383
+   commun aux gagnants : gd_all    médiane gagnants -0.25 contre perdants +0.18 | AUC A/B/C 0.380 0.378 0.383
+   commun aux gagnants : lda       médiane gagnants -0.16 contre perdants +0.12 | AUC A/B/C 0.382 0.378 0.396
+   C : AUC modèle actuel 0.611 → nouveau 0.611 | top 20% (n=48) réussite 0.604 → 0.604 [-18.7 ; +20.8] | top 40% (n=96) réussite 0.542 → 0.542 [-14.6 ; +16.7]
+   variables utiles (coef) : aucune
+
+[1N&total_moins_3.5] éligibles 1025 (A=512, B=256, C=257) ; réussite des éligibles : A 0.500 B 0.488 C 0.451 ; cote médiane 1.96
+   commun aux gagnants : xa2       médiane gagnants +0.95 contre perdants +1.07 | AUC A/B/C 0.423 0.471 0.366
+   commun aux gagnants : Bgf_all   médiane gagnants +0.98 contre perdants +1.05 | AUC A/B/C 0.425 0.472 0.365
+   commun aux gagnants : x4        médiane gagnants +0.96 contre perdants +1.05 | AUC A/B/C 0.434 0.460 0.388
+   commun aux gagnants : lig_tot   médiane gagnants +2.72 contre perdants +2.72 | AUC A/B/C 0.435 0.483 0.440
+   commun aux gagnants : lda       médiane gagnants +0.05 contre perdants -0.11 | AUC A/B/C 0.562 0.566 0.581
+   commun aux gagnants : bgf_a     médiane gagnants +0.96 contre perdants +1.03 | AUC A/B/C 0.438 0.480 0.384
+   C : AUC modèle actuel 0.610 → nouveau 0.637 | top 20% (n=51) réussite 0.549 → 0.608 [-15.7 ; +23.5] | top 40% (n=102) réussite 0.539 → 0.559 [-11.8 ; +15.7]
+   variables utiles (coef) : sd_bga:-0.08, r_att:+0.07, sda:-0.05, tot_h:+0.05, p3_a:+0.04
+
+[N2&total_moins_3.5] éligibles 1053 (A=526, B=263, C=264) ; réussite des éligibles : A 0.359 B 0.369 C 0.364 ; cote médiane 2.27
+   commun aux gagnants : x3        médiane gagnants +0.88 contre perdants +1.06 | AUC A/B/C 0.352 0.353 0.426
+   commun aux gagnants : xa1       médiane gagnants +0.87 contre perdants +1.09 | AUC A/B/C 0.367 0.361 0.395
+   commun aux gagnants : agf_A     médiane gagnants +0.95 contre perdants +1.06 | AUC A/B/C 0.375 0.369 0.483
+   commun aux gagnants : ld34      médiane gagnants -0.14 contre perdants +0.08 | AUC A/B/C 0.387 0.378 0.396
+   commun aux gagnants : Agf_all   médiane gagnants +0.92 contre perdants +1.05 | AUC A/B/C 0.392 0.388 0.445
+   commun aux gagnants : d34       médiane gagnants -0.13 contre perdants +0.08 | AUC A/B/C 0.392 0.381 0.401
+   C : AUC modèle actuel 0.610 → nouveau 0.590 | top 20% (n=52) réussite 0.481 → 0.462 [-20.2 ; +15.4] | top 40% (n=105) réussite 0.429 → 0.448 [-10.5 ; +13.8]
+   variables utiles (coef) : x3:-0.26, sd34:-0.08, d12:+0.08, lig_hadv:-0.08, lig_tot:+0.05
+
+[12&total_plus_1.5] éligibles 948 (A=474, B=237, C=237) ; réussite des éligibles : A 0.597 B 0.544 C 0.570 ; cote médiane 1.60
+   commun aux gagnants : sda       médiane gagnants +2.08 contre perdants +1.94 | AUC A/B/C 0.563 0.565 0.549
+   commun aux gagnants : x3        médiane gagnants +1.01 contre perdants +0.95 | AUC A/B/C 0.562 0.536 0.516
+   commun aux gagnants : bga_h     médiane gagnants +1.02 contre perdants +0.97 | AUC A/B/C 0.552 0.516 0.519
+   commun aux gagnants : sd34      médiane gagnants +2.10 contre perdants +1.97 | AUC A/B/C 0.552 0.603 0.542
+   commun aux gagnants : sd12      médiane gagnants +2.04 contre perdants +1.86 | AUC A/B/C 0.551 0.509 0.541
+   commun aux gagnants : Bgf_all   médiane gagnants +1.02 contre perdants +0.96 | AUC A/B/C 0.538 0.587 0.505
+   C : AUC modèle actuel 0.546 → nouveau 0.546 | top 20% (n=47) réussite 0.660 → 0.660 [-19.1 ; +17.0] | top 40% (n=94) réussite 0.628 → 0.628 [-12.8 ; +12.8]
+   variables utiles (coef) : aucune
+
+[12&total_moins_4.5] éligibles 1003 (A=501, B=251, C=251) ; réussite des éligibles : A 0.597 B 0.610 C 0.610 ; cote médiane 1.54
+   commun aux gagnants : gaver_h   médiane gagnants +0.20 contre perdants +0.33 | AUC A/B/C 0.449 0.486 0.492
+   commun aux gagnants : p0f_a     médiane gagnants +0.33 contre perdants +0.29 | AUC A/B/C 0.545 0.547 0.511
+   commun aux gagnants : lig_hadv  médiane gagnants +1.24 contre perdants +1.24 | AUC A/B/C 0.544 0.579 0.522
+   commun aux gagnants : ppm_h     médiane gagnants +1.50 contre perdants +1.60 | AUC A/B/C 0.459 0.486 0.481
+   commun aux gagnants : Aga_all   médiane gagnants +1.05 contre perdants +1.01 | AUC A/B/C 0.539 0.510 0.527
+   commun aux gagnants : hgf5      médiane gagnants +0.94 contre perdants +1.03 | AUC A/B/C 0.464 0.467 0.476
+   C : AUC modèle actuel 0.478 → nouveau 0.444 | top 20% (n=50) réussite 0.560 → 0.520 [-20.0 ; +16.0] | top 40% (n=100) réussite 0.600 → 0.550 [-22.5 ; +7.5]
+   variables utiles (coef) : p0a_h:-0.24, r_att:+0.22, hgf5:-0.21, sd_hga:-0.11, lig_hadv:+0.10
+
+[1N&total_moins_4.5] éligibles 965 (A=482, B=241, C=242) ; réussite des éligibles : A 0.591 B 0.556 C 0.620 ; cote médiane 1.57
+   commun aux gagnants : xa2       médiane gagnants +0.95 contre perdants +1.08 | AUC A/B/C 0.433 0.414 0.395
+   commun aux gagnants : lda       médiane gagnants +0.05 contre perdants -0.16 | AUC A/B/C 0.566 0.618 0.606
+   commun aux gagnants : p0f_a     médiane gagnants +0.33 contre perdants +0.25 | AUC A/B/C 0.563 0.536 0.581
+   commun aux gagnants : gd_gap    médiane gagnants +0.06 contre perdants -0.24 | AUC A/B/C 0.562 0.610 0.611
+   commun aux gagnants : gd_all    médiane gagnants +0.06 contre perdants -0.24 | AUC A/B/C 0.562 0.610 0.611
+   commun aux gagnants : Bgf_all   médiane gagnants +0.98 contre perdants +1.04 | AUC A/B/C 0.440 0.419 0.410
+   C : AUC modèle actuel 0.621 → nouveau 0.638 | top 20% (n=48) réussite 0.750 → 0.771 [-14.6 ; +18.8] | top 40% (n=96) réussite 0.698 → 0.729 [-9.9 ; +13.5]
+   variables utiles (coef) : sd_bga:-0.07, sd_hga:+0.05, hga5:+0.04, n_a:-0.01, p3_a:+0.01
