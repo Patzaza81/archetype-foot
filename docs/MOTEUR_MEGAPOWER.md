@@ -45,3 +45,6 @@ Limites : période de 8 semaines, une seule saison ; plusieurs pronostics d'un m
 
 ## Nature du championnat (19/11/2026)
 Le calibrage de chaque famille reçoit un 4e terme : logit de la fréquence réelle récente du marché dans le championnat (matchs joués avant le match, lissée vers le modèle par 100 matchs). Poids appris, aucune cote. Essai marche avant sur l'archive (2 379 matchs joués) : réussite 79,6 % -> 80,4 % (9 071 -> 9 196 pronostics) ; seconde moitié 78,7 % -> 79,3 %. Étude : `docs/ETUDE_COMPLETE_MEGAPOWER.md` (branche megapower-audit). Non retenu car sans gain démontré : classement/écart de points, goal-average, réciproque au même lieu.
+
+## Cote et jour (19/11/2026)
+Pronostic proposé seulement si le marché a une cote Betpawa ≥ 1,26 (filtre d'affichage ; aucune cote dans le modèle ni dans le calibrage des probabilités). Le calibrage s'apprend sur les seuls marchés proposables (cote ≥ 1,26) : la fiabilité annoncée est celle de la population réellement proposée. Marche avant sur l'archive à 0,72 : 758 pronostics, 608 matchs, réussite 69,9 % (2e moitié 72,6 % sur 281). La page affiche la cote et le jour de la semaine (heure du Cameroun).

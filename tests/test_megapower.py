@@ -20,11 +20,11 @@ def match(nd=5, ne=5, jour="2026-11-01", gf=1, ga=1):
 
 
 # ------------------------------------------------------------------ aucune cote nulle part
-def test_aucune_cote_dans_le_code_du_moteur():
-    for f in Path(M.__file__).parent.glob("*.py"):
-        if f.name in ("tri_moteurs.py",):                       # tri des autres moteurs, ancien module non branché au moteur v2
-            continue
-        assert "cotes_betpawa" not in f.read_text(encoding="utf-8"), f.name
+def test_aucune_cote_dans_le_modele_ni_le_calibrage():
+    """Les cotes ne sont qu'un filtre d'affichage (donnees.py lit, suivi.retenus filtre) : jamais dans le modèle de buts ni dans le calibrage."""
+    for nom in ("modele.py", "calibration.py"):
+        t = (Path(M.__file__).parent / nom).read_text(encoding="utf-8")
+        assert "cotes_betpawa" not in t and "COTE_MIN" not in t and "cotes" not in t.replace("cotes ", ""), nom
 
 
 # ------------------------------------------------------------------ règle des 4 matchs au même lieu
@@ -158,3 +158,11 @@ def test_aucun_pronostic_est_valide(tmp_path):
     j = tmp_path / "j.jsonl"
     SV._ajouter(j, [{"type": "pronostic", "match_id": "m1", "gele_le": "2026-11-20T10:00:00+00:00", "fiche": _fiche("m1", "2026-11-20T15:00:00+00:00", [])}])
     assert SV.resultats({"m1": (1, 1)}, j) == 0 and SV.bilan(SV._lire(j)) == {"pronostics": 0, "matchs": 0}
+
+
+def test_filtre_cote_minimale_126():
+    from megapower import suivi as S
+    q = np.array([0.9, 0.9, 0.9, 0.9]); ok_cotes = np.array([1.26, 1.25, np.nan, 1.8])
+    for _ in range(1):
+        res = S.retenus(q, q, 0.7, None, ok_cotes)
+        assert set(res) <= {0, 3} and 1 not in res and 2 not in res
