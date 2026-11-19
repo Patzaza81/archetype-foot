@@ -33,14 +33,17 @@ def logit(p):
     return np.log(p / (1 - p))
 
 
-def _A(pn, pc):
-    return np.column_stack([np.ones(len(pn)), logit(pn), logit(pc)])
+def _A(pn, pc, pl=None):
+    """Colonnes : 1, logit(P normale), logit(P catastrophe) et, si fournie, logit(fréquence réelle récente du marché dans ce championnat = nature du championnat)."""
+    cols = [np.ones(len(pn)), logit(pn), logit(pc)] + ([logit(pl)] if pl is not None else [])
+    return np.column_stack(cols)
 
 
 def _ajuster(A, y, ridge=1e-3):
-    f = lambda w: float((np.logaddexp(0, A @ w) - y * (A @ w)).sum() + ridge * ((w - [0, 1, 0]) ** 2).sum())
-    g = lambda w: A.T @ (1 / (1 + np.exp(-(A @ w))) - y) + 2 * ridge * (w - [0, 1, 0])
-    return minimize(f, np.array([0.0, 1.0, 0.0]), jac=g, method="BFGS").x
+    w0 = np.array([0.0, 1.0, 0.0] + [0.0] * (A.shape[1] - 3))
+    f = lambda w: float((np.logaddexp(0, A @ w) - y * (A @ w)).sum() + ridge * ((w - w0) ** 2).sum())
+    g = lambda w: A.T @ (1 / (1 + np.exp(-(A @ w))) - y) + 2 * ridge * (w - w0)
+    return minimize(f, w0, jac=g, method="BFGS").x
 
 
 def _cov(A, y, w, groupes):
@@ -54,7 +57,7 @@ def _cov(A, y, w, groupes):
     return Hi @ (G.T @ G) @ Hi
 
 
-def apprendre(pn, pc, y, marche, groupes) -> dict:
+def apprendre(pn, pc, y, marche, groupes, pl=None) -> dict:
     """Un modèle par famille. pn, pc, y, marche, groupes : une valeur par ligne (match, marché)."""
     fam = FAMILLE[marche]
     out = {}
@@ -62,13 +65,13 @@ def apprendre(pn, pc, y, marche, groupes) -> dict:
         m = fam == f
         if m.sum() < 50 or len(np.unique(y[m])) < 2:
             continue
-        A = _A(pn[m], pc[m])
+        A = _A(pn[m], pc[m], None if pl is None else pl[m])
         w = _ajuster(A, y[m])
         out[f] = {"w": [float(v) for v in w], "cov": _cov(A, y[m], w, groupes[m]).tolist(), "lignes": int(m.sum()), "matchs": int(len(np.unique(groupes[m]))), "reussite": float(y[m].mean())}
     return out
 
 
-def predire(cal: dict, pn, pc, marche) -> tuple[np.ndarray, np.ndarray]:
+def predire(cal: dict, pn, pc, marche, pl=None) -> tuple[np.ndarray, np.ndarray]:
     """(fréquence réelle attendue, sa borne basse à 95 %) pour chaque ligne ; NaN si la famille n'a pas été apprise."""
     fam = FAMILLE[marche]
     q, bas = np.full(len(pn), np.nan), np.full(len(pn), np.nan)
@@ -77,7 +80,7 @@ def predire(cal: dict, pn, pc, marche) -> tuple[np.ndarray, np.ndarray]:
         m = fam == f
         if not m.any():
             continue
-        A = _A(pn[m], pc[m])
+        A = _A(pn[m], pc[m], pl[m] if pl is not None and len(r["w"]) == 4 else None)
         eta = A @ np.array(r["w"])
         se = np.sqrt(np.maximum(np.einsum("ij,jk,ik->i", A, np.array(r["cov"]), A), 0))
         q[m], bas[m] = sig(eta), sig(eta - FIAB_Z * se)

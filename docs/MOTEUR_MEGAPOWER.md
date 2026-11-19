@@ -42,3 +42,6 @@ Limites : période de 8 semaines, une seule saison ; plusieurs pronostics d'un m
 ## Tests
 
 `tests/test_megapower.py` : aucune cote dans le code, règle des 4 matchs (3 cas qui passent, 3 qui échouent), xG jamais inventé, anti-fuite des notes de ligue, cohérence des probabilités et des scénarios, sélection sans doublon d'événement, barre de fiabilité et familles, calibrage, gel avant le coup d'envoi, règlement et bilan. Données fabriquées.
+
+## Nature du championnat (19/11/2026)
+Le calibrage de chaque famille reçoit un 4e terme : logit de la fréquence réelle récente du marché dans le championnat (matchs joués avant le match, lissée vers le modèle par 100 matchs). Poids appris, aucune cote. Essai marche avant sur l'archive (2 379 matchs joués) : réussite 79,6 % -> 80,4 % (9 071 -> 9 196 pronostics) ; seconde moitié 78,7 % -> 79,3 %. Étude : `docs/ETUDE_COMPLETE_MEGAPOWER.md` (branche megapower-audit). Non retenu car sans gain démontré : classement/écart de points, goal-average, réciproque au même lieu.

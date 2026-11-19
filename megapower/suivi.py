@@ -27,6 +27,7 @@ MODELE = DOSSIER / "modele_v2.json"
 CONFIG = ROOT / "config" / "megapower.json"
 VERSION = "megapower-2"
 JOURS_REGLES_AFFICHES = 7
+LISSAGE_NATURE = 100.0                         # matchs « virtuels » du modèle mélangés à la fréquence du championnat (meilleur de 10 / 30 / 100 sur la seconde moitié de l archive : réussite 78,7 % -> 79,3 %)
 
 
 def fiabilite_demandee() -> float:
@@ -66,7 +67,26 @@ def prevoir(matchs: list[dict], P: dict) -> dict:
         L.append((c, *M.lambdas(c, P)))
     la, lb, sa, sb = (np.array([l[i] for l in L]) for i in (1, 2, 3, 4))
     pn, pf, pc = M.scenarios(la, lb, sa, sb) if len(L) else (np.zeros((0, M.NB)),) * 3
-    return {"matchs": garde, "comp": [l[0] for l in L], "la": la, "lb": lb, "pn": pn, "pf": pf, "pc": pc}
+    return {"matchs": garde, "comp": [l[0] for l in L], "la": la, "lb": lb, "pn": pn, "pf": pf, "pc": pc, "pl": nature(garde, lig, pn)}
+
+
+def nature(matchs: list[dict], lig: dict, pn: np.ndarray, lissage: float = LISSAGE_NATURE) -> np.ndarray:
+    """Nature du championnat (étude du 19/11/2026) : fréquence réelle de chaque marché dans le championnat, sur ses matchs joués strictement avant le match,
+    rapprochée de la probabilité du modèle par `lissage` matchs (peu de matchs = on garde le modèle). Aucune cote."""
+    out = pn.copy()
+    cache = {}
+    for t, m in enumerate(matchs):
+        k = (m["competition"], m["saison"])
+        if k not in cache:
+            L = lig[k].matchs
+            h = np.array([x["r"]["gf"] if x["r"]["dom"] else x["r"]["ga"] for x in L], int)
+            a = np.array([x["r"]["ga"] if x["r"]["dom"] else x["r"]["gf"] for x in L], int)
+            O = M.TABLE[np.minimum(h, V.CAP), np.minimum(a, V.CAP)].astype(float) if len(L) else np.zeros((0, M.NB))
+            cache[k] = ([x["date"] for x in L], np.vstack([np.zeros((1, M.NB)), np.cumsum(O, axis=0)]))
+        dates, cum = cache[k]
+        n = int(np.searchsorted(dates, m["jour"], side="left"))
+        out[t] = (cum[n] + lissage * pn[t]) / (n + lissage)
+    return out
 
 
 def _resultats(F: dict, sc: dict) -> tuple[np.ndarray, np.ndarray]:
@@ -85,7 +105,7 @@ def _lignes(F, joue, Y, masque_matchs):
     t = np.repeat(np.arange(N), K)
     mk = np.tile(np.arange(K), N)
     s = masque_matchs[t]
-    return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s]
+    return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s], (F["pl"].ravel()[s] if F.get("pl") is not None else None)
 
 
 def retenus(q_bas: np.ndarray, q: np.ndarray, seuil: float, autorisees: set[str] | None = None) -> list[int]:
@@ -112,7 +132,7 @@ def marche_avant(F: dict, joue: np.ndarray, Y: np.ndarray, seuil: float) -> dict
     for d in test:
         cal = C.apprendre(*_lignes(F, joue, Y, joue & (jours < d)))
         for t in np.nonzero(joue & (jours == d))[0]:
-            q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K))
+            q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
             for k in retenus(bas, q, seuil):
                 rec.append((d, C.FAMILLE[k], int(Y[t, k]))); couv.add(t)
     if not rec:
@@ -145,7 +165,7 @@ def _txt(x: float) -> float:
 
 def fiche(m: dict, t: int, F: dict, cal: dict, seuil: float, autorisees: set[str] | None = None) -> dict:
     K = M.NB
-    q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K))
+    q, bas = C.predire(cal, F["pn"][t], F["pc"][t], np.arange(K), F["pl"][t] if F.get("pl") is not None else None)
     sel = retenus(bas, q, seuil, autorisees)
     c = F["comp"][t]
     base = {"match_id": m["id"], "jour": m["jour"], "heure": m.get("heure"), "coup_d_envoi_utc": m.get("ko"), "competition": m.get("competition"), "domicile": m["domicile"], "exterieur": m["exterieur"],
