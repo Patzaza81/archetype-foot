@@ -34,24 +34,37 @@ function mpEquipe(nom, lieu, liste, total, domicile) {
 function mpHistorique(f) {
   const d = f.derniers_matchs || {};
   if (!(d.dom && d.dom.length) && !(d.ext && d.ext.length)) return "";
-  return `<details class="mp-det"><summary>Historique des équipes</summary><div class="om-dm-grille">` +
-    mpEquipe(f.domicile, "À domicile", d.dom, f.n_domicile, true) + mpEquipe(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></details>`;
+  return `<div class="om-bloc"><div class="om-bloc-titre">Historique des équipes</div><div class="om-dm-grille">` +
+    mpEquipe(f.domicile, "À domicile", d.dom, f.n_domicile, true) + mpEquipe(f.exterieur, "À l'extérieur", d.ext, f.n_exterieur, false) + `</div></div>`;
 }
 function mpDetail(f) {
   const l = (f.paris || []).map((p) => `<tr><td style="text-align:left">${mpE(p.libelle)}</td><td>${mpCote(p.cote).replace("cote ", "")}</td><td>${mpPct(p.fiabilite)}</td><td>${mpPct(p.modele)}</td><td>${mpPct(p.catastrophe)}</td></tr>`).join("");
-  return `<details class="mp-det"><summary>Les chiffres</summary><div class="mp-table-zone"><table class="om-table"><tr><th>Pronostic</th><th>Cote</th><th>Fiabilité mesurée</th><th>Cas normal</th><th>Pire cas</th></tr>${l}</table></div>` +
-    `<div class="om-info">Fiabilité mesurée = part des pronostics de ce type qui se sont réalisés sur des matchs comparables jamais vus par le moteur.</div></details>`;
+  return `<div class="om-bloc"><div class="om-bloc-titre">Les chiffres</div><div class="mp-table-zone"><table class="om-table"><tr><th>Pronostic</th><th>Cote</th><th>Fiabilité mesurée</th><th>Cas normal</th><th>Pire cas</th></tr>${l}</table></div>` +
+    `<div class="om-info">Fiabilité mesurée = part des pronostics de ce type qui se sont réalisés sur des matchs comparables jamais vus par le moteur.</div></div>`;
 }
 function mpCarte(f) {
   const h = mpHoraire(f.coup_d_envoi_utc), ba = f.buts_attendus || [];
   const s = document.createElement("section");
-  s.className = "ax-carte";
+  s.className = "ax-carte ax-replie";
+  s.setAttribute("aria-expanded", "false");
   s.innerHTML =
     `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${mpE(f.domicile)}</span>` +
     `<div class="ax-horaire"><strong>${mpE(h.heure)}</strong><span>${mpE(h.jour)}</span><span>${mpE(h.date)}</span></div><span class="ax-equipe ax-ext">${mpE(f.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${mpE(String(f.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
     `<div class="om-corps">` + (f.score ? `<div class="om-info">Score final <strong>${mpE(f.score.join("-"))}</strong></div>` : "") +
-    (f.paris || []).map(mpLigne).join("") + mpHistorique(f) + mpDetail(f) + `</div>`;
+    (f.paris || []).map(mpLigne).join("") + `</div>` +
+    `<details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${mpHistorique(f)}${mpDetail(f)}</div></details>`;
+  s.addEventListener("click", (e) => {      // carte repliée au départ ; un toucher n'importe où la déplie ou la replie
+    if (e.target.closest("button, a, summary")) return;
+    const sel = window.getSelection && window.getSelection();
+    if (sel && String(sel).length) return;
+    const avant = s.getBoundingClientRect().top;
+    const replie = !s.classList.contains("ax-replie");
+    s.classList.toggle("ax-replie", replie);
+    s.setAttribute("aria-expanded", String(!replie));
+    const apres = s.getBoundingClientRect().top;
+    if (Math.abs(apres - avant) > 1) window.scrollBy(0, apres - avant);
+  });
   return s;
 }
 function mpListe(id, liste, vide) {
@@ -129,4 +142,4 @@ if (typeof document !== "undefined") {
       .catch((e) => { document.getElementById("maj").textContent = "Erreur de chargement : " + e.message; console.error(e); });
   }
 }
-if (typeof module !== "undefined") module.exports = { mpHistorique, mpVerdict, mpChiffres, mpLigne, mpSur10, mpHoraire, mpCote };
+if (typeof module !== "undefined") module.exports = { mpCarte, mpHistorique, mpVerdict, mpChiffres, mpLigne, mpSur10, mpHoraire, mpCote };
