@@ -21,7 +21,7 @@ Statut : expériences seulement. Moteur non modifié, rien de fusionné. Aucune 
 
 **Sur les pronostics retenus**, le gain est bien plus faible que sur les probabilités :
 - À volume égal (10 % et 25 % des matchs les mieux classés), l'écart de réussite va de −0,7 à +2,9 points, intervalles de confiance à 95 % qui contiennent 0 pour tous les marchés (meilleurs : −3,5 buts +2,9 pts [−1,7 ; +7,9], −4,5 buts +2,4, N2 & −1,5 buts +2,2).
-- Par seuil de fiabilité (sur 13 marchés) : même nombre de pronostics, même réussite (83,0 % → 83,1 % à 70 %, 89,1 % → 89,1 % à 80 %). Seul −3,5 buts progresse : à 0,80, 804 vs 789 de réussite, borne basse de Wilson 73,9 % → 76,0 % ; à 0,75 : 74,8 % → 76,4 %.
+- Par seuil de fiabilité (sur 13 marchés) : même nombre de pronostics, même réussite (83,0 % → 83,1 % à 70 %, 89,1 % → 89,1 % à 80 %). Seul −3,5 buts progresse : à 0,80, réussite 78,9 % sur 303 pronostics → 80,4 % sur 372, borne basse de Wilson 73,9 % → 76,0 % ; à 0,75 : 74,8 % → 76,4 % (1 541 → 1 383 pronostics).
 - Les deux méthodes annoncent environ 1 point de plus que la réussite réelle aux seuils élevés (biais de sélection).
 
 ## 3. Lecture
