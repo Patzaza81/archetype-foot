@@ -112,7 +112,8 @@ def _lignes(F, joue, Y, masque_matchs):
     return F["pn"].ravel()[s], F["pc"].ravel()[s], Y.ravel()[s], mk[s], t[s], (F["pl"].ravel()[s] if F.get("pl") is not None else None)
 
 
-GRILLE_SEUILS = (0.55, 0.60, 0.65, 0.68, 0.70, 0.72, 0.75, 0.78, 0.82)
+GRILLE_SEUILS = (0.45, 0.50, 0.55, 0.60, 0.65, 0.68, 0.70, 0.72, 0.75, 0.78, 0.82)
+FAMILLES_PRIORITAIRES = {"victoire ou nul", "double chance"}      # demandées en priorité par Patrick (19/11) : toujours représentées, avec leur réussite réelle
 N_MIN_FAMILLE = 100                                           # pronostics minimum pour juger une famille
 
 
@@ -134,16 +135,29 @@ def retenus(q_bas: np.ndarray, q: np.ndarray, seuil, autorisees: set[str] | None
     return C.choisir(np.nan_to_num(q), ok)
 
 
+def _wilson_bas(g: int, n: int, z: float = 1.645) -> float:
+    p = g / n
+    return (p + z * z / (2 * n) - z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / (1 + z * z / n)
+
+
 def seuils_par_famille(rec: list, demande: float) -> dict:
-    """Pour chaque famille : le plus petit seuil de la grille dont la réussite réelle (au moins N_MIN_FAMILLE pronostics) atteint `demande`. Aucune famille hors de ce cas n'est proposée.
-    rec = lignes (jour, famille, gagné, borne basse)."""
+    """Seuil de fiabilité PROPRE à chaque famille de marchés (un +1,5 but ne se calibre pas comme une victoire sèche), appris sur le test marche avant.
+    1. Si la famille peut atteindre la réussite demandée : le plus petit seuil de la grille qui l'atteint (au moins N_MIN_FAMILLE pronostics).
+    2. Sinon, pour les familles prioritaires (victoire, double chance) seulement : le seuil qui donne la meilleure réussite garantie (borne basse à 95 %), signalée comme « objectif non atteint ».
+    Une famille sans N_MIN_FAMILLE pronostics à aucun seuil n'est pas proposée. rec = lignes (jour, famille, gagné, borne basse, …).
+    Rend {famille: (seuil, objectif_atteint)}."""
     out = {}
     for f in {r[1] for r in rec}:
+        stats = []
         for s in GRILLE_SEUILS:
             R = [r[2] for r in rec if r[1] == f and r[3] >= s]
-            if len(R) >= N_MIN_FAMILLE and sum(R) / len(R) >= demande:
-                out[f] = s
-                break
+            if len(R) >= N_MIN_FAMILLE:
+                stats.append((s, len(R), sum(R) / len(R), _wilson_bas(sum(R), len(R))))
+        ok = [x for x in stats if x[2] >= demande]
+        if ok:
+            out[f] = (ok[0][0], True)
+        elif stats and f in FAMILLES_PRIORITAIRES:
+            out[f] = (max(stats, key=lambda x: x[3])[0], False)
     return out
 
 
@@ -171,16 +185,17 @@ def marche_avant(F: dict, joue: np.ndarray, Y: np.ndarray, seuil: float) -> dict
     nb_test = int(sum(1 for d in test for _ in np.nonzero(joue & (jours == d))[0]))
     if not rec:
         return {**vide, "periode": [test[0], test[-1]], "matchs": nb_test}
-    seuils = seuils_par_famille(rec, seuil)
+    sf = seuils_par_famille(rec, seuil)
+    seuils = {f: v[0] for f, v in sf.items()}
     prises = [r for r in rec if r[1] in seuils and r[3] >= seuils[r[1]]]
     taux = lambda R: (round(sum(r[2] for r in R) / len(R), 4) if R else None)
     A, B = [r for r in rec if r[0] < milieu], [r for r in rec if r[0] >= milieu]
-    seuils_A = seuils_par_famille(A, seuil)
+    seuils_A = {f: v[0] for f, v in seuils_par_famille(A, seuil).items()}
     B_ctrl = [r for r in B if r[1] in seuils_A and r[3] >= seuils_A[r[1]]]
     par_fam = {}
     for f in sorted({r[1] for r in rec}):
         P = [r for r in prises if r[1] == f]
-        par_fam[f] = {"pronostics": len(P), "reussite": taux(P), "seuil": seuils.get(f), "autorisee": f in seuils}
+        par_fam[f] = {"pronostics": len(P), "reussite": taux(P), "seuil": seuils.get(f), "autorisee": f in seuils, "objectif_atteint": bool(sf[f][1]) if f in sf else False}
     return {"periode": [test[0], test[-1]], "matchs": nb_test, "matchs_avec_pronostic": len({r[4] for r in prises}), "pronostics": len(prises), "reussite": taux(prises),
             "par_moitie": [{"pronostics": len([r for r in prises if r[0] < milieu]), "reussite": taux([r for r in prises if r[0] < milieu])},
                            {"pronostics": len([r for r in prises if r[0] >= milieu]), "reussite": taux([r for r in prises if r[0] >= milieu])}],

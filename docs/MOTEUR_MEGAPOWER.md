@@ -48,3 +48,6 @@ Le calibrage de chaque famille reçoit un 4e terme : logit de la fréquence rée
 
 ## Cote et jour (19/11/2026)
 Pronostic proposé seulement si le marché a une cote Betpawa ≥ 1,26 (filtre d'affichage ; aucune cote dans le modèle ni dans le calibrage des probabilités). Le calibrage s'apprend sur les seuls marchés proposables (cote ≥ 1,26) : la fiabilité annoncée est celle de la population réellement proposée. Marche avant sur l'archive à 0,72 : 758 pronostics, 608 matchs, réussite 69,9 % (2e moitié 72,6 % sur 281). La page affiche la cote et le jour de la semaine (heure du Cameroun).
+
+## Seuil propre à chaque famille (19/11/2026)
+Un +1,5 but ne se calibre pas comme une victoire sèche : chaque famille de marchés a son seuil de fiabilité, appris sur le test marche avant (cote ≥ 1,26). Famille qui atteint la réussite demandée (0,72) : plus petit seuil qui l'atteint (≥ 100 pronostics). Familles prioritaires (victoire, double chance) qui ne l'atteignent pas : seuil à la meilleure réussite garantie (borne basse 95 %), marquées « objectif non atteint » ; leur fiabilité affichée est leur réussite réelle (victoire ≈ 63 %). Autres familles : proposées seulement si elles atteignent l'objectif.
