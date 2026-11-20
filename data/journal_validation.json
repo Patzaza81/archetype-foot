@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-19T15:50:34Z",
+  "genere_le": "2026-11-20T04:32:27Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
@@ -2382,25 +2382,39 @@
     "Remo|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
-    "Remo|over_under_total_2.5_under": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
       "observations": 1,
       "par_regime": {
         "NEUTRE": {
           "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Remo|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
     "Remo|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Mirassol|1x2_exterieur": {
       "methode": "walk_forward",
@@ -2445,6 +2459,18 @@
       "par_regime": {}
     },
     "Paranaense|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Flamengo|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Flamengo|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3394,14 +3420,24 @@
     "Boston River|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Boston River|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Virtus|1x2_exterieur": {
       "methode": "walk_forward",
@@ -3608,6 +3644,12 @@
       "par_regime": {}
     },
     "Baltika|buts_equipe_exterieur_0.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Corinthians|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3864,6 +3906,12 @@
       "par_regime": {}
     },
     "Charlotte|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Rouisset|over_under_total_2.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
