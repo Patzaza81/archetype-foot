@@ -1,16 +1,16 @@
 {
- "genere_le": "2026-11-19T15:14:24Z",
+ "genere_le": "2026-11-20T03:57:42Z",
  "avertissement": "Aucun indice n'est présenté comme fiable tant que son statut n'est pas « validé » ET que sa borne basse réelle n'atteint pas son objectif. Les chiffres de l'étude historique sont affichés à part du suivi réel.",
  "alerte_registre": [],
  "global": {
   "paris_distincts": {
-   "matchs": 265,
-   "gagnes": 176,
-   "perdus": 89,
-   "taux": 0.6642,
-   "wilson_bas_95": 0.6053
+   "matchs": 267,
+   "gagnes": 177,
+   "perdus": 90,
+   "taux": 0.6629,
+   "wilson_bas_95": 0.6043
   },
-  "matchs_distincts": 265,
+  "matchs_distincts": 267,
   "matchs_avec_plusieurs_indices": 0,
   "doublons_ecartes": 0,
   "par_semaine": [
@@ -40,11 +40,11 @@
    },
    {
     "semaine": "2026-S47",
-    "matchs": 2,
-    "gagnes": 2,
-    "perdus": 0,
-    "taux": 1.0,
-    "wilson_bas_95": 0.3424
+    "matchs": 4,
+    "gagnes": 3,
+    "perdus": 1,
+    "taux": 0.75,
+    "wilson_bas_95": 0.3006
    }
   ],
   "classement": [
@@ -53,38 +53,38 @@
     "nom": "Victoire à domicile",
     "statut": "en_validation",
     "statut_libelle": "En validation",
-    "matchs": 146,
-    "gagnes": 101,
+    "matchs": 147,
+    "gagnes": 102,
     "perdus": 45,
-    "taux": 0.6918,
-    "wilson_bas_95": 0.6128,
-    "par_jour": 8.63,
+    "taux": 0.6939,
+    "wilson_bas_95": 0.6152,
+    "par_jour": 8.46,
     "periode": {
      "debut": "2026-10-27",
-     "fin": "2026-11-22",
-     "jours": 27
+     "fin": "2026-11-23",
+     "jours": 28
     },
     "tendance": "stable",
     "fiabilite": "non_fiable",
-    "en_attente": 87
+    "en_attente": 90
    },
    {
     "id": "victoire_exterieur",
     "nom": "Victoire à l'extérieur",
     "statut": "en_validation",
     "statut_libelle": "En validation",
-    "matchs": 109,
+    "matchs": 110,
     "gagnes": 67,
-    "perdus": 42,
-    "taux": 0.6147,
-    "wilson_bas_95": 0.5209,
-    "par_jour": 6.59,
+    "perdus": 43,
+    "taux": 0.6091,
+    "wilson_bas_95": 0.5157,
+    "par_jour": 6.63,
     "periode": {
      "debut": "2026-10-27",
      "fin": "2026-11-22",
      "jours": 27
     },
-    "tendance": "stable",
+    "tendance": "baisse",
     "fiabilite": "non_fiable",
     "en_attente": 69
    },
@@ -98,18 +98,20 @@
     "perdus": 2,
     "taux": 0.8,
     "wilson_bas_95": 0.4902,
-    "par_jour": 0.67,
+    "par_jour": 0.55,
     "periode": {
      "debut": "2026-11-01",
-     "fin": "2026-11-15",
-     "jours": 15
+     "fin": "2026-11-20",
+     "jours": 20
     },
     "tendance": "stable",
     "fiabilite": "non_fiable",
-    "en_attente": 0
+    "en_attente": 1
    }
   ],
-  "indices_en_baisse": [],
+  "indices_en_baisse": [
+   "victoire_exterieur"
+  ],
   "note": "Taux calculé sur des paris distincts (un match n'est compté qu'une fois par indice). Les pourcentages des indices ne sont pas additionnés et le taux global ne remplace pas la lecture marché par marché."
  },
  "indices": [
@@ -130,19 +132,19 @@
    },
    "objectif_reussite": 0.7,
    "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
-   "geles": 233,
-   "en_attente": 87,
-   "matchs": 146,
-   "gagnes": 101,
+   "geles": 237,
+   "en_attente": 90,
+   "matchs": 147,
+   "gagnes": 102,
    "perdus": 45,
-   "taux": 0.6918,
-   "wilson_bas_95": 0.6128,
+   "taux": 0.6939,
+   "wilson_bas_95": 0.6152,
    "periode": {
     "debut": "2026-10-27",
-    "fin": "2026-11-22",
-    "jours": 27
+    "fin": "2026-11-23",
+    "jours": 28
    },
-   "par_jour": 8.63,
+   "par_jour": 8.46,
    "par_semaine": [
     {
      "semaine": "2026-S44",
@@ -170,11 +172,11 @@
     },
     {
      "semaine": "2026-S47",
-     "matchs": 2,
-     "gagnes": 2,
+     "matchs": 3,
+     "gagnes": 3,
      "perdus": 0,
      "taux": 1.0,
-     "wilson_bas_95": 0.3424
+     "wilson_bas_95": 0.4385
     }
    ],
    "cumule_par_semaine": [
@@ -204,11 +206,11 @@
     },
     {
      "semaine": "2026-S47",
-     "matchs": 146,
-     "gagnes": 101,
+     "matchs": 147,
+     "gagnes": 102,
      "perdus": 45,
-     "taux": 0.6918,
-     "wilson_bas_95": 0.6128
+     "taux": 0.6939,
+     "wilson_bas_95": 0.6152
     }
    ],
    "tendance": {
@@ -271,19 +273,19 @@
    },
    "objectif_reussite": 0.7,
    "limites": "Règle issue d'une seule fenêtre de 28 jours. Le suivi réel commence à la première nuit gelée. L'objectif de 7 sur 10 est une cible à confirmer, pas une garantie.",
-   "geles": 178,
+   "geles": 179,
    "en_attente": 69,
-   "matchs": 109,
+   "matchs": 110,
    "gagnes": 67,
-   "perdus": 42,
-   "taux": 0.6147,
-   "wilson_bas_95": 0.5209,
+   "perdus": 43,
+   "taux": 0.6091,
+   "wilson_bas_95": 0.5157,
    "periode": {
     "debut": "2026-10-27",
     "fin": "2026-11-22",
     "jours": 27
    },
-   "par_jour": 6.59,
+   "par_jour": 6.63,
    "par_semaine": [
     {
      "semaine": "2026-S44",
@@ -308,6 +310,14 @@
      "perdus": 6,
      "taux": 0.5714,
      "wilson_bas_95": 0.3259
+    },
+    {
+     "semaine": "2026-S47",
+     "matchs": 1,
+     "gagnes": 0,
+     "perdus": 1,
+     "taux": 0.0,
+     "wilson_bas_95": 0.0
     }
    ],
    "cumule_par_semaine": [
@@ -334,14 +344,22 @@
      "perdus": 42,
      "taux": 0.6147,
      "wilson_bas_95": 0.5209
+    },
+    {
+     "semaine": "2026-S47",
+     "matchs": 110,
+     "gagnes": 67,
+     "perdus": 43,
+     "taux": 0.6091,
+     "wilson_bas_95": 0.5157
     }
    ],
    "tendance": {
-    "signal": "stable",
-    "semaine": "2026-S46",
-    "taux_semaine": 0.5714,
-    "borne_basse_cumul_precedent": 0.5206,
-    "texte": "Pas de baisse détectée (la dernière semaine reste dans l'intervalle du cumul précédent)."
+    "signal": "baisse",
+    "semaine": "2026-S47",
+    "taux_semaine": 0.0,
+    "borne_basse_cumul_precedent": 0.5209,
+    "texte": "La dernière semaine est sous la borne basse du cumul précédent."
    },
    "reference_rejeu": {
     "nature": "Fenêtre BetPawa observée AVANT le gel de la règle : point de départ, PAS une validation.",
@@ -396,8 +414,8 @@
    },
    "objectif_reussite": 0.8,
    "limites": "Le suivi réel ne compte que les paris entrés dans un ticket gelé (cote connue, créneau de 10 h à minuit) : il est plus petit que le rejeu. Les chiffres du rejeu sont affichés à part.",
-   "geles": 10,
-   "en_attente": 0,
+   "geles": 11,
+   "en_attente": 1,
    "matchs": 10,
    "gagnes": 8,
    "perdus": 2,
@@ -405,10 +423,10 @@
    "wilson_bas_95": 0.4902,
    "periode": {
     "debut": "2026-11-01",
-    "fin": "2026-11-15",
-    "jours": 15
+    "fin": "2026-11-20",
+    "jours": 20
    },
-   "par_jour": 0.67,
+   "par_jour": 0.55,
    "par_semaine": [
     {
      "semaine": "2026-S44",

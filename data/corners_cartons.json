@@ -1,6 +1,6 @@
 {
  "version": "1.2.0",
- "genere_le": "2026-11-19 15:17 UTC",
+ "genere_le": "2026-11-20 03:59 UTC",
  "saison_football_data": "2627",
  "matchs_football_data_utilises": 5605,
  "parametres": {
@@ -19,10 +19,10 @@
  },
  "definition_cartons": "jaunes + rouges (un rouge compte pour un carton)",
  "note": "Cotes BetPawa affichées à titre d'information, quand BetPawa publie un marché équivalent. Aucune espérance de gain, aucun pari retenu : le modèle n'a pas encore été comparé au marché.",
- "matchs_avec_cotes": 94,
+ "matchs_avec_cotes": 99,
  "refus": {
-  "equipes_non_reliees_a_football_data": 805,
-  "corners_cartons_non_publies_pour_ce_championnat": 54
+  "equipes_non_reliees_a_football_data": 845,
+  "corners_cartons_non_publies_pour_ce_championnat": 57
  },
  "bilan": {
   "matchs_regles": 862,
@@ -275,7 +275,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e1kq0tbrhci2j4jgrqcuplvys",
@@ -466,7 +466,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4206ry9osn6lg87eqn3awha8k",
@@ -1365,52 +1365,52 @@
     "corners": {
      "total": {
       "8.5": {
-       "plus": 1.33,
-       "seuil_plus": 0.7519,
-       "moins": 3.07,
-       "seuil_moins": 0.3257,
+       "plus": 1.26,
+       "seuil_plus": 0.7937,
+       "moins": 3.47,
+       "seuil_moins": 0.2882,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.55,
-       "seuil_plus": 0.6452,
-       "moins": 2.3,
-       "seuil_moins": 0.4348,
+       "plus": 1.45,
+       "seuil_plus": 0.6897,
+       "moins": 2.55,
+       "seuil_moins": 0.3922,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 1.89,
-       "seuil_plus": 0.5291,
-       "moins": 1.82,
-       "seuil_moins": 0.5495,
+       "plus": 1.73,
+       "seuil_plus": 0.578,
+       "moins": 1.99,
+       "seuil_moins": 0.5025,
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.37,
-       "seuil_plus": 0.4219,
-       "moins": 1.52,
-       "seuil_moins": 0.6579,
+       "plus": 2.14,
+       "seuil_plus": 0.4673,
+       "moins": 1.63,
+       "seuil_moins": 0.6135,
        "modele_au_dessus": null
       },
       "12.5": {
-       "plus": 3.07,
-       "seuil_plus": 0.3257,
-       "moins": 1.33,
-       "seuil_moins": 0.7519,
+       "plus": 2.73,
+       "seuil_plus": 0.3663,
+       "moins": 1.4,
+       "seuil_moins": 0.7143,
        "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 1.63,
-       "seuil_plus": 0.6135,
+       "plus": 1.47,
+       "seuil_plus": 0.6803,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 10.25,
-       "seuil_plus": 0.0976,
+       "plus": 11.43,
+       "seuil_plus": 0.0875,
        "modele_au_dessus": "plus"
       }
      }
@@ -1418,44 +1418,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.52,
-       "seuil_plus": 0.6579,
-       "moins": 2.26,
-       "seuil_moins": 0.4425,
+       "plus": 1.66,
+       "seuil_plus": 0.6024,
+       "moins": 2.01,
+       "seuil_moins": 0.4975,
        "modele_au_dessus": "plus"
       },
       "3.5": {
-       "plus": 2.23,
-       "seuil_plus": 0.4484,
-       "moins": 1.53,
-       "seuil_moins": 0.6536,
+       "plus": 2.55,
+       "seuil_plus": 0.3922,
+       "moins": 1.41,
+       "seuil_moins": 0.7092,
        "modele_au_dessus": "plus"
       },
       "4.5": {
-       "plus": 3.58,
-       "seuil_plus": 0.2793,
-       "moins": 1.22,
-       "seuil_moins": 0.8197,
-       "modele_au_dessus": "plus"
-      },
-      "5.5": {
-       "plus": 5.84,
-       "seuil_plus": 0.1712,
-       "moins": 1.08,
-       "seuil_moins": 0.9259,
+       "plus": 4.24,
+       "seuil_plus": 0.2358,
+       "moins": 1.16,
+       "seuil_moins": 0.8621,
        "modele_au_dessus": "plus"
       }
      }
     },
     "rouge": {
-     "oui": 5.79,
-     "seuil_oui": 0.1727,
-     "non": 1.08,
-     "seuil_non": 0.9259,
+     "oui": 6.31,
+     "seuil_oui": 0.1585,
+     "non": 1.06,
+     "seuil_non": 0.9434,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4g05ozyz1hnxkitr0bfwd7llg",
@@ -1644,9 +1637,41 @@
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "3.5": {
+       "plus": 1.12,
+       "seuil_plus": 0.8929,
+       "moins": 4.39,
+       "seuil_moins": 0.2278,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 1.34,
+       "seuil_plus": 0.7463,
+       "moins": 2.69,
+       "seuil_moins": 0.3717,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 1.72,
+       "seuil_plus": 0.5814,
+       "moins": 1.86,
+       "seuil_moins": 0.5376,
+       "modele_au_dessus": "plus"
+      },
+      "6.5": {
+       "plus": 2.4,
+       "seuil_plus": 0.4167,
+       "moins": 1.42,
+       "seuil_moins": 0.7042,
+       "modele_au_dessus": "plus"
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e5ktiwgdmwl80uozrrewp2pec",
@@ -1835,9 +1860,48 @@
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.11,
+       "seuil_plus": 0.9009,
+       "moins": 4.54,
+       "seuil_moins": 0.2203,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.35,
+       "seuil_plus": 0.7407,
+       "moins": 2.65,
+       "seuil_moins": 0.3774,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.79,
+       "seuil_plus": 0.5587,
+       "moins": 1.78,
+       "seuil_moins": 0.5618,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.61,
+       "seuil_plus": 0.3831,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 4.0,
+       "seuil_plus": 0.25,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
+       "modele_au_dessus": "moins"
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "392t25jcqfq7zr22jof8qlkpg",
@@ -1986,7 +2050,49 @@
      "matchs_domicile": 5,
      "matchs_exterieur": 5
     }
-   }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "7.5": {
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.57,
+       "seuil_moins": 0.2801,
+       "modele_au_dessus": null
+      },
+      "8.5": {
+       "plus": 1.39,
+       "seuil_plus": 0.7194,
+       "moins": 2.49,
+       "seuil_moins": 0.4016,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 1.72,
+       "seuil_plus": 0.5814,
+       "moins": 1.86,
+       "seuil_moins": 0.5376,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.12,
+       "seuil_plus": 0.4717,
+       "moins": 1.54,
+       "seuil_moins": 0.6494,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.88,
+       "seuil_plus": 0.3472,
+       "moins": 1.29,
+       "seuil_moins": 0.7752,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "8qd5zu5zarju4v6b1djwrtams",
@@ -2303,10 +2409,10 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.02,
-       "seuil_plus": 0.495,
-       "moins": 1.71,
-       "seuil_moins": 0.5848,
+       "plus": 2.01,
+       "seuil_plus": 0.4975,
+       "moins": 1.72,
+       "seuil_moins": 0.5814,
        "modele_au_dessus": null
       },
       "11.5": {
@@ -2326,14 +2432,14 @@
      },
      "exterieur": {
       "6.5": {
-       "plus": 4.09,
-       "seuil_plus": 0.2445,
+       "plus": 4.24,
+       "seuil_plus": 0.2358,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a7sd9lvb0i7ehshj7ghxyscus",
@@ -2487,45 +2593,45 @@
     "corners": {
      "total": {
       "7.5": {
-       "plus": 1.43,
-       "seuil_plus": 0.6993,
-       "moins": 2.63,
-       "seuil_moins": 0.3802,
+       "plus": 1.41,
+       "seuil_plus": 0.7092,
+       "moins": 2.69,
+       "seuil_moins": 0.3717,
        "modele_au_dessus": null
       },
       "8.5": {
-       "plus": 1.74,
-       "seuil_plus": 0.5747,
-       "moins": 1.98,
-       "seuil_moins": 0.5051,
+       "plus": 1.7,
+       "seuil_plus": 0.5882,
+       "moins": 2.03,
+       "seuil_moins": 0.4926,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 2.2,
-       "seuil_plus": 0.4545,
-       "moins": 1.6,
-       "seuil_moins": 0.625,
+       "plus": 2.14,
+       "seuil_plus": 0.4673,
+       "moins": 1.63,
+       "seuil_moins": 0.6135,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.88,
-       "seuil_plus": 0.3472,
-       "moins": 1.36,
-       "seuil_moins": 0.7353,
+       "plus": 2.8,
+       "seuil_plus": 0.3571,
+       "moins": 1.38,
+       "seuil_moins": 0.7246,
        "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 3.26,
-       "seuil_plus": 0.3067,
+       "plus": 3.18,
+       "seuil_plus": 0.3145,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 6.6,
-       "seuil_plus": 0.1515,
+       "plus": 6.4,
+       "seuil_plus": 0.1562,
        "modele_au_dessus": "plus"
       }
      }
@@ -2533,37 +2639,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.31,
-       "seuil_plus": 0.7634,
-       "moins": 2.98,
-       "seuil_moins": 0.3356,
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.3,
+       "seuil_moins": 0.303,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.76,
-       "seuil_plus": 0.5682,
-       "moins": 1.88,
-       "seuil_moins": 0.5319,
-       "modele_au_dessus": null
+       "plus": 1.65,
+       "seuil_plus": 0.6061,
+       "moins": 2.03,
+       "seuil_moins": 0.4926,
+       "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 2.63,
-       "seuil_plus": 0.3802,
-       "moins": 1.39,
-       "seuil_moins": 0.7194,
-       "modele_au_dessus": null
+       "plus": 2.38,
+       "seuil_plus": 0.4202,
+       "moins": 1.47,
+       "seuil_moins": 0.6803,
+       "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 4.2,
-       "seuil_plus": 0.2381,
-       "moins": 1.16,
-       "seuil_moins": 0.8621,
+       "plus": 3.72,
+       "seuil_plus": 0.2688,
+       "moins": 1.2,
+       "seuil_moins": 0.8333,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "21mfhrhzm4c87r2vzqwn0dedw",
@@ -2865,11 +2971,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.24,
+       "seuil_plus": 0.8065,
+       "moins": 3.66,
+       "seuil_moins": 0.2732,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.43,
        "seuil_plus": 0.6993,
-       "moins": 2.62,
-       "seuil_moins": 0.3817,
+       "moins": 2.63,
+       "seuil_moins": 0.3802,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -2880,23 +2993,83 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.14,
-       "seuil_plus": 0.4673,
-       "moins": 1.63,
-       "seuil_moins": 0.6135,
+       "plus": 2.13,
+       "seuil_plus": 0.4695,
+       "moins": 1.64,
+       "seuil_moins": 0.6098,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.76,
+       "seuil_plus": 0.3623,
+       "moins": 1.39,
+       "seuil_moins": 0.7194,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.7,
+       "seuil_plus": 0.2703,
+       "moins": 1.23,
+       "seuil_moins": 0.813,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 7.58,
-       "seuil_plus": 0.1319,
+       "plus": 7.57,
+       "seuil_plus": 0.1321,
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.08,
+       "seuil_plus": 0.9259,
+       "moins": 5.84,
+       "seuil_moins": 0.1712,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.24,
+       "seuil_plus": 0.8065,
+       "moins": 3.37,
+       "seuil_moins": 0.2967,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 1.57,
+       "seuil_plus": 0.6369,
+       "moins": 2.15,
+       "seuil_moins": 0.4651,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 2.17,
+       "seuil_plus": 0.4608,
+       "moins": 1.57,
+       "seuil_moins": 0.6369,
+       "modele_au_dessus": null
+      },
+      "6.5": {
+       "plus": 3.21,
+       "seuil_plus": 0.3115,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "rouge": {
+     "oui": 3.87,
+     "seuil_oui": 0.2584,
+     "non": 1.19,
+     "seuil_non": 0.8403,
+     "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "d00ht9ha6adidfy1mods4iz2s",
@@ -3101,7 +3274,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e18eusng5whvjf4koankgp89g",
@@ -3292,7 +3465,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e29koqyclquv1heieu8b6ckr8",
@@ -3625,7 +3798,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "22g71jojds1g8x6b04wef7jmc",
@@ -3869,7 +4042,7 @@
      "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "22rqwqt3qz0kpuyhb72ve0bv8",
@@ -4113,7 +4286,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "23epvzleyxhbxbrlbzk45xt04",
@@ -4269,8 +4442,8 @@
       "8.5": {
        "plus": 1.28,
        "seuil_plus": 0.7812,
-       "moins": 3.32,
-       "seuil_moins": 0.3012,
+       "moins": 3.33,
+       "seuil_moins": 0.3003,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -4311,8 +4484,8 @@
      },
      "exterieur": {
       "6.5": {
-       "plus": 6.04,
-       "seuil_plus": 0.1656,
+       "plus": 5.99,
+       "seuil_plus": 0.1669,
        "modele_au_dessus": "plus"
       }
      }
@@ -4350,7 +4523,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "21xvigebj5a0qxsmhfe561n9w",
@@ -5400,8 +5573,8 @@
       "8.5": {
        "plus": 1.33,
        "seuil_plus": 0.7519,
-       "moins": 3.04,
-       "seuil_moins": 0.3289,
+       "moins": 3.06,
+       "seuil_moins": 0.3268,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -5426,8 +5599,8 @@
        "modele_au_dessus": "moins"
       },
       "12.5": {
-       "plus": 3.09,
-       "seuil_plus": 0.3236,
+       "plus": 3.08,
+       "seuil_plus": 0.3247,
        "moins": 1.32,
        "seuil_moins": 0.7576,
        "modele_au_dessus": "moins"
@@ -5435,8 +5608,8 @@
      },
      "exterieur": {
       "6.5": {
-       "plus": 6.77,
-       "seuil_plus": 0.1477,
+       "plus": 7.46,
+       "seuil_plus": 0.134,
        "modele_au_dessus": "plus"
       }
      }
@@ -5444,37 +5617,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.62,
-       "seuil_plus": 0.6173,
-       "moins": 2.07,
-       "seuil_moins": 0.4831,
+       "plus": 1.56,
+       "seuil_plus": 0.641,
+       "moins": 2.18,
+       "seuil_moins": 0.4587,
        "modele_au_dessus": "plus"
       },
       "3.5": {
-       "plus": 2.45,
-       "seuil_plus": 0.4082,
-       "moins": 1.45,
-       "seuil_moins": 0.6897,
+       "plus": 2.31,
+       "seuil_plus": 0.4329,
+       "moins": 1.5,
+       "seuil_moins": 0.6667,
        "modele_au_dessus": "plus"
       },
       "4.5": {
-       "plus": 4.0,
-       "seuil_plus": 0.25,
-       "moins": 1.18,
-       "seuil_moins": 0.8475,
+       "plus": 3.72,
+       "seuil_plus": 0.2688,
+       "moins": 1.2,
+       "seuil_moins": 0.8333,
        "modele_au_dessus": "plus"
       }
      }
     },
     "rouge": {
-     "oui": 5.65,
-     "seuil_oui": 0.177,
-     "non": 1.08,
-     "seuil_non": 0.9259,
+     "oui": 5.43,
+     "seuil_oui": 0.1842,
+     "non": 1.09,
+     "seuil_non": 0.9174,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "81xbpprcjc9id9n8tygyxavbo",
@@ -5665,21 +5838,21 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 2.9,
-       "seuil_plus": 0.3448,
+       "plus": 2.93,
+       "seuil_plus": 0.3413,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 4.68,
-       "seuil_plus": 0.2137,
+       "plus": 4.62,
+       "seuil_plus": 0.2165,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4ii2qiszj9b3tz6azcs3tkvmc",
@@ -5863,7 +6036,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "42msytdk2t9bpco4h49xa13is",
@@ -6217,7 +6390,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "d0ne8pdzcameoyuf2zluxavbo",
@@ -6373,34 +6546,34 @@
       "8.5": {
        "plus": 1.31,
        "seuil_plus": 0.7634,
-       "moins": 3.13,
-       "seuil_moins": 0.3195,
+       "moins": 3.17,
+       "seuil_moins": 0.3155,
        "modele_au_dessus": "moins"
       },
       "9.5": {
-       "plus": 1.53,
-       "seuil_plus": 0.6536,
-       "moins": 2.34,
-       "seuil_moins": 0.4274,
+       "plus": 1.52,
+       "seuil_plus": 0.6579,
+       "moins": 2.36,
+       "seuil_moins": 0.4237,
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 1.86,
-       "seuil_plus": 0.5376,
-       "moins": 1.85,
-       "seuil_moins": 0.5405,
+       "plus": 1.84,
+       "seuil_plus": 0.5435,
+       "moins": 1.86,
+       "seuil_moins": 0.5376,
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.32,
-       "seuil_plus": 0.431,
-       "moins": 1.54,
-       "seuil_moins": 0.6494,
+       "plus": 2.3,
+       "seuil_plus": 0.4348,
+       "moins": 1.55,
+       "seuil_moins": 0.6452,
        "modele_au_dessus": "moins"
       },
       "12.5": {
-       "plus": 3.01,
-       "seuil_plus": 0.3322,
+       "plus": 2.97,
+       "seuil_plus": 0.3367,
        "moins": 1.34,
        "seuil_moins": 0.7463,
        "modele_au_dessus": "moins"
@@ -6408,21 +6581,21 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 1.51,
-       "seuil_plus": 0.6623,
+       "plus": 1.49,
+       "seuil_plus": 0.6711,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 13.78,
-       "seuil_plus": 0.0726,
+       "plus": 14.53,
+       "seuil_plus": 0.0688,
        "modele_au_dessus": "plus"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7slh2mb2oy5cktk2p3idytrf8",
@@ -6724,11 +6897,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 3.09,
+       "seuil_moins": 0.3236,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.56,
        "seuil_plus": 0.641,
-       "moins": 2.27,
-       "seuil_moins": 0.4405,
+       "moins": 2.28,
+       "seuil_moins": 0.4386,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -6739,10 +6919,17 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.43,
-       "seuil_plus": 0.4115,
-       "moins": 1.5,
-       "seuil_moins": 0.6667,
+       "plus": 2.44,
+       "seuil_plus": 0.4098,
+       "moins": 1.49,
+       "seuil_moins": 0.6711,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.23,
+       "seuil_plus": 0.3096,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
        "modele_au_dessus": null
       }
      },
@@ -6760,9 +6947,48 @@
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.15,
+       "seuil_moins": 0.3175,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.67,
+       "seuil_plus": 0.5988,
+       "moins": 2.0,
+       "seuil_moins": 0.5,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 2.39,
+       "seuil_plus": 0.4184,
+       "moins": 1.47,
+       "seuil_moins": 0.6803,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 3.67,
+       "seuil_plus": 0.2725,
+       "moins": 1.21,
+       "seuil_moins": 0.8264,
+       "modele_au_dessus": "moins"
+      }
+     }
+    },
+    "rouge": {
+     "oui": 3.83,
+     "seuil_oui": 0.2611,
+     "non": 1.19,
+     "seuil_non": 0.8403,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e43ieb4z0hfjpkz4pkh7v9gd0",
@@ -6915,25 +7141,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.23,
+       "seuil_plus": 0.813,
+       "moins": 3.26,
+       "seuil_moins": 0.3067,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.44,
-       "seuil_plus": 0.6944,
-       "moins": 2.35,
-       "seuil_moins": 0.4255,
+       "plus": 1.43,
+       "seuil_plus": 0.6993,
+       "moins": 2.37,
+       "seuil_moins": 0.4219,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.73,
-       "seuil_plus": 0.578,
+       "plus": 1.74,
+       "seuil_plus": 0.5747,
        "moins": 1.84,
        "seuil_moins": 0.5435,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.18,
-       "seuil_plus": 0.4587,
+       "plus": 2.19,
+       "seuil_plus": 0.4566,
        "moins": 1.51,
        "seuil_moins": 0.6623,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.84,
+       "seuil_plus": 0.3521,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
        "modele_au_dessus": null
       }
      }
@@ -6943,34 +7183,34 @@
       "2.5": {
        "plus": 1.16,
        "seuil_plus": 0.8621,
-       "moins": 3.47,
-       "seuil_moins": 0.2882,
+       "moins": 3.88,
+       "seuil_moins": 0.2577,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.44,
-       "seuil_plus": 0.6944,
-       "moins": 2.19,
-       "seuil_moins": 0.4566,
+       "plus": 1.46,
+       "seuil_plus": 0.6849,
+       "moins": 2.31,
+       "seuil_moins": 0.4329,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 1.97,
-       "seuil_plus": 0.5076,
-       "moins": 1.56,
-       "seuil_moins": 0.641,
+       "plus": 2.01,
+       "seuil_plus": 0.4975,
+       "moins": 1.61,
+       "seuil_moins": 0.6211,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 2.87,
-       "seuil_plus": 0.3484,
-       "moins": 1.25,
-       "seuil_moins": 0.8,
+       "plus": 3.02,
+       "seuil_plus": 0.3311,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 4.21,
-       "seuil_plus": 0.2375,
+       "plus": 4.73,
+       "seuil_plus": 0.2114,
        "moins": 1.1,
        "seuil_moins": 0.9091,
        "modele_au_dessus": null
@@ -6978,7 +7218,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e4oslg7z6fzg2su1dh2b2xudw",
@@ -7131,31 +7371,84 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.26,
+       "seuil_plus": 0.7937,
+       "moins": 3.08,
+       "seuil_moins": 0.3247,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.48,
        "seuil_plus": 0.6757,
-       "moins": 2.24,
-       "seuil_moins": 0.4464,
-       "modele_au_dessus": null
+       "moins": 2.26,
+       "seuil_moins": 0.4425,
+       "modele_au_dessus": "moins"
       },
       "9.5": {
-       "plus": 1.81,
-       "seuil_plus": 0.5525,
+       "plus": 1.8,
+       "seuil_plus": 0.5556,
        "moins": 1.77,
        "seuil_moins": 0.565,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.29,
-       "seuil_plus": 0.4367,
-       "moins": 1.47,
-       "seuil_moins": 0.6803,
+       "plus": 2.3,
+       "seuil_plus": 0.4348,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.01,
+       "seuil_plus": 0.3322,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.11,
+       "seuil_plus": 0.9009,
+       "moins": 4.58,
+       "seuil_moins": 0.2183,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.34,
+       "seuil_plus": 0.7463,
+       "moins": 2.67,
+       "seuil_moins": 0.3745,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.79,
+       "seuil_plus": 0.5587,
+       "moins": 1.79,
+       "seuil_moins": 0.5587,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.59,
+       "seuil_plus": 0.3861,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 4.01,
+       "seuil_plus": 0.2494,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e5vlmh4puuys5z8ortpkl2q6s",
@@ -7308,25 +7601,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.33,
+       "seuil_plus": 0.7519,
+       "moins": 2.7,
+       "seuil_moins": 0.3704,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.61,
-       "seuil_plus": 0.6211,
-       "moins": 2.0,
-       "seuil_moins": 0.5,
+       "plus": 1.6,
+       "seuil_plus": 0.625,
+       "moins": 2.02,
+       "seuil_moins": 0.495,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 2.0,
-       "seuil_plus": 0.5,
+       "plus": 2.01,
+       "seuil_plus": 0.4975,
        "moins": 1.61,
        "seuil_moins": 0.6211,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.58,
-       "seuil_plus": 0.3876,
-       "moins": 1.37,
-       "seuil_moins": 0.7299,
+       "plus": 2.62,
+       "seuil_plus": 0.3817,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.49,
+       "seuil_plus": 0.2865,
+       "moins": 1.2,
+       "seuil_moins": 0.8333,
        "modele_au_dessus": null
       }
      }
@@ -7334,36 +7641,36 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.18,
-       "seuil_plus": 0.8475,
-       "moins": 3.32,
-       "seuil_moins": 0.3012,
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.61,
+       "seuil_moins": 0.277,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.48,
-       "seuil_plus": 0.6757,
-       "moins": 2.1,
-       "seuil_moins": 0.4762,
-       "modele_au_dessus": null
+       "plus": 1.51,
+       "seuil_plus": 0.6623,
+       "moins": 2.19,
+       "seuil_moins": 0.4566,
+       "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 2.04,
-       "seuil_plus": 0.4902,
-       "moins": 1.52,
-       "seuil_moins": 0.6579,
-       "modele_au_dessus": null
+       "plus": 2.12,
+       "seuil_plus": 0.4717,
+       "moins": 1.54,
+       "seuil_moins": 0.6494,
+       "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 2.99,
-       "seuil_plus": 0.3344,
-       "moins": 1.23,
-       "seuil_moins": 0.813,
+       "plus": 3.21,
+       "seuil_plus": 0.3115,
+       "moins": 1.24,
+       "seuil_moins": 0.8065,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 4.38,
-       "seuil_plus": 0.2283,
+       "plus": 5.07,
+       "seuil_plus": 0.1972,
        "moins": 1.08,
        "seuil_moins": 0.9259,
        "modele_au_dessus": null
@@ -7371,7 +7678,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e667rw4qtybodkzl2s9krhfys",
@@ -7524,31 +7831,84 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 2.74,
+       "seuil_moins": 0.365,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.59,
-       "seuil_plus": 0.6289,
-       "moins": 2.03,
-       "seuil_moins": 0.4926,
+       "plus": 1.58,
+       "seuil_plus": 0.6329,
+       "moins": 2.05,
+       "seuil_moins": 0.4878,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.97,
-       "seuil_plus": 0.5076,
+       "plus": 1.98,
+       "seuil_plus": 0.5051,
        "moins": 1.63,
        "seuil_moins": 0.6135,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.53,
-       "seuil_plus": 0.3953,
-       "moins": 1.38,
-       "seuil_moins": 0.7246,
+       "plus": 2.56,
+       "seuil_plus": 0.3906,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
        "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.4,
+       "seuil_plus": 0.2941,
+       "moins": 1.21,
+       "seuil_moins": 0.8264,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.07,
+       "seuil_plus": 0.9346,
+       "moins": 5.4,
+       "seuil_moins": 0.1852,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.1,
+       "seuil_moins": 0.3226,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.6,
+       "seuil_plus": 0.625,
+       "moins": 2.02,
+       "seuil_moins": 0.495,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.25,
+       "seuil_plus": 0.4444,
+       "moins": 1.48,
+       "seuil_moins": 0.6757,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 3.36,
+       "seuil_plus": 0.2976,
+       "moins": 1.22,
+       "seuil_moins": 0.8197,
+       "modele_au_dessus": "moins"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e6gukbuxibtm5126xfedptmvo",
@@ -7704,8 +8064,8 @@
       "7.5": {
        "plus": 1.46,
        "seuil_plus": 0.6849,
-       "moins": 2.29,
-       "seuil_moins": 0.4367,
+       "moins": 2.31,
+       "seuil_moins": 0.4329,
        "modele_au_dessus": null
       },
       "8.5": {
@@ -7716,16 +8076,62 @@
        "modele_au_dessus": "plus"
       },
       "9.5": {
-       "plus": 2.31,
-       "seuil_plus": 0.4329,
-       "moins": 1.46,
-       "seuil_moins": 0.6849,
+       "plus": 2.32,
+       "seuil_plus": 0.431,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
        "modele_au_dessus": "plus"
+      },
+      "10.5": {
+       "plus": 3.09,
+       "seuil_plus": 0.3236,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
+       "modele_au_dessus": "plus"
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.13,
+       "seuil_plus": 0.885,
+       "moins": 4.31,
+       "seuil_moins": 0.232,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.38,
+       "seuil_plus": 0.7246,
+       "moins": 2.54,
+       "seuil_moins": 0.3937,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.86,
+       "seuil_plus": 0.5376,
+       "moins": 1.72,
+       "seuil_moins": 0.5814,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.72,
+       "seuil_plus": 0.3676,
+       "moins": 1.33,
+       "seuil_moins": 0.7519,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 4.22,
+       "seuil_plus": 0.237,
+       "moins": 1.13,
+       "seuil_moins": 0.885,
+       "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5sid9zbhy8yoxg2n13n5b0nis",
@@ -7878,25 +8284,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.39,
+       "seuil_plus": 0.7194,
+       "moins": 2.79,
+       "seuil_moins": 0.3584,
+       "modele_au_dessus": null
+      },
       "9.5": {
        "plus": 1.65,
        "seuil_plus": 0.6061,
-       "moins": 2.11,
-       "seuil_moins": 0.4739,
+       "moins": 2.12,
+       "seuil_moins": 0.4717,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.02,
-       "seuil_plus": 0.495,
-       "moins": 1.71,
-       "seuil_moins": 0.5848,
+       "plus": 2.03,
+       "seuil_plus": 0.4926,
+       "moins": 1.7,
+       "seuil_moins": 0.5882,
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.56,
-       "seuil_plus": 0.3906,
-       "moins": 1.45,
-       "seuil_moins": 0.6897,
+       "plus": 2.58,
+       "seuil_plus": 0.3876,
+       "moins": 1.44,
+       "seuil_moins": 0.6944,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.38,
+       "seuil_plus": 0.2959,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
        "modele_au_dessus": null
       }
      },
@@ -7911,44 +8331,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.19,
-       "seuil_plus": 0.8403,
-       "moins": 3.25,
-       "seuil_moins": 0.3077,
-       "modele_au_dessus": null
+       "plus": 1.22,
+       "seuil_plus": 0.8197,
+       "moins": 3.55,
+       "seuil_moins": 0.2817,
+       "modele_au_dessus": "moins"
       },
       "3.5": {
-       "plus": 1.51,
-       "seuil_plus": 0.6623,
-       "moins": 2.05,
-       "seuil_moins": 0.4878,
-       "modele_au_dessus": null
+       "plus": 1.58,
+       "seuil_plus": 0.6329,
+       "moins": 2.15,
+       "seuil_moins": 0.4651,
+       "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 2.1,
-       "seuil_plus": 0.4762,
-       "moins": 1.48,
-       "seuil_moins": 0.6757,
-       "modele_au_dessus": null
+       "plus": 2.25,
+       "seuil_plus": 0.4444,
+       "moins": 1.53,
+       "seuil_moins": 0.6536,
+       "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 3.12,
-       "seuil_plus": 0.3205,
-       "moins": 1.21,
-       "seuil_moins": 0.8264,
-       "modele_au_dessus": null
+       "plus": 3.47,
+       "seuil_plus": 0.2882,
+       "moins": 1.23,
+       "seuil_moins": 0.813,
+       "modele_au_dessus": "moins"
       }
      }
     },
     "rouge": {
-     "oui": 4.95,
-     "seuil_oui": 0.202,
+     "oui": 4.98,
+     "seuil_oui": 0.2008,
      "non": 1.11,
      "seuil_non": 0.9009,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5uatqueaql0bpvzjlt75bfehg",
@@ -8101,11 +8521,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 3.09,
+       "seuil_moins": 0.3236,
+       "modele_au_dessus": "plus"
+      },
       "8.5": {
-       "plus": 1.57,
-       "seuil_plus": 0.6369,
-       "moins": 2.26,
-       "seuil_moins": 0.4425,
+       "plus": 1.56,
+       "seuil_plus": 0.641,
+       "moins": 2.28,
+       "seuil_moins": 0.4386,
        "modele_au_dessus": "plus"
       },
       "9.5": {
@@ -8116,10 +8543,17 @@
        "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.44,
-       "seuil_plus": 0.4098,
+       "plus": 2.45,
+       "seuil_plus": 0.4082,
        "moins": 1.49,
        "seuil_moins": 0.6711,
+       "modele_au_dessus": "plus"
+      },
+      "11.5": {
+       "plus": 3.24,
+       "seuil_plus": 0.3086,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
        "modele_au_dessus": "plus"
       }
      },
@@ -8134,51 +8568,51 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.14,
-       "seuil_plus": 0.8772,
-       "moins": 3.66,
-       "seuil_moins": 0.2732,
-       "modele_au_dessus": null
+       "plus": 1.16,
+       "seuil_plus": 0.8621,
+       "moins": 4.16,
+       "seuil_moins": 0.2404,
+       "modele_au_dessus": "moins"
       },
       "3.5": {
-       "plus": 1.4,
-       "seuil_plus": 0.7143,
-       "moins": 2.29,
-       "seuil_moins": 0.4367,
+       "plus": 1.44,
+       "seuil_plus": 0.6944,
+       "moins": 2.45,
+       "seuil_moins": 0.4082,
        "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 1.89,
-       "seuil_plus": 0.5291,
-       "moins": 1.61,
-       "seuil_moins": 0.6211,
+       "plus": 1.98,
+       "seuil_plus": 0.5051,
+       "moins": 1.68,
+       "seuil_moins": 0.5952,
        "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 2.73,
-       "seuil_plus": 0.3663,
-       "moins": 1.28,
-       "seuil_moins": 0.7812,
+       "plus": 2.93,
+       "seuil_plus": 0.3413,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
        "modele_au_dessus": "moins"
       },
       "6.5": {
-       "plus": 4.03,
-       "seuil_plus": 0.2481,
-       "moins": 1.11,
-       "seuil_moins": 0.9009,
-       "modele_au_dessus": null
+       "plus": 4.6,
+       "seuil_plus": 0.2174,
+       "moins": 1.13,
+       "seuil_moins": 0.885,
+       "modele_au_dessus": "moins"
       }
      }
     },
     "rouge": {
-     "oui": 4.29,
-     "seuil_oui": 0.2331,
+     "oui": 4.28,
+     "seuil_oui": 0.2336,
      "non": 1.15,
      "seuil_non": 0.8696,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5ten2u8osh2anmgsgwjibph5g",
@@ -8331,11 +8765,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.33,
+       "seuil_plus": 0.7519,
+       "moins": 3.04,
+       "seuil_moins": 0.3289,
+       "modele_au_dessus": "plus"
+      },
       "8.5": {
        "plus": 1.58,
        "seuil_plus": 0.6329,
-       "moins": 2.23,
-       "seuil_moins": 0.4484,
+       "moins": 2.24,
+       "seuil_moins": 0.4464,
        "modele_au_dessus": "plus"
       },
       "9.5": {
@@ -8346,10 +8787,17 @@
        "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.47,
-       "seuil_plus": 0.4049,
-       "moins": 1.48,
-       "seuil_moins": 0.6757,
+       "plus": 2.49,
+       "seuil_plus": 0.4016,
+       "moins": 1.47,
+       "seuil_moins": 0.6803,
+       "modele_au_dessus": "plus"
+      },
+      "11.5": {
+       "plus": 3.3,
+       "seuil_plus": 0.303,
+       "moins": 1.29,
+       "seuil_moins": 0.7752,
        "modele_au_dessus": "plus"
       }
      },
@@ -8364,51 +8812,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.12,
-       "seuil_plus": 0.8929,
-       "moins": 3.9,
-       "seuil_moins": 0.2564,
+       "plus": 1.27,
+       "seuil_plus": 0.7874,
+       "moins": 3.21,
+       "seuil_moins": 0.3115,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.35,
-       "seuil_plus": 0.7407,
-       "moins": 2.43,
-       "seuil_moins": 0.4115,
-       "modele_au_dessus": null
+       "plus": 1.67,
+       "seuil_plus": 0.5988,
+       "moins": 1.99,
+       "seuil_moins": 0.5025,
+       "modele_au_dessus": "plus"
       },
       "4.5": {
-       "plus": 1.79,
-       "seuil_plus": 0.5587,
-       "moins": 1.69,
-       "seuil_moins": 0.5917,
-       "modele_au_dessus": null
+       "plus": 2.44,
+       "seuil_plus": 0.4098,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
+       "modele_au_dessus": "plus"
       },
       "5.5": {
-       "plus": 2.56,
-       "seuil_plus": 0.3906,
-       "moins": 1.32,
-       "seuil_moins": 0.7576,
-       "modele_au_dessus": null
-      },
-      "6.5": {
-       "plus": 3.78,
-       "seuil_plus": 0.2646,
-       "moins": 1.13,
-       "seuil_moins": 0.885,
+       "plus": 3.84,
+       "seuil_plus": 0.2604,
+       "moins": 1.19,
+       "seuil_moins": 0.8403,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 4.47,
-     "seuil_oui": 0.2237,
-     "non": 1.14,
-     "seuil_non": 0.8772,
+     "oui": 5.06,
+     "seuil_oui": 0.1976,
+     "non": 1.11,
+     "seuil_non": 0.9009,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5t3vdlpenned32s3k1jy1p6hg",
@@ -8561,11 +9002,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.37,
+       "seuil_plus": 0.7299,
+       "moins": 2.87,
+       "seuil_moins": 0.3484,
+       "modele_au_dessus": null
+      },
       "9.5": {
        "plus": 1.62,
        "seuil_plus": 0.6173,
-       "moins": 2.16,
-       "seuil_moins": 0.463,
+       "moins": 2.17,
+       "seuil_moins": 0.4608,
        "modele_au_dessus": null
       },
       "10.5": {
@@ -8576,24 +9024,31 @@
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.5,
-       "seuil_plus": 0.4,
-       "moins": 1.47,
-       "seuil_moins": 0.6803,
+       "plus": 2.52,
+       "seuil_plus": 0.3968,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.29,
+       "seuil_plus": 0.304,
+       "moins": 1.29,
+       "seuil_moins": 0.7752,
        "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 4.32,
-       "seuil_plus": 0.2315,
+       "plus": 4.35,
+       "seuil_plus": 0.2299,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 2.42,
-       "seuil_plus": 0.4132,
+       "plus": 2.41,
+       "seuil_plus": 0.4149,
        "modele_au_dessus": null
       }
      }
@@ -8601,44 +9056,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.26,
-       "seuil_plus": 0.7937,
-       "moins": 2.8,
-       "seuil_moins": 0.3571,
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.02,
+       "seuil_moins": 0.3311,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.67,
-       "seuil_plus": 0.5988,
-       "moins": 1.82,
-       "seuil_moins": 0.5495,
+       "plus": 1.75,
+       "seuil_plus": 0.5714,
+       "moins": 1.89,
+       "seuil_moins": 0.5291,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.41,
-       "seuil_plus": 0.4149,
-       "moins": 1.36,
-       "seuil_moins": 0.7353,
+       "plus": 2.6,
+       "seuil_plus": 0.3846,
+       "moins": 1.4,
+       "seuil_moins": 0.7143,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.64,
-       "seuil_plus": 0.2747,
-       "moins": 1.14,
-       "seuil_moins": 0.8772,
+       "plus": 4.15,
+       "seuil_plus": 0.241,
+       "moins": 1.16,
+       "seuil_moins": 0.8621,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 5.67,
-     "seuil_oui": 0.1764,
+     "oui": 5.7,
+     "seuil_oui": 0.1754,
      "non": 1.08,
      "seuil_non": 0.9259,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "216dulnp7qe7ppyy9044gmbys",
@@ -8791,11 +9246,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.33,
+       "seuil_plus": 0.7519,
+       "moins": 3.03,
+       "seuil_moins": 0.33,
+       "modele_au_dessus": null
+      },
       "9.5": {
        "plus": 1.56,
        "seuil_plus": 0.641,
-       "moins": 2.27,
-       "seuil_moins": 0.4405,
+       "moins": 2.28,
+       "seuil_moins": 0.4386,
        "modele_au_dessus": null
       },
       "10.5": {
@@ -8806,10 +9268,17 @@
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.36,
-       "seuil_plus": 0.4237,
+       "plus": 2.38,
+       "seuil_plus": 0.4202,
        "moins": 1.52,
        "seuil_moins": 0.6579,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.08,
+       "seuil_plus": 0.3247,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
        "modele_au_dessus": null
       }
      },
@@ -8831,37 +9300,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.24,
-       "seuil_plus": 0.8065,
-       "moins": 2.9,
-       "seuil_moins": 0.3448,
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.15,
+       "seuil_moins": 0.3175,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.63,
-       "seuil_plus": 0.6135,
-       "moins": 1.87,
-       "seuil_moins": 0.5348,
-       "modele_au_dessus": null
+       "plus": 1.69,
+       "seuil_plus": 0.5917,
+       "moins": 1.96,
+       "seuil_moins": 0.5102,
+       "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 2.33,
-       "seuil_plus": 0.4292,
-       "moins": 1.39,
-       "seuil_moins": 0.7194,
+       "plus": 2.49,
+       "seuil_plus": 0.4016,
+       "moins": 1.43,
+       "seuil_moins": 0.6993,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.5,
-       "seuil_plus": 0.2857,
-       "moins": 1.16,
-       "seuil_moins": 0.8621,
+       "plus": 3.93,
+       "seuil_plus": 0.2545,
+       "moins": 1.18,
+       "seuil_moins": 0.8475,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "21t80he2gqg378id7ygfwj0no",
@@ -9014,12 +9483,19 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.24,
+       "seuil_moins": 0.3086,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.53,
-       "seuil_plus": 0.6536,
-       "moins": 2.35,
-       "seuil_moins": 0.4255,
-       "modele_au_dessus": "plus"
+       "plus": 1.52,
+       "seuil_plus": 0.6579,
+       "moins": 2.37,
+       "seuil_moins": 0.4219,
+       "modele_au_dessus": null
       },
       "9.5": {
        "plus": 1.86,
@@ -9029,10 +9505,17 @@
        "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.34,
-       "seuil_plus": 0.4274,
+       "plus": 2.35,
+       "seuil_plus": 0.4255,
        "moins": 1.53,
        "seuil_moins": 0.6536,
+       "modele_au_dessus": "plus"
+      },
+      "11.5": {
+       "plus": 3.08,
+       "seuil_plus": 0.3247,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
        "modele_au_dessus": "plus"
       }
      },
@@ -9054,44 +9537,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.18,
-       "seuil_plus": 0.8475,
-       "moins": 3.32,
-       "seuil_moins": 0.3012,
+       "plus": 1.21,
+       "seuil_plus": 0.8264,
+       "moins": 3.68,
+       "seuil_moins": 0.2717,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.48,
-       "seuil_plus": 0.6757,
-       "moins": 2.1,
-       "seuil_moins": 0.4762,
+       "plus": 1.54,
+       "seuil_plus": 0.6494,
+       "moins": 2.23,
+       "seuil_moins": 0.4484,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.04,
-       "seuil_plus": 0.4902,
-       "moins": 1.52,
-       "seuil_moins": 0.6579,
+       "plus": 2.15,
+       "seuil_plus": 0.4651,
+       "moins": 1.57,
+       "seuil_moins": 0.6369,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 2.99,
-       "seuil_plus": 0.3344,
-       "moins": 1.23,
-       "seuil_moins": 0.813,
+       "plus": 3.28,
+       "seuil_plus": 0.3049,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 4.4,
-       "seuil_plus": 0.2273,
-       "moins": 1.08,
-       "seuil_moins": 0.9259,
+       "plus": 5.17,
+       "seuil_plus": 0.1934,
+       "moins": 1.1,
+       "seuil_moins": 0.9091,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "224ophqrfjl5ldv4r7rg02xhw",
@@ -9244,11 +9727,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "9.5": {
+       "plus": 1.4,
+       "seuil_plus": 0.7143,
+       "moins": 2.73,
+       "seuil_moins": 0.3663,
+       "modele_au_dessus": "moins"
+      },
       "10.5": {
-       "plus": 1.66,
-       "seuil_plus": 0.6024,
-       "moins": 2.1,
-       "seuil_moins": 0.4762,
+       "plus": 1.65,
+       "seuil_plus": 0.6061,
+       "moins": 2.11,
+       "seuil_moins": 0.4739,
        "modele_au_dessus": "moins"
       },
       "11.5": {
@@ -9259,8 +9749,8 @@
        "modele_au_dessus": "moins"
       },
       "12.5": {
-       "plus": 2.52,
-       "seuil_plus": 0.3968,
+       "plus": 2.55,
+       "seuil_plus": 0.3922,
        "moins": 1.46,
        "seuil_moins": 0.6849,
        "modele_au_dessus": "moins"
@@ -9268,15 +9758,15 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 1.54,
-       "seuil_plus": 0.6494,
+       "plus": 1.56,
+       "seuil_plus": 0.641,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 7.27,
-       "seuil_plus": 0.1376,
+       "plus": 6.9,
+       "seuil_plus": 0.1449,
        "modele_au_dessus": "plus"
       }
      }
@@ -9284,37 +9774,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.3,
-       "seuil_plus": 0.7692,
-       "moins": 2.64,
-       "seuil_moins": 0.3788,
+       "plus": 1.34,
+       "seuil_plus": 0.7463,
+       "moins": 2.84,
+       "seuil_moins": 0.3521,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.74,
-       "seuil_plus": 0.5747,
-       "moins": 1.74,
-       "seuil_moins": 0.5747,
+       "plus": 1.82,
+       "seuil_plus": 0.5495,
+       "moins": 1.82,
+       "seuil_moins": 0.5495,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.54,
-       "seuil_plus": 0.3937,
-       "moins": 1.32,
-       "seuil_moins": 0.7576,
+       "plus": 2.73,
+       "seuil_plus": 0.3663,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.85,
-       "seuil_plus": 0.2597,
-       "moins": 1.12,
-       "seuil_moins": 0.8929,
+       "plus": 4.37,
+       "seuil_plus": 0.2288,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "233a1ew6luv1cal6466m8kr2s",
@@ -9467,11 +9957,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.37,
+       "seuil_plus": 0.7299,
+       "moins": 2.88,
+       "seuil_moins": 0.3472,
+       "modele_au_dessus": null
+      },
       "9.5": {
        "plus": 1.62,
        "seuil_plus": 0.6173,
-       "moins": 2.16,
-       "seuil_moins": 0.463,
+       "moins": 2.17,
+       "seuil_moins": 0.4608,
        "modele_au_dessus": null
       },
       "10.5": {
@@ -9482,10 +9979,17 @@
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.49,
-       "seuil_plus": 0.4016,
-       "moins": 1.47,
-       "seuil_moins": 0.6803,
+       "plus": 2.52,
+       "seuil_plus": 0.3968,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.29,
+       "seuil_plus": 0.304,
+       "moins": 1.29,
+       "seuil_moins": 0.7752,
        "modele_au_dessus": null
       }
      },
@@ -9500,44 +10004,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.14,
-       "seuil_plus": 0.8772,
-       "moins": 3.71,
-       "seuil_moins": 0.2695,
+       "plus": 1.12,
+       "seuil_plus": 0.8929,
+       "moins": 4.79,
+       "seuil_moins": 0.2088,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.39,
-       "seuil_plus": 0.7194,
-       "moins": 2.33,
-       "seuil_moins": 0.4292,
-       "modele_au_dessus": null
+       "plus": 1.35,
+       "seuil_plus": 0.7407,
+       "moins": 2.79,
+       "seuil_moins": 0.3584,
+       "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 1.85,
-       "seuil_plus": 0.5405,
-       "moins": 1.64,
-       "seuil_moins": 0.6098,
-       "modele_au_dessus": null
+       "plus": 1.78,
+       "seuil_plus": 0.5618,
+       "moins": 1.86,
+       "seuil_moins": 0.5376,
+       "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 2.65,
-       "seuil_plus": 0.3774,
-       "moins": 1.29,
-       "seuil_moins": 0.7752,
-       "modele_au_dessus": null
+       "plus": 2.55,
+       "seuil_plus": 0.3922,
+       "moins": 1.41,
+       "seuil_moins": 0.7092,
+       "modele_au_dessus": "moins"
       },
       "6.5": {
-       "plus": 3.9,
-       "seuil_plus": 0.2564,
-       "moins": 1.12,
-       "seuil_moins": 0.8929,
-       "modele_au_dessus": null
+       "plus": 3.89,
+       "seuil_plus": 0.2571,
+       "moins": 1.19,
+       "seuil_moins": 0.8403,
+       "modele_au_dessus": "moins"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "23q9j616pmkfd4lcc3r38wufo",
@@ -9690,11 +10194,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.59,
+       "seuil_moins": 0.2786,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.45,
-       "seuil_plus": 0.6897,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "plus": 1.44,
+       "seuil_plus": 0.6944,
+       "moins": 2.59,
+       "seuil_moins": 0.3861,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -9705,10 +10216,17 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.15,
-       "seuil_plus": 0.4651,
+       "plus": 2.16,
+       "seuil_plus": 0.463,
        "moins": 1.62,
        "seuil_moins": 0.6173,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.79,
+       "seuil_plus": 0.3584,
+       "moins": 1.39,
+       "seuil_moins": 0.7194,
        "modele_au_dessus": null
       }
      },
@@ -9730,37 +10248,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.19,
-       "seuil_plus": 0.8403,
-       "moins": 3.23,
-       "seuil_moins": 0.3096,
+       "plus": 1.22,
+       "seuil_plus": 0.8197,
+       "moins": 3.57,
+       "seuil_moins": 0.2801,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.51,
-       "seuil_plus": 0.6623,
-       "moins": 2.05,
-       "seuil_moins": 0.4878,
+       "plus": 1.57,
+       "seuil_plus": 0.6369,
+       "moins": 2.16,
+       "seuil_moins": 0.463,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.1,
-       "seuil_plus": 0.4762,
-       "moins": 1.48,
-       "seuil_moins": 0.6757,
+       "plus": 2.23,
+       "seuil_plus": 0.4484,
+       "moins": 1.54,
+       "seuil_moins": 0.6494,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.11,
-       "seuil_plus": 0.3215,
-       "moins": 1.21,
-       "seuil_moins": 0.8264,
+       "plus": 3.42,
+       "seuil_plus": 0.2924,
+       "moins": 1.24,
+       "seuil_moins": 0.8065,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "241pfybjj843xpa80fdtcmlg4",
@@ -9913,11 +10431,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.26,
+       "seuil_plus": 0.7937,
+       "moins": 3.47,
+       "seuil_moins": 0.2882,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.47,
-       "seuil_plus": 0.6803,
-       "moins": 2.49,
-       "seuil_moins": 0.4016,
+       "plus": 1.46,
+       "seuil_plus": 0.6849,
+       "moins": 2.52,
+       "seuil_moins": 0.3968,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -9928,10 +10453,17 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.21,
-       "seuil_plus": 0.4525,
+       "plus": 2.22,
+       "seuil_plus": 0.4505,
        "moins": 1.59,
        "seuil_moins": 0.6289,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.88,
+       "seuil_plus": 0.3472,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
        "modele_au_dessus": null
       }
      },
@@ -9953,37 +10485,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.24,
-       "seuil_plus": 0.8065,
-       "moins": 2.9,
-       "seuil_moins": 0.3448,
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.15,
+       "seuil_moins": 0.3175,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.63,
-       "seuil_plus": 0.6135,
-       "moins": 1.87,
-       "seuil_moins": 0.5348,
+       "plus": 1.69,
+       "seuil_plus": 0.5917,
+       "moins": 1.96,
+       "seuil_moins": 0.5102,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.33,
-       "seuil_plus": 0.4292,
-       "moins": 1.39,
-       "seuil_moins": 0.7194,
+       "plus": 2.49,
+       "seuil_plus": 0.4016,
+       "moins": 1.43,
+       "seuil_moins": 0.6993,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.5,
-       "seuil_plus": 0.2857,
-       "moins": 1.16,
-       "seuil_moins": 0.8621,
+       "plus": 3.93,
+       "seuil_plus": 0.2545,
+       "moins": 1.18,
+       "seuil_moins": 0.8475,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "24dae9gzlcfpoe5zxkp5di0wk",
@@ -10136,25 +10668,32 @@
    "cotes": {
     "corners": {
      "total": {
+      "9.5": {
+       "plus": 1.37,
+       "seuil_plus": 0.7299,
+       "moins": 2.84,
+       "seuil_moins": 0.3521,
+       "modele_au_dessus": "moins"
+      },
       "10.5": {
        "plus": 1.61,
        "seuil_plus": 0.6211,
-       "moins": 2.17,
-       "seuil_moins": 0.4608,
+       "moins": 2.18,
+       "seuil_moins": 0.4587,
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 1.95,
-       "seuil_plus": 0.5128,
+       "plus": 1.96,
+       "seuil_plus": 0.5102,
        "moins": 1.76,
        "seuil_moins": 0.5682,
        "modele_au_dessus": "moins"
       },
       "12.5": {
-       "plus": 2.43,
-       "seuil_plus": 0.4115,
-       "moins": 1.5,
-       "seuil_moins": 0.6667,
+       "plus": 2.44,
+       "seuil_plus": 0.4098,
+       "moins": 1.49,
+       "seuil_moins": 0.6711,
        "modele_au_dessus": "moins"
       }
      },
@@ -10167,8 +10706,8 @@
      },
      "exterieur": {
       "6.5": {
-       "plus": 9.08,
-       "seuil_plus": 0.1101,
+       "plus": 9.1,
+       "seuil_plus": 0.1099,
        "modele_au_dessus": "plus"
       }
      }
@@ -10176,37 +10715,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.3,
-       "seuil_plus": 0.7692,
-       "moins": 2.61,
-       "seuil_moins": 0.3831,
+       "plus": 1.34,
+       "seuil_plus": 0.7463,
+       "moins": 2.82,
+       "seuil_moins": 0.3546,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.74,
-       "seuil_plus": 0.5747,
-       "moins": 1.74,
-       "seuil_moins": 0.5747,
+       "plus": 1.82,
+       "seuil_plus": 0.5495,
+       "moins": 1.82,
+       "seuil_moins": 0.5495,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.52,
-       "seuil_plus": 0.3968,
-       "moins": 1.33,
-       "seuil_moins": 0.7519,
+       "plus": 2.71,
+       "seuil_plus": 0.369,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.79,
-       "seuil_plus": 0.2639,
-       "moins": 1.13,
-       "seuil_moins": 0.885,
+       "plus": 4.31,
+       "seuil_plus": 0.232,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "24ovzm7bglb71fja1qunaisd0",
@@ -10359,11 +10898,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.31,
+       "seuil_plus": 0.7634,
+       "moins": 3.14,
+       "seuil_moins": 0.3185,
+       "modele_au_dessus": null
+      },
       "9.5": {
-       "plus": 1.54,
-       "seuil_plus": 0.6494,
-       "moins": 2.33,
-       "seuil_moins": 0.4292,
+       "plus": 1.53,
+       "seuil_plus": 0.6536,
+       "moins": 2.34,
+       "seuil_moins": 0.4274,
        "modele_au_dessus": null
       },
       "10.5": {
@@ -10374,24 +10920,31 @@
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.31,
-       "seuil_plus": 0.4329,
-       "moins": 1.55,
-       "seuil_moins": 0.6452,
-       "modele_au_dessus": "moins"
+       "plus": 2.32,
+       "seuil_plus": 0.431,
+       "moins": 1.54,
+       "seuil_moins": 0.6494,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 2.99,
+       "seuil_plus": 0.3344,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
+       "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 1.63,
-       "seuil_plus": 0.6135,
+       "plus": 1.64,
+       "seuil_plus": 0.6098,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 9.41,
-       "seuil_plus": 0.1063,
+       "plus": 9.23,
+       "seuil_plus": 0.1083,
        "modele_au_dessus": "plus"
       }
      }
@@ -10399,37 +10952,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.31,
-       "seuil_plus": 0.7634,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
-       "modele_au_dessus": "plus"
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.32,
+       "seuil_moins": 0.3012,
+       "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.77,
-       "seuil_plus": 0.565,
-       "moins": 1.71,
-       "seuil_moins": 0.5848,
-       "modele_au_dessus": "plus"
+       "plus": 1.63,
+       "seuil_plus": 0.6135,
+       "moins": 2.06,
+       "seuil_moins": 0.4854,
+       "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.58,
-       "seuil_plus": 0.3876,
-       "moins": 1.31,
-       "seuil_moins": 0.7634,
-       "modele_au_dessus": "plus"
+       "plus": 2.33,
+       "seuil_plus": 0.4292,
+       "moins": 1.49,
+       "seuil_moins": 0.6711,
+       "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.88,
-       "seuil_plus": 0.2577,
-       "moins": 1.12,
-       "seuil_moins": 0.8929,
+       "plus": 3.59,
+       "seuil_plus": 0.2786,
+       "moins": 1.22,
+       "seuil_moins": 0.8197,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "229f8eh98pz4t4x16jyeoi13o",
@@ -14605,11 +15158,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.31,
+       "seuil_moins": 0.3021,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
-       "plus": 1.51,
-       "seuil_plus": 0.6623,
-       "moins": 2.4,
-       "seuil_moins": 0.4167,
+       "plus": 1.5,
+       "seuil_plus": 0.6667,
+       "moins": 2.41,
+       "seuil_moins": 0.4149,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -14625,19 +15185,26 @@
        "moins": 1.55,
        "seuil_moins": 0.6452,
        "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 3.02,
+       "seuil_plus": 0.3311,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
+       "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.66,
-       "seuil_plus": 0.3759,
+       "plus": 2.69,
+       "seuil_plus": 0.3717,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 5.41,
-       "seuil_plus": 0.1848,
+       "plus": 5.25,
+       "seuil_plus": 0.1905,
        "modele_au_dessus": "plus"
       }
      }
@@ -14645,51 +15212,51 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.19,
-       "seuil_plus": 0.8403,
-       "moins": 3.2,
-       "seuil_moins": 0.3125,
-       "modele_au_dessus": null
+       "plus": 1.21,
+       "seuil_plus": 0.8264,
+       "moins": 3.65,
+       "seuil_moins": 0.274,
+       "modele_au_dessus": "plus"
       },
       "3.5": {
-       "plus": 1.5,
-       "seuil_plus": 0.6667,
-       "moins": 2.07,
-       "seuil_moins": 0.4831,
+       "plus": 1.53,
+       "seuil_plus": 0.6536,
+       "moins": 2.24,
+       "seuil_moins": 0.4464,
        "modele_au_dessus": "plus"
       },
       "4.5": {
-       "plus": 2.05,
-       "seuil_plus": 0.4878,
-       "moins": 1.51,
-       "seuil_moins": 0.6623,
+       "plus": 2.12,
+       "seuil_plus": 0.4717,
+       "moins": 1.59,
+       "seuil_moins": 0.6289,
        "modele_au_dessus": "plus"
       },
       "5.5": {
-       "plus": 2.98,
-       "seuil_plus": 0.3356,
-       "moins": 1.23,
-       "seuil_moins": 0.813,
-       "modele_au_dessus": null
+       "plus": 3.15,
+       "seuil_plus": 0.3175,
+       "moins": 1.28,
+       "seuil_moins": 0.7812,
+       "modele_au_dessus": "plus"
       },
       "6.5": {
-       "plus": 4.32,
-       "seuil_plus": 0.2315,
-       "moins": 1.09,
-       "seuil_moins": 0.9174,
+       "plus": 4.89,
+       "seuil_plus": 0.2045,
+       "moins": 1.12,
+       "seuil_moins": 0.8929,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 3.66,
-     "seuil_oui": 0.2732,
+     "oui": 3.61,
+     "seuil_oui": 0.277,
      "non": 1.21,
      "seuil_non": 0.8264,
      "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4uq3dwjemb2o2xavhsk9wszdg",
@@ -14842,11 +15409,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.59,
+       "seuil_moins": 0.2786,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
-       "plus": 1.45,
-       "seuil_plus": 0.6897,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "plus": 1.44,
+       "seuil_plus": 0.6944,
+       "moins": 2.59,
+       "seuil_moins": 0.3861,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -14857,17 +15431,24 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.15,
-       "seuil_plus": 0.4651,
-       "moins": 1.63,
-       "seuil_moins": 0.6135,
+       "plus": 2.16,
+       "seuil_plus": 0.463,
+       "moins": 1.62,
+       "seuil_moins": 0.6173,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.79,
+       "seuil_plus": 0.3584,
+       "moins": 1.39,
+       "seuil_moins": 0.7194,
        "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.43,
-       "seuil_plus": 0.4115,
+       "plus": 2.42,
+       "seuil_plus": 0.4132,
        "modele_au_dessus": null
       }
      }
@@ -14875,38 +15456,38 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.16,
-       "seuil_plus": 0.8621,
-       "moins": 3.48,
-       "seuil_moins": 0.2874,
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.89,
+       "seuil_moins": 0.2571,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.45,
-       "seuil_plus": 0.6897,
-       "moins": 2.17,
-       "seuil_moins": 0.4608,
+       "plus": 1.5,
+       "seuil_plus": 0.6667,
+       "moins": 2.31,
+       "seuil_moins": 0.4329,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.0,
-       "seuil_plus": 0.5,
-       "moins": 1.54,
-       "seuil_moins": 0.6494,
+       "plus": 2.11,
+       "seuil_plus": 0.4739,
+       "moins": 1.6,
+       "seuil_moins": 0.625,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 2.95,
-       "seuil_plus": 0.339,
-       "moins": 1.23,
-       "seuil_moins": 0.813,
+       "plus": 3.22,
+       "seuil_plus": 0.3106,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 4.39,
-       "seuil_plus": 0.2278,
-       "moins": 1.08,
-       "seuil_moins": 0.9259,
+       "plus": 5.16,
+       "seuil_plus": 0.1938,
+       "moins": 1.1,
+       "seuil_moins": 0.9091,
        "modele_au_dessus": null
       }
      }
@@ -14919,7 +15500,7 @@
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4vqxpltefcdchpzkgwz3yr310",
@@ -15072,11 +15653,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.24,
+       "seuil_plus": 0.8065,
+       "moins": 3.67,
+       "seuil_moins": 0.2725,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
        "plus": 1.43,
        "seuil_plus": 0.6993,
-       "moins": 2.63,
-       "seuil_moins": 0.3802,
+       "moins": 2.64,
+       "seuil_moins": 0.3788,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -15087,24 +15675,31 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.11,
-       "seuil_plus": 0.4739,
-       "moins": 1.65,
-       "seuil_moins": 0.6061,
+       "plus": 2.13,
+       "seuil_plus": 0.4695,
+       "moins": 1.64,
+       "seuil_moins": 0.6098,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.75,
+       "seuil_plus": 0.3636,
+       "moins": 1.4,
+       "seuil_moins": 0.7143,
        "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.3,
-       "seuil_plus": 0.4348,
+       "plus": 2.32,
+       "seuil_plus": 0.431,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 5.62,
-       "seuil_plus": 0.1779,
+       "plus": 5.58,
+       "seuil_plus": 0.1792,
        "modele_au_dessus": "plus"
       }
      }
@@ -15112,51 +15707,51 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.1,
-       "seuil_plus": 0.9091,
-       "moins": 4.12,
-       "seuil_moins": 0.2427,
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.83,
+       "seuil_moins": 0.2611,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.32,
-       "seuil_plus": 0.7576,
-       "moins": 2.56,
-       "seuil_moins": 0.3906,
-       "modele_au_dessus": null
+       "plus": 1.51,
+       "seuil_plus": 0.6623,
+       "moins": 2.29,
+       "seuil_moins": 0.4367,
+       "modele_au_dessus": "plus"
       },
       "4.5": {
-       "plus": 1.72,
-       "seuil_plus": 0.5814,
-       "moins": 1.76,
-       "seuil_moins": 0.5682,
-       "modele_au_dessus": null
+       "plus": 2.11,
+       "seuil_plus": 0.4739,
+       "moins": 1.6,
+       "seuil_moins": 0.625,
+       "modele_au_dessus": "plus"
       },
       "5.5": {
-       "plus": 2.44,
-       "seuil_plus": 0.4098,
-       "moins": 1.35,
-       "seuil_moins": 0.7407,
-       "modele_au_dessus": null
+       "plus": 3.21,
+       "seuil_plus": 0.3115,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
+       "modele_au_dessus": "plus"
       },
       "6.5": {
-       "plus": 3.59,
-       "seuil_plus": 0.2786,
-       "moins": 1.15,
-       "seuil_moins": 0.8696,
+       "plus": 5.07,
+       "seuil_plus": 0.1972,
+       "moins": 1.11,
+       "seuil_moins": 0.9009,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 4.65,
-     "seuil_oui": 0.2151,
-     "non": 1.13,
-     "seuil_non": 0.885,
+     "oui": 4.99,
+     "seuil_oui": 0.2004,
+     "non": 1.11,
+     "seuil_non": 0.9009,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4w3atupelzlb2at14x7zk7578",
@@ -15309,6 +15904,13 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 3.08,
+       "seuil_moins": 0.3247,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.56,
        "seuil_plus": 0.641,
@@ -15317,31 +15919,38 @@
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.91,
-       "seuil_plus": 0.5236,
+       "plus": 1.92,
+       "seuil_plus": 0.5208,
        "moins": 1.79,
        "seuil_moins": 0.5587,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.43,
-       "seuil_plus": 0.4115,
-       "moins": 1.5,
-       "seuil_moins": 0.6667,
+       "plus": 2.47,
+       "seuil_plus": 0.4049,
+       "moins": 1.48,
+       "seuil_moins": 0.6757,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.25,
+       "seuil_plus": 0.3077,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
        "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.99,
-       "seuil_plus": 0.3344,
+       "plus": 3.01,
+       "seuil_plus": 0.3322,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 5.16,
-       "seuil_plus": 0.1938,
+       "plus": 5.2,
+       "seuil_plus": 0.1923,
        "modele_au_dessus": null
       }
      }
@@ -15349,44 +15958,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.31,
-       "seuil_plus": 0.7634,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 2.93,
+       "seuil_moins": 0.3413,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.78,
-       "seuil_plus": 0.5618,
-       "moins": 1.7,
-       "seuil_moins": 0.5882,
+       "plus": 1.79,
+       "seuil_plus": 0.5587,
+       "moins": 1.85,
+       "seuil_moins": 0.5405,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.63,
-       "seuil_plus": 0.3802,
-       "moins": 1.3,
-       "seuil_moins": 0.7692,
+       "plus": 2.67,
+       "seuil_plus": 0.3745,
+       "moins": 1.38,
+       "seuil_moins": 0.7246,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 4.0,
-       "seuil_plus": 0.25,
-       "moins": 1.11,
-       "seuil_moins": 0.9009,
+       "plus": 4.29,
+       "seuil_plus": 0.2331,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 5.54,
-     "seuil_oui": 0.1805,
+     "oui": 5.39,
+     "seuil_oui": 0.1855,
      "non": 1.09,
      "seuil_non": 0.9174,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4xsnkddrdioejztg91k7ducyc",
@@ -15539,11 +16148,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.4,
+       "seuil_plus": 0.7143,
+       "moins": 2.73,
+       "seuil_moins": 0.3663,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
        "plus": 1.67,
        "seuil_plus": 0.5988,
-       "moins": 2.07,
-       "seuil_moins": 0.4831,
+       "moins": 2.08,
+       "seuil_moins": 0.4808,
        "modele_au_dessus": "moins"
       },
       "10.5": {
@@ -15554,10 +16170,17 @@
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.62,
-       "seuil_plus": 0.3817,
+       "plus": 2.64,
+       "seuil_plus": 0.3788,
        "moins": 1.43,
        "seuil_moins": 0.6993,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 3.47,
+       "seuil_plus": 0.2882,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
        "modele_au_dessus": "moins"
       }
      },
@@ -15570,8 +16193,8 @@
      },
      "exterieur": {
       "6.5": {
-       "plus": 7.36,
-       "seuil_plus": 0.1359,
+       "plus": 7.39,
+       "seuil_plus": 0.1353,
        "modele_au_dessus": "plus"
       }
      }
@@ -15579,38 +16202,38 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.16,
-       "seuil_plus": 0.8621,
-       "moins": 3.51,
-       "seuil_moins": 0.2849,
+       "plus": 1.18,
+       "seuil_plus": 0.8475,
+       "moins": 3.94,
+       "seuil_moins": 0.2538,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.44,
-       "seuil_plus": 0.6944,
-       "moins": 2.2,
-       "seuil_moins": 0.4545,
+       "plus": 1.49,
+       "seuil_plus": 0.6711,
+       "moins": 2.33,
+       "seuil_moins": 0.4292,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 1.97,
-       "seuil_plus": 0.5076,
-       "moins": 1.55,
-       "seuil_moins": 0.6452,
+       "plus": 2.08,
+       "seuil_plus": 0.4808,
+       "moins": 1.62,
+       "seuil_moins": 0.6173,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 2.91,
-       "seuil_plus": 0.3436,
-       "moins": 1.24,
-       "seuil_moins": 0.8065,
+       "plus": 3.17,
+       "seuil_plus": 0.3155,
+       "moins": 1.27,
+       "seuil_moins": 0.7874,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 4.33,
-       "seuil_plus": 0.2309,
-       "moins": 1.09,
-       "seuil_moins": 0.9174,
+       "plus": 5.06,
+       "seuil_plus": 0.1976,
+       "moins": 1.11,
+       "seuil_moins": 0.9009,
        "modele_au_dessus": null
       }
      }
@@ -15623,7 +16246,7 @@
      "modele_au_dessus": "oui"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5feduxlf9pf9fkpty2w2e1o2c",
@@ -15776,6 +16399,13 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.31,
+       "seuil_plus": 0.7634,
+       "moins": 3.14,
+       "seuil_moins": 0.3185,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
        "plus": 1.53,
        "seuil_plus": 0.6536,
@@ -15791,10 +16421,17 @@
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.3,
-       "seuil_plus": 0.4348,
-       "moins": 1.55,
-       "seuil_moins": 0.6452,
+       "plus": 2.31,
+       "seuil_plus": 0.4329,
+       "moins": 1.54,
+       "seuil_moins": 0.6494,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 2.98,
+       "seuil_plus": 0.3356,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
        "modele_au_dessus": "moins"
       }
      },
@@ -15814,7 +16451,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "2cwt1n1mp15cj0m86eoe9l9uc",
@@ -17159,18 +17796,25 @@
    "cotes": {
     "corners": {
      "total": {
-      "8.5": {
-       "plus": 1.42,
-       "seuil_plus": 0.7042,
-       "moins": 2.65,
-       "seuil_moins": 0.3774,
+      "7.5": {
+       "plus": 1.23,
+       "seuil_plus": 0.813,
+       "moins": 3.72,
+       "seuil_moins": 0.2688,
        "modele_au_dessus": null
       },
+      "8.5": {
+       "plus": 1.41,
+       "seuil_plus": 0.7092,
+       "moins": 2.68,
+       "seuil_moins": 0.3731,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
-       "plus": 1.7,
-       "seuil_plus": 0.5882,
-       "moins": 2.04,
-       "seuil_moins": 0.4902,
+       "plus": 1.69,
+       "seuil_plus": 0.5917,
+       "moins": 2.05,
+       "seuil_moins": 0.4878,
        "modele_au_dessus": "moins"
       },
       "10.5": {
@@ -17179,18 +17823,32 @@
        "moins": 1.66,
        "seuil_moins": 0.6024,
        "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.69,
+       "seuil_plus": 0.3717,
+       "moins": 1.41,
+       "seuil_moins": 0.7092,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.7,
+       "seuil_plus": 0.2703,
+       "moins": 1.23,
+       "seuil_moins": 0.813,
+       "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.35,
-       "seuil_plus": 0.4255,
+       "plus": 2.33,
+       "seuil_plus": 0.4292,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "b0rceznmhn97fufrjrwdcphqs",
@@ -17343,6 +18001,13 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.37,
+       "seuil_plus": 0.7299,
+       "moins": 2.84,
+       "seuil_moins": 0.3521,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
        "plus": 1.63,
        "seuil_plus": 0.6135,
@@ -17358,10 +18023,17 @@
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.51,
-       "seuil_plus": 0.3984,
-       "moins": 1.47,
-       "seuil_moins": 0.6803,
+       "plus": 2.53,
+       "seuil_plus": 0.3953,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 3.31,
+       "seuil_plus": 0.3021,
+       "moins": 1.28,
+       "seuil_moins": 0.7812,
        "modele_au_dessus": "moins"
       }
      },
@@ -17374,7 +18046,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "d0yroojs3ch6nsga1kto3f11w",
@@ -17527,11 +18199,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.29,
+       "seuil_plus": 0.7752,
+       "moins": 3.27,
+       "seuil_moins": 0.3058,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.52,
-       "seuil_plus": 0.6579,
-       "moins": 2.37,
-       "seuil_moins": 0.4219,
+       "plus": 1.51,
+       "seuil_plus": 0.6623,
+       "moins": 2.39,
+       "seuil_moins": 0.4184,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -17542,10 +18221,17 @@
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.32,
-       "seuil_plus": 0.431,
-       "moins": 1.54,
-       "seuil_moins": 0.6494,
+       "plus": 2.34,
+       "seuil_plus": 0.4274,
+       "moins": 1.53,
+       "seuil_moins": 0.6536,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.06,
+       "seuil_plus": 0.3268,
+       "moins": 1.33,
+       "seuil_moins": 0.7519,
        "modele_au_dessus": null
       }
      },
@@ -17565,7 +18251,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a6rwgl7cn1ih81rnuzzhtdmvo",
@@ -17867,31 +18553,77 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.22,
+       "seuil_plus": 0.8197,
+       "moins": 3.32,
+       "seuil_moins": 0.3012,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.43,
-       "seuil_plus": 0.6993,
-       "moins": 2.38,
-       "seuil_moins": 0.4202,
+       "plus": 1.42,
+       "seuil_plus": 0.7042,
+       "moins": 2.4,
+       "seuil_moins": 0.4167,
        "modele_au_dessus": null
       },
       "9.5": {
        "plus": 1.72,
        "seuil_plus": 0.5814,
-       "moins": 1.86,
-       "seuil_moins": 0.5376,
+       "moins": 1.85,
+       "seuil_moins": 0.5405,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.15,
-       "seuil_plus": 0.4651,
-       "moins": 1.53,
-       "seuil_moins": 0.6536,
+       "plus": 2.16,
+       "seuil_plus": 0.463,
+       "moins": 1.52,
+       "seuil_moins": 0.6579,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 2.81,
+       "seuil_plus": 0.3559,
+       "moins": 1.31,
+       "seuil_moins": 0.7634,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.29,
+       "seuil_plus": 0.7752,
+       "moins": 2.92,
+       "seuil_moins": 0.3425,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.74,
+       "seuil_plus": 0.5747,
+       "moins": 1.84,
+       "seuil_moins": 0.5435,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 2.59,
+       "seuil_plus": 0.3861,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 4.14,
+       "seuil_plus": 0.2415,
+       "moins": 1.14,
+       "seuil_moins": 0.8772,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7uflfa840rmsf62f96jle3z10",
@@ -18342,39 +19074,53 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.25,
+       "seuil_plus": 0.8,
+       "moins": 3.57,
+       "seuil_moins": 0.2801,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.45,
        "seuil_plus": 0.6897,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "moins": 2.58,
+       "seuil_moins": 0.3876,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.73,
-       "seuil_plus": 0.578,
-       "moins": 1.99,
-       "seuil_moins": 0.5025,
-       "modele_au_dessus": null
+       "plus": 1.74,
+       "seuil_plus": 0.5747,
+       "moins": 1.98,
+       "seuil_moins": 0.5051,
+       "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.15,
-       "seuil_plus": 0.4651,
-       "moins": 1.62,
-       "seuil_moins": 0.6173,
-       "modele_au_dessus": null
+       "plus": 2.17,
+       "seuil_plus": 0.4608,
+       "moins": 1.61,
+       "seuil_moins": 0.6211,
+       "modele_au_dessus": "plus"
+      },
+      "11.5": {
+       "plus": 2.8,
+       "seuil_plus": 0.3571,
+       "moins": 1.38,
+       "seuil_moins": 0.7246,
+       "modele_au_dessus": "plus"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 4.75,
-       "seuil_plus": 0.2105,
+       "plus": 4.77,
+       "seuil_plus": 0.2096,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 2.6,
-       "seuil_plus": 0.3846,
+       "plus": 2.61,
+       "seuil_plus": 0.3831,
        "modele_au_dessus": null
       }
      }
@@ -18382,44 +19128,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.32,
-       "seuil_plus": 0.7576,
-       "moins": 2.54,
-       "seuil_moins": 0.3937,
+       "plus": 1.35,
+       "seuil_plus": 0.7407,
+       "moins": 2.77,
+       "seuil_moins": 0.361,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.8,
-       "seuil_plus": 0.5556,
-       "moins": 1.68,
-       "seuil_moins": 0.5952,
+       "plus": 1.87,
+       "seuil_plus": 0.5348,
+       "moins": 1.77,
+       "seuil_moins": 0.565,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.67,
-       "seuil_plus": 0.3745,
-       "moins": 1.29,
-       "seuil_moins": 0.7752,
+       "plus": 2.84,
+       "seuil_plus": 0.3521,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 4.05,
-       "seuil_plus": 0.2469,
-       "moins": 1.11,
-       "seuil_moins": 0.9009,
+       "plus": 4.59,
+       "seuil_plus": 0.2179,
+       "moins": 1.13,
+       "seuil_moins": 0.885,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 5.17,
-     "seuil_oui": 0.1934,
-     "non": 1.1,
-     "seuil_non": 0.9091,
+     "oui": 5.11,
+     "seuil_oui": 0.1957,
+     "non": 1.11,
+     "seuil_non": 0.9009,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "8u0sbl1tfqa3e85lf6ribzb4k",
@@ -18721,39 +19467,53 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.4,
+       "seuil_plus": 0.7143,
+       "moins": 2.73,
+       "seuil_moins": 0.3663,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
-       "plus": 1.66,
-       "seuil_plus": 0.6024,
-       "moins": 2.1,
-       "seuil_moins": 0.4762,
+       "plus": 1.67,
+       "seuil_plus": 0.5988,
+       "moins": 2.08,
+       "seuil_moins": 0.4808,
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.03,
-       "seuil_plus": 0.4926,
-       "moins": 1.7,
-       "seuil_moins": 0.5882,
+       "plus": 2.06,
+       "seuil_plus": 0.4854,
+       "moins": 1.68,
+       "seuil_moins": 0.5952,
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.57,
-       "seuil_plus": 0.3891,
-       "moins": 1.45,
-       "seuil_moins": 0.6897,
+       "plus": 2.64,
+       "seuil_plus": 0.3788,
+       "moins": 1.43,
+       "seuil_moins": 0.6993,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 3.47,
+       "seuil_plus": 0.2882,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
        "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 4.7,
-       "seuil_plus": 0.2128,
+       "plus": 4.79,
+       "seuil_plus": 0.2088,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 2.39,
-       "seuil_plus": 0.4184,
+       "plus": 2.41,
+       "seuil_plus": 0.4149,
        "modele_au_dessus": null
       }
      }
@@ -18761,38 +19521,38 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.11,
-       "seuil_plus": 0.9009,
-       "moins": 4.08,
-       "seuil_moins": 0.2451,
+       "plus": 1.13,
+       "seuil_plus": 0.885,
+       "moins": 4.71,
+       "seuil_moins": 0.2123,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.32,
-       "seuil_plus": 0.7576,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "plus": 1.35,
+       "seuil_plus": 0.7407,
+       "moins": 2.76,
+       "seuil_moins": 0.3623,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 1.71,
-       "seuil_plus": 0.5848,
-       "moins": 1.77,
-       "seuil_moins": 0.565,
+       "plus": 1.78,
+       "seuil_plus": 0.5618,
+       "moins": 1.85,
+       "seuil_moins": 0.5405,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 2.39,
-       "seuil_plus": 0.4184,
-       "moins": 1.37,
-       "seuil_moins": 0.7299,
+       "plus": 2.56,
+       "seuil_plus": 0.3906,
+       "moins": 1.41,
+       "seuil_moins": 0.7092,
        "modele_au_dessus": null
       },
       "6.5": {
-       "plus": 3.48,
-       "seuil_plus": 0.2874,
-       "moins": 1.16,
-       "seuil_moins": 0.8621,
+       "plus": 3.89,
+       "seuil_plus": 0.2571,
+       "moins": 1.19,
+       "seuil_moins": 0.8403,
        "modele_au_dessus": null
       }
      }
@@ -18805,7 +19565,7 @@
      "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "84snfg3o35m7xy7adjsq7mrys",
@@ -18954,35 +19714,7 @@
      "matchs_domicile": 5,
      "matchs_exterieur": 5
     }
-   },
-   "cotes": {
-    "corners": {
-     "total": {
-      "8.5": {
-       "plus": 1.61,
-       "seuil_plus": 0.6211,
-       "moins": 2.18,
-       "seuil_moins": 0.4587,
-       "modele_au_dessus": null
-      },
-      "9.5": {
-       "plus": 1.99,
-       "seuil_plus": 0.5025,
-       "moins": 1.73,
-       "seuil_moins": 0.578,
-       "modele_au_dessus": null
-      },
-      "10.5": {
-       "plus": 2.54,
-       "seuil_plus": 0.3937,
-       "moins": 1.46,
-       "seuil_moins": 0.6849,
-       "modele_au_dessus": null
-      }
-     }
-    }
-   },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   }
   },
   {
    "match_id": "4gmkd03k51lr01xlcwqn15bf8",
@@ -19135,11 +19867,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.62,
+       "seuil_moins": 0.2762,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
-       "plus": 1.37,
-       "seuil_plus": 0.7299,
-       "moins": 2.57,
-       "seuil_moins": 0.3891,
+       "plus": 1.36,
+       "seuil_plus": 0.7353,
+       "moins": 2.59,
+       "seuil_moins": 0.3861,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -19150,16 +19889,23 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.0,
-       "seuil_plus": 0.5,
-       "moins": 1.61,
-       "seuil_moins": 0.6211,
+       "plus": 2.02,
+       "seuil_plus": 0.495,
+       "moins": 1.6,
+       "seuil_moins": 0.625,
        "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.59,
+       "seuil_plus": 0.3861,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
+       "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "x14o2r85nr4bnagrwaw4ig44",
@@ -19461,11 +20207,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.19,
+       "seuil_moins": 0.3135,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
        "plus": 1.52,
        "seuil_plus": 0.6579,
-       "moins": 2.36,
-       "seuil_moins": 0.4237,
+       "moins": 2.37,
+       "seuil_moins": 0.4219,
        "modele_au_dessus": "moins"
       },
       "10.5": {
@@ -19476,10 +20229,17 @@
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.28,
-       "seuil_plus": 0.4386,
-       "moins": 1.56,
-       "seuil_moins": 0.641,
+       "plus": 2.29,
+       "seuil_plus": 0.4367,
+       "moins": 1.55,
+       "seuil_moins": 0.6452,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 2.96,
+       "seuil_plus": 0.3378,
+       "moins": 1.35,
+       "seuil_moins": 0.7407,
        "modele_au_dessus": "moins"
       }
      },
@@ -19499,7 +20259,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "azpj12661p8fltq3o4azkcums",
@@ -19950,11 +20710,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.27,
+       "seuil_plus": 0.7874,
+       "moins": 3.02,
+       "seuil_moins": 0.3311,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.5,
        "seuil_plus": 0.6667,
-       "moins": 2.2,
-       "seuil_moins": 0.4545,
+       "moins": 2.22,
+       "seuil_moins": 0.4505,
        "modele_au_dessus": null
       },
       "9.5": {
@@ -19970,11 +20737,57 @@
        "moins": 1.45,
        "seuil_moins": 0.6897,
        "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.07,
+       "seuil_plus": 0.3257,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.1,
+       "seuil_plus": 0.9091,
+       "moins": 4.78,
+       "seuil_moins": 0.2092,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 2.77,
+       "seuil_moins": 0.361,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.74,
+       "seuil_plus": 0.5747,
+       "moins": 1.84,
+       "seuil_moins": 0.5435,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.51,
+       "seuil_plus": 0.3984,
+       "moins": 1.39,
+       "seuil_moins": 0.7194,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 3.86,
+       "seuil_plus": 0.2591,
+       "moins": 1.16,
+       "seuil_moins": 0.8621,
+       "modele_au_dessus": "moins"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "447wrwviaktveo0fj5225b76c",
@@ -20276,31 +21089,45 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.31,
+       "seuil_plus": 0.7634,
+       "moins": 2.79,
+       "seuil_moins": 0.3584,
+       "modele_au_dessus": null
+      },
       "9.5": {
        "plus": 1.55,
        "seuil_plus": 0.6452,
-       "moins": 2.1,
-       "seuil_moins": 0.4762,
+       "moins": 2.11,
+       "seuil_moins": 0.4739,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 1.89,
-       "seuil_plus": 0.5291,
+       "plus": 1.9,
+       "seuil_plus": 0.5263,
        "moins": 1.69,
        "seuil_moins": 0.5917,
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 2.38,
-       "seuil_plus": 0.4202,
-       "moins": 1.43,
-       "seuil_moins": 0.6993,
+       "plus": 2.4,
+       "seuil_plus": 0.4167,
+       "moins": 1.42,
+       "seuil_moins": 0.7042,
+       "modele_au_dessus": null
+      },
+      "12.5": {
+       "plus": 3.13,
+       "seuil_plus": 0.3195,
+       "moins": 1.25,
+       "seuil_moins": 0.8,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5h1dy3rrpwl96tbvflp2n0avo",
@@ -20602,11 +21429,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.35,
+       "seuil_moins": 0.2985,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.5,
-       "seuil_plus": 0.6667,
-       "moins": 2.42,
-       "seuil_moins": 0.4132,
+       "plus": 1.49,
+       "seuil_plus": 0.6711,
+       "moins": 2.44,
+       "seuil_moins": 0.4098,
        "modele_au_dessus": "plus"
       },
       "9.5": {
@@ -20617,10 +21451,17 @@
        "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.28,
-       "seuil_plus": 0.4386,
-       "moins": 1.56,
-       "seuil_moins": 0.641,
+       "plus": 2.29,
+       "seuil_plus": 0.4367,
+       "moins": 1.55,
+       "seuil_moins": 0.6452,
+       "modele_au_dessus": "plus"
+      },
+      "11.5": {
+       "plus": 2.97,
+       "seuil_plus": 0.3367,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
        "modele_au_dessus": "plus"
       }
      },
@@ -20640,7 +21481,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a6fqmlwqxa1n96y3jxbwyfdw4",
@@ -20793,11 +21634,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.27,
+       "seuil_plus": 0.7874,
+       "moins": 3.44,
+       "seuil_moins": 0.2907,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
-       "plus": 1.48,
-       "seuil_plus": 0.6757,
-       "moins": 2.47,
-       "seuil_moins": 0.4049,
+       "plus": 1.47,
+       "seuil_plus": 0.6803,
+       "moins": 2.49,
+       "seuil_moins": 0.4016,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -20808,10 +21656,17 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.23,
-       "seuil_plus": 0.4484,
+       "plus": 2.24,
+       "seuil_plus": 0.4464,
        "moins": 1.58,
        "seuil_moins": 0.6329,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.92,
+       "seuil_plus": 0.3425,
+       "moins": 1.36,
+       "seuil_moins": 0.7353,
        "modele_au_dessus": "moins"
       }
      },
@@ -20833,44 +21688,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.18,
-       "seuil_plus": 0.8475,
-       "moins": 3.33,
-       "seuil_moins": 0.3003,
-       "modele_au_dessus": null
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.86,
+       "seuil_moins": 0.2591,
+       "modele_au_dessus": "moins"
       },
       "3.5": {
-       "plus": 1.48,
-       "seuil_plus": 0.6757,
-       "moins": 2.11,
-       "seuil_moins": 0.4739,
+       "plus": 1.5,
+       "seuil_plus": 0.6667,
+       "moins": 2.31,
+       "seuil_moins": 0.4329,
        "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 2.04,
-       "seuil_plus": 0.4902,
-       "moins": 1.52,
-       "seuil_moins": 0.6579,
+       "plus": 2.08,
+       "seuil_plus": 0.4808,
+       "moins": 1.61,
+       "seuil_moins": 0.6211,
        "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 2.99,
-       "seuil_plus": 0.3344,
-       "moins": 1.23,
-       "seuil_moins": 0.813,
+       "plus": 3.15,
+       "seuil_plus": 0.3175,
+       "moins": 1.28,
+       "seuil_moins": 0.7812,
        "modele_au_dessus": "moins"
       },
       "6.5": {
-       "plus": 4.38,
-       "seuil_plus": 0.2283,
-       "moins": 1.08,
-       "seuil_moins": 0.9259,
-       "modele_au_dessus": null
+       "plus": 4.93,
+       "seuil_plus": 0.2028,
+       "moins": 1.11,
+       "seuil_moins": 0.9009,
+       "modele_au_dessus": "moins"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a5f6zcu3i5tchjhcd53z9tus4",
@@ -21023,25 +21878,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.29,
+       "seuil_plus": 0.7752,
+       "moins": 3.29,
+       "seuil_moins": 0.304,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
-       "plus": 1.52,
-       "seuil_plus": 0.6579,
-       "moins": 2.38,
-       "seuil_moins": 0.4202,
+       "plus": 1.51,
+       "seuil_plus": 0.6623,
+       "moins": 2.39,
+       "seuil_moins": 0.4184,
        "modele_au_dessus": "moins"
       },
       "9.5": {
        "plus": 1.84,
        "seuil_plus": 0.5435,
-       "moins": 1.86,
-       "seuil_moins": 0.5376,
+       "moins": 1.87,
+       "seuil_moins": 0.5348,
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.31,
-       "seuil_plus": 0.4329,
+       "plus": 2.32,
+       "seuil_plus": 0.431,
        "moins": 1.54,
        "seuil_moins": 0.6494,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 3.04,
+       "seuil_plus": 0.3289,
+       "moins": 1.33,
+       "seuil_moins": 0.7519,
        "modele_au_dessus": "moins"
       }
      },
@@ -21063,44 +21932,44 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.13,
-       "seuil_plus": 0.885,
-       "moins": 3.83,
-       "seuil_moins": 0.2611,
+       "plus": 1.14,
+       "seuil_plus": 0.8772,
+       "moins": 4.54,
+       "seuil_moins": 0.2203,
        "modele_au_dessus": "moins"
       },
       "3.5": {
-       "plus": 1.37,
-       "seuil_plus": 0.7299,
-       "moins": 2.39,
-       "seuil_moins": 0.4184,
+       "plus": 1.38,
+       "seuil_plus": 0.7246,
+       "moins": 2.65,
+       "seuil_moins": 0.3774,
        "modele_au_dessus": "moins"
       },
       "4.5": {
-       "plus": 1.82,
-       "seuil_plus": 0.5495,
-       "moins": 1.67,
-       "seuil_moins": 0.5988,
+       "plus": 1.85,
+       "seuil_plus": 0.5405,
+       "moins": 1.79,
+       "seuil_moins": 0.5587,
        "modele_au_dessus": "moins"
       },
       "5.5": {
-       "plus": 2.6,
-       "seuil_plus": 0.3846,
-       "moins": 1.31,
-       "seuil_moins": 0.7634,
+       "plus": 2.7,
+       "seuil_plus": 0.3704,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
        "modele_au_dessus": "moins"
       },
       "6.5": {
-       "plus": 3.83,
-       "seuil_plus": 0.2611,
-       "moins": 1.13,
-       "seuil_moins": 0.885,
+       "plus": 4.18,
+       "seuil_plus": 0.2392,
+       "moins": 1.16,
+       "seuil_moins": 0.8621,
        "modele_au_dessus": "moins"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a532e1pfixbv3qihpil7g4sno",
@@ -21402,11 +22271,18 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.36,
+       "seuil_plus": 0.7353,
+       "moins": 2.89,
+       "seuil_moins": 0.346,
+       "modele_au_dessus": "moins"
+      },
       "8.5": {
        "plus": 1.63,
        "seuil_plus": 0.6135,
-       "moins": 2.14,
-       "seuil_moins": 0.4673,
+       "moins": 2.15,
+       "seuil_moins": 0.4651,
        "modele_au_dessus": "moins"
       },
       "9.5": {
@@ -21417,24 +22293,31 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.59,
-       "seuil_plus": 0.3861,
-       "moins": 1.44,
-       "seuil_moins": 0.6944,
+       "plus": 2.61,
+       "seuil_plus": 0.3831,
+       "moins": 1.43,
+       "seuil_moins": 0.6993,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 3.47,
+       "seuil_plus": 0.2882,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
        "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 3.02,
-       "seuil_plus": 0.3311,
+       "plus": 3.04,
+       "seuil_plus": 0.3289,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 5.93,
-       "seuil_plus": 0.1686,
+       "plus": 5.87,
+       "seuil_plus": 0.1704,
        "modele_au_dessus": "plus"
       }
      }
@@ -21442,37 +22325,37 @@
     "cartons": {
      "total": {
       "2.5": {
-       "plus": 1.28,
-       "seuil_plus": 0.7812,
-       "moins": 2.7,
-       "seuil_moins": 0.3704,
+       "plus": 1.32,
+       "seuil_plus": 0.7576,
+       "moins": 2.92,
+       "seuil_moins": 0.3425,
        "modele_au_dessus": null
       },
       "3.5": {
-       "plus": 1.71,
-       "seuil_plus": 0.5848,
-       "moins": 1.76,
-       "seuil_moins": 0.5682,
+       "plus": 1.79,
+       "seuil_plus": 0.5587,
+       "moins": 1.85,
+       "seuil_moins": 0.5405,
        "modele_au_dessus": null
       },
       "4.5": {
-       "plus": 2.5,
-       "seuil_plus": 0.4,
-       "moins": 1.33,
-       "seuil_moins": 0.7519,
+       "plus": 2.69,
+       "seuil_plus": 0.3717,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
        "modele_au_dessus": null
       },
       "5.5": {
-       "plus": 3.79,
-       "seuil_plus": 0.2639,
-       "moins": 1.13,
-       "seuil_moins": 0.885,
+       "plus": 4.3,
+       "seuil_plus": 0.2326,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7u4njj5vzsore9tx3o4flknpw",
@@ -21774,12 +22657,19 @@
    "cotes": {
     "corners": {
      "total": {
-      "8.5": {
-       "plus": 1.5,
-       "seuil_plus": 0.6667,
-       "moins": 2.42,
-       "seuil_moins": 0.4132,
+      "7.5": {
+       "plus": 1.28,
+       "seuil_plus": 0.7812,
+       "moins": 3.36,
+       "seuil_moins": 0.2976,
        "modele_au_dessus": null
+      },
+      "8.5": {
+       "plus": 1.49,
+       "seuil_plus": 0.6711,
+       "moins": 2.44,
+       "seuil_moins": 0.4098,
+       "modele_au_dessus": "moins"
       },
       "9.5": {
        "plus": 1.81,
@@ -21789,30 +22679,37 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.27,
-       "seuil_plus": 0.4405,
+       "plus": 2.28,
+       "seuil_plus": 0.4386,
        "moins": 1.56,
        "seuil_moins": 0.641,
        "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.98,
+       "seuil_plus": 0.3356,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
+       "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 1.75,
-       "seuil_plus": 0.5714,
+       "plus": 1.77,
+       "seuil_plus": 0.565,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 17.52,
-       "seuil_plus": 0.0571,
+       "plus": 16.44,
+       "seuil_plus": 0.0608,
        "modele_au_dessus": "plus"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4j4hcvm67llvfg3c9s00ucidw",
@@ -22114,25 +23011,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.37,
+       "seuil_plus": 0.7299,
+       "moins": 2.88,
+       "seuil_moins": 0.3472,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
-       "plus": 1.62,
-       "seuil_plus": 0.6173,
-       "moins": 2.17,
-       "seuil_moins": 0.4608,
+       "plus": 1.61,
+       "seuil_plus": 0.6211,
+       "moins": 2.18,
+       "seuil_moins": 0.4587,
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 1.97,
-       "seuil_plus": 0.5076,
+       "plus": 1.98,
+       "seuil_plus": 0.5051,
        "moins": 1.74,
        "seuil_moins": 0.5747,
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.49,
-       "seuil_plus": 0.4016,
+       "plus": 2.5,
+       "seuil_plus": 0.4,
        "moins": 1.47,
        "seuil_moins": 0.6803,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 3.29,
+       "seuil_plus": 0.304,
+       "moins": 1.29,
+       "seuil_moins": 0.7752,
        "modele_au_dessus": "moins"
       }
      },
@@ -22152,7 +23063,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "b1gq75y4iz7h1nhyx55pnkowk",
@@ -22305,25 +23216,39 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.33,
+       "seuil_plus": 0.7519,
+       "moins": 3.02,
+       "seuil_moins": 0.3311,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
-       "plus": 1.57,
-       "seuil_plus": 0.6369,
-       "moins": 2.26,
-       "seuil_moins": 0.4425,
+       "plus": 1.56,
+       "seuil_plus": 0.641,
+       "moins": 2.27,
+       "seuil_moins": 0.4405,
        "modele_au_dessus": "moins"
       },
       "10.5": {
        "plus": 1.9,
        "seuil_plus": 0.5263,
-       "moins": 1.81,
-       "seuil_moins": 0.5525,
+       "moins": 1.8,
+       "seuil_moins": 0.5556,
        "modele_au_dessus": "moins"
       },
       "11.5": {
-       "plus": 2.38,
-       "seuil_plus": 0.4202,
-       "moins": 1.52,
-       "seuil_moins": 0.6579,
+       "plus": 2.39,
+       "seuil_plus": 0.4184,
+       "moins": 1.51,
+       "seuil_moins": 0.6623,
+       "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 3.11,
+       "seuil_plus": 0.3215,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
        "modele_au_dessus": "moins"
       }
      },
@@ -22343,7 +23268,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "2enm6isg849gfaiysg7stlams",
@@ -22683,7 +23608,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7swd2xv6gei68ddws82y8ku8k",
@@ -22865,9 +23790,41 @@
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.54,
+       "seuil_plus": 0.6494,
+       "moins": 2.0,
+       "seuil_moins": 0.5,
+       "modele_au_dessus": "plus"
+      },
+      "3.5": {
+       "plus": 2.24,
+       "seuil_plus": 0.4464,
+       "moins": 1.42,
+       "seuil_moins": 0.7042,
+       "modele_au_dessus": "plus"
+      },
+      "4.5": {
+       "plus": 3.43,
+       "seuil_plus": 0.2915,
+       "moins": 1.16,
+       "seuil_moins": 0.8621,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "rouge": {
+     "oui": 4.51,
+     "seuil_oui": 0.2217,
+     "non": 1.14,
+     "seuil_non": 0.8772,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "21hsq00fm42okqrvh9j8s5250",
@@ -23090,7 +24047,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e3avuu9jlm09d1geoxyk0vq50",
@@ -23243,31 +24200,31 @@
    "cotes": {
     "corners": {
      "total": {
+      "9.5": {
+       "plus": 1.43,
+       "seuil_plus": 0.6993,
+       "moins": 2.39,
+       "seuil_moins": 0.4184,
+       "modele_au_dessus": null
+      },
       "10.5": {
-       "plus": 1.61,
-       "seuil_plus": 0.6211,
-       "moins": 2.0,
-       "seuil_moins": 0.5,
+       "plus": 1.69,
+       "seuil_plus": 0.5917,
+       "moins": 1.89,
+       "seuil_moins": 0.5291,
        "modele_au_dessus": null
       },
       "11.5": {
-       "plus": 1.96,
-       "seuil_plus": 0.5102,
-       "moins": 1.64,
-       "seuil_moins": 0.6098,
-       "modele_au_dessus": null
-      },
-      "12.5": {
-       "plus": 2.46,
-       "seuil_plus": 0.4065,
-       "moins": 1.4,
-       "seuil_moins": 0.7143,
+       "plus": 2.08,
+       "seuil_plus": 0.4808,
+       "moins": 1.56,
+       "seuil_moins": 0.641,
        "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e1x3zuo3vefbydy7hafp8io0k",
@@ -23444,7 +24401,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e2m00qij0b58luq3ste8dwsno",
@@ -23621,7 +24578,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5eqvd5x9sc2s7pplkcawohmvo",
@@ -23922,39 +24879,16 @@
    },
    "cotes": {
     "corners": {
-     "total": {
-      "9.5": {
-       "plus": 1.45,
-       "seuil_plus": 0.6897,
-       "moins": 2.56,
-       "seuil_moins": 0.3906,
-       "modele_au_dessus": "moins"
-      },
-      "10.5": {
-       "plus": 1.72,
-       "seuil_plus": 0.5814,
-       "moins": 2.01,
-       "seuil_moins": 0.4975,
-       "modele_au_dessus": "moins"
-      },
-      "11.5": {
-       "plus": 2.11,
-       "seuil_plus": 0.4739,
-       "moins": 1.65,
-       "seuil_moins": 0.6061,
-       "modele_au_dessus": "moins"
-      }
-     },
      "exterieur": {
       "6.5": {
-       "plus": 8.35,
-       "seuil_plus": 0.1198,
+       "plus": 7.95,
+       "seuil_plus": 0.1258,
        "modele_au_dessus": "plus"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4hkbn7f3ult90sfsccjjp2djo",
@@ -24131,7 +25065,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "cz2mldkbpcwr3csry812y8hsk",
@@ -24322,7 +25256,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "d0c110xzywzz2pl31lfkrks2c",
@@ -24513,7 +25447,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "aynm36gv7h5qb64kngu4e25g4",
@@ -24704,7 +25638,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "b141w4ouch620pxiyviljyeqc",
@@ -24888,7 +25822,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4wfi4qj9ndn19vvw8gc5e71n8",
@@ -25065,28 +25999,67 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 5.27,
-       "seuil_plus": 0.1898,
+       "plus": 5.2,
+       "seuil_plus": 0.1923,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 2.05,
-       "seuil_plus": 0.4878,
+       "plus": 2.06,
+       "seuil_plus": 0.4854,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.17,
+       "seuil_plus": 0.8547,
+       "moins": 3.43,
+       "seuil_moins": 0.2915,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.45,
+       "seuil_plus": 0.6897,
+       "moins": 2.17,
+       "seuil_moins": 0.4608,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 1.97,
+       "seuil_plus": 0.5076,
+       "moins": 1.56,
+       "seuil_moins": 0.641,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 2.86,
+       "seuil_plus": 0.3497,
+       "moins": 1.25,
+       "seuil_moins": 0.8,
+       "modele_au_dessus": null
+      },
+      "6.5": {
+       "plus": 4.19,
+       "seuil_plus": 0.2387,
+       "moins": 1.1,
+       "seuil_moins": 0.9091,
        "modele_au_dessus": null
       }
      }
     },
     "rouge": {
-     "oui": 4.03,
-     "seuil_oui": 0.2481,
-     "non": 1.17,
-     "seuil_non": 0.8547,
+     "oui": 3.86,
+     "seuil_oui": 0.2591,
+     "non": 1.19,
+     "seuil_non": 0.8403,
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a744hoz9src0dkwo16sn8rr4k",
@@ -25275,9 +26248,41 @@
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.38,
+       "seuil_plus": 0.7246,
+       "moins": 2.35,
+       "seuil_moins": 0.4255,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.92,
+       "seuil_plus": 0.5208,
+       "moins": 1.59,
+       "seuil_moins": 0.6289,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 2.89,
+       "seuil_plus": 0.346,
+       "moins": 1.24,
+       "seuil_moins": 0.8065,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 4.38,
+       "seuil_plus": 0.2283,
+       "moins": 1.08,
+       "seuil_moins": 0.9259,
+       "modele_au_dessus": null
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "xdkhcxfgzntn1234t84balg4",
@@ -25580,37 +26585,76 @@
     "corners": {
      "total": {
       "8.5": {
-       "plus": 1.64,
-       "seuil_plus": 0.6098,
-       "moins": 2.12,
-       "seuil_moins": 0.4717,
+       "plus": 1.62,
+       "seuil_plus": 0.6173,
+       "moins": 2.17,
+       "seuil_moins": 0.4608,
        "modele_au_dessus": "plus"
       },
       "9.5": {
-       "plus": 2.04,
-       "seuil_plus": 0.4902,
-       "moins": 1.7,
-       "seuil_moins": 0.5882,
+       "plus": 2.0,
+       "seuil_plus": 0.5,
+       "moins": 1.73,
+       "seuil_moins": 0.578,
        "modele_au_dessus": "plus"
       },
       "10.5": {
-       "plus": 2.62,
-       "seuil_plus": 0.3817,
-       "moins": 1.43,
-       "seuil_moins": 0.6993,
+       "plus": 2.56,
+       "seuil_plus": 0.3906,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 6.42,
-       "seuil_plus": 0.1558,
+       "plus": 6.36,
+       "seuil_plus": 0.1572,
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 2.61,
+       "seuil_moins": 0.3831,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.75,
+       "seuil_plus": 0.5714,
+       "moins": 1.73,
+       "seuil_moins": 0.578,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 2.56,
+       "seuil_plus": 0.3906,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 3.86,
+       "seuil_plus": 0.2591,
+       "moins": 1.12,
+       "seuil_moins": 0.8929,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "rouge": {
+     "oui": 4.51,
+     "seuil_oui": 0.2217,
+     "non": 1.14,
+     "seuil_non": 0.8772,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7uqldjza8udrm8ujbwlaqov84",
@@ -25799,9 +26843,48 @@
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.22,
+       "seuil_moins": 0.3106,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.52,
+       "seuil_plus": 0.6579,
+       "moins": 2.04,
+       "seuil_moins": 0.4902,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 2.11,
+       "seuil_plus": 0.4739,
+       "moins": 1.48,
+       "seuil_moins": 0.6757,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 3.13,
+       "seuil_plus": 0.3195,
+       "moins": 1.2,
+       "seuil_moins": 0.8333,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "rouge": {
+     "oui": 4.53,
+     "seuil_oui": 0.2208,
+     "non": 1.14,
+     "seuil_non": 0.8772,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e4e7v9degyjuoqgdzmkcu4vf8",
@@ -25976,9 +27059,48 @@
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.11,
+       "seuil_plus": 0.9009,
+       "moins": 4.06,
+       "seuil_moins": 0.2463,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.33,
+       "seuil_plus": 0.7519,
+       "moins": 2.53,
+       "seuil_moins": 0.3953,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.74,
+       "seuil_plus": 0.5747,
+       "moins": 1.74,
+       "seuil_moins": 0.5747,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.46,
+       "seuil_plus": 0.4065,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 3.62,
+       "seuil_plus": 0.2762,
+       "moins": 1.14,
+       "seuil_moins": 0.8772,
+       "modele_au_dessus": null
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5st5hmskji7x1cb7jqohck4yc",
@@ -26578,6 +27700,13 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.24,
+       "seuil_moins": 0.3086,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
        "plus": 1.51,
        "seuil_plus": 0.6623,
@@ -26598,6 +27727,13 @@
        "moins": 1.58,
        "seuil_moins": 0.6329,
        "modele_au_dessus": "moins"
+      },
+      "12.5": {
+       "plus": 2.98,
+       "seuil_plus": 0.3356,
+       "moins": 1.34,
+       "seuil_moins": 0.7463,
+       "modele_au_dessus": null
       }
      },
      "domicile": {
@@ -26616,7 +27752,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4ita2kw93608youzp31pt2ec4",
@@ -26793,7 +27929,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "y272nzlv6sstou0tuc5mg4r8",
@@ -27133,7 +28269,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "cyr90ujag3xlroa4i8vba7q50",
@@ -27310,21 +28446,21 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 1.55,
-       "seuil_plus": 0.6452,
+       "plus": 1.58,
+       "seuil_plus": 0.6329,
        "modele_au_dessus": null
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 23.74,
-       "seuil_plus": 0.0421,
+       "plus": 21.86,
+       "seuil_plus": 0.0457,
        "modele_au_dessus": "plus"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a5r7gki6u0kmsj9cy4pwe42z8",
@@ -27492,8 +28628,8 @@
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.39,
-       "seuil_plus": 0.4184,
+       "plus": 2.4,
+       "seuil_plus": 0.4167,
        "moins": 1.51,
        "seuil_moins": 0.6623,
        "modele_au_dessus": "moins"
@@ -27501,14 +28637,53 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 4.5,
-       "seuil_plus": 0.2222,
-       "modele_au_dessus": "plus"
+       "plus": 4.44,
+       "seuil_plus": 0.2252,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.15,
+       "seuil_plus": 0.8696,
+       "moins": 3.57,
+       "seuil_moins": 0.2801,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.42,
+       "seuil_plus": 0.7042,
+       "moins": 2.24,
+       "seuil_moins": 0.4464,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.93,
+       "seuil_plus": 0.5181,
+       "moins": 1.58,
+       "seuil_moins": 0.6329,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.8,
+       "seuil_plus": 0.3571,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
+       "modele_au_dessus": null
+      },
+      "6.5": {
+       "plus": 4.12,
+       "seuil_plus": 0.2427,
+       "moins": 1.1,
+       "seuil_moins": 0.9091,
+       "modele_au_dessus": null
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "e3sw4swum5zkhyggkd1uz7cic",
@@ -27683,9 +28858,41 @@
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.2,
+       "seuil_plus": 0.8333,
+       "moins": 3.15,
+       "seuil_moins": 0.3175,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.53,
+       "seuil_plus": 0.6536,
+       "moins": 2.02,
+       "seuil_moins": 0.495,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 2.13,
+       "seuil_plus": 0.4695,
+       "moins": 1.47,
+       "seuil_moins": 0.6803,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 3.14,
+       "seuil_plus": 0.3185,
+       "moins": 1.2,
+       "seuil_moins": 0.8333,
+       "modele_au_dessus": null
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5tpbezn2g2z3wkvhxuykmyexg",
@@ -27861,15 +29068,54 @@
       }
      }
     },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.14,
+       "seuil_plus": 0.8772,
+       "moins": 3.64,
+       "seuil_moins": 0.2747,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.4,
+       "seuil_plus": 0.7143,
+       "moins": 2.28,
+       "seuil_moins": 0.4386,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 1.89,
+       "seuil_plus": 0.5291,
+       "moins": 1.61,
+       "seuil_moins": 0.6211,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 2.73,
+       "seuil_plus": 0.3663,
+       "moins": 1.28,
+       "seuil_moins": 0.7812,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 4.01,
+       "seuil_plus": 0.2494,
+       "moins": 1.11,
+       "seuil_moins": 0.9009,
+       "modele_au_dessus": "moins"
+      }
+     }
+    },
     "rouge": {
-     "oui": 3.98,
-     "seuil_oui": 0.2513,
+     "oui": 3.97,
+     "seuil_oui": 0.2519,
      "non": 1.18,
      "seuil_non": 0.8475,
      "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4wrsp64aq5fpx9pq0b76gdlhw",
@@ -28022,32 +29268,71 @@
    "cotes": {
     "corners": {
      "total": {
+      "8.5": {
+       "plus": 1.42,
+       "seuil_plus": 0.7042,
+       "moins": 2.67,
+       "seuil_moins": 0.3745,
+       "modele_au_dessus": "moins"
+      },
       "9.5": {
-       "plus": 1.68,
-       "seuil_plus": 0.5952,
-       "moins": 2.07,
-       "seuil_moins": 0.4831,
+       "plus": 1.69,
+       "seuil_plus": 0.5917,
+       "moins": 2.05,
+       "seuil_moins": 0.4878,
        "modele_au_dessus": "moins"
       },
       "10.5": {
-       "plus": 2.07,
-       "seuil_plus": 0.4831,
-       "moins": 1.68,
-       "seuil_moins": 0.5952,
-       "modele_au_dessus": "moins"
-      },
-      "11.5": {
-       "plus": 2.62,
-       "seuil_plus": 0.3817,
-       "moins": 1.43,
-       "seuil_moins": 0.6993,
+       "plus": 2.08,
+       "seuil_plus": 0.4808,
+       "moins": 1.67,
+       "seuil_moins": 0.5988,
        "modele_au_dessus": "moins"
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 2.37,
-       "seuil_plus": 0.4219,
+       "plus": 2.39,
+       "seuil_plus": 0.4184,
+       "modele_au_dessus": null
+      }
+     }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.15,
+       "seuil_plus": 0.8696,
+       "moins": 3.6,
+       "seuil_moins": 0.2778,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.42,
+       "seuil_plus": 0.7042,
+       "moins": 2.25,
+       "seuil_moins": 0.4444,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 1.92,
+       "seuil_plus": 0.5208,
+       "moins": 1.59,
+       "seuil_moins": 0.6289,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 2.79,
+       "seuil_plus": 0.3584,
+       "moins": 1.26,
+       "seuil_moins": 0.7937,
+       "modele_au_dessus": null
+      },
+      "6.5": {
+       "plus": 4.13,
+       "seuil_plus": 0.2421,
+       "moins": 1.1,
+       "seuil_moins": 0.9091,
        "modele_au_dessus": null
       }
      }
@@ -28060,7 +29345,7 @@
      "modele_au_dessus": null
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "xptnneoo1vx5gdtndxijuvis",
@@ -28398,9 +29683,55 @@
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.19,
+       "seuil_plus": 0.8403,
+       "moins": 3.23,
+       "seuil_moins": 0.3096,
+       "modele_au_dessus": "moins"
+      },
+      "3.5": {
+       "plus": 1.5,
+       "seuil_plus": 0.6667,
+       "moins": 2.07,
+       "seuil_moins": 0.4831,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 2.06,
+       "seuil_plus": 0.4854,
+       "moins": 1.5,
+       "seuil_moins": 0.6667,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 3.01,
+       "seuil_plus": 0.3322,
+       "moins": 1.22,
+       "seuil_moins": 0.8197,
+       "modele_au_dessus": "moins"
+      },
+      "6.5": {
+       "plus": 4.38,
+       "seuil_plus": 0.2283,
+       "moins": 1.08,
+       "seuil_moins": 0.9259,
+       "modele_au_dessus": "moins"
+      }
+     }
+    },
+    "rouge": {
+     "oui": 3.76,
+     "seuil_oui": 0.266,
+     "non": 1.2,
+     "seuil_non": 0.8333,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "5f2ou58eclzyv04s7aezwno5w",
@@ -28702,6 +30033,13 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.24,
+       "seuil_moins": 0.3086,
+       "modele_au_dessus": null
+      },
       "8.5": {
        "plus": 1.55,
        "seuil_plus": 0.6452,
@@ -28722,6 +30060,13 @@
        "moins": 1.51,
        "seuil_moins": 0.6623,
        "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.24,
+       "seuil_plus": 0.3086,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
+       "modele_au_dessus": null
       }
      },
      "domicile": {
@@ -28740,7 +30085,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4hvmfki7vnpef2r8igovaxvys",
@@ -28917,7 +30262,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "yqxhae2ucrmy935re2llrdhw",
@@ -29257,7 +30602,7 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "a63dkvhm26i8236zm0nns47bo",
@@ -29446,9 +30791,41 @@
        "modele_au_dessus": "plus"
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.26,
+       "seuil_plus": 0.7937,
+       "moins": 2.81,
+       "seuil_moins": 0.3559,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.66,
+       "seuil_plus": 0.6024,
+       "moins": 1.83,
+       "seuil_moins": 0.5464,
+       "modele_au_dessus": null
+      },
+      "4.5": {
+       "plus": 2.38,
+       "seuil_plus": 0.4202,
+       "moins": 1.37,
+       "seuil_moins": 0.7299,
+       "modele_au_dessus": null
+      },
+      "5.5": {
+       "plus": 3.58,
+       "seuil_plus": 0.2793,
+       "moins": 1.15,
+       "seuil_moins": 0.8696,
+       "modele_au_dessus": null
+      }
+     }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "7rzitakki3g6g7m9yj4totn2s",
@@ -29625,21 +31002,60 @@
      },
      "domicile": {
       "6.5": {
-       "plus": 6.15,
-       "seuil_plus": 0.1626,
+       "plus": 6.21,
+       "seuil_plus": 0.161,
        "modele_au_dessus": "plus"
       }
      },
      "exterieur": {
       "6.5": {
-       "plus": 3.06,
-       "seuil_plus": 0.3268,
+       "plus": 3.04,
+       "seuil_plus": 0.3289,
        "modele_au_dessus": null
       }
      }
+    },
+    "cartons": {
+     "total": {
+      "2.5": {
+       "plus": 1.31,
+       "seuil_plus": 0.7634,
+       "moins": 2.59,
+       "seuil_moins": 0.3861,
+       "modele_au_dessus": null
+      },
+      "3.5": {
+       "plus": 1.75,
+       "seuil_plus": 0.5714,
+       "moins": 1.73,
+       "seuil_moins": 0.578,
+       "modele_au_dessus": "moins"
+      },
+      "4.5": {
+       "plus": 2.54,
+       "seuil_plus": 0.3937,
+       "moins": 1.32,
+       "seuil_moins": 0.7576,
+       "modele_au_dessus": "moins"
+      },
+      "5.5": {
+       "plus": 3.8,
+       "seuil_plus": 0.2632,
+       "moins": 1.13,
+       "seuil_moins": 0.885,
+       "modele_au_dessus": "moins"
+      }
+     }
+    },
+    "rouge": {
+     "oui": 3.62,
+     "seuil_oui": 0.2762,
+     "non": 1.21,
+     "seuil_non": 0.8264,
+     "modele_au_dessus": "non"
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "82vk3mqrxovp5nbu31vtpmvis",
@@ -29792,38 +31208,52 @@
    "cotes": {
     "corners": {
      "total": {
+      "7.5": {
+       "plus": 1.3,
+       "seuil_plus": 0.7692,
+       "moins": 3.24,
+       "seuil_moins": 0.3086,
+       "modele_au_dessus": null
+      },
       "8.5": {
-       "plus": 1.6,
-       "seuil_plus": 0.625,
-       "moins": 2.2,
-       "seuil_moins": 0.4545,
+       "plus": 1.56,
+       "seuil_plus": 0.641,
+       "moins": 2.27,
+       "seuil_moins": 0.4405,
        "modele_au_dessus": null
       },
       "9.5": {
-       "plus": 1.97,
-       "seuil_plus": 0.5076,
-       "moins": 1.75,
-       "seuil_moins": 0.5714,
+       "plus": 1.91,
+       "seuil_plus": 0.5236,
+       "moins": 1.8,
+       "seuil_moins": 0.5556,
        "modele_au_dessus": null
       },
       "10.5": {
-       "plus": 2.51,
-       "seuil_plus": 0.3984,
-       "moins": 1.47,
-       "seuil_moins": 0.6803,
+       "plus": 2.43,
+       "seuil_plus": 0.4115,
+       "moins": 1.5,
+       "seuil_moins": 0.6667,
+       "modele_au_dessus": null
+      },
+      "11.5": {
+       "plus": 3.24,
+       "seuil_plus": 0.3086,
+       "moins": 1.3,
+       "seuil_moins": 0.7692,
        "modele_au_dessus": null
       }
      },
      "domicile": {
       "6.5": {
-       "plus": 7.16,
-       "seuil_plus": 0.1397,
+       "plus": 6.64,
+       "seuil_plus": 0.1506,
        "modele_au_dessus": "plus"
       }
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   },
   {
    "match_id": "4gbdv1hx631z6rmnq0p3aqot0",
@@ -30000,7 +31430,1395 @@
      }
     }
    },
-   "cotes_prises_le": "2026-11-19T15:09:13Z"
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
+  },
+  {
+   "match_id": "worlcpbc1ibpzbdrirob37ys",
+   "date": "2026-11-23",
+   "heure": "16:00",
+   "competition": "Grèce : Super Ligue",
+   "division": "G1",
+   "domicile": "Asteras T.",
+   "exterieur": "Aris",
+   "nom_fd_domicile": "Asteras Tripolis",
+   "nom_fd_exterieur": "Aris",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.641,
+     "attendu_exterieur": 4.392,
+     "attendu_total": 9.033,
+     "total": {
+      "7.5": 0.6596,
+      "8.5": 0.537,
+      "9.5": 0.4162,
+      "10.5": 0.3072,
+      "11.5": 0.2161,
+      "12.5": 0.1452
+     },
+     "domicile": {
+      "3.5": 0.6249,
+      "4.5": 0.4686,
+      "5.5": 0.3305,
+      "6.5": 0.2208
+     },
+     "exterieur": {
+      "3.5": 0.59,
+      "4.5": 0.4308,
+      "5.5": 0.2951,
+      "6.5": 0.1911
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "cartons": {
+     "attendu_domicile": 2.435,
+     "attendu_exterieur": 2.521,
+     "attendu_total": 4.956,
+     "total": {
+      "2.5": 0.8615,
+      "3.5": 0.7179,
+      "4.5": 0.5452,
+      "5.5": 0.3765,
+      "6.5": 0.2371
+     },
+     "domicile": {
+      "0.5": 0.9124,
+      "1.5": 0.699,
+      "2.5": 0.4393
+     },
+     "exterieur": {
+      "0.5": 0.9196,
+      "1.5": 0.717,
+      "2.5": 0.4616
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "rouge": {
+     "taux_division": 0.3197,
+     "oui": 0.2736
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.009,
+     4.194
+    ],
+    "cartons": [
+     2.427,
+     2.614
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7839,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "6.5",
+     "cote": "moins",
+     "proba": 0.7629,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "czdtyunf4zqavplreju7orhn8",
+   "date": "2026-11-23",
+   "heure": "18:00",
+   "competition": "Turquie : Super Ligue",
+   "division": "T1",
+   "domicile": "Basaksehir",
+   "exterieur": "Corum FK",
+   "nom_fd_domicile": "Buyuksehyr",
+   "nom_fd_exterieur": "Corum",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.258,
+     "attendu_exterieur": 4.092,
+     "attendu_total": 9.35,
+     "total": {
+      "7.5": 0.6929,
+      "8.5": 0.5744,
+      "9.5": 0.4543,
+      "10.5": 0.3427,
+      "11.5": 0.2467,
+      "12.5": 0.1698
+     },
+     "domicile": {
+      "3.5": 0.7003,
+      "4.5": 0.5553,
+      "5.5": 0.4165,
+      "6.5": 0.2972
+     },
+     "exterieur": {
+      "3.5": 0.5447,
+      "4.5": 0.3836,
+      "5.5": 0.2527,
+      "6.5": 0.1571
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 1.88,
+     "attendu_exterieur": 2.148,
+     "attendu_total": 4.028,
+     "total": {
+      "2.5": 0.7565,
+      "3.5": 0.5656,
+      "4.5": 0.3763,
+      "5.5": 0.2239,
+      "6.5": 0.1201
+     },
+     "domicile": {
+      "0.5": 0.8474,
+      "1.5": 0.5605,
+      "2.5": 0.2909
+     },
+     "exterieur": {
+      "0.5": 0.8832,
+      "1.5": 0.6325,
+      "2.5": 0.3632
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.1719,
+     "oui": 0.1579
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.226,
+     4.254
+    ],
+    "cartons": [
+     1.924,
+     2.173
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7533,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7565,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.61,
+       "seuil_plus": 0.6211,
+       "moins": 2.18,
+       "seuil_moins": 0.4587,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 1.98,
+       "seuil_plus": 0.5051,
+       "moins": 1.74,
+       "seuil_moins": 0.5747,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.54,
+       "seuil_plus": 0.3937,
+       "moins": 1.46,
+       "seuil_moins": 0.6849,
+       "modele_au_dessus": null
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 3.28,
+       "seuil_plus": 0.3049,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 4.99,
+       "seuil_plus": 0.2004,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
+  },
+  {
+   "match_id": "4h943cym7oqq1cv6n8tqpvpxw",
+   "date": "2026-11-23",
+   "heure": "20:30",
+   "competition": "Espagne : Segunda Division",
+   "division": "SP2",
+   "domicile": "Ceuta",
+   "exterieur": "Almería",
+   "nom_fd_domicile": "Ceuta",
+   "nom_fd_exterieur": "Almeria",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.856,
+     "attendu_exterieur": 3.892,
+     "attendu_total": 9.749,
+     "total": {
+      "7.5": 0.7315,
+      "8.5": 0.6193,
+      "9.5": 0.5014,
+      "10.5": 0.388,
+      "11.5": 0.2871,
+      "12.5": 0.2033
+     },
+     "domicile": {
+      "3.5": 0.76,
+      "4.5": 0.629,
+      "5.5": 0.4952,
+      "6.5": 0.3722
+     },
+     "exterieur": {
+      "3.5": 0.5125,
+      "4.5": 0.3514,
+      "5.5": 0.225,
+      "6.5": 0.1357
+     },
+     "matchs_domicile": 14,
+     "matchs_exterieur": 14
+    },
+    "cartons": {
+     "attendu_domicile": 2.952,
+     "attendu_exterieur": 3.093,
+     "attendu_total": 6.046,
+     "total": {
+      "2.5": 0.9314,
+      "3.5": 0.8401,
+      "4.5": 0.7083,
+      "5.5": 0.5538,
+      "6.5": 0.4006
+     },
+     "domicile": {
+      "0.5": 0.9478,
+      "1.5": 0.7936,
+      "2.5": 0.5661
+     },
+     "exterieur": {
+      "0.5": 0.9546,
+      "1.5": 0.8144,
+      "2.5": 0.5974
+     },
+     "matchs_domicile": 14,
+     "matchs_exterieur": 14
+    },
+    "rouge": {
+     "taux_division": 0.2483,
+     "oui": 0.2198
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.21,
+     4.247
+    ],
+    "cartons": [
+     2.48,
+     3.045
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "6.5": {
+      "plus": 1,
+      "moins": 0
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "12.5",
+     "cote": "moins",
+     "proba": 0.7967,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "4.5",
+     "cote": "plus",
+     "proba": 0.7083,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.5,
+       "seuil_plus": 0.6667,
+       "moins": 2.2,
+       "seuil_moins": 0.4545,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 1.84,
+       "seuil_plus": 0.5435,
+       "moins": 1.74,
+       "seuil_moins": 0.5747,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.33,
+       "seuil_plus": 0.4292,
+       "moins": 1.45,
+       "seuil_moins": 0.6897,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
+  },
+  {
+   "match_id": "43kt31ggx7usfpagknerzqgpg",
+   "date": "2026-11-23",
+   "heure": "20:45",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Nantes",
+   "exterieur": "Grenoble Foot",
+   "nom_fd_domicile": "Nantes",
+   "nom_fd_exterieur": "Grenoble",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.505,
+     "attendu_exterieur": 3.985,
+     "attendu_total": 9.49,
+     "total": {
+      "7.5": 0.7068,
+      "8.5": 0.5905,
+      "9.5": 0.471,
+      "10.5": 0.3585,
+      "11.5": 0.2607,
+      "12.5": 0.1812
+     },
+     "domicile": {
+      "3.5": 0.7265,
+      "4.5": 0.587,
+      "5.5": 0.4498,
+      "6.5": 0.3283
+     },
+     "exterieur": {
+      "3.5": 0.5276,
+      "4.5": 0.3664,
+      "5.5": 0.2378,
+      "6.5": 0.1455
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.891,
+     "attendu_exterieur": 2.629,
+     "attendu_total": 4.52,
+     "total": {
+      "2.5": 0.8186,
+      "3.5": 0.652,
+      "4.5": 0.4682,
+      "5.5": 0.3033,
+      "6.5": 0.1782
+     },
+     "domicile": {
+      "0.5": 0.849,
+      "1.5": 0.5636,
+      "2.5": 0.2937
+     },
+     "exterieur": {
+      "0.5": 0.9279,
+      "1.5": 0.7383,
+      "2.5": 0.489
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 2,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 0
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7068,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "3.5",
+     "cote": "plus",
+     "proba": 0.652,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "44j8dm51hjonw8k6173s9a61g",
+   "date": "2026-11-23",
+   "heure": "20:45",
+   "competition": "France : Ligue 2 BKT",
+   "division": "F2",
+   "domicile": "Sochaux",
+   "exterieur": "USL Dunkerque",
+   "nom_fd_domicile": "Sochaux",
+   "nom_fd_exterieur": "Dunkerque",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 5.075,
+     "attendu_exterieur": 4.462,
+     "attendu_total": 9.537,
+     "total": {
+      "7.5": 0.7115,
+      "8.5": 0.5958,
+      "9.5": 0.4766,
+      "10.5": 0.3639,
+      "11.5": 0.2654,
+      "12.5": 0.1852
+     },
+     "domicile": {
+      "3.5": 0.6795,
+      "4.5": 0.5307,
+      "5.5": 0.3914,
+      "6.5": 0.2743
+     },
+     "exterieur": {
+      "3.5": 0.6002,
+      "4.5": 0.4416,
+      "5.5": 0.3051,
+      "6.5": 0.1994
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 1.773,
+     "attendu_exterieur": 2.594,
+     "attendu_total": 4.367,
+     "total": {
+      "2.5": 0.801,
+      "3.5": 0.6265,
+      "4.5": 0.44,
+      "5.5": 0.2781,
+      "6.5": 0.159
+     },
+     "domicile": {
+      "0.5": 0.8303,
+      "1.5": 0.5292,
+      "2.5": 0.2623
+     },
+     "exterieur": {
+      "0.5": 0.9253,
+      "1.5": 0.7314,
+      "2.5": 0.48
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2067,
+     "oui": 0.1867
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.077,
+     4.299
+    ],
+    "cartons": [
+     1.82,
+     2.286
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7115,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7219,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   }
+  },
+  {
+   "match_id": "7tto7hbwd8o4wifwovvhbk1zo",
+   "date": "2026-11-23",
+   "heure": "20:45",
+   "competition": "Italie : Serie A",
+   "division": "I1",
+   "domicile": "Monza",
+   "exterieur": "Fiorentina",
+   "nom_fd_domicile": "Monza",
+   "nom_fd_exterieur": "Fiorentina",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.973,
+     "attendu_exterieur": 4.62,
+     "attendu_total": 9.593,
+     "total": {
+      "7.5": 0.7168,
+      "8.5": 0.6021,
+      "9.5": 0.4831,
+      "10.5": 0.3702,
+      "11.5": 0.2711,
+      "12.5": 0.1899
+     },
+     "domicile": {
+      "3.5": 0.6674,
+      "4.5": 0.5166,
+      "5.5": 0.3773,
+      "6.5": 0.2616
+     },
+     "exterieur": {
+      "3.5": 0.622,
+      "4.5": 0.4654,
+      "5.5": 0.3274,
+      "6.5": 0.2182
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "cartons": {
+     "attendu_domicile": 1.811,
+     "attendu_exterieur": 1.857,
+     "attendu_total": 3.668,
+     "total": {
+      "2.5": 0.7008,
+      "3.5": 0.4951,
+      "4.5": 0.3084,
+      "5.5": 0.1707,
+      "6.5": 0.0849
+     },
+     "domicile": {
+      "0.5": 0.8365,
+      "1.5": 0.5404,
+      "2.5": 0.2723
+     },
+     "exterieur": {
+      "0.5": 0.8439,
+      "1.5": 0.5539,
+      "2.5": 0.2847
+     },
+     "matchs_domicile": 11,
+     "matchs_exterieur": 11
+    },
+    "rouge": {
+     "taux_division": 0.1035,
+     "oui": 0.0983
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.076,
+     4.694
+    ],
+    "cartons": [
+     1.715,
+     1.774
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "8.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "9.5": {
+      "plus": 0,
+      "moins": 3
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 4
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 4
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "11.5",
+     "cote": "moins",
+     "proba": 0.7289,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "2.5",
+     "cote": "plus",
+     "proba": 0.7008,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.66,
+       "seuil_plus": 0.6024,
+       "moins": 2.1,
+       "seuil_moins": 0.4762,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 2.06,
+       "seuil_plus": 0.4854,
+       "moins": 1.68,
+       "seuil_moins": 0.5952,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.65,
+       "seuil_plus": 0.3774,
+       "moins": 1.42,
+       "seuil_moins": 0.7042,
+       "modele_au_dessus": null
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 4.74,
+       "seuil_plus": 0.211,
+       "modele_au_dessus": "plus"
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 3.67,
+       "seuil_plus": 0.2725,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
+  },
+  {
+   "match_id": "4veowc3ye0ziovl62553c2g44",
+   "date": "2026-11-23",
+   "heure": "21:00",
+   "competition": "Angleterre : Premier League",
+   "division": "E0",
+   "domicile": "Brentford",
+   "exterieur": "Everton",
+   "nom_fd_domicile": "Brentford",
+   "nom_fd_exterieur": "Everton",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.98,
+     "attendu_exterieur": 4.571,
+     "attendu_total": 9.551,
+     "total": {
+      "7.5": 0.7128,
+      "8.5": 0.5974,
+      "9.5": 0.4782,
+      "10.5": 0.3655,
+      "11.5": 0.2668,
+      "12.5": 0.1863
+     },
+     "domicile": {
+      "3.5": 0.6682,
+      "4.5": 0.5176,
+      "5.5": 0.3782,
+      "6.5": 0.2624
+     },
+     "exterieur": {
+      "3.5": 0.6153,
+      "4.5": 0.4581,
+      "5.5": 0.3205,
+      "6.5": 0.2123
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "cartons": {
+     "attendu_domicile": 2.104,
+     "attendu_exterieur": 2.322,
+     "attendu_total": 4.425,
+     "total": {
+      "2.5": 0.8078,
+      "3.5": 0.6364,
+      "4.5": 0.4508,
+      "5.5": 0.2876,
+      "6.5": 0.1662
+     },
+     "domicile": {
+      "0.5": 0.878,
+      "1.5": 0.6213,
+      "2.5": 0.3513
+     },
+     "exterieur": {
+      "0.5": 0.9019,
+      "1.5": 0.6741,
+      "2.5": 0.4097
+     },
+     "matchs_domicile": 10,
+     "matchs_exterieur": 10
+    },
+    "rouge": {
+     "taux_division": 0.1871,
+     "oui": 0.1706
+    },
+    "fiabilite": "moyenne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.04,
+     4.511
+    ],
+    "cartons": [
+     1.925,
+     2.363
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 4,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "11.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 1
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 2
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7128,
+     "indice": 4,
+     "niveau": "Sûr",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7124,
+     "indice": 1,
+     "niveau": "Risqué",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "9.5": {
+       "plus": 1.62,
+       "seuil_plus": 0.6173,
+       "moins": 2.15,
+       "seuil_moins": 0.4651,
+       "modele_au_dessus": "moins"
+      },
+      "10.5": {
+       "plus": 1.98,
+       "seuil_plus": 0.5051,
+       "moins": 1.74,
+       "seuil_moins": 0.5747,
+       "modele_au_dessus": "moins"
+      },
+      "11.5": {
+       "plus": 2.5,
+       "seuil_plus": 0.4,
+       "moins": 1.47,
+       "seuil_moins": 0.6803,
+       "modele_au_dessus": "moins"
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 2.57,
+       "seuil_plus": 0.3891,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 3.95,
+       "seuil_plus": 0.2532,
+       "modele_au_dessus": null
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
+  },
+  {
+   "match_id": "8371uo2o7j0j4yx1kkf9r9yj8",
+   "date": "2026-11-23",
+   "heure": "21:00",
+   "competition": "Espagne : LaLiga",
+   "division": "SP1",
+   "domicile": "Levante",
+   "exterieur": "Elche",
+   "nom_fd_domicile": "Levante",
+   "nom_fd_exterieur": "Elche",
+   "previsions": {
+    "corners": {
+     "attendu_domicile": 4.987,
+     "attendu_exterieur": 4.458,
+     "attendu_total": 9.445,
+     "total": {
+      "7.5": 0.7024,
+      "8.5": 0.5853,
+      "9.5": 0.4656,
+      "10.5": 0.3534,
+      "11.5": 0.2561,
+      "12.5": 0.1775
+     },
+     "domicile": {
+      "3.5": 0.6691,
+      "4.5": 0.5185,
+      "5.5": 0.3792,
+      "6.5": 0.2633
+     },
+     "exterieur": {
+      "3.5": 0.5995,
+      "4.5": 0.4409,
+      "5.5": 0.3044,
+      "6.5": 0.1988
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "cartons": {
+     "attendu_domicile": 2.03,
+     "attendu_exterieur": 2.402,
+     "attendu_total": 4.432,
+     "total": {
+      "2.5": 0.8086,
+      "3.5": 0.6374,
+      "4.5": 0.452,
+      "5.5": 0.2886,
+      "6.5": 0.167
+     },
+     "domicile": {
+      "0.5": 0.8687,
+      "1.5": 0.602,
+      "2.5": 0.3314
+     },
+     "exterieur": {
+      "0.5": 0.9094,
+      "1.5": 0.6919,
+      "2.5": 0.4307
+     },
+     "matchs_domicile": 12,
+     "matchs_exterieur": 12
+    },
+    "rouge": {
+     "taux_division": 0.2479,
+     "oui": 0.2195
+    },
+    "fiabilite": "bonne"
+   },
+   "base_ligue": {
+    "corners": [
+     5.308,
+     4.441
+    ],
+    "cartons": [
+     2.281,
+     2.335
+    ]
+   },
+   "indices": {
+    "corners": {
+     "7.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "8.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "9.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "10.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "11.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "12.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    },
+    "cartons": {
+     "2.5": {
+      "plus": 3,
+      "moins": 0
+     },
+     "3.5": {
+      "plus": 1,
+      "moins": 0
+     },
+     "4.5": {
+      "plus": 0,
+      "moins": 1
+     },
+     "5.5": {
+      "plus": 0,
+      "moins": 2
+     },
+     "6.5": {
+      "plus": 0,
+      "moins": 3
+     }
+    }
+   },
+   "choix": {
+    "corners": {
+     "ligne": "7.5",
+     "cote": "plus",
+     "proba": 0.7024,
+     "indice": 3,
+     "niveau": "Recommandé",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    },
+    "cartons": {
+     "ligne": "5.5",
+     "cote": "moins",
+     "proba": 0.7114,
+     "indice": 2,
+     "niveau": "Attention",
+     "matchs_domicile": 5,
+     "matchs_exterieur": 5
+    }
+   },
+   "cotes": {
+    "corners": {
+     "total": {
+      "8.5": {
+       "plus": 1.67,
+       "seuil_plus": 0.5988,
+       "moins": 2.08,
+       "seuil_moins": 0.4808,
+       "modele_au_dessus": null
+      },
+      "9.5": {
+       "plus": 2.07,
+       "seuil_plus": 0.4831,
+       "moins": 1.67,
+       "seuil_moins": 0.5988,
+       "modele_au_dessus": null
+      },
+      "10.5": {
+       "plus": 2.67,
+       "seuil_plus": 0.3745,
+       "moins": 1.42,
+       "seuil_moins": 0.7042,
+       "modele_au_dessus": null
+      }
+     },
+     "domicile": {
+      "6.5": {
+       "plus": 3.07,
+       "seuil_plus": 0.3257,
+       "modele_au_dessus": null
+      }
+     },
+     "exterieur": {
+      "6.5": {
+       "plus": 6.26,
+       "seuil_plus": 0.1597,
+       "modele_au_dessus": "plus"
+      }
+     }
+    }
+   },
+   "cotes_prises_le": "2026-11-20T03:52:28Z"
   }
  ]
 }
