@@ -31,6 +31,8 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 - Sources de calendrier de secours (depuis le 11/11/2026 ; code `sources_calendrier/`) : hiérarchie matchendirect (principale) > espn > openfootball dans `config/sources_calendrier.json`, format commun `Match`, un fichier par source, rapprochement un pour un (le doute = « ambigu »), noms d'équipes réglés dans `config/sources_noms.json` ; mode « mesure » seulement (rien n'alimente le système) : `docs/SOURCES_CALENDRIER.md`
 - Moteur Selections (depuis le 13/11/2026 ; code `moteur_selections/`, branche `moteur-selections`, non fusionné) : qualifications Coupe du monde des sélections nationales, méthode d'Analyse Verdict (même lieu, 4 matchs minimum par équipe, cote ≥ 1,26, terrain neutre non évaluable, pas de xG) ; fenêtre et périmètre choisis sur les données (`etude_parametres.py`) ; données publiques gratuites, la collecte commune exclut les sélections ; cœur seulement (ni cotes, ni journal, ni page, ni pipeline) : `docs/MOTEUR_SELECTIONS.md`
 
+- Onglet « Étude » d'Analyse Verdict (depuis le 21/11/2026 ; `verif_etude.py`, `data/verif_pronostics/etude_regles.json`, branche `onglet-etude`) : condition « le double des buts marqués + une meilleure défense » (écart mince / moyen / grand), marchés retenus seulement s'ils dépassent 70 % dans l'étude sur matchs joués, sélection gelée « etude » : `docs/ETUDE_DOUBLE_DEFENSE.md`
+
 ## Règles de sécurité
 
 - Les documents spécialisés font partie des instructions du projet : ne pas les ignorer lorsqu'une tâche relève de leur domaine.

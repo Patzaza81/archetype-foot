@@ -447,6 +447,10 @@ def fiche_match(x, maintenant, cfg):
         if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[m]])
         G[groupe(m)].append(e)
     for L in G.values(): L.sort(key=lambda e: (-e["taux"], ORDRE.index(e["verdict"]), -(e["reussite_dom"][1] + e["reussite_ext"][1])))
+    import verif_etude as VE                  # onglet Étude : condition « double des buts marqués + meilleure défense » et marchés retenus par l'étude (>70 %)
+    etude = VE.charger(); P = [e for L in G.values() for e in L]
+    info = VE.evaluer(SA, SB, P[0]["reussite_dom"][1], P[0]["reussite_ext"][1], etude) if etude and P else None
+    if info: VE.marquer(G, info, etude)
     arr = lambda u: None if u is None else round(u, 3)
     av = champ["avantage_dom"]
     return {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x["domicile"], "exterieur": x["exterieur"], "statut": statut,
@@ -455,7 +459,7 @@ def fiche_match(x, maintenant, cfg):
             "equipes": {"dom": {k: arr(SA[k]) if isinstance(SA[k], float) else SA[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "ext": {k: arr(SB[k]) if isinstance(SB[k], float) else SB[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "xg_est": champ["xg_est"], "avantage_dom": arr(av), "matchs": champ["n"]}},
-            "paris": G, "derniers_matchs": derniers_matchs(x)}
+            "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info} if info else {})}
 
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
@@ -470,7 +474,8 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
-    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "matchs": M}
+    import verif_etude as VE
+    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "matchs": M}
 
 def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
@@ -509,10 +514,11 @@ def selections_page(d):
         if m.get("statut") != "a_venir" or not m.get("coup_d_envoi_utc"): continue
         out[(m["match_id"], "top20")] = [court(T[m["match_id"]]["pari"])] if m["match_id"] in T else []
         out[(m["match_id"], "regles")] = [court(p) for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p.get("regle")]
+        out[(m["match_id"], "etude")] = [court(p) for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p.get("etude")]
     return out, {m["match_id"]: m for m in d.get("matchs") or []}
 
 def geler_selections(d, maintenant=None, chemin=JOURNAL_SELECTIONS):
-    """Ajoute au journal des selections (jamais reecrit, empreintes chainees) l'etat du Top 20 et de l'onglet Regles de chaque match a venir, seulement quand il change.
+    """Ajoute au journal des selections (jamais reecrit, empreintes chainees) l'etat du Top 20, de l'onglet Regles et de l'onglet Etude de chaque match a venir, seulement quand il change.
     Une liste vide est ecrite quand un match sort d'une selection ou il figurait : le dernier etat avant le coup d'envoi fait foi. -> nb de lignes ajoutees."""
     maintenant = maintenant or d.get("genere_le") or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     S, M = selections_page(d); ex = lire_journal(chemin); prec = ex[-1]["empreinte"] if ex else ""; n = 0

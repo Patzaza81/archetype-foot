@@ -16,21 +16,26 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
-const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire", regles: "Marchés à règle validée" };
+const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["etude", "Étude"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire", regles: "Marchés à règle validée", etude: "Marchés retenus par l'étude" };
 const COTE_TOP = 1.34;
 const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
 let ONGLET = "tous", DONNEES = null;
+// Onglet Étude : filtres (écart de défense, lieu de l'équipe, type de marché). Le classement des autres onglets n'est pas touché.
+const TOUT = { ecart: "tous", lieu: "tous", marche: "tous" };
+let ETUDE_F = { ...TOUT };
+const typeEtude = (m) => (m.includes("&") ? "combos" : /^[12]$/.test(m) ? "victoire" : /^(1N|N2)$/.test(m) ? "dc" : "equipe");
+const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.ecart) && (f.lieu === "tous" || p.etude.lieu === f.lieu) && (f.marche === "tous" || typeEtude(p.marche) === f.marche);
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const paris = (m, onglet) => (onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const paris = (m, onglet, f) => (onglet === "etude" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => etudeOk(p, f || ETUDE_F))).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
-  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}</small></span>` +
-    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
+  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} cas, écart de défense ${e(p.etude.ecart)}` : ""}</small></span>` +
+    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
 // Critère du Top 20 (09/11, d'après les résultats réels des 7 et 8 nov) : la réussite observée seule ne classe pas (les paris « les plus solides » sont les moins réussis),
@@ -47,7 +52,17 @@ function top20(d) {   // les 20 meilleurs paris de chaque journée, toutes famil
   Object.values(jours).forEach((L) => L.sort((a, b) => score(b.p) - score(a.p) || b.p.taux - a.p.taux).slice(0, 20).forEach((x, i) => sortie.set(x.m.match_id, { p: x.p, rang: i + 1, nb: Math.min(20, L.length) })));
   return sortie;
 }
+const ECARTS = { mince: "mince", moyen: "moyen", grand: "grand" };
+function phraseEtude(m) {   // la condition remplie, en une phrase simple (valeurs écrites par verif_etude.py : aucun calcul ici)
+  const x = m.etude; if (!x) return "";
+  const dom = x.lieu === "dom", nom = dom ? m.domicile : m.exterieur, adv = dom ? m.exterieur : m.domicile;
+  return `<div class="om-info"><b>${e(nom)}</b> (${dom ? "à domicile" : "à l'extérieur"}) marque ${fr(x.marques[0], 1)} but(s) par match contre ${fr(x.marques[1], 1)} pour ${e(adv)}, et en encaisse ${fr(x.encaisses[0], 1)} contre ${fr(x.encaisses[1], 1)} : écart de défense <b>${e(ECARTS[x.ecart] || x.ecart)}</b> (${fr(x.valeur_ecart, 2)} but).</div>`;
+}
 function resume(m, onglet) {
+  if (onglet === "etude") {
+    const p = paris(m, onglet)[0]; if (!p) return "";
+    return phraseEtude(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
+  }
   if (onglet === "top20") {
     const t = TOP.get(m.match_id); if (!t) return "";
     return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Top 20 du jour · n° ${t.rang}</div>${ligne(t.p, m.statut === "termine", true)}</div>`;
@@ -56,6 +71,7 @@ function resume(m, onglet) {
   return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${onglet === "tous" ? "Meilleur pari du match" : "Meilleur : " + TITRES[onglet].toLowerCase()}</div>${ligne(p, m.statut === "termine")}</div>`;
 }
 function listes(m, onglet) {            // carte dépliée : tous les paris de l'onglet, du plus au moins réussi
+  if (onglet === "etude") { const L = paris(m, onglet); return L.length ? `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES.etude} (${L.length}) · du plus au moins réussi dans l'étude</div>${L.map((p) => ligne(p, m.statut === "termine")).join("")}</div>` : ""; }
   const fini = m.statut === "termine", cles = onglet === "tous" || onglet === "regles" ? ORDRE_FAMILLES : [onglet];
   return cles.map((k) => {
     const L0 = (m.paris && m.paris[k]) || [], L = onglet === "regles" ? L0.filter((p) => p.regle) : L0; if (!L.length) return "";
@@ -127,9 +143,20 @@ function liste(id, L, vide) {
   const el = document.getElementById(id); if (!el) return; el.innerHTML = "";
   if (L.length) L.forEach((m) => el.appendChild(carte(m, ONGLET))); else el.innerHTML = `<p class="om-vide">${e(vide)}</p>`;
 }
+const LIBELLES_ETUDE = { victoire: "Victoire", double_chance: "Double chance", "equipe_plus_0.5": "L'équipe marque +0,5", "equipe_plus_1.5": "L'équipe marque +1,5", "dc_plus_1.5": "Double chance + plus de 1,5 buts", "dc_moins_4.5": "Double chance + moins de 4,5 buts" };
+const FILTRES_ETUDE = [["ecart", "Écart de défense", [["tous", "Tous"], ["mince", "Mince"], ["moyen", "Moyen"], ["grand", "Grand"]]], ["lieu", "Lieu de l'équipe", [["tous", "Tous"], ["dom", "Domicile"], ["ext", "Extérieur"]]],
+  ["marche", "Marché", [["tous", "Tous"], ["victoire", "Victoire"], ["dc", "Double chance"], ["equipe", "L'équipe marque"], ["combos", "Combos"]]]];
+function filtresEtude(d) {
+  const E = d.etude; if (!E) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
+  const S = E.seuils || {}, src = E.source || {}, pct = (x) => (x == null ? "—" : Math.round(x * 100) + " %"), lieu = { dom: "À domicile", ext: "À l'extérieur" };
+  const lignes = (E.cases || []).map((c) => `<tr><td style="text-align:left">${lieu[c.lieu]} · écart ${e(c.ecart)}</td><td>${e(c.n)}</td><td style="text-align:left">${c.marches.length ? c.marches.map((x) => `${e(LIBELLES_ETUDE[x.etude] || x.etude)} ${pct(x.taux)}`).join(" · ") : "aucun marché"}</td></tr>`).join("");
+  return `<div class="om-onglets vf-filtres">${FILTRES_ETUDE.map(([k, t, L]) => `<span class="vf-filtre-titre">${t}</span>${L.map(([v, lib]) => `<button type="button" class="om-onglet${ETUDE_F[k] === v ? " om-onglet-actif" : ""}" data-filtre="${k}:${v}">${lib}</button>`).join("")}`).join("")}</div>` +
+    `<p class="om-info" style="margin:8px 14px">Une équipe qui marque au moins <b>le double</b> des buts de son adversaire et encaisse moins. Écart de défense : mince sous ${fr(S.ecart_mince_max, 1)} but, moyen de ${fr(S.ecart_mince_max, 1)} à ${fr(S.ecart_grand_min, 2)}, grand au-delà. Seuls les marchés au-dessus de ${pct(S.retenu_min)} dans l'étude sont affichés (${e(src.cas)} cas sur ${e(src.matchs_joues)} matchs joués, du ${e(src.du)} au ${e(src.au)}).</p>` +
+    `<details class="om-bloc" style="margin:8px 14px"><summary>Résultats de l'étude, case par case</summary><table class="om-table"><tr><th>Case</th><th>Cas</th><th>Marchés retenus</th></tr>${lignes}</table></details>`;
+}
 function barreOnglets(d) {
-  const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => paris(m, o).length).length;
-  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>`;
+  const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => paris(m, o, TOUT).length).length;
+  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : "");
 }
 function rendu(d) {
   TOP = top20(d);
@@ -141,7 +168,7 @@ function rendu(d) {
 }
 // Réussite réelle du Top 20 et de l'onglet Règles : leur dernier état gelé avant le coup d'envoi (journal_selections.jsonl), matchs terminés. Rien n'est affiché tant qu'aucun n'est terminé.
 function selectionsGelees(d) {
-  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"]];
+  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"]];
   return noms.filter(([k]) => S[k] && S[k].paris).map(([k, t]) => `<tr><td style="text-align:left">${t}</td><td>${e(S[k].paris)}</td><td>${e(S[k].reussis)}</td><td>${Math.round(S[k].taux_reel * 100)} %</td></tr>`).join("");
 }
 function bilan(d) {
@@ -155,7 +182,7 @@ function bilan(d) {
 function affiche(d) {
   const L = d.matchs || []; DONNEES = d;
   document.getElementById("vf-bilan").innerHTML = bilan(d); rendu(d);
-  document.getElementById("vf-onglets").addEventListener("click", (ev) => { const b = ev.target.closest("[data-vf]"); if (!b) return; ONGLET = b.dataset.vf; rendu(DONNEES); });
+  document.getElementById("vf-onglets").addEventListener("click", (ev) => { const f = ev.target.closest("[data-filtre]"); if (f) { const [k, v] = f.dataset.filtre.split(":"); ETUDE_F[k] = v; rendu(DONNEES); return; } const b = ev.target.closest("[data-vf]"); if (!b) return; ONGLET = b.dataset.vf; rendu(DONNEES); });
   const g = d.genere_le ? new Date(d.genere_le) : null;
   document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime()) ? `Données du ${g.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" })} (heure du Cameroun) · ${L.length} match(s) · cote minimale ${fr(d.cote_min)} · au moins ${e(d.minimum_matchs_meme_lieu)} matchs au même lieu par équipe` : "";
 }
