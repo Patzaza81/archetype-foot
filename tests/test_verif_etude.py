@@ -88,23 +88,25 @@ def test_evaluer_non_qualifie(sa, sb, nd, ne):
 def test_evaluer_sans_etude():
     assert E.evaluer({"buts_marques": 2.0, "buts_encaisses": 1.0}, {"buts_marques": 1.0, "buts_encaisses": 1.4}, 6, 6, None) is None
 
-def _p(m, taux=0.7): return {"marche": m, "cote": 1.5, "taux": taux}
+def _noms(info): return [m for m, _, _ in E.retenus(info, ETUDE)]
 
-def test_marquer_les_marches_retenus():
-    G = {"equipes": [_p("1N"), _p("dom_plus_0.5")], "victoire": [_p("1")], "combos": [_p("1N&total_plus_1.5"), _p("1N&total_moins_4.5")], "buts": []}
-    n = E.marquer(G, {"lieu": "dom", "ecart": "mince"}, ETUDE)
-    assert n == 5 and all(p["etude"]["taux"] == 0.8 and p["etude"]["ecart"] == "mince" and p["etude"]["lieu"] == "dom" for L in G.values() for p in L)
+def test_retenus_domicile_mince():           # marché + cote de la page pour l'équipe à domicile, du plus au moins réussi, sans aucun filtre de la page
+    L = E.retenus({"lieu": "dom", "ecart": "mince"}, ETUDE)
+    assert sorted(_noms({"lieu": "dom", "ecart": "mince"})) == sorted(["1", "1N", "dom_plus_0.5", "1N&total_plus_1.5", "1N&total_moins_4.5"]) and all(z["taux"] == 0.8 and z["n"] == 100 for _, _, z in L)
 
-@pytest.mark.parametrize("marche", ["total_plus_2.5", "btts_oui", "N2", "2", "ext_plus_0.5", "1&total_plus_1.5"])    # marché non étudié, ou celui de l'autre équipe
-def test_marquer_ignore_les_autres_marches(marche):
-    G = {"x": [_p(marche)]}; assert E.marquer(G, {"lieu": "dom", "ecart": "mince"}, ETUDE) == 0 and "etude" not in G["x"][0]
+def test_retenus_exterieur_marches_de_l_equipe_exterieure():
+    assert sorted(_noms({"lieu": "ext", "ecart": "grand"})) == sorted(["2", "N2", "ext_plus_0.5", "ext_plus_1.5", "N2&total_plus_1.5", "N2&total_moins_4.5"])
 
-def test_marquer_ignore_un_marche_sous_70_dans_sa_case():
-    G = {"equipes": [_p("dom_plus_1.5")]}; assert E.marquer(G, {"lieu": "dom", "ecart": "mince"}, ETUDE) == 0         # 62,5 % : pas retenu
-    assert E.marquer(G, {"lieu": "dom", "ecart": "moyen"}, ETUDE) == 1                                                  # même marché, case moyen à 80 % : retenu
+def test_retenus_plus_1_5_est_bien_analyse():                # « l'équipe marque +1,5 » : écarté dans la case où il est sous 70 %, retenu dans les autres
+    assert "dom_plus_1.5" not in _noms({"lieu": "dom", "ecart": "mince"})                  # 62,5 % : sous le seuil
+    assert "dom_plus_1.5" in _noms({"lieu": "dom", "ecart": "moyen"}) and "dom_plus_1.5" in _noms({"lieu": "dom", "ecart": "grand"})
 
-def test_marquer_sans_condition():
-    G = {"x": [_p("1")]}; assert E.marquer(G, None, ETUDE) == 0 and "etude" not in G["x"][0]
+def test_retenus_jamais_un_marche_hors_etude():
+    for lieu in E.LIEUX:
+        for cat in E.CATEGORIES: assert not {"total_plus_2.5", "btts_oui", "total_moins_3.5"} & set(_noms({"lieu": lieu, "ecart": cat}))
+
+def test_retenus_sans_condition():
+    assert E.retenus(None, ETUDE) == []
 
 # ---------------------------------------------------------------- la table versionnée du dépôt
 def test_table_du_depot_coherente():
@@ -121,12 +123,46 @@ def test_resume_classe_du_plus_au_moins_reussi():
         t = [x["taux"] for x in c["marches"]]; assert t == sorted(t, reverse=True) and all(x > 0.70 for x in t)
 
 # ---------------------------------------------------------------- gel des sélections de l'onglet Étude (mesure de la réussite réelle)
-def _match(mid, paris, ko="2026-11-20T18:00:00Z"):
-    return {"match_id": mid, "date": ko[:10], "coup_d_envoi_utc": ko, "statut": "a_venir", "domicile": "A", "exterieur": "B", "paris": {"equipes": paris}}
+def _pari(m, etude=None): return {"marche": m, "cote": 1.5, "taux": 0.7, "verdict": "TIENT", **({"etude": etude} if etude else {})}
+def _match(mid, ep, ko="2026-11-20T18:00:00Z"):
+    return {"match_id": mid, "date": ko[:10], "coup_d_envoi_utc": ko, "statut": "a_venir", "domicile": "A", "exterieur": "B", "paris": {}, "etude_paris": ep}
 
 def test_selection_etude_gelee_avant_le_match(tmp_path):
     j = str(tmp_path / "sel.jsonl")
-    d = {"genere_le": "2026-11-20T10:00:00Z", "matchs": [_match("m1", [{**_p("1N"), "verdict": "TIENT", "etude": {"taux": 0.8}}]), _match("m2", [{**_p("1N"), "verdict": "TIENT"}])]}
-    v.geler_selections(d, chemin=j)                                                          # m2 n'est dans l'onglet Étude que s'il porte la marque
-    L = v.lire_journal(j); assert [r["match_id"] for r in L if r["selection"] == "etude"] == ["m1"] and v.verifier_journal(j) == []
-    assert v.geler_selections(d, maintenant="2026-11-20T18:30:00Z", chemin=j) == 0          # après le coup d'envoi : plus de gel
+    d = {"genere_le": "2026-11-20T10:00:00Z", "matchs": [_match("m1", [_pari("1N", {"taux": 0.8})]), _match("m2", [])]}
+    v.geler_selections(d, chemin=j)
+    L = v.lire_journal(j); assert [r["match_id"] for r in L if r["selection"] == "etude"] == ["m1"] and v.verifier_journal(j) == []   # m2 : aucun marché retenu, rien à geler
+    assert v.geler_selections(d, maintenant="2026-11-20T18:30:00Z", chemin=j) == 0                                                 # après le coup d'envoi : plus de gel
+
+# ---------------------------------------------------------------- de bout en bout : la fiche d'un match (cotes, verdict de la page non filtrant)
+def _x(A, B, cotes, jour="2026-11-21"):
+    L = lambda eq, S, dom: [{"domicile": dom, "date": f"2026-10-{i + 1:02d}", "saison": "2627", "buts_marques": h, "buts_encaisses": a} for i, (h, a) in enumerate(S)]
+    return {"match_id": "t1", "date": jour, "coup_d_envoi_utc": f"{jour}T15:00:00Z", "domicile": "A", "exterieur": "B", "competition": "Championnat inconnu de l'étude", "cotes_betpawa": cotes,
+            "assemblage": {"saison_football_data": "2627", "equipe_dom": {"matchs": L("a", A, True)}, "equipe_ext": {"matchs": L("b", B, False)}}}
+COTES = {"1x2": {"1": 1.8, "N": 3.5, "2": 4.5}, "dc": {"1N": 1.2, "N2": 1.9, "12": 1.3}}
+
+def _fiche(A, B, cotes=COTES, etude=ETUDE):
+    import unittest.mock as mk
+    with mk.patch.object(E, "charger", return_value=etude): return v.fiche_match(_x(A, B, cotes), "2026-11-21T06:00:00Z", {"cote_min": 1.26})
+
+def test_fiche_tout_match_qui_remplit_la_condition_figure_avec_ses_marches():
+    f = _fiche([(2, 0)] * 6, [(1, 2)] * 6)                      # A marque 2,0 contre 1,0 et encaisse 0 contre 2 : double + écart 2 (grand)
+    assert f["etude"]["lieu"] == "dom" and f["etude"]["ecart"] == "grand"
+    P = {p["marche"]: p for p in f["etude_paris"]}
+    assert "1" in P and P["1"]["cote"] == 1.8 and P["1"]["etude"]["ecart"] == "grand"
+    assert "1N" not in P                                          # cote 1,20 sous le minimum 1,26 : seul filtre commun
+
+def test_fiche_le_verdict_de_la_page_ne_filtre_pas_l_etude():
+    f = _fiche([(2, 0)] * 6, [(1, 2)] * 6, {"1x2": {"1": 1.8, "N": 3.5, "2": 4.5}})
+    assert f["etude_paris"] and all(p["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE", "NE TIENT PAS") for p in f["etude_paris"])
+
+def test_fiche_match_sans_cote_figure_quand_meme():
+    f = _fiche([(2, 0)] * 6, [(1, 2)] * 6, {})
+    assert f["etude"] is not None and f["etude_paris"] == []
+
+@pytest.mark.parametrize("A, B", [([(1, 0)] * 6, [(1, 2)] * 6),         # pas le double (1,0 contre 1,0)
+                                  ([(2, 2)] * 6, [(1, 0)] * 6),          # le double mais pire défense
+                                  ([(2, 0)] * 3, [(1, 2)] * 6),          # 3 matchs seulement au même lieu
+                                  ([(0, 0)] * 6, [(0, 1)] * 6)])         # aucun but marqué
+def test_fiche_hors_condition_pas_d_etude(A, B):
+    f = _fiche(A, B); assert "etude" not in f and "etude_paris" not in f

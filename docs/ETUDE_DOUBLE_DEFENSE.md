@@ -12,7 +12,7 @@ Une équipe marque **au moins le double** des buts par match de son adversaire *
 - Matchs déjà joués uniquement (`data/bloc_saisons`), moyennes calculées AVANT chaque match (aucune fuite).
 - Case = lieu de l'équipe (domicile / extérieur) × catégorie d'écart. Pour chaque case et chaque marché étudié (victoire, double chance, l'équipe marque +0,5 / +1,5, double chance + plus de 1,5 buts, double chance + moins de 4,5 buts), le taux de réussite.
 - **Un marché n'est retenu que si son taux dépasse 70 % dans l'étude** (seuil de Patrick). Les marchés non étudiés ne sont jamais affichés (NO DATA → NO GO).
-- Sur la page : seuls les paris qui passent déjà les filtres d'Analyse Verdict (cote ≥ 1,26, 4 matchs au même lieu, verdict « Tient » ou « Tient avec réserve ») et qui sont retenus par l'étude portent la marque `etude` ; ils sont classés par taux de l'étude, du plus au moins réussi.
+- Sur la page : **tous les matchs qui remplissent la condition figurent dans l'onglet, dans tous les championnats** (l'étude ne distingue pas les championnats), même sans cote ni marché retenu (message explicite). Pour chaque match, les marchés retenus par l'étude dont la cote atteint 1,26 sont affichés, classés par taux de l'étude. **Aucun autre filtre de la page n'est appliqué** (ni le verdict, ni le Top 20) ; le verdict de la page reste affiché à titre d'information. Les marchés de ces paris sont dans `etude_paris` de chaque match de `page_verif.json` ; les autres onglets ne les voient pas.
 - Régénérer la table : `python verif_etude.py` (relit `data/bloc_saisons`, réécrit `etude_regles.json`). Aucune valeur n'est posée à la main, sauf 0,8, 70 % et les 4 matchs, qui viennent de Patrick.
 
 ## Mesure réelle

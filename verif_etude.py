@@ -6,7 +6,7 @@ au moins 4 matchs au même lieu pour chaque équipe). Elle est mesurée sur les 
 Défense : trois catégories d'écart (buts encaissés par l'adversaire moins ceux de l'équipe) :
   mince = de 0 à 0,8 but (seuil donné par Patrick) ; moyen = de 0,8 au seuil « grand » ; grand = au-delà. Le seuil « grand » est la médiane des écarts supérieurs ou égaux à 0,8 dans l'étude (il vient des données).
 Pour chaque case (lieu × catégorie × marché), l'étude donne le taux de réussite. Un marché n'est retenu que s'il dépasse 70 % dans l'étude (seuil de Patrick) ; sinon : pas de preuve, pas de pari (NO DATA -> NO GO).
-Marchés étudiés : victoire, double chance, l'équipe marque +0,5 / +1,5, double chance + plus de 1,5 buts, double chance + moins de 4,5 buts. Aucun autre marché n'est affiché par l'onglet.
+Marchés étudiés : victoire, double chance, l'équipe marque +0,5 / +1,5, double chance + plus de 1,5 buts, double chance + moins de 4,5 buts. Aucun autre marché n'est affiché par l'onglet. Tous les championnats sont traités pareil : l'étude ne distingue pas les championnats.
 Commande : python verif_etude.py  (relit l'étude et réécrit data/verif_pronostics/etude_regles.json)."""
 import gzip, json, os, statistics, sys
 from collections import defaultdict
@@ -101,16 +101,13 @@ def evaluer(SA, SB, n_dom, n_ext, etude):
                             "encaisses": [round(T["buts_encaisses"], 3), round(O["buts_encaisses"], 3)]}
     return None
 
-def marquer(paris, info, etude):
-    """Marque (clé « etude ») les paris de la page qui sont retenus par l'étude pour ce match : marché étudié, dans la case (lieu, catégorie) où son taux dépasse 70 %. -> nombre de paris marqués."""
-    if not info: return 0
-    case = etude["cellules"][info["lieu"]][info["ecart"]]; n = 0
-    for famille in paris.values():
-        for p in famille:
-            m = ETUDE_DE_MARCHE.get((info["lieu"], p["marche"]))
-            if m and case["marches"][m]["retenu"]:
-                p["etude"] = {"taux": case["marches"][m]["taux"], "n": case["n"], "ecart": info["ecart"], "lieu": info["lieu"]}; n += 1
-    return n
+def retenus(info, etude):
+    """Marchés retenus par l'étude pour ce match : ceux dont le taux dépasse 70 % dans la case (lieu, catégorie d'écart). -> [(marché de la page, marché de l'étude, {taux, n, ecart, lieu})], du plus au moins réussi.
+    Aucun filtre de la page (cote, verdict) n'est appliqué ici : l'étude seule décide du marché."""
+    if not info: return []
+    case = etude["cellules"][info["lieu"]][info["ecart"]]
+    L = [(MARCHE_PAGE[(info["lieu"], m)], m, {"taux": x["taux"], "n": case["n"], "ecart": info["ecart"], "lieu": info["lieu"]}) for m, x in case["marches"].items() if x["retenu"]]
+    return sorted(L, key=lambda t: -t[2]["taux"])
 
 def resume(etude):
     """Ce que la page affiche de l'étude : sources, seuils et, pour chaque case, les marchés retenus (du plus au moins réussi)."""

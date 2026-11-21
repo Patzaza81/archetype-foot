@@ -28,7 +28,9 @@ const typeEtude = (m) => (m.includes("&") ? "combos" : /^[12]$/.test(m) ? "victo
 const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.ecart) && (f.lieu === "tous" || p.etude.lieu === f.lieu) && (f.marche === "tous" || typeEtude(p.marche) === f.marche);
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const paris = (m, onglet, f) => (onglet === "etude" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => etudeOk(p, f || ETUDE_F))).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const paris = (m, onglet, f) => (onglet === "etude" ? (m.etude_paris || []).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+// Onglet Étude : tout match qui remplit la condition y figure (même sans marché à la cote minimale) ; les filtres écart et lieu portent sur le match, le filtre marché sur ses paris.
+const etudeMatch = (m, f) => { f = f || ETUDE_F; return !!m.etude && (f.ecart === "tous" || m.etude.ecart === f.ecart) && (f.lieu === "tous" || m.etude.lieu === f.lieu) && (f.marche === "tous" || paris(m, "etude", f).length > 0); };
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini, reco) {
@@ -60,7 +62,7 @@ function phraseEtude(m) {   // la condition remplie, en une phrase simple (valeu
 }
 function resume(m, onglet) {
   if (onglet === "etude") {
-    const p = paris(m, onglet)[0]; if (!p) return "";
+    const p = paris(m, onglet)[0]; if (!p) return phraseEtude(m) + `<div class="om-info">Aucun marché retenu par l'étude n'a de cote d'au moins ${fr(DONNEES && DONNEES.cote_min)} pour ce match.</div>`;
     return phraseEtude(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
   }
   if (onglet === "top20") {
@@ -155,12 +157,12 @@ function filtresEtude(d) {
     `<details class="om-bloc" style="margin:8px 14px"><summary>Résultats de l'étude, case par case</summary><table class="om-table"><tr><th>Case</th><th>Cas</th><th>Marchés retenus</th></tr>${lignes}</table></details>`;
 }
 function barreOnglets(d) {
-  const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => paris(m, o, TOUT).length).length;
+  const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => (o === "etude" ? etudeMatch(m, TOUT) : paris(m, o, TOUT).length)).length;
   return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : "");
 }
 function rendu(d) {
   TOP = top20(d);
-  let L = (d.matchs || []).filter((m) => paris(m, ONGLET).length);
+  let L = (d.matchs || []).filter((m) => (ONGLET === "etude" ? etudeMatch(m) : paris(m, ONGLET).length));
   if (ONGLET === "top20") L = L.filter((m) => TOP.has(m.match_id)).sort((a, b) => String(a.coup_d_envoi_utc).slice(0, 10) === String(b.coup_d_envoi_utc).slice(0, 10) && 0 || (horaire(a.coup_d_envoi_utc).date === horaire(b.coup_d_envoi_utc).date ? TOP.get(a.match_id).rang - TOP.get(b.match_id).rang : String(a.coup_d_envoi_utc).localeCompare(b.coup_d_envoi_utc)));
   const av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
   document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
