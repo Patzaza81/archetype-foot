@@ -1,0 +1,54 @@
+name: Infos de match (IA gratuite)
+
+# Workflow NOUVEAU et INDÉPENDANT : mode mesure, n'alimente ni moteur ni pronostic. Sans secret GEMINI_API_KEY il ne fait rien.
+# Clé GRATUITE uniquement (aucune facturation sur le projet Google). Voir docs/INFOS_MATCHS.md.
+on:
+  workflow_run:
+    workflows: ["Calibration P1 (mode parallèle)"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      essai:
+        description: "Un seul appel réel de contrôle (équipe domicile | équipe extérieur), rien n'est écrit"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline-archetype-foot
+  cancel-in-progress: false
+
+jobs:
+  infos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - name: Tests
+        run: python -m pytest tests/test_infos_matchs.py -q
+      - name: Essai (un appel réel, rien d'écrit)
+        if: ${{ inputs.essai != '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ESSAI: ${{ inputs.essai }}
+        run: |
+          DOM="${ESSAI%%|*}"; EXT="${ESSAI##*|}"
+          python infos_matchs.py essai "$DOM" "$EXT"
+      - name: Infos des matchs à venir
+        if: ${{ inputs.essai == '' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python infos_matchs.py
+      - name: Commit (dossier dédié seulement)
+        if: ${{ inputs.essai == '' }}
+        run: |
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add data/infos_matchs
+          git diff --cached --quiet || (git commit -m "Infos de match (IA gratuite, non confirmé)" && git pull --rebase origin main && git push origin HEAD:main)

@@ -33,6 +33,8 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 
 - Onglet « Étude » d'Analyse Verdict (depuis le 21/11/2026 ; `verif_etude.py`, `data/verif_pronostics/etude_regles.json`, branche `onglet-etude`) : condition « le double des buts marqués + une meilleure défense » (écart mince / moyen / grand), marchés retenus seulement s'ils dépassent 70 % dans l'étude sur matchs joués, sélection gelée « etude » : `docs/ETUDE_DOUBLE_DEFENSE.md`
 
+- Infos de match par IA gratuite (depuis le 21/11/2026 ; `infos_matchs.py`, `config/infos_matchs.json`, branche `infos-matchs-gemini`) : blessés, absents, suspendus, cartons rouges trouvés par Gemini + recherche Google, accès gratuit seulement, mode mesure (affichage « non confirmé » sur la page Analyse Verdict, aucun moteur ni pronostic ne les lit), sans clé `GEMINI_API_KEY` rien ne s'exécute : `docs/INFOS_MATCHS.md`
+
 ## Règles de sécurité
 
 - Les documents spécialisés font partie des instructions du projet : ne pas les ignorer lorsqu'une tâche relève de leur domaine.
