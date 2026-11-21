@@ -59,3 +59,9 @@ Pages : `archetype.html` (V2), `pronostics_v3.html` (V3), `journal.html`, `panie
 - **Bilan réel** : `bilan_selections()` (matchs terminés seulement), affiché dans le tableau de résultats de la page (lignes « Top 20 (recommandé) » et « Onglet Règles »), dès qu'un match gelé est terminé.
 - `top20_page()` recalcule le Top 20 exactement comme `archetype_verif.js` (contrôlé le 11/11 sur 493 matchs : 107 sélections identiques). Le classement de la page n'est pas modifié.
 - Le premier journal (`journal.jsonl` : 2 paris qui tiennent le mieux et 2 qui tiennent le moins bien par match) est inchangé.
+
+## Cote minimale par marché (21/11/2026, décision de Patrick)
+- Cote minimale générale : **1,26** (`config/verif_pronostic.json`, `cote_min`). **Exception : 1,24 pour le seul marché « plus de 1,5 buts »** du match (`total_plus_1.5`), clé `cote_min_par_marche` ; aucun autre marché n'est touché (ni « l'équipe marque plus de 1,5 », ni les combos +1,5, ni les autres lignes). Fonction `cote_min_de(cfg, marche)` dans `verif_pronostic.py`, utilisée par `constat`, `repli_combo` et l'onglet Étude ; l'en-tête de la page affiche l'exception.
+- Étude qui la justifie (matchs déjà joués, `data/bloc_saisons`, 11 127 matchs, 4 matchs minimum au même lieu, moyennes de la saison avant le match, pas de cotes +1,5 dans l'archive) : la règle « buts marqués cumulés des deux équipes ≥ 3,5 et encaissés cumulés ≥ 2,8 » (chaque équipe à son lieu) a réussi le +1,5 dans **83,6 %** de 599 matchs (intervalle à 95 % : 80,5–86,4 %), contre 76,1 % pour tous les matchs ; stable dans le temps. Cote d'équilibre : 1,20 (1,24 avec la borne basse de l'intervalle).
+- Limites : le championnat explique l'essentiel (≈ 81,2 % attendu par le seul championnat, apport propre de la règle ≈ +2,4 points, p ≈ 0,07) ; pas d'effet de dose au-delà de 3,5 ; au-dessus de 1,24 le gain attendu est faible (+0,6 % à 1,25 avec la borne basse).
+- Tests : `tests/test_verif_pronostic.py::CoteMinimaleParMarche`.

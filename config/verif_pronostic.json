@@ -1,4 +1,7 @@
 {
   "cote_min": 1.26,
-  "origine": "Regle de l'utilisateur (07/11/2026) : ne jamais proposer une cote inferieure a 1,26 (avant 1,20). Pas une valeur calibree."
+  "origine": "Regle de l'utilisateur (07/11/2026) : ne jamais proposer une cote inferieure a 1,26 (avant 1,20). Pas une valeur calibree. Exception du 21/11/2026 (decision de l'utilisateur) : 1,24 pour le seul marche « plus de 1,5 buts » (total_plus_1.5), apres etude sur 11 127 matchs joues : 599 matchs verifiant « marques >= 3,5 et encaisses >= 2,8 » ont reussi a 83,6 % (80,5-86,4 %), contre 76,1 % pour tous les matchs ; cote d'equilibre 1,20 (1,24 avec la borne basse).",
+  "cote_min_par_marche": {
+    "total_plus_1.5": 1.24
+  }
 }

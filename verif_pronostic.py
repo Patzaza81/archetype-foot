@@ -94,6 +94,10 @@ def libelle(n, dom, ext):
 def config():
     return json.load(open(CONFIG, encoding="utf-8"))
 
+def cote_min_de(cfg, marche):
+    """Cote minimale d'un marché : la valeur propre au marché si config/verif_pronostic.json en donne une (cote_min_par_marche), sinon la cote minimale générale."""
+    return (cfg.get("cote_min_par_marche") or {}).get(marche, cfg["cote_min"])
+
 # ---------------------------------------------------------------- statistiques
 def wilson(k, n, z=Z95):
     if n <= 0: return (0.0, 1.0)
@@ -222,7 +226,8 @@ def constat(x, marche, cote=None, cfg=None):
     Regle : le pari tient si, des deux cotes, il serait passe plus souvent que rate ; reserve si d'un seul cote ; ne tient pas sinon.
     Le xG signale une tendance cachee : xG cree > buts marques = attaque qui peut mieux faire ; xG concede > buts encaisses = defense chanceuse."""
     cfg = cfg or config(); a = x.get("assemblage") or {}; saison = a.get("saison_football_data"); jour = x["date"]
-    if cote is not None and cote < cfg["cote_min"]: return {"verdict": "REFUSÉ", "phrase": f"Cote {cote} sous le minimum {cfg['cote_min']}."}
+    cmin = cote_min_de(cfg, marche)
+    if cote is not None and cote < cmin: return {"verdict": "REFUSÉ", "phrase": f"Cote {cote} sous le minimum {cmin}."}
     def pris(eq, dom):
         M = [m for m in (a.get(eq) or {}).get("matchs") or [] if m.get("domicile") is dom and m.get("date") and m["date"] < jour and m.get("buts_marques") is not None and m.get("buts_encaisses") is not None]
         S = [m for m in M if m.get("saison") == saison] if saison else M
@@ -390,7 +395,9 @@ def analyse(x, cfg=None):
     L += ["", "**Constats**"]
     for nom, S in ((d, SA), (e, SB)):
         if S["surperformance"] is not None: L.append(f"- **{nom}** marque {f(S['buts_marques'], 1)} buts par match pour {f(S['xg_cree'])} xG, soit {f(abs(S['surperformance']), 2)} de {'plus' if S['surperformance'] >= 0 else 'moins'} qu'attendu ; il encaisse {f(S['buts_encaisses'], 1)} pour {f(S['xg_concede'])} xG concédé.")
-    L += ["", f"Le xG vient de la saison en cours ; cote minimale {str(cfg['cote_min']).replace('.', ',')}."]
+    nom = lambda m: ("plus de " + m[len("total_plus_"):].replace(".", ",") + " buts") if m.startswith("total_plus_") else m
+    exc = "".join(f" ({str(c).replace('.', ',')} pour {nom(m)})" for m, c in (cfg.get("cote_min_par_marche") or {}).items())
+    L += ["", f"Le xG vient de la saison en cours ; cote minimale {str(cfg['cote_min']).replace('.', ',')}{exc}."]
     return "\n".join(L)
 
 COMBOS = ("1N&total_plus_", "1N&total_moins_", "N2&total_plus_", "N2&total_moins_", "12&total_plus_", "12&total_moins_")
@@ -399,12 +406,12 @@ def repli_combo(x, marche, cote, cfg=None, n=3):
     """Regle de l'utilisateur (07/11) : un pari sous la cote minimale mais TRES SOLIDE (verdict TIENT sans tenir compte de la cote) est remplace par ses combos
     double chance + plus de buts / double chance + moins de buts, retenus seulement s'ils passent tous les filtres (cote >= minimum, verdict TIENT). -> liste, du plus au moins fiable."""
     cfg = cfg or config()
-    if cote is None or cote >= cfg["cote_min"]: return []
+    if cote is None or cote >= cote_min_de(cfg, marche): return []
     base = constat(x, marche, None, cfg)
     if base["verdict"] != "TIENT": return []
     R = []
     for m, c in cotes_betpawa(x.get("cotes_betpawa") or {}).items():
-        if not m.startswith(COMBOS) or c < cfg["cote_min"]: continue
+        if not m.startswith(COMBOS) or c < cote_min_de(cfg, m): continue
         r = constat(x, m, c, cfg)
         if r["verdict"] == "TIENT": R.append({"marche": m, **r})
     R.sort(key=lambda r: -r["force"]); return R[:n]
@@ -454,7 +461,7 @@ def fiche_match(x, maintenant, cfg):
         cotes = cotes_betpawa(x.get("cotes_betpawa") or {})
         for mp, me, z in VE.retenus(info, etude):
             c = cotes.get(mp)
-            if c is None or c < cfg["cote_min"]: continue
+            if c is None or c < cote_min_de(cfg, mp): continue
             r = constat(x, mp, c, cfg); A, B = r["A"], r["B"]
             e = {"marche": mp, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"], "etude": z}
             if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[mp]])
@@ -483,7 +490,7 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
     import verif_etude as VE
-    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "matchs": M}
+    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "cote_min_par_marche": cfg.get("cote_min_par_marche") or {}, "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "matchs": M}
 
 def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
