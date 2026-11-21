@@ -25,7 +25,7 @@ Les seuils appris sur la fenêtre fixe de 5 ne valaient pas pour une fenêtre va
 
 ## Résultats de calibrage / validation de l'ancienne règle (fenêtre de 5 ; archive, 525 matchs du 28/09 au 01/11/2026)
 Mis à jour par l'audit du 02/11/2026 : voir `docs/AUDIT_OMEGA_V3.md` (méthode, sources, limites).
-- 383 marchés générés ; calibrage sur la **population jouable** (cote ≥ 1,26) : 13 marchés ont un seuil.
+- 417 marchés générés (383 avant le 21/11/2026 : la borne d'écart est passée de 9 à 10 après Aguilas 10-0 Army, Philippines PFL) ; calibrage sur la **population jouable** (cote ≥ 1,26) : 13 marchés ont un seuil.
 - Réserve chronologique (28/10 au 01/11, seuils appris avant) : 269 paris, 71,8 % réussis contre 75,7 % annoncés (écart 4,0 points, IC 95 % −0,9 à +10,0).
 - Ancien calibrage (toutes observations) : 533 paris, 69,8 % contre 77,1 % : biais de sélection prouvé (voir l'audit).
 - Aucune validation n'est annoncée ; seuls les paris gelés réels trancheront.
