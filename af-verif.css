@@ -25,3 +25,5 @@
 .theme-nuit .vf-etude{border-color:#B79CF2;color:#CDB9FA}
 .vf-filtres{align-items:center;margin:4px 14px 2px}
 .vf-filtre-titre{flex:0 0 100%;font-size:11px;font-weight:700;opacity:.7;margin-top:4px}
+/* onglet Étude : carte repliée = le meilleur marché ; dépliée = tous les marchés retenus (le meilleur y figure déjà) */
+.ax-carte:not(.ax-replie) .vf-meilleur{display:none}

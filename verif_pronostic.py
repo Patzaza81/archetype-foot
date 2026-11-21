@@ -476,8 +476,9 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     for f in sorted(glob.glob(os.path.join(flux, "*.json.gz"))):
         if os.path.basename(f)[:10] < depuis: continue
         for x in json.load(gzip.open(f)).values():
+            if not x.get("cotes_betpawa"): continue
             fm = fiche_match(x, maintenant, cfg)
-            if any(fm["paris"].values()) or fm.get("etude"): M.append(fm)       # un match qui remplit la condition de l'étude figure sur la page même sans pari ni cote
+            if any(fm["paris"].values()) or fm.get("etude_paris"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}

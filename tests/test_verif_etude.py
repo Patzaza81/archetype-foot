@@ -63,7 +63,7 @@ def test_marches_identiques_au_catalogue_de_la_page(m):
             assert bool(f(gf, ga)) == bool(v.CATALOGUE[mext](ga, gf)), (m, "extérieur", gf, ga)    # équipe à l'extérieur : buts marqués = away
 
 # ---------------------------------------------------------------- évaluer un match, marquer les paris retenus
-ETUDE = {"seuils": {"ecart_grand_min": GRAND}, "cellules": {l: {c: {"n": 100, "marches": {m: {"taux": 0.8, "retenu": True} for m in E.MARCHES}} for c in E.CATEGORIES} for l in E.LIEUX}}
+ETUDE = {"source": {}, "seuils": {"ecart_grand_min": GRAND}, "cellules": {l: {c: {"n": 100, "marches": {m: {"taux": 0.8, "retenu": True} for m in E.MARCHES}} for c in E.CATEGORIES} for l in E.LIEUX}}
 ETUDE["cellules"]["dom"]["mince"]["marches"]["equipe_plus_1.5"] = {"taux": 0.625, "retenu": False}
 
 def test_evaluer_domicile_mince():
@@ -156,9 +156,9 @@ def test_fiche_le_verdict_de_la_page_ne_filtre_pas_l_etude():
     f = _fiche([(2, 0)] * 6, [(1, 2)] * 6, {"1x2": {"1": 1.8, "N": 3.5, "2": 4.5}})
     assert f["etude_paris"] and all(p["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE", "NE TIENT PAS") for p in f["etude_paris"])
 
-def test_fiche_match_sans_cote_figure_quand_meme():
+def test_fiche_match_sans_cote_n_a_aucun_marche():
     f = _fiche([(2, 0)] * 6, [(1, 2)] * 6, {})
-    assert f["etude"] is not None and f["etude_paris"] == []
+    assert f["etude"] is not None and f["etude_paris"] == []           # la page l'écarte de l'onglet (voir test_page_*)
 
 @pytest.mark.parametrize("A, B", [([(1, 0)] * 6, [(1, 2)] * 6),         # pas le double (1,0 contre 1,0)
                                   ([(2, 2)] * 6, [(1, 0)] * 6),          # le double mais pire défense
@@ -166,3 +166,24 @@ def test_fiche_match_sans_cote_figure_quand_meme():
                                   ([(0, 0)] * 6, [(0, 1)] * 6)])         # aucun but marqué
 def test_fiche_hors_condition_pas_d_etude(A, B):
     f = _fiche(A, B); assert "etude" not in f and "etude_paris" not in f
+
+# ---------------------------------------------------------------- la page : seuls les matchs avec au moins un marché retenu restent
+def _flux(tmp_path, matchs):
+    import gzip as gz
+    dossier = tmp_path / "flux"; dossier.mkdir()
+    with gz.open(str(dossier / "2026-11-21.json.gz"), "wt", encoding="utf-8") as f: json.dump({x["match_id"]: x for x in matchs}, f)
+    return str(dossier)
+
+def _page(tmp_path, matchs):
+    import unittest.mock as mk
+    with mk.patch.object(E, "charger", return_value=ETUDE): return v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, matchs), cfg={"cote_min": 1.26, "sans_regles": True})["matchs"]
+
+def test_page_garde_le_match_avec_un_marche_retenu(tmp_path):
+    x = _x([(2, 0)] * 6, [(1, 2)] * 6, COTES); assert [m["match_id"] for m in _page(tmp_path, [x])] == ["t1"]
+
+@pytest.mark.parametrize("cotes", [{}, {"1x2": {"1": 1.1, "N": 9.0, "2": 15.0}, "dc": {"1N": 1.05, "N2": 5.0, "12": 1.1}}])    # pas de cote ; cotes toutes sous 1,26 : aucun marché retenu à cote valable
+def test_page_ecarte_le_match_sans_marche_retenu(tmp_path, cotes):
+    x = _x([(2, 0)] * 6, [(1, 2)] * 6, cotes); assert _page(tmp_path, [x]) == []
+
+def test_page_ecarte_le_match_hors_condition_sans_pari(tmp_path):
+    x = _x([(0, 0)] * 6, [(0, 1)] * 6, {}); assert _page(tmp_path, [x]) == []

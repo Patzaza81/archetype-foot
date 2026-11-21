@@ -29,8 +29,8 @@ const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
 const paris = (m, onglet, f) => (onglet === "etude" ? (m.etude_paris || []).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
-// Onglet Étude : tout match qui remplit la condition y figure (même sans marché à la cote minimale) ; les filtres écart et lieu portent sur le match, le filtre marché sur ses paris.
-const etudeMatch = (m, f) => { f = f || ETUDE_F; return !!m.etude && (f.ecart === "tous" || m.etude.ecart === f.ecart) && (f.lieu === "tous" || m.etude.lieu === f.lieu) && (f.marche === "tous" || paris(m, "etude", f).length > 0); };
+// Onglet Étude : seuls les matchs qui ont au moins un marché retenu par l'étude y figurent ; les filtres (écart, lieu, marché) portent sur ces marchés.
+const etudeMatch = (m, f) => paris(m, "etude", f || ETUDE_F).length > 0;
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini, reco) {
@@ -62,8 +62,8 @@ function phraseEtude(m) {   // la condition remplie, en une phrase simple (valeu
 }
 function resume(m, onglet) {
   if (onglet === "etude") {
-    const p = paris(m, onglet)[0]; if (!p) return phraseEtude(m) + `<div class="om-info">Aucun marché retenu par l'étude n'a de cote d'au moins ${fr(DONNEES && DONNEES.cote_min)} pour ce match.</div>`;
-    return phraseEtude(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
+    const p = paris(m, onglet)[0]; if (!p) return "";
+    return phraseEtude(m) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
   }
   if (onglet === "top20") {
     const t = TOP.get(m.match_id); if (!t) return "";
