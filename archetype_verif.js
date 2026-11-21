@@ -16,7 +16,7 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["etude", "Étude"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["etude", "Étude"], ["plus15", "+1,5 buts"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
 const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire", regles: "Marchés à règle validée", etude: "Marchés retenus par l'étude" };
 const COTE_TOP = 1.34;
 const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
@@ -28,16 +28,16 @@ const typeEtude = (m) => (m.includes("&") ? "combos" : /^[12]$/.test(m) ? "victo
 const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.ecart) && (f.lieu === "tous" || p.etude.lieu === f.lieu) && (f.marche === "tous" || typeEtude(p.marche) === f.marche);
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const paris = (m, onglet, f) => (onglet === "etude" ? (m.etude_paris || []).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const paris = (m, onglet, f) => (onglet === "plus15" ? (m.regle_buts ? [m.regle_buts.pari] : []) : onglet === "etude" ? (m.etude_paris || []).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
 // Onglet Étude : seuls les matchs qui ont au moins un marché retenu par l'étude y figurent ; les filtres (écart, lieu, marché) portent sur ces marchés.
 const etudeMatch = (m, f) => paris(m, "etude", f || ETUDE_F).length > 0;
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
 
 function ligne(p, fini, reco) {
-  const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT";
+  const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT", libVerdict = tient ? "Tient" : p.verdict === "NE TIENT PAS" ? "Ne tient pas" : "Tient avec réserve";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
-  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} cas, écart de défense ${e(p.etude.ecart)}` : ""}</small></span>` +
-    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${tient ? "Tient" : "Tient avec réserve"}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
+  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} cas, écart de défense ${e(p.etude.ecart)}` : ""}${ONGLET === "plus15" ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}</small></span>` +
+    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${libVerdict}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
 // Critère du Top 20 (09/11, d'après les résultats réels des 7 et 8 nov) : la réussite observée seule ne classe pas (les paris « les plus solides » sont les moins réussis),
@@ -60,7 +60,27 @@ function phraseEtude(m) {   // la condition remplie, en une phrase simple (valeu
   const dom = x.lieu === "dom", nom = dom ? m.domicile : m.exterieur, adv = dom ? m.exterieur : m.domicile;
   return `<div class="om-info"><b>${e(nom)}</b> (${dom ? "à domicile" : "à l'extérieur"}) marque ${fr(x.marques[0], 1)} but(s) par match contre ${fr(x.marques[1], 1)} pour ${e(adv)}, et en encaisse ${fr(x.encaisses[0], 1)} contre ${fr(x.encaisses[1], 1)} : écart de défense <b>${e(ECARTS[x.ecart] || x.ecart)}</b> (${fr(x.valeur_ecart, 2)} but).</div>`;
 }
+// Onglet « +1,5 buts » : la règle de buts de Patrick (marqués >= 3,5 et encaissés >= 2,8, 4 matchs au même lieu), marché « plus de 1,5 buts » seulement. Valeurs écrites par verif_regle_buts.py : aucun calcul ici.
+function textePlus15(R) {
+  const E = R && R.etude; if (!E || E.taux == null) return "";
+  return ` · Règle : ${Math.round(E.taux * 100)} % de +1,5 sur ${e(E.matchs)} matchs déjà joués`;
+}
+function noteRegle(d) {
+  const R = d.regle_buts; if (!R) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
+  const r = R.regle, E = R.etude, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
+  return `<p class="om-info" style="margin:8px 14px">Ta règle : les deux équipes, chacune à son lieu, marquent à elles deux au moins <b>${fr(r.marques_min, 1)}</b> buts par match et en encaissent au moins <b>${fr(r.encaisses_min, 1)}</b> (${e(r.n_min)} matchs minimum au même lieu). ` +
+    `Marché affiché : plus de 1,5 buts, cote minimale <b>${fr(r.cote_min)}</b>. Sur <b>${e(E.matchs)}</b> matchs déjà joués où la règle était remplie, le +1,5 est passé <b>${pc(E.taux)}</b> du temps (hors règle : ${pc(E.hors_regle.taux)}), ` +
+    `intervalle ${pc(E.borne_basse)} à ${pc(E.borne_haute)} ; cote d'équilibre ${fr(E.cote_equilibre)}, prudente ${fr(E.cote_equilibre_prudente)}.</p>`;
+}
+function phraseRegle(m) {
+  const x = m.regle_buts, R = (DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.regle) || {}; if (!x) return "";
+  return `<div class="om-info"><b>${e(m.domicile)}</b> (à domicile) et <b>${e(m.exterieur)}</b> (à l'extérieur) marquent à eux deux <b>${fr(x.marques, 1)}</b> buts par match (règle : ${fr(R.marques_min, 1)} ou plus) et en encaissent <b>${fr(x.encaisses, 1)}</b> (règle : ${fr(R.encaisses_min, 1)} ou plus), sur ${e(x.n_dom)} et ${e(x.n_ext)} matchs au même lieu.</div>`;
+}
 function resume(m, onglet) {
+  if (onglet === "plus15") {
+    const p = paris(m, onglet)[0]; if (!p) return "";
+    return phraseRegle(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Plus de 1,5 buts · règle remplie</div>${ligne(p, m.statut === "termine")}</div>`;
+  }
   if (onglet === "etude") {
     const p = paris(m, onglet)[0]; if (!p) return "";
     return phraseEtude(m) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
@@ -73,6 +93,7 @@ function resume(m, onglet) {
   return `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${onglet === "tous" ? "Meilleur pari du match" : "Meilleur : " + TITRES[onglet].toLowerCase()}</div>${ligne(p, m.statut === "termine")}</div>`;
 }
 function listes(m, onglet) {            // carte dépliée : tous les paris de l'onglet, du plus au moins réussi
+  if (onglet === "plus15") return "";   // un seul marché : tout est déjà dans le résumé
   if (onglet === "etude") { const L = paris(m, onglet); return L.length ? `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES.etude} (${L.length}) · du plus au moins réussi dans l'étude</div>${L.map((p) => ligne(p, m.statut === "termine")).join("")}</div>` : ""; }
   const fini = m.statut === "termine", cles = onglet === "tous" || onglet === "regles" ? ORDRE_FAMILLES : [onglet];
   return cles.map((k) => {
@@ -158,7 +179,7 @@ function filtresEtude(d) {
 }
 function barreOnglets(d) {
   const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => (o === "etude" ? etudeMatch(m, TOUT) : paris(m, o, TOUT).length)).length;
-  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : "");
+  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : ONGLET === "plus15" ? noteRegle(d) : "");
 }
 function rendu(d) {
   TOP = top20(d);
@@ -170,7 +191,7 @@ function rendu(d) {
 }
 // Réussite réelle du Top 20 et de l'onglet Règles : leur dernier état gelé avant le coup d'envoi (journal_selections.jsonl), matchs terminés. Rien n'est affiché tant qu'aucun n'est terminé.
 function selectionsGelees(d) {
-  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"]];
+  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"], ["regle_buts", "Onglet +1,5 buts"]];
   return noms.filter(([k]) => S[k] && S[k].paris).map(([k, t]) => `<tr><td style="text-align:left">${t}</td><td>${e(S[k].paris)}</td><td>${e(S[k].reussis)}</td><td>${Math.round(S[k].taux_reel * 100)} %</td></tr>`).join("");
 }
 function bilan(d) {

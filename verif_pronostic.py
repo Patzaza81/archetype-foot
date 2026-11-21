@@ -459,6 +459,16 @@ def fiche_match(x, maintenant, cfg):
             e = {"marche": mp, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"], "etude": z}
             if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[mp]])
             EP.append(e)
+    import verif_regle_buts as RB             # onglet « +1,5 buts » : règle de buts de Patrick (marqués >= 3,5 et encaissés >= 2,8, 4 matchs au même lieu), marché « plus de 1,5 buts » seulement, cote >= 1,24
+    regle_b = RB.charger(); RBL = None
+    if regle_b:
+        r1 = constat(x, "1N", None, cfg); info_b = RB.evaluer(r1.get("A"), r1.get("B")) if "A" in r1 else None
+        cb = cotes_betpawa(x.get("cotes_betpawa") or {}).get(RB.MARCHE)
+        if info_b and cb is not None and cb >= regle_b["regle"]["cote_min"]:
+            r = constat(x, RB.MARCHE, None, cfg); A, B = r["A"], r["B"]          # sans filtre de cote : la cote minimale de cet onglet (1,24) est contrôlée ci-dessus
+            e = {"marche": RB.MARCHE, "libelle": r["libelle"], "cote": cb, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"]}
+            if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[RB.MARCHE]])
+            RBL = {**info_b, "pari": e}
     arr = lambda u: None if u is None else round(u, 3)
     av = champ["avantage_dom"]
     return {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x["domicile"], "exterieur": x["exterieur"], "statut": statut,
@@ -467,7 +477,7 @@ def fiche_match(x, maintenant, cfg):
             "equipes": {"dom": {k: arr(SA[k]) if isinstance(SA[k], float) else SA[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "ext": {k: arr(SB[k]) if isinstance(SB[k], float) else SB[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "xg_est": champ["xg_est"], "avantage_dom": arr(av), "matchs": champ["n"]}},
-            "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {})}
+            "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {}), **({"regle_buts": RBL} if RBL else {})}
 
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
@@ -478,12 +488,12 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
         for x in json.load(gzip.open(f)).values():
             if not x.get("cotes_betpawa"): continue
             fm = fiche_match(x, maintenant, cfg)
-            if any(fm["paris"].values()) or fm.get("etude_paris"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
+            if any(fm["paris"].values()) or fm.get("etude_paris") or fm.get("regle_buts"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
     import verif_etude as VE
-    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "matchs": M}
+    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "regle_buts": __import__("verif_regle_buts").charger(), "matchs": M}
 
 def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
@@ -523,6 +533,7 @@ def selections_page(d):
         out[(m["match_id"], "top20")] = [court(T[m["match_id"]]["pari"])] if m["match_id"] in T else []
         out[(m["match_id"], "regles")] = [court(p) for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p.get("regle")]
         out[(m["match_id"], "etude")] = [court(p) for p in m.get("etude_paris") or []]
+        out[(m["match_id"], "regle_buts")] = [court(m["regle_buts"]["pari"])] if m.get("regle_buts") else []
     return out, {m["match_id"]: m for m in d.get("matchs") or []}
 
 def geler_selections(d, maintenant=None, chemin=JOURNAL_SELECTIONS):
