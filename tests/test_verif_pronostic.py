@@ -198,6 +198,30 @@ class LectureXG(unittest.TestCase):
     def test_attendus(self):
         A = {"xg_cree": 2.0, "xg_concede": 0.5}; B = {"xg_cree": 1.0, "xg_concede": 1.5}; self.assertEqual(v._attendus(A, B, ("xg_cree", "xg_concede"), ("xg_cree", "xg_concede")), (1.75, 0.75))
 
+
+class CoteMinimaleParMarche(unittest.TestCase):
+    """21/11/2026 (decision de l'utilisateur) : cote minimale 1,24 pour le seul marche « plus de 1,5 buts » (total_plus_1.5) ; tous les autres restent a 1,26."""
+    CFG24 = {"cote_min": 1.26, "sans_regles": True, "cote_min_par_marche": {"total_plus_1.5": 1.24}}
+    M = staticmethod(lambda: MATCH([(2, 1)] * 6, [(1, 2)] * 6))
+    def test_plus_1_5_accepte_des_1_24(self):             # 3 cotes acceptees
+        for c in (1.24, 1.25, 1.26): self.assertNotEqual(v.constat(self.M(), "total_plus_1.5", c, self.CFG24)["verdict"], "REFUSÉ", c)
+    def test_plus_1_5_refuse_sous_1_24(self):             # 3 cotes refusees
+        for c in (1.239, 1.20, 1.12): self.assertEqual(v.constat(self.M(), "total_plus_1.5", c, self.CFG24)["verdict"], "REFUSÉ", c)
+    def test_les_autres_marches_restent_a_1_26(self):     # 4 marches refuses a 1,24 / 1,25, dont le plus de 1,5 d'une equipe et le combo +1,5
+        for m, c in (("total_plus_2.5", 1.24), ("1", 1.25), ("dom_plus_1.5", 1.25), ("1N&total_plus_1.5", 1.25), ("total_plus_0.5", 1.25)):
+            self.assertEqual(v.constat(self.M(), m, c, self.CFG24)["verdict"], "REFUSÉ", (m, c))
+    def test_les_autres_marches_acceptes_a_1_26(self):
+        for m in ("total_plus_2.5", "1", "dom_plus_1.5"): self.assertNotEqual(v.constat(self.M(), m, 1.26, self.CFG24)["verdict"], "REFUSÉ", m)
+    def test_sans_exception_le_plus_1_5_reste_a_1_26(self):   # la configuration generale n'a pas change
+        for c in (1.24, 1.25): self.assertEqual(v.constat(self.M(), "total_plus_1.5", c, CFG)["verdict"], "REFUSÉ", c)
+        self.assertNotEqual(v.constat(self.M(), "total_plus_1.5", 1.26, CFG)["verdict"], "REFUSÉ")
+    def test_cote_min_de(self):
+        self.assertEqual(v.cote_min_de(self.CFG24, "total_plus_1.5"), 1.24); self.assertEqual(v.cote_min_de(self.CFG24, "total_plus_2.5"), 1.26); self.assertEqual(v.cote_min_de(CFG, "total_plus_1.5"), 1.26)
+    def test_pas_de_repli_combo_pour_un_plus_1_5_a_1_24(self):  # le pari est accepte : aucun remplacement par un combo
+        self.assertEqual(v.repli_combo(self.M(), "total_plus_1.5", 1.24, self.CFG24), [])
+    def test_configuration_livree(self):
+        c = v.config(); self.assertEqual(c["cote_min"], 1.26); self.assertEqual(c["cote_min_par_marche"], {"total_plus_1.5": 1.24})
+
 if __name__ == "__main__":
     unittest.main()
 

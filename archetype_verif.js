@@ -186,7 +186,7 @@ function affiche(d) {
   document.getElementById("vf-bilan").innerHTML = bilan(d); rendu(d);
   document.getElementById("vf-onglets").addEventListener("click", (ev) => { const f = ev.target.closest("[data-filtre]"); if (f) { const [k, v] = f.dataset.filtre.split(":"); ETUDE_F[k] = v; rendu(DONNEES); return; } const b = ev.target.closest("[data-vf]"); if (!b) return; ONGLET = b.dataset.vf; rendu(DONNEES); });
   const g = d.genere_le ? new Date(d.genere_le) : null;
-  document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime()) ? `Données du ${g.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" })} (heure du Cameroun) · ${L.length} match(s) · cote minimale ${fr(d.cote_min)} · au moins ${e(d.minimum_matchs_meme_lieu)} matchs au même lieu par équipe` : "";
+  document.getElementById("maj").textContent = g && !Number.isNaN(g.getTime()) ? `Données du ${g.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "medium", timeStyle: "short" })} (heure du Cameroun) · ${L.length} match(s) · cote minimale ${fr(d.cote_min)}${Object.entries(d.cote_min_par_marche || {}).map(([m, c]) => ` (${fr(c)} pour ${m.startsWith("total_plus_") ? "plus de " + fr(Number(m.slice(11)), 1) + " buts" : m})`).join("")} · au moins ${e(d.minimum_matchs_meme_lieu)} matchs au même lieu par équipe` : "";
 }
 (function theme() {
   const bouton = document.getElementById("ax-bouton-theme"); if (!bouton) return;
