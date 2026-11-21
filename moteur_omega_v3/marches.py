@@ -29,11 +29,11 @@ NON_CALCULABLES = (
     "pair / impair (sans logique de tendance, exclu par décision de Patrick)",
 )
 
-# Plus hautes valeurs observées dans l'historique réel (data/assemblage, audit du 02/11/2026 ; relevées le 13/11/2026 : Spartans 1-10 Glasgow City, 08/11). Elles bornent les lignes générées : au-delà, le marché ne peut plus
+# Plus hautes valeurs observées dans l'historique réel (data/assemblage, audit du 02/11/2026 ; relevées le 13/11/2026 : Spartans 1-10 Glasgow City, 08/11 ; écart relevé à 10 le 21/11/2026 : Aguilas 10-0 Army, Philippines PFL, 08/11). Elles bornent les lignes générées : au-delà, le marché ne peut plus
 # distinguer deux scores réels (« plus de X » toujours perdu, « moins de X » toujours gagné). `tests/test_moteur_omega_v3.py` échoue si l'historique les dépasse.
 MAX_EQUIPE = 10
 MAX_TOTAL = 11
-MAX_ECART = 9
+MAX_ECART = 10
 LIGNES_TOTAL = tuple(x + 0.5 for x in range(MAX_TOTAL))                              # 0,5 … 9,5
 LIGNES_TOTAL_ENTIERES = tuple(range(1, MAX_TOTAL))                                   # 1 … 9
 LIGNES_EQUIPE = tuple(x + 0.5 for x in range(MAX_EQUIPE))                            # 0,5 … 8,5

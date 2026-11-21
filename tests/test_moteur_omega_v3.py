@@ -445,7 +445,7 @@ def test_frequence_brute_egale_ponderation_marginale():
 from collections import Counter  # noqa: E402
 
 
-def test_les_383_marches_egalent_les_definitions_independantes_sur_toute_la_grille():
+def test_tous_les_marches_egalent_les_definitions_independantes_sur_toute_la_grille():
     assert len(M.CLES) == len(set(M.CLES))
     for c in M.CLES:
         _, formule, fn = Df.definition(*c)
