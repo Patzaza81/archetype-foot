@@ -21,3 +21,9 @@
 .vf-regle{display:inline-block;padding:1px 7px;border-radius:999px;border:1px solid #1F7A3E;color:#1F7A3E;font-size:.7rem;font-weight:700}
 .theme-nuit .vf-regle{border-color:#5fd38d;color:#5fd38d}
 .vf-reco{display:inline-block;padding:2px 8px;border-radius:999px;background:#1F7A3E;color:#fff;font-size:.72rem;font-weight:700}
+.vf-etude{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #7B4FD6;color:#5B35B0;font-size:.7rem;font-weight:700;white-space:nowrap}
+.theme-nuit .vf-etude{border-color:#B79CF2;color:#CDB9FA}
+.vf-filtres{align-items:center;margin:4px 14px 2px}
+.vf-filtre-titre{flex:0 0 100%;font-size:11px;font-weight:700;opacity:.7;margin-top:4px}
+/* onglet Étude : carte repliée = le meilleur marché ; dépliée = tous les marchés retenus (le meilleur y figure déjà) */
+.ax-carte:not(.ax-replie) .vf-meilleur{display:none}

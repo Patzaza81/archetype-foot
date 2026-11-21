@@ -1,0 +1,233 @@
+{
+ "version": 1,
+ "source": {
+  "fichier": "data/bloc_saisons/bloc_2526_2627.json.gz",
+  "matchs_joues": 16558,
+  "du": "2025-01-23",
+  "au": "2026-10-16",
+  "cas": 852
+ },
+ "condition": "une équipe marque au moins le double des buts par match de son adversaire et encaisse moins (saison en cours, avant le match, 4 matchs minimum au même lieu)",
+ "seuils": {
+  "ecart_mince_max": 0.8,
+  "ecart_grand_min": 1.0489,
+  "retenu_min": 0.7,
+  "origine": "0,8 et 70 % : décisions de Patrick (21/11/2026) ; seuil « grand » = médiane des écarts >= 0,8 dans l'étude"
+ },
+ "cellules": {
+  "dom": {
+   "mince": {
+    "n": 295,
+    "marches": {
+     "victoire": {
+      "reussis": 208,
+      "taux": 0.7051,
+      "retenu": true
+     },
+     "double_chance": {
+      "reussis": 259,
+      "taux": 0.878,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 269,
+      "taux": 0.9119,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 184,
+      "taux": 0.6237,
+      "retenu": false
+     },
+     "dc_plus_1.5": {
+      "reussis": 210,
+      "taux": 0.7119,
+      "retenu": true
+     },
+     "dc_moins_4.5": {
+      "reussis": 208,
+      "taux": 0.7051,
+      "retenu": true
+     }
+    }
+   },
+   "moyen": {
+    "n": 47,
+    "marches": {
+     "victoire": {
+      "reussis": 39,
+      "taux": 0.8298,
+      "retenu": true
+     },
+     "double_chance": {
+      "reussis": 45,
+      "taux": 0.9574,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 45,
+      "taux": 0.9574,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 34,
+      "taux": 0.7234,
+      "retenu": true
+     },
+     "dc_plus_1.5": {
+      "reussis": 36,
+      "taux": 0.766,
+      "retenu": true
+     },
+     "dc_moins_4.5": {
+      "reussis": 35,
+      "taux": 0.7447,
+      "retenu": true
+     }
+    }
+   },
+   "grand": {
+    "n": 60,
+    "marches": {
+     "victoire": {
+      "reussis": 46,
+      "taux": 0.7667,
+      "retenu": true
+     },
+     "double_chance": {
+      "reussis": 54,
+      "taux": 0.9,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 56,
+      "taux": 0.9333,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 45,
+      "taux": 0.75,
+      "retenu": true
+     },
+     "dc_plus_1.5": {
+      "reussis": 44,
+      "taux": 0.7333,
+      "retenu": true
+     },
+     "dc_moins_4.5": {
+      "reussis": 41,
+      "taux": 0.6833,
+      "retenu": false
+     }
+    }
+   }
+  },
+  "ext": {
+   "mince": {
+    "n": 324,
+    "marches": {
+     "victoire": {
+      "reussis": 172,
+      "taux": 0.5309,
+      "retenu": false
+     },
+     "double_chance": {
+      "reussis": 252,
+      "taux": 0.7778,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 257,
+      "taux": 0.7932,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 154,
+      "taux": 0.4753,
+      "retenu": false
+     },
+     "dc_plus_1.5": {
+      "reussis": 182,
+      "taux": 0.5617,
+      "retenu": false
+     },
+     "dc_moins_4.5": {
+      "reussis": 223,
+      "taux": 0.6883,
+      "retenu": false
+     }
+    }
+   },
+   "moyen": {
+    "n": 69,
+    "marches": {
+     "victoire": {
+      "reussis": 43,
+      "taux": 0.6232,
+      "retenu": false
+     },
+     "double_chance": {
+      "reussis": 53,
+      "taux": 0.7681,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 56,
+      "taux": 0.8116,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 39,
+      "taux": 0.5652,
+      "retenu": false
+     },
+     "dc_plus_1.5": {
+      "reussis": 42,
+      "taux": 0.6087,
+      "retenu": false
+     },
+     "dc_moins_4.5": {
+      "reussis": 39,
+      "taux": 0.5652,
+      "retenu": false
+     }
+    }
+   },
+   "grand": {
+    "n": 57,
+    "marches": {
+     "victoire": {
+      "reussis": 34,
+      "taux": 0.5965,
+      "retenu": false
+     },
+     "double_chance": {
+      "reussis": 48,
+      "taux": 0.8421,
+      "retenu": true
+     },
+     "equipe_plus_0.5": {
+      "reussis": 48,
+      "taux": 0.8421,
+      "retenu": true
+     },
+     "equipe_plus_1.5": {
+      "reussis": 33,
+      "taux": 0.5789,
+      "retenu": false
+     },
+     "dc_plus_1.5": {
+      "reussis": 36,
+      "taux": 0.6316,
+      "retenu": false
+     },
+     "dc_moins_4.5": {
+      "reussis": 44,
+      "taux": 0.7719,
+      "retenu": true
+     }
+    }
+   }
+  }
+ }
+}
