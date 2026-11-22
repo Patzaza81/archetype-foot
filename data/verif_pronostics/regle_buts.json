@@ -1,0 +1,70 @@
+{
+ "version": 2,
+ "source": {
+  "fichier": "data/bloc_saisons/bloc_2526_2627.json.gz",
+  "matchs_joues": 16558,
+  "du": "2025-01-23",
+  "au": "2026-10-16",
+  "matchs_evaluables": 11127
+ },
+ "regle": {
+  "n_min": 4,
+  "marques_min": 3.5,
+  "encaisses_min": 2.8,
+  "marche": "total_plus_1.5",
+  "cote_min": 1.24,
+  "origine": "3,5, 2,8, 4 matchs et cote 1,24 : décisions de Patrick (21/11/2026)"
+ },
+ "etude": {
+  "matchs": 488,
+  "reussis": 421,
+  "taux": 0.8627,
+  "borne_basse": 0.8293,
+  "borne_haute": 0.8904,
+  "hors_regle": {
+   "matchs": 10528,
+   "reussis": 7965,
+   "taux": 0.7566
+  },
+  "regle_seule": {
+   "matchs": 599,
+   "reussis": 501,
+   "taux": 0.8364,
+   "borne_basse": 0.8046,
+   "borne_haute": 0.8639
+  },
+  "cote_equilibre": 1.159,
+  "cote_equilibre_prudente": 1.206,
+  "verification": {
+   "coupure": "2026-01-31",
+   "choix_du_seuil": {
+    "matchs": 230,
+    "reussis": 198,
+    "taux": 0.8609,
+    "borne_basse": 0.8102,
+    "borne_haute": 0.8997
+   },
+   "seconde_moitie_non_vue": {
+    "matchs": 258,
+    "reussis": 223,
+    "taux": 0.8643,
+    "borne_basse": 0.8172,
+    "borne_haute": 0.9008
+   },
+   "regle_seule_seconde_moitie": {
+    "matchs": 292,
+    "reussis": 251,
+    "taux": 0.8596,
+    "borne_basse": 0.8151,
+    "borne_haute": 0.8948
+   }
+  }
+ },
+ "championnat": {
+  "seuil": 0.76,
+  "base": 0.75,
+  "poids": 10,
+  "n_min_choix": 100,
+  "origine": "seuil choisi sur la première moitié de la période (meilleure borne basse, >= 100 matchs de la règle), vérifié sur la seconde ; Patrick demande un filtre de championnat (22/11/2026)"
+ }
+}

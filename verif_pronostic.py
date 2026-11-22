@@ -205,6 +205,32 @@ def moyenne_championnat(competition, saison):
     r["xg_est"] = (r["xg"] is None and r["buts"] is not None and xg_estime(r["buts"], "cree") is not None); r["xg"] = r["xg"] if r["xg"] is not None else (xg_estime(r["buts"], "cree") if r["buts"] is not None else None)
     _CHAMP[(competition, saison)] = r; return r
 
+_TOTAUX = {}
+
+def totaux_championnats(flux=None):
+    """Matchs joués de chaque championnat, lus dans les historiques des équipes du flux (comme moyenne_championnat) : {championnat: [(date, total de buts)]}, du plus ancien au plus récent.
+    Chaque match n'est compté qu'une fois, par l'historique de l'équipe qui jouait à domicile. Sert au filtre de championnat de l'onglet « +1,5 buts »."""
+    flux = flux or FLUX
+    if flux in _TOTAUX: return _TOTAUX[flux]
+    vus, T = set(), {}
+    for f in sorted(glob.glob(os.path.join(flux, "*.json.gz"))):
+        for y in json.load(gzip.open(f)).values():
+            comp = y.get("competition")
+            if not comp: continue
+            for eq, nom in (("equipe_dom", y.get("domicile")), ("equipe_ext", y.get("exterieur"))):
+                for m in ((y.get("assemblage") or {}).get(eq) or {}).get("matchs") or []:
+                    if not m.get("domicile") or not m.get("date") or m.get("buts_marques") is None or m.get("buts_encaisses") is None: continue
+                    cle = (comp, nom, m["date"])
+                    if cle in vus: continue
+                    vus.add(cle); T.setdefault(comp, []).append((m["date"], m["buts_marques"] + m["buts_encaisses"]))
+    for L in T.values(): L.sort()
+    _TOTAUX[flux] = T; return T
+
+def championnat_avant(x, totaux):
+    """(matchs à 2 buts ou plus, matchs) du championnat du match x, joués AVANT sa date. Aucun match = (0, 0)."""
+    L = [t for d, t in (totaux or {}).get(x.get("competition"), []) if d < x["date"]]
+    return (sum(t >= 2 for t in L), len(L))
+
 def saison_complete(x, eq):
     """Toute la saison en cours (domicile et exterieur), avant le match : moyennes buts et xG, comme dans la comparaison avec les xG du championnat."""
     a = x.get("assemblage") or {}; saison = a.get("saison_football_data")
@@ -432,7 +458,7 @@ def derniers_matchs(x):
     return {"dom": f(liste("equipe_dom", True)), "dom_ext": f(liste("equipe_dom", False)), "ext": f(liste("equipe_ext", False)), "ext_dom": f(liste("equipe_ext", True)),
             "h2h": [{"date": m["date"], "domicile": m.get("domicile"), "marques": m["buts_marques"], "encaisses": m["buts_encaisses"]} for m in h2h]}
 
-def fiche_match(x, maintenant, cfg):
+def fiche_match(x, maintenant, cfg, totaux=None):
     """Un match pour la page : tableau des equipes, xG (reel ou estime), paris qui passent les filtres classes par reussite observee decroissante dans chaque famille, historique."""
     SA, SB = saison_complete(x, "equipe_dom"), saison_complete(x, "equipe_ext"); champ = moyenne_championnat(x.get("competition"), (x.get("assemblage") or {}).get("saison_football_data"))
     xa = xg_attendus(SA, SB, champ); sc = (x.get("score") or {}); fini = sc.get("buts_dom") is not None and sc.get("buts_ext") is not None
@@ -459,6 +485,18 @@ def fiche_match(x, maintenant, cfg):
             e = {"marche": mp, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"], "etude": z}
             if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[mp]])
             EP.append(e)
+    import verif_regle_buts as RB             # onglet « +1,5 buts » : règle de buts de Patrick (marqués >= 3,5 et encaissés >= 2,8, 4 matchs au même lieu), marché « plus de 1,5 buts » seulement, cote >= 1,24
+    regle_b = RB.charger(); RBL = None
+    if regle_b:
+        r1 = constat(x, "1N", None, cfg); info_b = RB.evaluer(r1.get("A"), r1.get("B"), None, None) if "A" in r1 else None
+        if info_b and regle_b.get("championnat"):               # filtre de championnat : seulement si la règle est remplie (les totaux sont lus une fois par dossier)
+            info_b = RB.evaluer(r1.get("A"), r1.get("B"), championnat_avant(x, totaux if totaux is not None else totaux_championnats()), regle_b)
+        cb = cotes_betpawa(x.get("cotes_betpawa") or {}).get(RB.MARCHE)
+        if info_b and cb is not None and cb >= regle_b["regle"]["cote_min"]:
+            r = constat(x, RB.MARCHE, None, cfg); A, B = r["A"], r["B"]          # sans filtre de cote : la cote minimale de cet onglet (1,24) est contrôlée ci-dessus
+            e = {"marche": RB.MARCHE, "libelle": r["libelle"], "cote": cb, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"]}
+            if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[RB.MARCHE]])
+            RBL = {**info_b, "pari": e}
     arr = lambda u: None if u is None else round(u, 3)
     av = champ["avantage_dom"]
     return {"match_id": x["match_id"], "date": x["date"], "coup_d_envoi_utc": x.get("coup_d_envoi_utc"), "competition": x.get("competition"), "domicile": x["domicile"], "exterieur": x["exterieur"], "statut": statut,
@@ -467,23 +505,23 @@ def fiche_match(x, maintenant, cfg):
             "equipes": {"dom": {k: arr(SA[k]) if isinstance(SA[k], float) else SA[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "ext": {k: arr(SB[k]) if isinstance(SB[k], float) else SB[k] for k in ("n", "buts_marques", "buts_encaisses", "xg_cree", "xg_concede", "ecart_xg", "surperformance", "n_xg", "xg_est")},
                         "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "xg_est": champ["xg_est"], "avantage_dom": arr(av), "matchs": champ["n"]}},
-            "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {})}
+            "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {}), **({"regle_buts": RBL} if RBL else {})}
 
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"); cfg = cfg or config()
-    depuis = (datetime.date.fromisoformat(maintenant[:10]) - datetime.timedelta(days=jours_passes)).isoformat(); M = []
+    depuis = (datetime.date.fromisoformat(maintenant[:10]) - datetime.timedelta(days=jours_passes)).isoformat(); M = []; totaux = totaux_championnats(flux)
     for f in sorted(glob.glob(os.path.join(flux, "*.json.gz"))):
         if os.path.basename(f)[:10] < depuis: continue
         for x in json.load(gzip.open(f)).values():
             if not x.get("cotes_betpawa"): continue
-            fm = fiche_match(x, maintenant, cfg)
-            if any(fm["paris"].values()) or fm.get("etude_paris"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
+            fm = fiche_match(x, maintenant, cfg, totaux)
+            if any(fm["paris"].values()) or fm.get("etude_paris") or fm.get("regle_buts"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
     import verif_etude as VE
-    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "matchs": M}
+    return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "regle_buts": __import__("verif_regle_buts").charger(), "matchs": M}
 
 def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
@@ -523,6 +561,7 @@ def selections_page(d):
         out[(m["match_id"], "top20")] = [court(T[m["match_id"]]["pari"])] if m["match_id"] in T else []
         out[(m["match_id"], "regles")] = [court(p) for k in ORDRE_FAMILLES for p in (m.get("paris") or {}).get(k) or [] if p.get("regle")]
         out[(m["match_id"], "etude")] = [court(p) for p in m.get("etude_paris") or []]
+        out[(m["match_id"], "regle_buts")] = [court(m["regle_buts"]["pari"])] if m.get("regle_buts") else []
     return out, {m["match_id"]: m for m in d.get("matchs") or []}
 
 def geler_selections(d, maintenant=None, chemin=JOURNAL_SELECTIONS):

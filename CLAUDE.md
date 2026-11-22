@@ -33,6 +33,8 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 
 - Onglet « Étude » d'Analyse Verdict (depuis le 21/11/2026 ; `verif_etude.py`, `data/verif_pronostics/etude_regles.json`, branche `onglet-etude`) : condition « le double des buts marqués + une meilleure défense » (écart mince / moyen / grand), marchés retenus seulement s'ils dépassent 70 % dans l'étude sur matchs joués, sélection gelée « etude » : `docs/ETUDE_DOUBLE_DEFENSE.md`
 
+- Onglet « +1,5 buts » d'Analyse Verdict (depuis le 21/11/2026 ; `verif_regle_buts.py`, `data/verif_pronostics/regle_buts.json`, branche `onglet-plus-1-5`) : règle de buts de Patrick (4 matchs au même lieu, buts marqués cumulés ≥ 3,5 et encaissés cumulés ≥ 2,8), marché plus de 1,5 buts seulement, cote ≥ 1,24 propre à cet onglet, verdict de la page non filtrant, sélection gelée « regle_buts » : `docs/REGLE_BUTS_PLUS_1_5.md`
+
 ## Règles de sécurité
 
 - Les documents spécialisés font partie des instructions du projet : ne pas les ignorer lorsqu'une tâche relève de leur domaine.
