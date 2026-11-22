@@ -1,17 +1,21 @@
 {
   "schema_version": 1,
-  "genere_le": "2026-11-21T13:43:37Z",
+  "genere_le": "2026-11-22T02:43:07Z",
   "methode": "walk_forward",
   "anti_fuite": true,
   "groupes": {
     "Galatasaray|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
@@ -78,11 +82,11 @@
     "Arsenal|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 5,
+      "observations": 6,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 3,
-          "frequence_apres": 0.3333
+          "signaux": 4,
+          "frequence_apres": 0.25
         },
         "RENFORCEMENT": {
           "signaux": 2,
@@ -108,6 +112,30 @@
       }
     },
     "Portadown|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Linfield|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Gateshead|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "NEC Nimègue|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Real Betis|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -182,8 +210,13 @@
     "Tottenham|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Heerenveen|over_under_total_4.5_under": {
       "methode": "walk_forward",
@@ -194,11 +227,11 @@
     "Anderlecht|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
     },
@@ -278,8 +311,13 @@
     "Peterborough|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Doncaster|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -314,8 +352,13 @@
     "Bristol Rovers|buts_equipe_exterieur_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Carrick|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -331,11 +374,11 @@
     "Raith Rovers FC|buts_equipe_exterieur_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
     },
@@ -360,11 +403,22 @@
       "observations": 0,
       "par_regime": {}
     },
-    "LASK|over_under_total_3.5_under": {
+    "Feyenoord|btts_oui": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "LASK|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Braga|double_chance_1X": {
       "methode": "walk_forward",
@@ -375,11 +429,15 @@
     "Bochum|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
           "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
@@ -393,6 +451,12 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Csikszereda|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Almere City|1x2_exterieur": {
       "methode": "walk_forward",
@@ -423,13 +487,65 @@
       "observations": 0,
       "par_regime": {}
     },
-    "Livingston FC|cage_inviolee_domicile": {
+    "Raith Rovers FC|double_chance_1X": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
+    "Raith Rovers FC|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Raith Rovers FC|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Raith Rovers FC|cage_inviolee_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Livingston FC|cage_inviolee_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
     "Raith Rovers FC|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Livingston FC|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Raith Rovers FC|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Linfield|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -438,8 +554,13 @@
     "Linfield|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Boyacá Chicó|handicap_domicile_0.5": {
       "methode": "walk_forward",
@@ -504,6 +625,18 @@
         }
       }
     },
+    "Queen's Park|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Queen's Park|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Inverness CT|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -511,6 +644,12 @@
       "par_regime": {}
     },
     "Inverness CT|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aubagne|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -587,6 +726,12 @@
         }
       }
     },
+    "Waalwijk|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Roda|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -612,6 +757,12 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Waalwijk|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Roda|btts_non": {
       "methode": "walk_forward",
@@ -687,9 +838,13 @@
     "Bristol Rovers|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -698,8 +853,13 @@
     "Bristol Rovers|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Exeter City|btts_non": {
       "methode": "walk_forward",
@@ -716,10 +876,21 @@
     "Bristol Rovers|buts_equipe_exterieur_0.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Exeter City|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
-    "Exeter City|buts_equipe_exterieur_0.5_under": {
+    "Cheltenham|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -737,7 +908,19 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Cheltenham|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Chesterfield|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fleetwood|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -762,6 +945,12 @@
       "par_regime": {}
     },
     "Fleetwood|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fleetwood|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -847,8 +1036,13 @@
     "Swindon Town|cage_inviolee_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Bari|1x2_exterieur": {
       "methode": "walk_forward",
@@ -894,6 +1088,12 @@
           "frequence_apres": 1.0
         }
       }
+    },
+    "Wealdstone|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Glentoran|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -986,6 +1186,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Crotone|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Picerno|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -996,6 +1202,12 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Audace Cerig.|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Picerno|over_under_total_2.5_over": {
       "methode": "walk_forward",
@@ -1224,7 +1436,19 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Rotherham Utd|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Crewe|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Rotherham Utd|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1324,14 +1548,14 @@
     "Limavady Utd|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "PERSISTANT": {
           "signaux": 1,
           "frequence_apres": 0.0
         },
         "AFFAIBLISSEMENT": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 0.0
         }
       }
@@ -1408,22 +1632,66 @@
     "Feyenoord|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Feyenoord|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Feyenoord|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Zwolle|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Zwolle|handicap_exterieur_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
-    "Zwolle|1x2_exterieur": {
+    "Zwolle|over_under_total_3.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Zwolle|over_under_total_4.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Feyenoord|handicap_exterieur_1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1465,6 +1733,18 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Pontevedra|over_under_total_2.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Pontevedra|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Central Esp.|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1491,9 +1771,13 @@
     "Crystal Palace|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -1502,9 +1786,13 @@
     "Crystal Palace|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -1524,10 +1812,10 @@
     "Crystal Palace|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "RECURRENT": {
-          "signaux": 2,
+          "signaux": 3,
           "frequence_apres": 0.0
         }
       }
@@ -1535,9 +1823,13 @@
     "Crystal Palace|handicap_exterieur_1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -1557,14 +1849,14 @@
     "Liverpool|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         },
         "AFFAIBLISSEMENT": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 0.0
         }
       }
@@ -1572,8 +1864,13 @@
     "Tottenham|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Beltinci|1x2_domicile": {
       "methode": "walk_forward",
@@ -1653,6 +1950,12 @@
       "par_regime": {}
     },
     "Pescara|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Barletta|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -1984,6 +2287,48 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Carlisle|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fylde|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carlisle|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carlisle|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carlisle|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carlisle|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carlisle|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Hornchurch|double_chance_1X": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -1993,13 +2338,25 @@
     "Aldershot|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 0.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
+    },
+    "Aldershot|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aldershot|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Woking|1x2_domicile": {
       "methode": "walk_forward",
@@ -2053,6 +2410,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Atlético Ottawa|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Cavalry|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Cavalry|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Enyimba|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -2063,6 +2438,12 @@
           "frequence_apres": 1.0
         }
       }
+    },
+    "Sport Lagos|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Ikorodu City|1x2_exterieur": {
       "methode": "walk_forward",
@@ -2189,6 +2570,12 @@
       "observations": 0,
       "par_regime": {}
     },
+    "FC Eindhoven|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "De Graafschap|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -2207,7 +2594,66 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Def. Justicia|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Barracas C|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Leyton Orient|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Bristol Rovers|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Bristol Rovers|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Exeter City|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Grimsby|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Grimsby|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Swindon Town|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Swindon Town|buts_equipe_exterieur_0.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2246,14 +2692,24 @@
     "Cavese|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Cavese|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Forge|over_under_total_2.5_under": {
       "methode": "walk_forward",
@@ -2265,6 +2721,18 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Halifax|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Dungannon|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Dungannon|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -2280,15 +2748,24 @@
     "Dungannon|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Dungannon|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -2297,14 +2774,24 @@
     "Dungannon|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Dungannon|handicap_exterieur_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Dungannon|over_under_total_1.5_under": {
       "methode": "walk_forward",
@@ -2320,10 +2807,41 @@
     "Dungannon|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Limavady Utd|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        },
+        "RENFORCEMENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Limavady Utd|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Portadown|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 1,
@@ -2334,19 +2852,39 @@
         }
       }
     },
-    "Limavady Utd|double_chance_X2": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
-    "Portadown|over_under_total_2.5_under": {
+    "Portadown|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Limavady Utd|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Limavady Utd|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Limavady Utd|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 1,
@@ -2357,23 +2895,16 @@
         }
       }
     },
-    "Limavady Utd|handicap_exterieur_0.5": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
-    "Limavady Utd|1x2_exterieur": {
-      "methode": "walk_forward",
-      "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
-    },
     "Livingston FC|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Livingston FC|btts_non": {
       "methode": "walk_forward",
@@ -2384,11 +2915,15 @@
     "Livingston FC|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
           "signaux": 2,
           "frequence_apres": 1.0
+        },
+        "RENFORCEMENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
     },
@@ -2401,10 +2936,10 @@
     "Livingston FC|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 2,
+          "signaux": 3,
           "frequence_apres": 0.0
         }
       }
@@ -2418,30 +2953,49 @@
     "P. Thistle|btts_non": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "P. Thistle|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
           "signaux": 2,
           "frequence_apres": 0.5
+        },
+        "RENFORCEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
     },
     "P. Thistle|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "RECURRENT": {
           "signaux": 2,
           "frequence_apres": 0.5
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
+    },
+    "Badalona|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "The New Saints|btts_oui": {
       "methode": "walk_forward",
@@ -2515,31 +3069,67 @@
     "Stuttgart|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
           "signaux": 1,
           "frequence_apres": 1.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
         }
       }
+    },
+    "Stuttgart|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Stuttgart|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Union Berlin|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Stuttgart|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 1.0
         }
       }
     },
+    "Stuttgart|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Stuttgart|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        },
+        "RENFORCEMENT": {
           "signaux": 1,
           "frequence_apres": 1.0
         }
@@ -2597,17 +3187,39 @@
       "observations": 0,
       "par_regime": {}
     },
-    "Real Madrid|double_chance_X2": {
+    "Heerenveen|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
-    "Real Madrid|1x2_exterieur": {
+    "Real Madrid|handicap_exterieur_1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Real Madrid|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Real Madrid|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Barcelone|1x2_nul": {
       "methode": "walk_forward",
@@ -2618,19 +3230,28 @@
     "Real Madrid|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 3,
+      "observations": 4,
       "par_regime": {
         "RECURRENT": {
           "signaux": 3,
           "frequence_apres": 0.3333
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
     },
     "A. Bucaraman|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Atl. Junior|1x2_domicile": {
       "methode": "walk_forward",
@@ -2749,8 +3370,13 @@
     "CFR Cluj|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "U. Cluj|1x2_domicile": {
       "methode": "walk_forward",
@@ -2766,8 +3392,13 @@
     "CFR Cluj|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "U. Cluj|handicap_domicile_-0.5": {
       "methode": "walk_forward",
@@ -2796,8 +3427,13 @@
     "Dortmund|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Werder Brême|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -2808,8 +3444,13 @@
     "Dortmund|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Werder Brême|over_under_total_2.5_under": {
       "methode": "walk_forward",
@@ -2820,10 +3461,56 @@
     "Dortmund|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Galatasaray|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Galatasaray|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
-    "Galatasaray|over_under_total_2.5_under": {
+    "Galatasaray|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2848,6 +3535,12 @@
       "par_regime": {}
     },
     "Diriyah|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Sampdoria|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -2918,6 +3611,12 @@
       }
     },
     "Jong PSV|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Akron|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3036,41 +3735,62 @@
     "Borac BL|btts_oui": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Yokohama M.|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Arsenal|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
           "signaux": 1,
           "frequence_apres": 1.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
     },
     "Arsenal|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 3,
+      "observations": 4,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 3,
-          "frequence_apres": 0.3333
+          "signaux": 4,
+          "frequence_apres": 0.25
         }
       }
     },
     "Arsenal|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 3,
+      "observations": 4,
       "par_regime": {
         "RECURRENT": {
-          "signaux": 3,
+          "signaux": 4,
           "frequence_apres": 0.0
         }
       }
+    },
+    "Arsenal|handicap_exterieur_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Arsenal|handicap_exterieur_1.5": {
       "methode": "walk_forward",
@@ -3087,13 +3807,19 @@
         }
       }
     },
+    "Arsenal|buts_equipe_exterieur_0.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Arsenal|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 1.0
         },
         "RENFORCEMENT": {
@@ -3155,20 +3881,35 @@
     "Real Madrid|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Real Madrid|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Real Madrid|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Bayern Munich|over_under_total_4.5_under": {
       "methode": "walk_forward",
@@ -3238,6 +3979,35 @@
     "Stuttgart|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Leipzig|over_under_total_4.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Leipzig|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Leipzig|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Leipzig|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
@@ -3265,6 +4035,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Anderlecht|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Anderlecht|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Anderlecht|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Charlton|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3276,12 +4064,40 @@
         }
       }
     },
+    "Norwich City|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Norwich City|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Norwich City|buts_equipe_exterieur_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Swansea|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Cardiff|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
@@ -3290,10 +4106,10 @@
     "Cardiff|btts_non": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 0.0
         }
       }
@@ -3301,15 +4117,40 @@
     "Cardiff|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "AFFAIBLISSEMENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Cardiff|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 2,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        },
+        "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 0.0
         }
       }
     },
-    "Cardiff|over_under_total_1.5_under": {
+    "Cardiff|buts_equipe_exterieur_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Cardiff|buts_equipe_exterieur_0.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 1,
@@ -3320,13 +4161,18 @@
         }
       }
     },
-    "Cardiff|buts_equipe_exterieur_0.5_under": {
+    "Stoke|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
-    "Stoke|1x2_domicile": {
+    "Stoke|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3341,13 +4187,35 @@
     "Stoke|buts_equipe_domicile_1.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
           "signaux": 1,
           "frequence_apres": 0.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
+    },
+    "Wolverhampton|buts_equipe_exterieur_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Millwall|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Sheffield Utd|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Burnley|buts_equipe_domicile_1.5_over": {
       "methode": "walk_forward",
@@ -3372,6 +4240,18 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Grazer AK|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Grazer AK|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Salzbourg|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3387,20 +4267,25 @@
     "Wolfsbourg|over_under_total_4.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Wolfsbourg|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
           "signaux": 1,
           "frequence_apres": 1.0
         },
         "RENFORCEMENT": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 1.0
         }
       }
@@ -3408,23 +4293,34 @@
     "Wolfsbourg|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "RECURRENT": {
           "signaux": 1,
           "frequence_apres": 1.0
         },
         "NEUTRE": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 0.0
         }
       }
     },
-    "Wolfsbourg|over_under_total_1.5_under": {
+    "Wolfsbourg|btts_non": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
+    },
+    "Wolfsbourg|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "New York City|buts_equipe_domicile_1.5_under": {
       "methode": "walk_forward",
@@ -3560,13 +4456,60 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Dundee Utd.|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Hibernian|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Hibernian|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Falkirk FC|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Glasgow Rangers|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Glasgow Rangers|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Kilmarnock FC|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Glasgow Rangers|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Glasgow Rangers|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3607,6 +4550,12 @@
         }
       }
     },
+    "Peterborough|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Leicester|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3623,6 +4572,18 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Peterborough|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Peterborough|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Leicester|buts_equipe_domicile_1.5_under": {
       "methode": "walk_forward",
@@ -3643,6 +4604,12 @@
       "par_regime": {}
     },
     "Barnsley|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Stockport|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3677,6 +4644,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Walsall|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Walsall|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Walsall|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Dep. Pasto|double_chance_X2": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3692,22 +4677,60 @@
     "Hajduk Split|handicap_domicile_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Hajduk Split|double_chance_1X": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Hajduk Split|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Hajduk Split|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Hajduk Split|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Bohemians P.|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Bohemians P.|handicap_domicile_-0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3734,20 +4757,41 @@
     "Ferencvaros|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Ferencvaros|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Ferencvaros|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Ferencvaros|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Paksi|btts_non": {
       "methode": "walk_forward",
@@ -3770,16 +4814,43 @@
     "Fukuoka|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Fukuoka|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
+    },
+    "Fukuoka|over_under_total_2.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Fukuoka|handicap_domicile_-1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Istanbulspor|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3794,14 +4865,24 @@
     "Larne|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Dungannon|cage_inviolee_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Dungannon|buts_equipe_domicile_0.5_under": {
       "methode": "walk_forward",
@@ -3810,6 +4891,23 @@
       "par_regime": {}
     },
     "Dungannon|buts_equipe_domicile_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Linfield|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Linfield|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3877,6 +4975,30 @@
       "observations": 0,
       "par_regime": {}
     },
+    "S. Bratislava|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Bratislava|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Bratislava|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Bratislava|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Boston River|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -3899,19 +5021,58 @@
         }
       }
     },
-    "Virtus|1x2_exterieur": {
+    "Birmingham|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
+    "Virtus|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
     "Juve Stabia|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Juve Stabia|buts_equipe_exterieur_1.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Virtus|handicap_exterieur_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Juve Stabia|handicap_exterieur_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Port Vale|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3929,7 +5090,19 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Port Vale|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Grimsby|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Teuta|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -3938,8 +5111,13 @@
     "Rad. Bijelji|btts_oui": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Houston|1x2_exterieur": {
       "methode": "walk_forward",
@@ -4003,6 +5181,18 @@
           "frequence_apres": 0.0
         }
       }
+    },
+    "Liverpool|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Liverpool|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Milan|buts_equipe_exterieur_0.5_under": {
       "methode": "walk_forward",
@@ -4070,26 +5260,64 @@
     "Aris|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Aris|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aris|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Carrarese|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Bochum|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Bochum|btts_non": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 1.0
+        }
+      }
     },
     "Bochum|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Bochum|cage_inviolee_domicile": {
       "methode": "walk_forward",
@@ -4148,11 +5376,11 @@
     "Independiente|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "RECURRENT": {
-          "signaux": 2,
-          "frequence_apres": 0.0
+          "signaux": 3,
+          "frequence_apres": 0.3333
         }
       }
     },
@@ -4165,35 +5393,45 @@
     "Celtic Glasgow|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "RECURRENT": {
           "signaux": 1,
           "frequence_apres": 1.0
+        },
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
         }
       }
     },
     "Celtic Glasgow|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
     },
     "Celtic Glasgow|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         }
       }
+    },
+    "Celtic Glasgow|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
     },
     "Aberdeen|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -4232,8 +5470,13 @@
     "Železničar P|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Bolívar|over_under_total_3.5_under": {
       "methode": "walk_forward",
@@ -4247,7 +5490,31 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Zrinjski|btts_oui": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Palestino|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Palestino|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Düsseldorf|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Düsseldorf|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4265,13 +5532,53 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Düsseldorf|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Győr|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Tokyo Verdy|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Tokyo Verdy|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Hiroshima|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Tokyo Verdy|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "S. Hiroshima|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4286,14 +5593,24 @@
     "Nacional|buts_equipe_exterieur_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Nacional|buts_equipe_exterieur_0.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Boyacá Chicó|buts_equipe_domicile_1.5_over": {
       "methode": "walk_forward",
@@ -4302,6 +5619,12 @@
       "par_regime": {}
     },
     "Boyacá Chicó|cage_inviolee_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Safa|1x2_domicile": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4336,7 +5659,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Charlton|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Charlton|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Charlton|handicap_exterieur_1.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4345,8 +5685,13 @@
     "Charlton|handicap_exterieur_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Charlton|btts_oui": {
       "methode": "walk_forward",
@@ -4359,6 +5704,36 @@
         }
       }
     },
+    "Wolverhampton|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Wolverhampton|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Wolverhampton|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Wolverhampton|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Wolverhampton|buts_equipe_domicile_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Middlesbrough|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -4366,6 +5741,30 @@
       "par_regime": {}
     },
     "Middlesbrough|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Watford|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Watford|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Watford|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Derby County|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4401,7 +5800,37 @@
       "observations": 0,
       "par_regime": {}
     },
+    "S. Grossaspach|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "LA Galaxy|buts_equipe_domicile_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Hajduk Split|buts_equipe_domicile_0.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Hajduk Split|buts_equipe_exterieur_0.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Hajduk Split|handicap_domicile_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Hajduk Split|buts_equipe_exterieur_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4437,6 +5866,24 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Rapid Wien|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Rapid Wien|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Rapid Wien|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Den Bosch|buts_equipe_domicile_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
@@ -4446,28 +5893,99 @@
     "Larne|1x2_exterieur": {
       "methode": "walk_forward",
       "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Middlesbrough|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "West Ham|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "LASK|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "LASK|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Saint Mirren FC|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Saint Mirren FC|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Aberdeen|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Saint Mirren FC|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Limavady Utd|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Limavady Utd|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
       "observations": 0,
       "par_regime": {}
     },
     "Arsenal|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "PERSISTANT": {
-          "signaux": 2,
-          "frequence_apres": 1.0
+          "signaux": 3,
+          "frequence_apres": 0.6667
         }
       }
     },
     "Arsenal|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 2,
+      "observations": 3,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
-          "frequence_apres": 1.0
+          "signaux": 2,
+          "frequence_apres": 0.5
         },
         "RENFORCEMENT": {
           "signaux": 1,
@@ -4475,13 +5993,25 @@
         }
       }
     },
+    "Chelsea|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Chelsea|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Chelsea|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 1.0
         }
       }
@@ -4489,10 +6019,10 @@
     "Chelsea|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 1,
+      "observations": 2,
       "par_regime": {
         "NEUTRE": {
-          "signaux": 1,
+          "signaux": 2,
           "frequence_apres": 1.0
         }
       }
@@ -4520,7 +6050,36 @@
       "observations": 0,
       "par_regime": {}
     },
+    "Arsenal|handicap_domicile_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Arsenal|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
+    },
+    "Arsenal|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Arsenal|double_chance_1X": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Arsenal|handicap_domicile_0.5": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4546,26 +6105,46 @@
     "Crystal Palace|over_under_total_3.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "PERSISTANT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Crystal Palace|over_under_total_2.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "NEUTRE": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Crystal Palace|over_under_total_1.5_under": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Crystal Palace|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
-      "observations": 0,
-      "par_regime": {}
+      "observations": 1,
+      "par_regime": {
+        "RECURRENT": {
+          "signaux": 1,
+          "frequence_apres": 0.0
+        }
+      }
     },
     "Nordsjaelland|over_under_total_2.5_under": {
       "methode": "walk_forward",
@@ -4574,6 +6153,42 @@
       "par_regime": {}
     },
     "Nordsjaelland|over_under_total_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "A. Bucaraman|handicap_domicile_-0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "FC Cajamarca|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "CFR Cluj|buts_equipe_domicile_1.5_over": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Tottenham|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Tottenham|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Chelsea|1x2_nul": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
@@ -4590,7 +6205,85 @@
         }
       }
     },
+    "Crystal Palace|1x2_domicile": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Liverpool|handicap_domicile_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Charlton|1x2_nul": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
     "Everton|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Persebaya|handicap_exterieur_1.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Persebaya|buts_equipe_domicile_1.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Persebaya|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Persebaya|1x2_exterieur": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Larne|double_chance_X2": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Larne|handicap_exterieur_0.5": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Oxford Utd|btts_non": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Bratislava|over_under_total_3.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "S. Bratislava|over_under_total_2.5_under": {
+      "methode": "walk_forward",
+      "anti_fuite": true,
+      "observations": 0,
+      "par_regime": {}
+    },
+    "Fukuoka|buts_equipe_domicile_1.5_over": {
       "methode": "walk_forward",
       "anti_fuite": true,
       "observations": 0,
