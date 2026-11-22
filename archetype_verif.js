@@ -118,13 +118,30 @@ function derniers(m) {
   const ensExt = { dom: li(L("ext_dom"), true), ext: li(L("ext"), false), h2h: h2h.map((x) => ({ date: x.date, adv: m.domicile, marques: x.encaisses, encaisses: x.marques, dom: !x.domicile })) };
   return `<div class="om-bloc"><div class="om-bloc-titre">Derniers matchs</div><div class="om-dm-grille">${eq(m.domicile, "dom", ensDom)}${eq(m.exterieur, "ext", ensExt)}</div></div>`;
 }
+// Infos du match (blessés, absents, suspendus) : écrites par infos_matchs.py (IA Gemini + recherche Google), AFFICHÉES seulement, jamais lues par un moteur. Toujours « non confirmé ».
+const INFOS_URL = "data/infos_matchs/infos.json";
+let INFOS = {};
+const STATUT_ABS = { blesse: "Blessé", suspendu: "Suspendu", absent: "Absent", incertain: "Incertain" };
+function infosMatch(m) {
+  const i = INFOS[m.match_id]; if (!i) return "";
+  const titre = `<div class="om-bloc-titre">Absents et sanctions (IA + recherche Google)</div>`;
+  if (i.erreur || i.statut !== "ok") return `<div class="om-bloc">${titre}<div class="om-info">${i.statut === "sans_source" ? "La recherche n'a renvoyé aucune source : rien n'est affiché." : "Recherche indisponible pour ce match."}</div></div>`;
+  const par = (cle, nom) => {
+    const L = (i.absents || []).filter((a) => a.equipe === cle);
+    return `<li><b>${e(nom)}</b> : ${L.length ? L.map((a) => `${e(a.joueur)} (${e(STATUT_ABS[a.statut] || a.statut)}${a.raison ? `, ${e(a.raison)}` : ""}${a.source ? ` · ${e(a.source)}` : ""})`).join(" ; ") : "aucune absence trouvée"}</li>`;
+  };
+  const src = (i.sources || []).slice(0, 5).filter((s) => /^https:\/\//.test(String(s.url))).map((s) => `<a href="${e(s.url)}" target="_blank" rel="noopener noreferrer">${e(s.titre || "source")}</a>`).join(" · ");
+  const vu = i.consulte_le ? new Date(i.consulte_le) : null, quand = vu && !Number.isNaN(vu.getTime()) ? vu.toLocaleString("fr-FR", { timeZone: "Africa/Douala", dateStyle: "short", timeStyle: "short" }) : "";
+  return `<div class="om-bloc">${titre}<ul style="margin:6px 14px;padding-left:18px">${par("dom", m.domicile)}${par("ext", m.exterieur)}</ul>` +
+    `<div class="om-info"><b>Non confirmé</b> : trouvé par une IA avec la recherche Google${quand ? `, le ${e(quand)} (heure du Cameroun)` : ""}. Vérifie la composition officielle avant de parier.</div>${src ? `<div class="om-info">Sources consultées : ${src}</div>` : ""}</div>`;
+}
 function carte(m, onglet) {
   const h = horaire(m.coup_d_envoi_utc), fin = m.statut === "termine" && m.resultat;
   const section = document.createElement("section"); section.className = "ax-carte ax-replie"; section.setAttribute("aria-expanded", "false");
   let corps = resume(m, onglet); if (m.statut === "en_cours_ou_resultat_attendu") corps += `<div class="om-info">Coup d'envoi passé : résultat pas encore enregistré.</div>`;
   section.innerHTML = `<div class="ax-match"><div class="ax-ligne-match"><span class="ax-equipe ax-dom">${e(m.domicile)}</span><div class="ax-horaire"><strong>${fin ? e(m.resultat.buts_dom + " - " + m.resultat.buts_ext) : e(h.heure)}</strong><span>${e(h.date)}</span></div><span class="ax-equipe ax-ext">${e(m.exterieur)}</span></div>` +
     `<div class="ax-match-bas"><p class="ax-competition">${e(String(m.competition || "").replace(/\s+/g, " ").trim())}</p><div class="ax-actions-tete"></div></div></div>` +
-    `<div class="om-corps">${corps}</div><details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${listes(m, onglet)}${tableau(m)}${derniers(m)}</div></details>`;
+    `<div class="om-corps">${corps}</div><details class="ax-details" open><summary class="ax-summary-cache" tabindex="-1">Détails</summary><div class="ax-details-corps">${listes(m, onglet)}${tableau(m)}${infosMatch(m)}${derniers(m)}</div></details>`;
   section.addEventListener("click", (ev2) => {
     const bo = ev2.target.closest(".om-onglet");
     if (bo) {
@@ -195,5 +212,6 @@ function affiche(d) {
   applique(nuit);
   bouton.addEventListener("click", () => { const s = !document.body.classList.contains("theme-nuit"); try { localStorage.setItem("archetype_theme_nuit", s ? "1" : "0"); } catch (x) { /* ignoré */ } applique(s); });
 })();
-fetch(`${VF_URL}?t=${Date.now()}`, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(affiche)
+Promise.all([fetch(`${VF_URL}?t=${Date.now()}`, { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+  fetch(`${INFOS_URL}?t=${Date.now()}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})).catch(() => ({}))]).then(([d, i]) => { INFOS = (i && i.matchs) || {}; affiche(d); })
   .catch((err) => { document.getElementById("maj").textContent = "Données indisponibles : aucune valeur n'est affichée."; console.error(err); });
