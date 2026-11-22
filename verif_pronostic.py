@@ -487,10 +487,10 @@ def fiche_match(x, maintenant, cfg, totaux=None):
             EP.append(e)
     import verif_regle_buts as RB             # onglet « +1,5 buts » : règle de buts de Patrick (marqués >= 3,5 et encaissés >= 2,8, 4 matchs au même lieu), marché « plus de 1,5 buts » seulement, cote >= 1,24
     regle_b = RB.charger(); RBL = None; P15 = None
-    if regle_b:       # onglet « +1,5 buts » (22/11) : TOUT +1,5 coté au minimum de la page, évaluable (4 matchs au même lieu) ; la règle de buts (+ championnat) est un repère « Règle validée », pas un filtre
+    if regle_b:       # onglet « +1,5 buts » (22/11) : TOUT +1,5 coté 1,24 ou plus, évaluable (4 matchs au même lieu) ; la règle de buts (+ championnat) est un repère « Règle validée », pas un filtre
         cb = cotes_betpawa(x.get("cotes_betpawa") or {}).get(RB.MARCHE)
-        if cb is not None and cb >= cfg["cote_min"]:
-            r = constat(x, RB.MARCHE, None, cfg)
+        if cb is not None and cb >= RB.COTE_MIN:          # 1,24 : seuil propre à cet onglet (Patrick, 22/11) ; les autres onglets gardent cfg["cote_min"]
+            r = constat(x, RB.MARCHE, None, {**cfg, "cote_min": min(cfg["cote_min"], RB.COTE_MIN)})
             if r["verdict"] != "NON ÉVALUABLE":
                 A, B = r["A"], r["B"]; ch = championnat_avant(x, totaux if totaux is not None else totaux_championnats())
                 info_b = RB.evaluer(A, B, ch, regle_b)                                  # règle de buts + filtre du championnat : seulement un repère
