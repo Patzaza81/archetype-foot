@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-22T02:44:46Z",
+ "genere_le": "2026-11-22T08:52:47Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -9,9 +9,9 @@
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 657,
+  "lignes": 663,
   "anomalies": [],
-  "derniere_empreinte": "3721386fbabf6a6bdbcc25108d5d5dfbb7feaf2810bcdee94c19169baf9d6c03"
+  "derniere_empreinte": "6d068aeca3418a136448c395b7861ba0bb52369f6d00522d8fe7f8842c2b3e9e"
  },
  "apprentissage": {
   "matchs_termines": 505,
@@ -226930,7 +226930,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -269275,6 +269275,407 @@
    "evaluation": null
   },
   {
+   "match_id": "8vym2s16eb0exqn3mn7qgmadw",
+   "date": "2026-11-24",
+   "coup_d_envoi_utc": "2026-11-24T19:45:00Z",
+   "competition": "Angleterre : Ligue Nationale",
+   "division": "EC",
+   "domicile": "Forest Green",
+   "exterieur": "Southend Utd",
+   "p1_original": {
+    "dom": 0.4111714016351986,
+    "nul": 0.24494465698500323,
+    "ext": 0.3438839413797983,
+    "o15": 0.792036699798636,
+    "o25": 0.5637157696101894,
+    "o35": 0.33980069436662025,
+    "btts": 0.5920644032568071
+   },
+   "p1_calibre": {
+    "dom": 0.4111714016351986,
+    "nul": 0.24494465698500323,
+    "ext": 0.3438839413797983,
+    "o15": 0.792036699798636,
+    "o25": 0.5637157696101894,
+    "o35": 0.33980069436662025,
+    "btts": 0.5920644032568071
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.5469538051262424,
+    "buts_attendus_ext": 1.3951559049922164,
+    "k": 10,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 106,
+    "matchs_anterieurs_ext": 245,
+    "fd_dom": "Forest Green",
+    "fd_ext": "Southend"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "2e00a5422bd91ca35b7b82f928078d15746b0fcd14a64ea3d3cc28a2554d242a",
+   "mode": "parallele",
+   "n_historique_competition": 2914,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6601993056333797,
+     "cote": 1.82,
+     "valeur": 0.201562736252751
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Forest Green",
+      "p1": 0.4111714016351986,
+      "cote": 2.27,
+      "valeur": -0.06664091828809915
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24494465698500323,
+      "cote": 3.84,
+      "valeur": -0.059412517177587665
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Southend Utd",
+      "p1": 0.3438839413797983,
+      "cote": 2.64,
+      "valeur": -0.09214639475733255
+     },
+     {
+      "cle": "1N",
+      "libelle": "Forest Green ou match nul",
+      "p1": 0.6561160586202018,
+      "cote": 1.42,
+      "valeur": -0.06831519675931341
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Southend Utd",
+      "p1": 0.5888285983648015,
+      "cote": 1.54,
+      "valeur": -0.09320395851820562
+     },
+     {
+      "cle": "12",
+      "libelle": "Forest Green ou Southend Utd (pas de nul)",
+      "p1": 0.7550553430149969,
+      "cote": 1.25,
+      "valeur": -0.0561808212312539
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.792036699798636,
+      "cote": 1.09,
+      "valeur": -0.13667999721948665
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.207963300201364,
+      "cote": 6.26,
+      "valeur": 0.30185025926053854
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5637157696101894,
+      "cote": 1.35,
+      "valeur": -0.23898371102624416
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.43628423038981057,
+      "cote": 2.94,
+      "valeur": 0.28267563734604306
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.33980069436662025,
+      "cote": 1.88,
+      "valeur": -0.361174694590754
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6601993056333797,
+      "cote": 1.82,
+      "valeur": 0.201562736252751
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5920644032568071,
+      "cote": 1.33,
+      "valeur": -0.2125543436684465
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.4079355967431929,
+      "cote": 2.9,
+      "valeur": 0.18301323055525942
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.27,
+    "N": 3.84,
+    "2": 2.64,
+    "1N": 1.42,
+    "N2": 1.54,
+    "12": 1.25,
+    "o15+": 1.09,
+    "o15-": 6.26,
+    "o25+": 1.35,
+    "o25-": 2.94,
+    "o35+": 1.88,
+    "o35-": 1.82,
+    "btts+": 1.33,
+    "btts-": 2.9
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Harrogate",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-28",
+      "adversaire": "Eastleigh",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Hartlepool",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-29",
+      "adversaire": "Wealdstone",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Boston Utd",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Gateshead",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Altrincham",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Boreham Wood",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Halifax",
+      "marques": 3,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Wealdstone",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Worthing",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Boston Utd",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-30",
+      "adversaire": "Eastleigh",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Gateshead",
+      "marques": 6,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Carlisle",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Woking",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Solihull",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Altrincham",
+      "marques": 3,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-09-26",
+      "adversaire": "Sutton",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Carlisle",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Hornchurch",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Fylde",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Worthing",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-14",
+      "adversaire": "Aldershot",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Halifax",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Fylde",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-26",
+      "adversaire": "Barrow",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Tamworth",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Yeovil",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Kidderminster",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Scunthorpe",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-03-14",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2025-11-29",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-03-15",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2024-11-23",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "8uciwtjin8w5ly2evul4t1mok",
    "date": "2026-11-24",
    "coup_d_envoi_utc": "2026-11-24T19:45:00Z",
@@ -272608,6 +273009,1048 @@
    "evaluation": null
   },
   {
+   "match_id": "2sa7o188gqd6s6s04f39ze4no",
+   "date": "2026-11-25",
+   "coup_d_envoi_utc": "2026-11-24T23:00:00Z",
+   "competition": "Brésil : Série A",
+   "division": "BRA",
+   "domicile": "Atl. Mineiro",
+   "exterieur": "Corinthians",
+   "p1_original": {
+    "dom": 0.4758747950141351,
+    "nul": 0.2681975763254568,
+    "ext": 0.2559276286604082,
+    "o15": 0.6896871983644561,
+    "o25": 0.4280491561023467,
+    "o35": 0.21948661505309963,
+    "btts": 0.4706639748701925
+   },
+   "p1_calibre": {
+    "dom": 0.4758747950141351,
+    "nul": 0.2681975763254568,
+    "ext": 0.2559276286604082,
+    "o15": 0.6896871983644561,
+    "o25": 0.4280491561023467,
+    "o35": 0.21948661505309963,
+    "btts": 0.4706639748701925
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.4241833746241066,
+    "buts_attendus_ext": 0.9672411205986736,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 225,
+    "matchs_anterieurs_ext": 225,
+    "fd_dom": "Atletico-MG",
+    "fd_ext": "Corinthians"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "52a77aae0f926d2e5e7b1ebef8ca15f1925ec605f3e07ee0003463198b2b2f77",
+   "mode": "parallele",
+   "n_historique_competition": 2250,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Atl. Mineiro ou match nul",
+     "p1": 0.7440723713395919,
+     "cote": 1.39,
+     "valeur": 0.034260596162032586
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Atl. Mineiro",
+      "p1": 0.4758747950141351,
+      "cote": 2.33,
+      "valeur": 0.10878827238293476
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2681975763254568,
+      "cote": 3.34,
+      "valeur": -0.10422009507297425
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Corinthians",
+      "p1": 0.2559276286604082,
+      "cote": 3.01,
+      "valeur": -0.2296578377321714
+     },
+     {
+      "cle": "1N",
+      "libelle": "Atl. Mineiro ou match nul",
+      "p1": 0.7440723713395919,
+      "cote": 1.39,
+      "valeur": 0.034260596162032586
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Corinthians",
+      "p1": 0.524125204985865,
+      "cote": 1.58,
+      "valeur": -0.17188217612233325
+     },
+     {
+      "cle": "12",
+      "libelle": "Atl. Mineiro ou Corinthians (pas de nul)",
+      "p1": 0.7318024236745433,
+      "cote": 1.34,
+      "valeur": -0.019384752276111916
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6896871983644561,
+      "cote": 1.32,
+      "valeur": -0.08961289815891782
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.31031280163554387,
+      "cote": 3.23,
+      "valeur": 0.002310349282806712
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4280491561023467,
+      "cote": 2.01,
+      "valeur": -0.13962119623428326
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5719508438976533,
+      "cote": 1.75,
+      "valeur": 0.0009139768208932253
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.21948661505309963,
+      "cote": 3.52,
+      "valeur": -0.2274071150130893
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7805133849469004,
+      "cote": 1.27,
+      "valeur": -0.008748001117436566
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4706639748701925,
+      "cote": 1.78,
+      "valeur": -0.16221812473105734
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5293360251298075,
+      "cote": 1.93,
+      "valeur": 0.021618528500528367
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.33,
+    "N": 3.34,
+    "2": 3.01,
+    "1N": 1.39,
+    "N2": 1.58,
+    "12": 1.34,
+    "o15+": 1.32,
+    "o15-": 3.23,
+    "o25+": 2.01,
+    "o25-": 1.75,
+    "o35+": 3.52,
+    "o35-": 1.27,
+    "btts+": 1.78,
+    "btts-": 1.93
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-29",
+      "adversaire": "Cruzeiro",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Santos",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Bragantino",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Fluminense",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Vitoria",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-21",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-16",
+      "adversaire": "Mirassol",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-27",
+      "adversaire": "Flamengo RJ",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Athletico-PR",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-18",
+      "adversaire": "Sao Paulo",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-11",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-02-11",
+      "adversaire": "Remo",
+      "marques": 3,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Palmeiras",
+      "marques": 2,
+      "encaisses": 2
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-05",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Vasco",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Palmeiras",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-07",
+      "adversaire": "Internacional",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-23",
+      "adversaire": "Coritiba",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-30",
+      "adversaire": "Gremio",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-17",
+      "adversaire": "Botafogo RJ",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-05-04",
+      "adversaire": "Mirassol",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-03-20",
+      "adversaire": "Chapecoense-SC",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-15",
+      "adversaire": "Santos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-25",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-02-19",
+      "adversaire": "Athletico-PR",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-14",
+      "adversaire": "Mirassol",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-11-05",
+      "adversaire": "Botafogo RJ",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-26",
+      "adversaire": "Flamengo RJ",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Athletico-PR",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Sao Paulo",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Remo",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-26",
+      "adversaire": "Palmeiras",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-31",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Corinthians",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-05-03",
+      "adversaire": "Cruzeiro",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-19",
+      "adversaire": "Coritiba",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-04-02",
+      "adversaire": "Chapecoense-SC",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-03-21",
+      "adversaire": "Fluminense",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-14",
+      "adversaire": "Vitoria",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-26",
+      "adversaire": "Gremio",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-04",
+      "adversaire": "Bragantino",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-19",
+      "adversaire": "Botafogo RJ",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-30",
+      "adversaire": "Mirassol",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Vitoria",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-20",
+      "adversaire": "Fluminense",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Chapecoense-SC",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-30",
+      "adversaire": "Santos",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Cruzeiro",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-07-30",
+      "adversaire": "Athletico-PR",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-07-23",
+      "adversaire": "Remo",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-24",
+      "adversaire": "Atletico-MG",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-05-10",
+      "adversaire": "Sao Paulo",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-04-26",
+      "adversaire": "Vasco",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-12",
+      "adversaire": "Palmeiras",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-04-05",
+      "adversaire": "Internacional",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-22",
+      "adversaire": "Flamengo RJ",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-03-12",
+      "adversaire": "Coritiba",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-02-12",
+      "adversaire": "Bragantino",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-01-28",
+      "adversaire": "Bahia",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-05-24",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-10-18",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-05-25",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2024-07-28",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-04-14",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-11-09",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-07-08",
+      "domicile": true,
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2022-11-13",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-07-24",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-11-10",
+      "domicile": true,
+      "marques": 3,
+      "encaisses": 0
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2kbv51efxuy1z8elrp3ydekus",
+   "date": "2026-11-25",
+   "coup_d_envoi_utc": "2026-11-25T10:00:00Z",
+   "competition": "Japon : J1 Ligue",
+   "division": "JPN",
+   "domicile": "Fagiano",
+   "exterieur": "Shimizu",
+   "p1_original": {
+    "dom": 0.4228219322514693,
+    "nul": 0.28228868987783406,
+    "ext": 0.29488937787069636,
+    "o15": 0.6638753190903605,
+    "o25": 0.39793008975904254,
+    "o35": 0.1960519556877648,
+    "btts": 0.45669205734822604
+   },
+   "p1_calibre": {
+    "dom": 0.4228219322514693,
+    "nul": 0.28228868987783406,
+    "ext": 0.29488937787069636,
+    "o15": 0.6638753190903605,
+    "o25": 0.39793008975904254,
+    "o35": 0.1960519556877648,
+    "btts": 0.45669205734822604
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.2679782418730288,
+    "buts_attendus_ext": 1.0093117239466873,
+    "k": 20,
+    "demi_vie_jours": null,
+    "matchs_anterieurs_dom": 53,
+    "matchs_anterieurs_ext": 124,
+    "fd_dom": "Okayama",
+    "fd_ext": "Shimizu S-Pulse"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "6d068aeca3418a136448c395b7861ba0bb52369f6d00522d8fe7f8842c2b3e9e",
+   "mode": "parallele",
+   "n_historique_competition": 1896,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.8039480443122352,
+     "cote": 1.26,
+     "valeur": 0.012974535833416345
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Fagiano",
+      "p1": 0.4228219322514693,
+      "cote": 2.06,
+      "valeur": -0.12898681956197322
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.28228868987783406,
+      "cote": 3.36,
+      "valeur": -0.05151000201047762
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Shimizu",
+      "p1": 0.29488937787069636,
+      "cote": 3.61,
+      "valeur": 0.0645506541132137
+     },
+     {
+      "cle": "1N",
+      "libelle": "Fagiano ou match nul",
+      "p1": 0.7051106221293033,
+      "cote": 1.3,
+      "valeur": -0.08335619123190563
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Shimizu",
+      "p1": 0.5771780677485304,
+      "cote": 1.73,
+      "valeur": -0.0014819427950424346
+     },
+     {
+      "cle": "12",
+      "libelle": "Fagiano ou Shimizu (pas de nul)",
+      "p1": 0.7177113101221657,
+      "cote": 1.33,
+      "valeur": -0.04544395753751951
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6638753190903605,
+      "cote": 1.33,
+      "valeur": -0.11704582560982058
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.33612468090963954,
+      "cote": 3.16,
+      "valeur": 0.062153991674460896
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.39793008975904254,
+      "cote": 2.05,
+      "valeur": -0.18424331599396282
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.6020699102409575,
+      "cote": 1.72,
+      "valeur": 0.03556024561444682
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.1960519556877648,
+      "cote": 3.63,
+      "valeur": -0.2883314008534138
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8039480443122352,
+      "cote": 1.26,
+      "valeur": 0.012974535833416345
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.45669205734822604,
+      "cote": 1.85,
+      "valeur": -0.15511969390578173
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.543307942651774,
+      "cote": 1.86,
+      "valeur": 0.010552773332299648
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.06,
+    "N": 3.36,
+    "2": 3.61,
+    "1N": 1.3,
+    "N2": 1.73,
+    "12": 1.33,
+    "o15+": 1.33,
+    "o15-": 3.16,
+    "o25+": 2.05,
+    "o25-": 1.72,
+    "o35+": 3.63,
+    "o35-": 1.26,
+    "btts+": 1.85,
+    "btts-": 1.86
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "FC Tokyo",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Mito",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-18",
+      "adversaire": "Vissel Kobe",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Kyoto",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Verdy",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "V-Varen Nagasaki",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Kyoto",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Mito",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Cerezo Osaka",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Nagoya Grampus",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Avispa Fukuoka",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Urawa Reds",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Chiba",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Nagoya Grampus",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Cerezo Osaka",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Verdy",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Machida",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Gamba Osaka",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Chiba",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Avispa Fukuoka",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "FC Tokyo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Kashiwa Reysol",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2025-12-06",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-03-02",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
    "match_id": "2kn78z7bsfavhdar0h97v9t04",
    "date": "2026-11-25",
    "coup_d_envoi_utc": "2026-11-25T10:00:00Z",
@@ -273021,6 +274464,722 @@
       "encaisses": 3
      }
     ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2jp4fkxjp85d3taxhty64z66s",
+   "date": "2026-11-25",
+   "coup_d_envoi_utc": "2026-11-25T10:00:00Z",
+   "competition": "Japon : J1 Ligue",
+   "division": "JPN",
+   "domicile": "JEF Utd",
+   "exterieur": "Nagoya",
+   "p1_original": {
+    "dom": 0.36911405642165324,
+    "nul": 0.27693329348940954,
+    "ext": 0.3539526500889371,
+    "o15": 0.6904301032322014,
+    "o25": 0.42893808817516116,
+    "o35": 0.22019572419227434,
+    "btts": 0.48716547731436194
+   },
+   "p1_calibre": {
+    "dom": 0.36911405642165324,
+    "nul": 0.27693329348940954,
+    "ext": 0.3539526500889371,
+    "o15": 0.6904301032322014,
+    "o25": 0.42893808817516116,
+    "o35": 0.22019572419227434,
+    "btts": 0.48716547731436194
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.2130246708989572,
+    "buts_attendus_ext": 1.1817983290005194,
+    "k": 20,
+    "demi_vie_jours": null,
+    "matchs_anterieurs_dom": 14,
+    "matchs_anterieurs_ext": 196,
+    "fd_dom": "Chiba",
+    "fd_ext": "Nagoya Grampus"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "8471a34a30712b9c04b370b374a0cfb6661cd6498af5ac338723b31d2fa3a5d5",
+   "mode": "parallele",
+   "n_historique_competition": 1896,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7798042758077257,
+     "cote": 1.45,
+     "valeur": 0.13071619992120231
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire JEF Utd",
+      "p1": 0.36911405642165324,
+      "cote": 3.27,
+      "valeur": 0.20700296449880606
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.27693329348940954,
+      "cote": 3.75,
+      "valeur": 0.03849985058528582
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Nagoya",
+      "p1": 0.3539526500889371,
+      "cote": 2.05,
+      "valeur": -0.274397067317679
+     },
+     {
+      "cle": "1N",
+      "libelle": "JEF Utd ou match nul",
+      "p1": 0.6460473499110628,
+      "cote": 1.73,
+      "valeur": 0.11766191534613868
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Nagoya",
+      "p1": 0.6308859435783467,
+      "cote": 1.34,
+      "valeur": -0.15461283560501538
+     },
+     {
+      "cle": "12",
+      "libelle": "JEF Utd ou Nagoya (pas de nul)",
+      "p1": 0.7230667065105904,
+      "cote": 1.29,
+      "valeur": -0.06724394860133842
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6904301032322014,
+      "cote": 1.19,
+      "valeur": -0.17838817715368027
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.30956989676779856,
+      "cote": 4.29,
+      "valeur": 0.32805485713385574
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.42893808817516116,
+      "cote": 1.65,
+      "valeur": -0.2922521545109841
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5710619118248388,
+      "cote": 2.16,
+      "valeur": 0.23349372954165193
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.22019572419227434,
+      "cote": 2.61,
+      "valeur": -0.42528915985816396
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7798042758077257,
+      "cote": 1.45,
+      "valeur": 0.13071619992120231
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.48716547731436194,
+      "cote": 1.57,
+      "valeur": -0.23515020061645175
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5128345226856381,
+      "cote": 2.27,
+      "valeur": 0.16413436649639856
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 3.27,
+    "N": 3.75,
+    "2": 2.05,
+    "1N": 1.73,
+    "N2": 1.34,
+    "12": 1.29,
+    "o15+": 1.19,
+    "o15-": 4.29,
+    "o25+": 1.65,
+    "o25-": 2.16,
+    "o35+": 2.61,
+    "o35-": 1.45,
+    "btts+": 1.57,
+    "btts-": 2.27
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-08",
+      "adversaire": "Mito",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-11-01",
+      "adversaire": "Avispa Fukuoka",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "V-Varen Nagasaki",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Gamba Osaka",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Okayama",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Machida",
+      "marques": 0,
+      "encaisses": 4
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Vissel Kobe",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Kashiwa Reysol",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "FC Tokyo",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "V-Varen Nagasaki",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Kashima Antlers",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-25",
+      "adversaire": "Cerezo Osaka",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Urawa Reds",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Shimizu S-Pulse",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Verdy",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 2,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-08-21",
+      "adversaire": "FC Tokyo",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 0,
+      "encaisses": 3
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Kyoto",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Cerezo Osaka",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Machida",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Okayama",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Gamba Osaka",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Shimizu S-Pulse",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2j2bap1u405x6izu9tiy1nv2s",
+   "date": "2026-11-25",
+   "coup_d_envoi_utc": "2026-11-25T10:00:00Z",
+   "competition": "Japon : J1 Ligue",
+   "division": "JPN",
+   "domicile": "M. Hollyhock",
+   "exterieur": "Tokyo Verdy",
+   "p1_original": {
+    "dom": 0.37869680614463347,
+    "nul": 0.283830607405312,
+    "ext": 0.3374725864500544,
+    "o15": 0.6677122637784021,
+    "o25": 0.40231481458816704,
+    "o35": 0.19939244269675974,
+    "btts": 0.4650892856014659
+   },
+   "p1_calibre": {
+    "dom": 0.37869680614463347,
+    "nul": 0.283830607405312,
+    "ext": 0.3374725864500544,
+    "o15": 0.6677122637784021,
+    "o25": 0.40231481458816704,
+    "o35": 0.19939244269675974,
+    "btts": 0.4650892856014659
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.188585933541744,
+    "buts_attendus_ext": 1.1052082138084116,
+    "k": 20,
+    "demi_vie_jours": null,
+    "matchs_anterieurs_dom": 14,
+    "matchs_anterieurs_ext": 90,
+    "fd_dom": "Mito",
+    "fd_ext": "Verdy"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "4286722877f71b21d536ac980f8b2df1b539503d436134260b560b256444ddc1",
+   "mode": "parallele",
+   "n_historique_competition": 1896,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "M. Hollyhock ou match nul",
+     "p1": 0.6625274135499455,
+     "cote": 1.51,
+     "valeur": 0.00041639446041763506
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire M. Hollyhock",
+      "p1": 0.37869680614463347,
+      "cote": 2.97,
+      "valeur": 0.12472951424956147
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.283830607405312,
+      "cote": 3.04,
+      "valeur": -0.13715495348785145
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Tokyo Verdy",
+      "p1": 0.3374725864500544,
+      "cote": 2.54,
+      "valeur": -0.14281963041686185
+     },
+     {
+      "cle": "1N",
+      "libelle": "M. Hollyhock ou match nul",
+      "p1": 0.6625274135499455,
+      "cote": 1.51,
+      "valeur": 0.00041639446041763506
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Tokyo Verdy",
+      "p1": 0.6213031938553664,
+      "cote": 1.4,
+      "valeur": -0.13017552860248716
+     },
+     {
+      "cle": "12",
+      "libelle": "M. Hollyhock ou Tokyo Verdy (pas de nul)",
+      "p1": 0.7161693925946879,
+      "cote": 1.39,
+      "valeur": -0.004524544293383892
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.6677122637784021,
+      "cote": 1.43,
+      "valeur": -0.045171462796885
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.3322877362215979,
+      "cote": 2.69,
+      "valeur": -0.10614598956390164
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.40231481458816704,
+      "cote": 2.37,
+      "valeur": -0.046513889426044064
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.597685185411833,
+      "cote": 1.54,
+      "valeur": -0.07956481446577712
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.19939244269675974,
+      "cote": 4.43,
+      "valeur": -0.1166914788533544
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.8006075573032403,
+      "cote": 1.18,
+      "valeur": -0.055283082382176496
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.4650892856014659,
+      "cote": 1.98,
+      "valeur": -0.07912321450909754
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.5349107143985341,
+      "cote": 1.74,
+      "valeur": -0.06925535694655072
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.97,
+    "N": 3.04,
+    "2": 2.54,
+    "1N": 1.51,
+    "N2": 1.4,
+    "12": 1.39,
+    "o15+": 1.43,
+    "o15-": 2.69,
+    "o25+": 2.37,
+    "o25-": 1.54,
+    "o35+": 4.43,
+    "o35-": 1.18,
+    "btts+": 1.98,
+    "btts-": 1.74
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Urawa Reds",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Shimizu S-Pulse",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Kashima Antlers",
+      "marques": 4,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Machida",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Gamba Osaka",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Shimizu S-Pulse",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-11-01",
+      "adversaire": "V-Varen Nagasaki",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Urawa Reds",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-06",
+      "adversaire": "Cerezo Osaka",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Okayama",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-08",
+      "adversaire": "Chiba",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-25",
+      "adversaire": "FC Tokyo",
+      "marques": 0,
+      "encaisses": 6
+     },
+     {
+      "date": "2026-10-21",
+      "adversaire": "Okayama",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Yokohama F. Marinos",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Avispa Fukuoka",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Kyoto",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Kashiwa Reysol",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Avispa Fukuoka",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "FC Tokyo",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Sanfrecce Hiroshima",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-13",
+      "adversaire": "Chiba",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Vissel Kobe",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Kashima Antlers",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-14",
+      "adversaire": "Kashiwa Reysol",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-09",
+      "adversaire": "Kawasaki Frontale",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "h2h": []
    },
    "statut": "a_venir",
    "resultat": null,
@@ -274475,6 +276634,449 @@
      }
     ],
     "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "8x97rjlkq2m6o6za43bfz6mfo",
+   "date": "2026-11-25",
+   "coup_d_envoi_utc": "2026-11-25T19:00:00Z",
+   "competition": "Angleterre : Ligue Nationale",
+   "division": "EC",
+   "domicile": "Boreham Wood",
+   "exterieur": "Aldershot",
+   "p1_original": {
+    "dom": 0.6794001601243517,
+    "nul": 0.17162475925921963,
+    "ext": 0.14897508061642886,
+    "o15": 0.878829398275161,
+    "o25": 0.705438771525184,
+    "o35": 0.494669744008653,
+    "btts": 0.6196062324976644
+   },
+   "p1_calibre": {
+    "dom": 0.6794001601243517,
+    "nul": 0.17162475925921963,
+    "ext": 0.14897508061642886,
+    "o15": 0.878829398275161,
+    "o25": 0.705438771525184,
+    "o35": 0.494669744008653,
+    "btts": 0.6196062324976644
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 2.5278135357238023,
+    "buts_attendus_ext": 1.1189065575218218,
+    "k": 10,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 199,
+    "matchs_anterieurs_ext": 245,
+    "fd_dom": "Boreham Wood",
+    "fd_ext": "Aldershot"
+   },
+   "gele_le": "2026-11-22T08:52:39Z",
+   "empreinte": "b39b324c876790252bbe8aa1f478b9d73a54b383bc2e09bdd0f2c3b20b45bc79",
+   "mode": "parallele",
+   "n_historique_competition": 2914,
+   "pari": {
+    "retenu": {
+     "cle": "btts+",
+     "libelle": "Les deux équipes marquent",
+     "p1": 0.6196062324976644,
+     "cote": 1.69,
+     "valeur": 0.04713453292105285
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Boreham Wood",
+      "p1": 0.6794001601243517,
+      "cote": 1.16,
+      "valeur": -0.2118958142557521
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.17162475925921963,
+      "cote": 7.04,
+      "valeur": 0.20823830518490616
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Aldershot",
+      "p1": 0.14897508061642886,
+      "cote": 12.62,
+      "valeur": 0.8800655173793321
+     },
+     {
+      "cle": "1N",
+      "libelle": "Boreham Wood ou match nul",
+      "p1": 0.8510249193835713,
+      "cote": 1.06,
+      "valeur": -0.09791358545341444
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Aldershot",
+      "p1": 0.3205998398756485,
+      "cote": 4.75,
+      "valeur": 0.5228492394093303
+     },
+     {
+      "cle": "12",
+      "libelle": "Boreham Wood ou Aldershot (pas de nul)",
+      "p1": 0.8283752407407805,
+      "cote": 1.12,
+      "valeur": -0.0722197303703257
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.878829398275161,
+      "cote": 1.08,
+      "valeur": -0.050864249862826005
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.12117060172483896,
+      "cote": 6.65,
+      "valeur": -0.1942154985298209
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.705438771525184,
+      "cote": 1.27,
+      "valeur": -0.10409276016301638
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.29456122847481603,
+      "cote": 3.42,
+      "valeur": 0.007399401383870741
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.494669744008653,
+      "cote": 1.72,
+      "valeur": -0.14916804030511688
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.5053302559913471,
+      "cote": 2.01,
+      "valeur": 0.01571381454260745
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.6196062324976644,
+      "cote": 1.69,
+      "valeur": 0.04713453292105285
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.38039376750233556,
+      "cote": 1.97,
+      "valeur": -0.250624278020399
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.16,
+    "N": 7.04,
+    "2": 12.62,
+    "1N": 1.06,
+    "N2": 4.75,
+    "12": 1.12,
+    "o15+": 1.08,
+    "o15-": 6.65,
+    "o25+": 1.27,
+    "o25-": 3.42,
+    "o35+": 1.72,
+    "o35-": 2.01,
+    "btts+": 1.69,
+    "btts-": 1.97
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Hartlepool",
+      "marques": 4,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Fylde",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Altrincham",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-29",
+      "adversaire": "Kidderminster",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Harrogate",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Carlisle",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-27",
+      "adversaire": "Boston Utd",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Tamworth",
+      "marques": 3,
+      "encaisses": 3
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-14",
+      "adversaire": "Southend",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-28",
+      "adversaire": "Sutton",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Altrincham",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-29",
+      "adversaire": "Hornchurch",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Barrow",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Solihull",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Eastleigh",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Kidderminster",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-08",
+      "adversaire": "Boston Utd",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-14",
+      "adversaire": "Yeovil",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Woking",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-09",
+      "adversaire": "Sutton",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-26",
+      "adversaire": "Solihull",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-16",
+      "adversaire": "Scunthorpe",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Eastleigh",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-31",
+      "adversaire": "Worthing",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Forest Green",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Halifax",
+      "marques": 3,
+      "encaisses": 1
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Gateshead",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Wealdstone",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Carlisle",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-26",
+      "adversaire": "Tamworth",
+      "marques": 5,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Yeovil",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Halifax",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-28",
+      "adversaire": "Harrogate",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Hartlepool",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-03-24",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2025-11-04",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2024-04-13",
+      "domicile": false,
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2023-09-23",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2023-01-31",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2022-08-16",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2022-04-09",
+      "domicile": false,
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2021-08-28",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     }
+    ]
    },
    "statut": "a_venir",
    "resultat": null,
