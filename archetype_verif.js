@@ -28,8 +28,8 @@ const typeEtude = (m) => (m === "total_plus_1.5" ? "total" : m.includes("&") ? "
 const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.ecart) && (f.lieu === "tous" || p.etude.lieu === f.lieu) && (f.marche === "tous" || typeEtude(p.marche) === f.marche);
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const pariTotalEtude = (m) => { const E = DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.etude; return m.regle_buts && E ? [{ ...m.regle_buts.pari, etude: { taux: E.taux, n: E.matchs, ecart: "buts", lieu: "match" } }] : []; };   // pas d'écart de défense ni de lieu d'équipe : les filtres Écart / Lieu le masquent, comme il se doit
-const paris = (m, onglet, f) => (onglet === "plus15" ? (m.regle_buts ? [m.regle_buts.pari] : []) : onglet === "etude" ? (m.etude_paris || []).concat(pariTotalEtude(m)).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const pariTotalEtude = (m) => { if (!m.plus15) return []; const p = m.plus15.pari, E = DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.etude; const nm = (p.reussite_dom[1] || 0) + (p.reussite_ext[1] || 0); return [{ ...p, etude: m.plus15.regle_remplie && E ? { taux: E.taux, n: E.matchs, ecart: "buts", lieu: "match" } : { taux: p.taux, n: nm, ecart: "buts", lieu: "match" } }]; };   // tout le +1,5 de l'onglet « +1,5 buts » est aussi dans l'Étude ; règle remplie = taux de l'étude de la règle, sinon taux du match (même lieu)
+const paris = (m, onglet, f) => (onglet === "plus15" ? (m.plus15 ? [m.plus15.pari] : []) : onglet === "etude" ? (m.etude_paris || []).concat(pariTotalEtude(m)).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
 // Onglet Étude : seuls les matchs qui ont au moins un marché retenu par l'étude y figurent ; les filtres (écart, lieu, marché) portent sur ces marchés.
 const etudeMatch = (m, f) => paris(m, "etude", f || ETUDE_F).length > 0;
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
@@ -37,7 +37,7 @@ const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict =
 function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT", libVerdict = tient ? "Tient" : p.verdict === "NE TIENT PAS" ? "Ne tient pas" : "Tient avec réserve";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
-  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} ${p.etude.ecart === "buts" ? "matchs, règle de buts + championnat" : "cas, écart de défense " + e(p.etude.ecart)}` : ""}${ONGLET === "plus15" ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}</small></span>` +
+  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} ${p.etude.ecart === "buts" ? "matchs, règle de buts + championnat" : "cas, écart de défense " + e(p.etude.ecart)}` : ""}${ONGLET === "plus15" && p.regle ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}</small></span>` +
     `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${libVerdict}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
@@ -69,20 +69,21 @@ function textePlus15(R) {
 function noteRegle(d) {
   const R = d.regle_buts; if (!R) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
   const r = R.regle, E = R.etude, C = R.championnat, V = E.verification, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
-  return `<p class="om-info" style="margin:8px 14px">Ta règle : les deux équipes, chacune à son lieu, marquent à elles deux au moins <b>${fr(r.marques_min, 1)}</b> buts par match et en encaissent au moins <b>${fr(r.encaisses_min, 1)}</b> (${e(r.n_min)} matchs minimum au même lieu). ` +
+  return `<p class="om-info" style="margin:8px 14px">Règle : les deux équipes, chacune à son lieu, marquent à elles deux au moins <b>${fr(r.marques_min, 1)}</b> buts par match et en encaissent au moins <b>${fr(r.encaisses_min, 1)}</b> (${e(r.n_min)} matchs minimum au même lieu). ` +
     (C ? `Filtre du championnat : au moins <b>${fr(C.seuil * 100, 0)} %</b> des matchs précédents du championnat ont compté 2 buts ou plus (seuil choisi sur la première moitié de la période, vérifié sur la seconde). ` : "") +
-    `Marché affiché : plus de 1,5 buts, cote minimale <b>${fr(r.cote_min)}</b>. Sur <b>${e(E.matchs)}</b> matchs déjà joués où ${C ? "la règle et le filtre étaient remplis" : "la règle était remplie"}, le +1,5 est passé <b>${pc(E.taux)}</b> du temps (hors règle : ${pc(E.hors_regle.taux)}), ` +
+    `L'onglet montre <b>tous</b> les matchs dont le plus de 1,5 buts est coté <b>${fr(d.cote_min)}</b> ou plus (${e(r.n_min)} matchs minimum au même lieu) ; ceux qui remplissent la règle portent le repère « Règle validée ». Sur <b>${e(E.matchs)}</b> matchs déjà joués où ${C ? "la règle et le filtre étaient remplis" : "la règle était remplie"}, le +1,5 est passé <b>${pc(E.taux)}</b> du temps (hors règle : ${pc(E.hors_regle.taux)}), ` +
     `intervalle ${pc(E.borne_basse)} à ${pc(E.borne_haute)}.` +
     (C && V ? ` Moitié non vue pour le choix du seuil : ${pc(V.seconde_moitie_non_vue.taux)} sur ${e(V.seconde_moitie_non_vue.matchs)} matchs (règle seule : ${pc(V.regle_seule_seconde_moitie.taux)} sur ${e(V.regle_seule_seconde_moitie.matchs)}).` : "") + `</p>`;
 }
 function phraseRegle(m) {
-  const x = m.regle_buts, R = (DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.regle) || {}; if (!x) return "";
-  return `<div class="om-info"><b>${e(m.domicile)}</b> (à domicile) et <b>${e(m.exterieur)}</b> (à l'extérieur) marquent à eux deux <b>${fr(x.marques, 1)}</b> buts par match (règle : ${fr(R.marques_min, 1)} ou plus) et en encaissent <b>${fr(x.encaisses, 1)}</b> (règle : ${fr(R.encaisses_min, 1)} ou plus), sur ${e(x.n_dom)} et ${e(x.n_ext)} matchs au même lieu.${x.taux_championnat != null ? ` Dans ce championnat, ${fr(x.taux_championnat * 100, 0)} % des ${e(x.n_championnat)} matchs précédents ont compté 2 buts ou plus (filtre : ${fr(((DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.championnat) || {}).seuil * 100, 0)} % ou plus).` : ""}</div>`;
+  const x = m.plus15, R = (DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.regle) || {}, C = (DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.championnat) || {}; if (!x || x.marques == null) return "";
+  const ch = x.taux_championnat != null ? ` Dans ce championnat, ${fr(x.taux_championnat * 100, 0)} % des ${e(x.n_championnat)} matchs précédents ont compté 2 buts ou plus${C.seuil != null ? ` (filtre : ${fr(C.seuil * 100, 0)} % ou plus)` : ""}.` : "";
+  return `<div class="om-info"><b>${e(m.domicile)}</b> (à domicile) et <b>${e(m.exterieur)}</b> (à l'extérieur) marquent à eux deux <b>${fr(x.marques, 1)}</b> buts par match (règle : ${fr(R.marques_min, 1)} ou plus) et en encaissent <b>${fr(x.encaisses, 1)}</b> (règle : ${fr(R.encaisses_min, 1)} ou plus), sur ${e(x.n_dom)} et ${e(x.n_ext)} matchs au même lieu.${ch} <b>${x.regle_remplie ? "Règle remplie." : "Règle non remplie."}</b></div>`;
 }
 function resume(m, onglet) {
   if (onglet === "plus15") {
     const p = paris(m, onglet)[0]; if (!p) return "";
-    return phraseRegle(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Plus de 1,5 buts · règle remplie</div>${ligne(p, m.statut === "termine")}</div>`;
+    return phraseRegle(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Plus de 1,5 buts${m.plus15 && m.plus15.regle_remplie ? " · règle remplie" : ""}</div>${ligne(p, m.statut === "termine")}</div>`;
   }
   if (onglet === "etude") {
     const p = paris(m, onglet)[0]; if (!p) return "";
@@ -188,13 +189,14 @@ function rendu(d) {
   TOP = top20(d);
   let L = (d.matchs || []).filter((m) => (ONGLET === "etude" ? etudeMatch(m) : paris(m, ONGLET).length));
   if (ONGLET === "top20") L = L.filter((m) => TOP.has(m.match_id)).sort((a, b) => String(a.coup_d_envoi_utc).slice(0, 10) === String(b.coup_d_envoi_utc).slice(0, 10) && 0 || (horaire(a.coup_d_envoi_utc).date === horaire(b.coup_d_envoi_utc).date ? TOP.get(a.match_id).rang - TOP.get(b.match_id).rang : String(a.coup_d_envoi_utc).localeCompare(b.coup_d_envoi_utc)));
+  if (ONGLET === "plus15") { const jours = []; const cle = (m) => { const j = horaire(m.coup_d_envoi_utc).date; if (!jours.includes(j)) jours.push(j); return jours.indexOf(j); }; L = L.map((m, i) => [cle(m), m.plus15 && m.plus15.regle_remplie ? 0 : 1, i, m]).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).map((t) => t[3]); }   // règle remplie d'abord, sans mélanger les jours
   const av = L.filter((m) => m.statut === "a_venir"), ec = L.filter((m) => m.statut === "en_cours_ou_resultat_attendu"), tm = L.filter((m) => m.statut === "termine").reverse();
   document.getElementById("vf-onglets").innerHTML = barreOnglets(d);
   liste("om-avenir", av, "Aucun match à venir pour cet onglet."); liste("om-encours", ec, "Aucun match en cours."); liste("om-regles", tm, "Aucun match terminé pour l'instant.");
 }
 // Réussite réelle du Top 20 et de l'onglet Règles : leur dernier état gelé avant le coup d'envoi (journal_selections.jsonl), matchs terminés. Rien n'est affiché tant qu'aucun n'est terminé.
 function selectionsGelees(d) {
-  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"], ["regle_buts", "Onglet +1,5 buts"]];
+  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"], ["plus15", "Onglet +1,5 buts"], ["regle_buts", "+1,5 : règle remplie"]];
   return noms.filter(([k]) => S[k] && S[k].paris).map(([k, t]) => `<tr><td style="text-align:left">${t}</td><td>${e(S[k].paris)}</td><td>${e(S[k].reussis)}</td><td>${Math.round(S[k].taux_reel * 100)} %</td></tr>`).join("");
 }
 function bilan(d) {

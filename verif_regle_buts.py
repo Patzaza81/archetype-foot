@@ -19,7 +19,7 @@ CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "regle_buts.json")
 NMIN = 4              # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
 MARQUES_MIN = 3.5     # Patrick (21/11/2026) : somme des buts marqués par match des deux équipes
 ENCAISSES_MIN = 2.8   # Patrick (21/11/2026) : somme des buts encaissés par match des deux équipes
-COTE_MIN = 1.24       # Patrick (21/11/2026) : cote minimale du +1,5 de cet onglet
+COTE_MIN = 1.24       # Patrick (22/11/2026) : cote minimale du +1,5 de cet onglet (les autres onglets : 1,26)
 MARCHE = "total_plus_1.5"
 Z95 = 1.96
 POIDS = 10            # poids (en matchs) du taux général dans le taux d'un championnat : évite un taux extrême quand le championnat compte peu de matchs
@@ -30,6 +30,11 @@ def remplie(marques, encaisses, n_dom, n_ext):
     """La règle est-elle remplie ? marques/encaisses : sommes des moyennes des deux équipes. Valeur absente ou moins de 4 matchs = non."""
     if None in (marques, encaisses) or min(n_dom or 0, n_ext or 0) < NMIN: return False
     return marques >= MARQUES_MIN and encaisses >= ENCAISSES_MIN
+
+def sommes(A, B):
+    """Sommes des moyennes des deux équipes (chacune à son lieu) : {marques, encaisses, n_dom, n_ext}, ou None si une valeur manque. Ne juge pas la règle."""
+    if not A or not B or None in (A.get("buts_marques"), B.get("buts_marques"), A.get("buts_encaisses"), B.get("buts_encaisses")): return None
+    return {"marques": round(A["buts_marques"] + B["buts_marques"], 3), "encaisses": round(A["buts_encaisses"] + B["buts_encaisses"], 3), "n_dom": A["n"], "n_ext": B["n"]}
 
 def taux_champ(k, n, base, poids=POIDS):
     """Taux de matchs à 2 buts ou plus d'un championnat : k matchs sur n précédents, lissé vers le taux général `base` (poids `poids` matchs)."""
