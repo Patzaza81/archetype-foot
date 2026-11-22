@@ -127,6 +127,7 @@ def test_selection_regle_buts_gelee_avant_le_match(tmp_path):
 def test_page_web_onglet_et_libelle_exact():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert '["plus15", "+1,5 buts"]' in js and "m.regle_buts.pari" in js and '"Onglet +1,5 buts"' in js
+    assert 'concat(pariTotalEtude(m))' in js and '["total", "Total +1,5"]' in js and 'm === "total_plus_1.5" ? "total"' in js   # le +1,5 du match apparaît aussi dans l'onglet Étude (même pari, mêmes chiffres)
     assert '"Ne tient pas"' in js                                             # un « NE TIENT PAS » ne doit jamais s'afficher « Tient avec réserve »
 
 

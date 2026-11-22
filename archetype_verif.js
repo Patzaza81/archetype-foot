@@ -24,11 +24,12 @@ let ONGLET = "tous", DONNEES = null;
 // Onglet Étude : filtres (écart de défense, lieu de l'équipe, type de marché). Le classement des autres onglets n'est pas touché.
 const TOUT = { ecart: "tous", lieu: "tous", marche: "tous" };
 let ETUDE_F = { ...TOUT };
-const typeEtude = (m) => (m.includes("&") ? "combos" : /^[12]$/.test(m) ? "victoire" : /^(1N|N2)$/.test(m) ? "dc" : "equipe");
+const typeEtude = (m) => (m === "total_plus_1.5" ? "total" : m.includes("&") ? "combos" : /^[12]$/.test(m) ? "victoire" : /^(1N|N2)$/.test(m) ? "dc" : "equipe");
 const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.ecart) && (f.lieu === "tous" || p.etude.lieu === f.lieu) && (f.marche === "tous" || typeEtude(p.marche) === f.marche);
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
-const paris = (m, onglet, f) => (onglet === "plus15" ? (m.regle_buts ? [m.regle_buts.pari] : []) : onglet === "etude" ? (m.etude_paris || []).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const pariTotalEtude = (m) => { const E = DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.etude; return m.regle_buts && E ? [{ ...m.regle_buts.pari, etude: { taux: E.taux, n: E.matchs, ecart: "buts", lieu: "match" } }] : []; };   // pas d'écart de défense ni de lieu d'équipe : les filtres Écart / Lieu le masquent, comme il se doit
+const paris = (m, onglet, f) => (onglet === "plus15" ? (m.regle_buts ? [m.regle_buts.pari] : []) : onglet === "etude" ? (m.etude_paris || []).concat(pariTotalEtude(m)).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
 // Onglet Étude : seuls les matchs qui ont au moins un marché retenu par l'étude y figurent ; les filtres (écart, lieu, marché) portent sur ces marchés.
 const etudeMatch = (m, f) => paris(m, "etude", f || ETUDE_F).length > 0;
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
@@ -36,7 +37,7 @@ const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict =
 function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT", libVerdict = tient ? "Tient" : p.verdict === "NE TIENT PAS" ? "Ne tient pas" : "Tient avec réserve";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
-  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} cas, écart de défense ${e(p.etude.ecart)}` : ""}${ONGLET === "plus15" ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}</small></span>` +
+  return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} ${p.etude.ecart === "buts" ? "matchs, règle de buts + championnat" : "cas, écart de défense " + e(p.etude.ecart)}` : ""}${ONGLET === "plus15" ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}</small></span>` +
     `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> <span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${libVerdict}</span>${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
@@ -85,7 +86,7 @@ function resume(m, onglet) {
   }
   if (onglet === "etude") {
     const p = paris(m, onglet)[0]; if (!p) return "";
-    return phraseEtude(m) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
+    return (p.etude.ecart === "buts" ? phraseRegle(m) : phraseEtude(m)) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Meilleur marché de l'étude</div>${ligne(p, m.statut === "termine")}</div>`;
   }
   if (onglet === "top20") {
     const t = TOP.get(m.match_id); if (!t) return "";
@@ -170,7 +171,7 @@ function liste(id, L, vide) {
 }
 const LIBELLES_ETUDE = { victoire: "Victoire", double_chance: "Double chance", "equipe_plus_0.5": "L'équipe marque +0,5", "equipe_plus_1.5": "L'équipe marque +1,5", "dc_plus_1.5": "Double chance + plus de 1,5 buts", "dc_moins_4.5": "Double chance + moins de 4,5 buts" };
 const FILTRES_ETUDE = [["ecart", "Écart de défense", [["tous", "Tous"], ["mince", "Mince"], ["moyen", "Moyen"], ["grand", "Grand"]]], ["lieu", "Lieu de l'équipe", [["tous", "Tous"], ["dom", "Domicile"], ["ext", "Extérieur"]]],
-  ["marche", "Marché", [["tous", "Tous"], ["victoire", "Victoire"], ["dc", "Double chance"], ["equipe", "L'équipe marque"], ["combos", "Combos"]]]];
+  ["marche", "Marché", [["tous", "Tous"], ["victoire", "Victoire"], ["dc", "Double chance"], ["equipe", "L'équipe marque"], ["combos", "Combos"], ["total", "Total +1,5"]]]];
 function filtresEtude(d) {
   const E = d.etude; if (!E) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
   const S = E.seuils || {}, src = E.source || {}, pct = (x) => (x == null ? "—" : Math.round(x * 100) + " %"), lieu = { dom: "À domicile", ext: "À l'extérieur" };
