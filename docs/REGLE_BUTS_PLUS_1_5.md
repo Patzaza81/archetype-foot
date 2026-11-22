@@ -1,13 +1,15 @@
 # Onglet « +1,5 buts » d'Analyse Verdict : la règle de buts de Patrick (21/11/2026)
 
-Onglet **uniquement pour sa règle**, marché **plus de 1,5 buts** seulement. Code : `verif_regle_buts.py` (étude et évaluation), intégré à `verif_pronostic.py` (`fiche_match`, `page_donnees`, `selections_page`) et à `archetype_verif.js`. Données : `data/verif_pronostics/regle_buts.json` (réécrit par `python verif_regle_buts.py`).
+**Depuis le 22/11/2026 (demande de Patrick)** : l'onglet montre **TOUT** « plus de 1,5 buts » coté **1,26 ou plus** (le minimum de la page, `config/verif_pronostic.json`) et évaluable (4 matchs au même lieu pour chaque équipe), **quel que soit le verdict**. Plus de seuil propre à l'onglet (le 1,24 est supprimé, ainsi que tout calcul de gain / cote d'équilibre). La règle de buts + le filtre du championnat ne retirent rien : ils posent le repère « Règle validée » (et le match passe en premier, dans son jour). Le sous-ensemble « règle remplie » reste dans l'onglet Étude et dans la sélection gelée `regle_buts` ; l'onglet entier est gelé sous `plus15`. Données de la carte : `plus15` dans `page_donnees` (`regle_remplie`, sommes, taux du championnat, `pari`).
+
+Onglet d'origine (21/11) : **uniquement pour sa règle**, marché **plus de 1,5 buts** seulement. Code : `verif_regle_buts.py` (étude et évaluation), intégré à `verif_pronostic.py` (`fiche_match`, `page_donnees`, `selections_page`) et à `archetype_verif.js`. Données : `data/verif_pronostics/regle_buts.json` (réécrit par `python verif_regle_buts.py`).
 
 ## La règle (ses valeurs, aucune n'est calibrée par moi)
 
 - Au moins **4 matchs au même lieu** pour chaque équipe (domicile pour l'une, extérieur pour l'autre), saison en cours, avant le match.
 - Somme des buts **marqués** par match des deux équipes (chacune à son lieu) **≥ 3,5**.
 - Somme des buts **encaissés** par match des deux équipes **≥ 2,8**.
-- Marché affiché : « plus de 1,5 buts », cote **≥ 1,24** (sa décision du 21/11). Cette cote ne s'applique qu'à cet onglet : les autres onglets gardent la cote minimale 1,26 (`config/verif_pronostic.json`), et la PR #180 n'est pas nécessaire.
+- Marché affiché : « plus de 1,5 buts », cote **≥ 1,26** comme tout le reste de la page (le seuil de 1,24 du 21/11 est supprimé le 22/11 ; la PR #180 n'est pas nécessaire).
 - Le verdict de la page (Tient / Réserve / Ne tient pas) ne filtre pas : seule la règle décide, le verdict est affiché à titre d'information.
 
 ## Filtre du championnat (22/11/2026, demande de Patrick)

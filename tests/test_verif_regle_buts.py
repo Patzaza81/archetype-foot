@@ -6,7 +6,7 @@ import unittest.mock as mk
 import verif_regle_buts as R
 import verif_pronostic as v
 
-CFG_REGLE = {"regle": {"n_min": 4, "marques_min": 3.5, "encaisses_min": 2.8, "marche": "total_plus_1.5", "cote_min": 1.24}, "etude": {"matchs": 10, "taux": 0.8}}
+CFG_REGLE = {"regle": {"n_min": 4, "marques_min": 3.5, "encaisses_min": 2.8, "marche": "total_plus_1.5", "cote_min": 1.26}, "etude": {"matchs": 10, "taux": 0.8}}
 CFG_CH = {**CFG_REGLE, "championnat": {"seuil": 0.8, "base": 0.8, "poids": 10}}          # filtre de championnat : seuil 80 %, taux lissé vers 80 % avec un poids de 10 matchs
 
 # ---------------------------------------------------------------- la règle : marqués >= 3,5 ET encaissés >= 2,8 ET 4 matchs au même lieu
@@ -57,12 +57,12 @@ def test_calculer(tmp_path):
     f = str(tmp_path / "bloc.json.gz"); json.dump({"liste": _historique(5, (0, 3))}, gzip.open(f, "wt", encoding="utf-8"))
     r = R.calculer(f)
     assert r["etude"]["matchs"] == 1 and r["etude"]["reussis"] == 1 and r["etude"]["taux"] == 1.0                   # règle remplie (4,0 / 4,0) et 3 buts : +1,5 réussi
-    assert r["regle"]["marques_min"] == 3.5 and r["regle"]["encaisses_min"] == 2.8 and r["regle"]["cote_min"] == 1.24
+    assert r["regle"]["marques_min"] == 3.5 and r["regle"]["encaisses_min"] == 2.8 and r["regle"]["cote_min"] == 1.26
 
 def test_table_du_depot_coherente():
     r = R.charger(); assert r is not None
     E = r["etude"]
-    assert r["regle"]["cote_min"] == 1.24 and 0 < E["taux"] <= 1 and E["matchs"] >= E["reussis"] > 0
+    assert r["regle"]["cote_min"] == 1.26 and 0 < E["taux"] <= 1 and E["matchs"] >= E["reussis"] > 0
     assert E["borne_basse"] <= E["taux"] <= E["borne_haute"] and abs(E["cote_equilibre"] - E["matchs"] / E["reussis"]) < 1e-3
 
 # ---------------------------------------------------------------- de bout en bout : la fiche d'un match
@@ -76,15 +76,15 @@ OUI_A, OUI_B = [(2, 1)] * 6, [(2, 2)] * 6            # 4,0 marqués et 3,0 encai
 def _fiche(A, B, cotes, regle=CFG_REGLE, totaux=None):
     with mk.patch.object(R, "charger", return_value=regle): return v.fiche_match(_x(A, B, cotes), "2026-11-21T06:00:00Z", {"cote_min": 1.26}, totaux)
 
-@pytest.mark.parametrize("cote", [1.24, 1.25, 1.30, 1.55])
-def test_fiche_regle_remplie_avec_cote_suffisante(cote):                  # 1,24 et 1,25 sont sous le minimum 1,26 de la page mais valables ici
+@pytest.mark.parametrize("cote", [1.26, 1.30, 1.55])
+def test_fiche_regle_remplie_avec_cote_suffisante(cote):                  # 1,26 = le minimum de la page, plus de seuil propre à l'onglet
     f = _fiche(OUI_A, OUI_B, OU(cote)); p = f["regle_buts"]["pari"]
     assert f["regle_buts"]["marques"] == 4.0 and f["regle_buts"]["encaisses"] == 3.0 and p["marche"] == "total_plus_1.5" and p["cote"] == cote
     assert p["verdict"] in ("TIENT", "TIENT AVEC RÉSERVE", "NE TIENT PAS")           # le verdict de la page ne filtre pas : seule la règle décide
 
-@pytest.mark.parametrize("cotes", [OU(1.23), OU(1.10), {}, {"over_under_2.5": {"plus": 1.8, "moins": 1.9}}])
-def test_fiche_sans_cote_valable_pas_d_onglet(cotes):                      # sous 1,24, sans cote, ou seulement un autre marché
-    assert "regle_buts" not in _fiche(OUI_A, OUI_B, cotes)
+@pytest.mark.parametrize("cotes", [OU(1.25), OU(1.24), OU(1.10), {}, {"over_under_2.5": {"plus": 1.8, "moins": 1.9}}])
+def test_fiche_sans_cote_valable_pas_d_onglet(cotes):                      # sous 1,26, sans cote, ou seulement un autre marché
+    f = _fiche(OUI_A, OUI_B, cotes); assert "regle_buts" not in f and "plus15" not in f
 
 @pytest.mark.parametrize("A, B", [([(2, 1)] * 6, [(1, 2)] * 6),           # 3,0 marqués seulement
                                   ([(2, 0)] * 6, [(2, 2)] * 6),           # 2,0 encaissés seulement
@@ -96,8 +96,8 @@ def test_fiche_regle_non_remplie_pas_d_onglet(A, B):
 def test_fiche_sans_etude_pas_d_onglet():
     assert "regle_buts" not in _fiche(OUI_A, OUI_B, OU(1.30), regle=None)
 
-def test_les_autres_onglets_gardent_leur_cote_minimale():                 # un +1,5 à 1,25 n'entre PAS dans les marchés de buts de la page (minimum 1,26)
-    f = _fiche(OUI_A, OUI_B, OU(1.25)); assert all(p["marche"] != "total_plus_1.5" for p in f["paris"]["buts"]) and f["regle_buts"]
+def test_plus_1_5_sous_la_cote_minimale_n_entre_dans_aucun_onglet():     # un +1,5 à 1,25 : ni dans les marchés de buts, ni dans l'onglet +1,5 buts (plus de seuil à 1,24)
+    f = _fiche(OUI_A, OUI_B, OU(1.25)); assert all(p["marche"] != "total_plus_1.5" for p in f["paris"]["buts"]) and "plus15" not in f and "regle_buts" not in f
 
 # ---------------------------------------------------------------- la page garde le match, et le gel des sélections
 def _flux(tmp_path, matchs):
@@ -109,10 +109,10 @@ def _page(tmp_path, matchs):
     with mk.patch.object(R, "charger", return_value=CFG_REGLE): return v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, matchs), cfg={"cote_min": 1.26, "sans_regles": True})
 
 def test_page_garde_le_match_de_la_regle_meme_sans_autre_marche(tmp_path):
-    d = _page(tmp_path, [_x(OUI_A, OUI_B, OU(1.25))]); assert [m["match_id"] for m in d["matchs"]] == ["t1"] and d["regle_buts"]["regle"]["cote_min"] == 1.24
+    d = _page(tmp_path, [_x(OUI_A, OUI_B, OU(1.30))]); assert [m["match_id"] for m in d["matchs"]] == ["t1"] and d["regle_buts"]["regle"]["cote_min"] == 1.26
 
-def test_page_ecarte_le_match_hors_regle(tmp_path):
-    assert _page(tmp_path, [_x([(0, 0)] * 6, [(0, 0)] * 6, {"over_under_1.5": {"plus": 1.25}})])["matchs"] == []      # seul le +1,5 est coté : hors règle, rien ne retient le match
+def test_page_ecarte_le_match_sous_la_cote_minimale(tmp_path):
+    assert _page(tmp_path, [_x([(0, 0)] * 6, [(0, 0)] * 6, {"over_under_1.5": {"plus": 1.25}})])["matchs"] == []      # seul le +1,5 est coté, sous 1,26 : rien ne retient le match
 
 def test_selection_regle_buts_gelee_avant_le_match(tmp_path):
     j = str(tmp_path / "sel.jsonl")
@@ -126,7 +126,7 @@ def test_selection_regle_buts_gelee_avant_le_match(tmp_path):
 # ---------------------------------------------------------------- la page web
 def test_page_web_onglet_et_libelle_exact():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
-    assert '["plus15", "+1,5 buts"]' in js and "m.regle_buts.pari" in js and '"Onglet +1,5 buts"' in js
+    assert '["plus15", "+1,5 buts"]' in js and "m.plus15 ? [m.plus15.pari]" in js and '"Onglet +1,5 buts"' in js
     assert 'concat(pariTotalEtude(m))' in js and '["total", "Total +1,5"]' in js and 'm === "total_plus_1.5" ? "total"' in js   # le +1,5 du match apparaît aussi dans l'onglet Étude (même pari, mêmes chiffres)
     assert '"Ne tient pas"' in js                                             # un « NE TIENT PAS » ne doit jamais s'afficher « Tient avec réserve »
 
@@ -188,3 +188,37 @@ def test_depot_seuil_de_championnat_coherent():
     V = r["etude"]["verification"]
     assert C["seuil"] in R.GRILLE and V["choix_du_seuil"]["matchs"] >= R.N_SEUIL and V["seconde_moitie_non_vue"]["matchs"] > 0
     assert r["etude"]["matchs"] == V["choix_du_seuil"]["matchs"] + V["seconde_moitie_non_vue"]["matchs"]
+
+
+# ---------------------------------------------------------------- onglet « +1,5 buts » (22/11) : TOUT +1,5 coté 1,26 ou plus, évaluable ; la règle n'est qu'un repère
+@pytest.mark.parametrize("A, B", [([(2, 1)] * 6, [(1, 2)] * 6),           # 3,0 marqués : règle non remplie
+                                  ([(2, 0)] * 6, [(2, 2)] * 6),           # 2,0 encaissés : règle non remplie
+                                  ([(1, 1)] * 6, [(2, 2)] * 6),           # 3,0 marqués
+                                  ([(0, 0)] * 6, [(0, 0)] * 6)])          # verdict « NE TIENT PAS » : il reste dans l'onglet, avec son verdict
+def test_onglet_montre_aussi_les_matchs_hors_regle(A, B):
+    f = _fiche(A, B, OU(1.30)); P = f["plus15"]
+    assert P["regle_remplie"] is False and P["pari"]["marche"] == "total_plus_1.5" and P["pari"]["cote"] == 1.30 and P["pari"]["regle"] is False and "regle_buts" not in f
+
+@pytest.mark.parametrize("A, B", [([(2, 1)] * 3, [(2, 2)] * 6), ([(2, 1)] * 6, [(2, 2)] * 3), ([], [(2, 2)] * 6), ([(2, 1)] * 6, [])])
+def test_onglet_ecarte_un_match_non_evaluable(A, B):                       # moins de 4 matchs au même lieu : rejeté, comme partout
+    assert "plus15" not in _fiche(A, B, OU(1.30))
+
+def test_onglet_match_de_la_regle_porte_le_repere():
+    f = _fiche(OUI_A, OUI_B, OU(1.30)); P = f["plus15"]
+    assert P["regle_remplie"] is True and P["pari"]["regle"] is True and f["regle_buts"]["pari"] == P["pari"] and P["marques"] == 4.0 and P["encaisses"] == 3.0
+
+def test_onglet_donne_le_taux_du_championnat_meme_hors_regle():
+    f = _fiche([(2, 1)] * 6, [(1, 2)] * 6, OU(1.30), CFG_CH, _tot(40, 40))
+    assert f["plus15"]["regle_remplie"] is False and f["plus15"]["n_championnat"] == 40 and f["plus15"]["taux_championnat"] > 0.9 and f["plus15"]["marques"] == 3.0
+
+def test_championnat_pauvre_garde_le_match_dans_l_onglet_sans_le_repere():   # le filtre de championnat ne retire plus rien : il ne décide que du repère « règle remplie »
+    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(0, 40))
+    assert f["plus15"]["regle_remplie"] is False and "regle_buts" not in f and f["plus15"]["pari"]["cote"] == 1.30
+
+def test_selection_plus15_gelee_avant_le_match(tmp_path):
+    j = str(tmp_path / "sel.jsonl"); pari = {"marche": "total_plus_1.5", "cote": 1.3, "taux": 0.8, "verdict": "TIENT"}
+    m1 = {"match_id": "m1", "date": "2026-11-20", "coup_d_envoi_utc": "2026-11-20T18:00:00Z", "statut": "a_venir", "domicile": "A", "exterieur": "B", "paris": {}, "plus15": {"pari": pari, "regle_remplie": False}}
+    m2 = {**m1, "match_id": "m2", "plus15": None}
+    d = {"genere_le": "2026-11-20T10:00:00Z", "matchs": [m1, m2]}
+    v.geler_selections(d, chemin=j)
+    assert [r["match_id"] for r in v.lire_journal(j) if r["selection"] == "plus15"] == ["m1"] and not [r for r in v.lire_journal(j) if r["selection"] == "regle_buts"] and v.verifier_journal(j) == []
