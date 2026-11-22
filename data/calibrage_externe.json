@@ -10,15 +10,62 @@
     "lift_minimal": 0.01
   },
   "compteurs": {
-    "observations_resolues": 4408,
-    "regles_decouvertes": 0,
-    "regles_retenues": 0,
-    "actives": 0,
+    "observations_resolues": 4731,
+    "regles_decouvertes": 2,
+    "regles_retenues": 2,
+    "actives": 2,
     "declinantes": 0,
     "regles_championnat": 0,
     "regles_championnat_actives": 0,
     "regles_avec_historique_precedent": 0,
     "regles_historique_fort": 0
   },
-  "rules": []
+  "rules": [
+    {
+      "id": "edge_band=0.00-0.05 + engine=moteur_v2_6_10 + favorite_side=DOMICILE",
+      "conditions": {
+        "edge_band": "0.00-0.05",
+        "engine": "moteur_v2_6_10",
+        "favorite_side": "DOMICILE"
+      },
+      "observations": 66,
+      "gagnes": 41,
+      "taux_reussite": 0.621212,
+      "borne_basse_95": 0.500585,
+      "roi": 0.243788,
+      "cote_moyenne": 2.1227,
+      "marge_vs_implicite": 0.029487,
+      "lift_vs_parent": null,
+      "observations_recentes": 66,
+      "taux_reussite_recent": 0.621212,
+      "marge_recente_vs_implicite": 0.029487,
+      "lift_recent_vs_parent": null,
+      "statut": "ACTIVE",
+      "specificite": 3,
+      "historique_saison_precedente": null
+    },
+    {
+      "id": "edge_band=0.00-0.05 + edv_band=0.05-0.10 + engine=moteur_v2_6_10",
+      "conditions": {
+        "edge_band": "0.00-0.05",
+        "edv_band": "0.05-0.10",
+        "engine": "moteur_v2_6_10"
+      },
+      "observations": 251,
+      "gagnes": 134,
+      "taux_reussite": 0.533865,
+      "borne_basse_95": 0.472105,
+      "roi": 0.027928,
+      "cote_moyenne": 2.2193,
+      "marge_vs_implicite": 0.021512,
+      "lift_vs_parent": null,
+      "observations_recentes": 251,
+      "taux_reussite_recent": 0.533865,
+      "marge_recente_vs_implicite": 0.021512,
+      "lift_recent_vs_parent": null,
+      "statut": "ACTIVE",
+      "specificite": 3,
+      "historique_saison_precedente": null
+    }
+  ]
 }
