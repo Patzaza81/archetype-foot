@@ -7,6 +7,7 @@ import verif_regle_buts as R
 import verif_pronostic as v
 
 CFG_REGLE = {"regle": {"n_min": 4, "marques_min": 3.5, "encaisses_min": 2.8, "marche": "total_plus_1.5", "cote_min": 1.24}, "etude": {"matchs": 10, "taux": 0.8}}
+CFG_CH = {**CFG_REGLE, "championnat": {"seuil": 0.8, "base": 0.8, "poids": 10}}          # filtre de championnat : seuil 80 %, taux lissé vers 80 % avec un poids de 10 matchs
 
 # ---------------------------------------------------------------- la règle : marqués >= 3,5 ET encaissés >= 2,8 ET 4 matchs au même lieu
 @pytest.mark.parametrize("S, E, nd, ne", [(3.5, 2.8, 4, 4), (4.2, 3.1, 6, 9), (3.51, 2.81, 4, 5), (5.0, 2.8, 4, 4), (3.5, 4.0, 10, 10)])
@@ -72,8 +73,8 @@ def _x(A, B, cotes, jour="2026-11-21", mid="t1"):
 def OU(plus): return {"over_under_1.5": {"plus": plus, "moins": 3.9}}
 OUI_A, OUI_B = [(2, 1)] * 6, [(2, 2)] * 6            # 4,0 marqués et 3,0 encaissés : règle remplie
 
-def _fiche(A, B, cotes, regle=CFG_REGLE):
-    with mk.patch.object(R, "charger", return_value=regle): return v.fiche_match(_x(A, B, cotes), "2026-11-21T06:00:00Z", {"cote_min": 1.26})
+def _fiche(A, B, cotes, regle=CFG_REGLE, totaux=None):
+    with mk.patch.object(R, "charger", return_value=regle): return v.fiche_match(_x(A, B, cotes), "2026-11-21T06:00:00Z", {"cote_min": 1.26}, totaux)
 
 @pytest.mark.parametrize("cote", [1.24, 1.25, 1.30, 1.55])
 def test_fiche_regle_remplie_avec_cote_suffisante(cote):                  # 1,24 et 1,25 sont sous le minimum 1,26 de la page mais valables ici
@@ -127,3 +128,62 @@ def test_page_web_onglet_et_libelle_exact():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert '["plus15", "+1,5 buts"]' in js and "m.regle_buts.pari" in js and '"Onglet +1,5 buts"' in js
     assert '"Ne tient pas"' in js                                             # un « NE TIENT PAS » ne doit jamais s'afficher « Tient avec réserve »
+
+
+# ---------------------------------------------------------------- filtre du championnat (22/11/2026)
+def _tot(k, n, comp="Championnat inconnu", jour="2026-10-01"):          # n matchs précédents du championnat dont k à 2 buts ou plus
+    return {comp: [(jour, 3 if i < k else 0) for i in range(n)]}
+
+@pytest.mark.parametrize("k, n", [(32, 40), (40, 40), (100, 100), (35, 40)])        # (32, 40) = EXACTEMENT 80 % : « au moins » le seuil
+def test_championnat_assez_riche_en_buts_garde_le_match(k, n):
+    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(k, n)); assert f["regle_buts"]["n_championnat"] == n and f["regle_buts"]["taux_championnat"] >= 0.8
+
+@pytest.mark.parametrize("k, n", [(31, 40), (20, 40), (0, 40), (0, 0)])             # juste sous le seuil, nettement sous, aucun but, aucun match connu
+def test_championnat_trop_pauvre_en_buts_ecarte_le_match(k, n):
+    assert "regle_buts" not in _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(k, n))
+
+def test_championnat_sans_donnee_pas_de_pari():
+    assert "regle_buts" not in _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, {}) and "regle_buts" not in _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(40, 40, comp="Autre championnat"))
+
+def test_championnat_ne_regarde_pas_l_avenir():           # des matchs du jour et d'après, sans but, ne changent rien
+    t = _tot(40, 40); t["Championnat inconnu"] += [("2026-11-21", 0)] * 100 + [("2026-12-01", 0)] * 100
+    assert _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, t)["regle_buts"]["n_championnat"] == 40
+
+def test_sans_seuil_de_championnat_la_regle_seule_decide():
+    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_REGLE, {}); assert f["regle_buts"] and "taux_championnat" not in f["regle_buts"]
+
+def test_championnat_ne_change_pas_les_autres_marches():   # le filtre n'ajoute ni ne retire un marché des autres onglets
+    a = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(40, 40)); b = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(0, 40))
+    assert a["paris"] == b["paris"] and a.get("etude_paris") == b.get("etude_paris") and "regle_buts" not in b
+
+def test_championnat_avant_compte_les_matchs_precedents_seulement():
+    x = {"competition": "L", "date": "2026-11-21"}; T = {"L": [("2026-11-01", 3), ("2026-11-20", 1), ("2026-11-21", 5), ("2026-11-22", 0)], "M": [("2026-11-01", 9)]}
+    assert v.championnat_avant(x, T) == (1, 2) and v.championnat_avant(x, {}) == (0, 0) and v.championnat_avant({"competition": "Z", "date": "2026-11-21"}, T) == (0, 0)
+
+@pytest.mark.parametrize("k, n, base, attendu", [(0, 0, 0.8, 0.8), (40, 40, 0.8, 0.96), (0, 10, 0.8, 0.4), (30, 40, 0.75, 0.75), (100, 100, 0.8, 108 / 110)])
+def test_taux_champ(k, n, base, attendu):
+    assert R.taux_champ(k, n, base, 10) == pytest.approx(attendu)
+
+def test_cas_joues_championnat_ne_compte_que_les_jours_precedents():
+    L = [{**m, "competition": "L"} for m in _historique(4)]; L.insert(-1, {**_m("2026-10-30", "P", "Q", 5, 5), "competition": "L"})   # même jour, autre match : ne compte pas
+    c = [x for x in R.cas_joues(L) if x["date"] == "2026-10-30"]
+    assert len(c) == 1 and c[0]["n_champ"] == 8 and c[0]["k_champ"] == 8 and c[0]["comp"] == "L"
+
+def test_calculer_choisit_le_seuil_sur_la_premiere_moitie(tmp_path):
+    L = []
+    for i in range(6):
+        L += [_m(f"2026-09-{j + 1:02d}", f"A{i}", f"X{i}_{j}", 3, 1) for j in range(5)] + [_m(f"2026-09-{j + 1:02d}", f"Y{i}_{j}", f"B{i}", 3, 1) for j in range(5)] + [_m(f"2026-10-{i + 1:02d}", f"A{i}", f"B{i}", 2, 2)]
+    L = [{**m, "competition": "L"} for m in L]; f = str(tmp_path / "bloc.json.gz"); json.dump({"liste": L}, gzip.open(f, "wt", encoding="utf-8"))
+    with mk.patch.object(R, "N_SEUIL", 2): r = R.calculer(f)
+    assert r["championnat"]["seuil"] in R.GRILLE and r["championnat"]["poids"] == R.POIDS and r["etude"]["verification"]["coupure"] >= "2026-09-01"
+    assert r["etude"]["regle_seule"]["matchs"] >= r["etude"]["matchs"] > 0
+
+def test_calculer_sans_assez_de_matchs_pas_de_seuil(tmp_path):
+    f = str(tmp_path / "bloc.json.gz"); json.dump({"liste": _historique(5, (0, 3))}, gzip.open(f, "wt", encoding="utf-8")); r = R.calculer(f)
+    assert "championnat" not in r and r["etude"]["matchs"] == 1                   # moins de 100 matchs de la règle : aucun seuil retenu, la règle seule décide
+
+def test_depot_seuil_de_championnat_coherent():
+    r = R.charger(); C = r.get("championnat"); assert C is not None
+    V = r["etude"]["verification"]
+    assert C["seuil"] in R.GRILLE and V["choix_du_seuil"]["matchs"] >= R.N_SEUIL and V["seconde_moitie_non_vue"]["matchs"] > 0
+    assert r["etude"]["matchs"] == V["choix_du_seuil"]["matchs"] + V["seconde_moitie_non_vue"]["matchs"]

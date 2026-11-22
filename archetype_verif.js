@@ -63,18 +63,20 @@ function phraseEtude(m) {   // la condition remplie, en une phrase simple (valeu
 // Onglet « +1,5 buts » : la règle de buts de Patrick (marqués >= 3,5 et encaissés >= 2,8, 4 matchs au même lieu), marché « plus de 1,5 buts » seulement. Valeurs écrites par verif_regle_buts.py : aucun calcul ici.
 function textePlus15(R) {
   const E = R && R.etude; if (!E || E.taux == null) return "";
-  return ` · Règle : ${Math.round(E.taux * 100)} % de +1,5 sur ${e(E.matchs)} matchs déjà joués`;
+  return ` · Règle${R.championnat ? " + championnat" : ""} : ${Math.round(E.taux * 100)} % de +1,5 sur ${e(E.matchs)} matchs déjà joués`;
 }
 function noteRegle(d) {
   const R = d.regle_buts; if (!R) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
-  const r = R.regle, E = R.etude, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
+  const r = R.regle, E = R.etude, C = R.championnat, V = E.verification, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
   return `<p class="om-info" style="margin:8px 14px">Ta règle : les deux équipes, chacune à son lieu, marquent à elles deux au moins <b>${fr(r.marques_min, 1)}</b> buts par match et en encaissent au moins <b>${fr(r.encaisses_min, 1)}</b> (${e(r.n_min)} matchs minimum au même lieu). ` +
-    `Marché affiché : plus de 1,5 buts, cote minimale <b>${fr(r.cote_min)}</b>. Sur <b>${e(E.matchs)}</b> matchs déjà joués où la règle était remplie, le +1,5 est passé <b>${pc(E.taux)}</b> du temps (hors règle : ${pc(E.hors_regle.taux)}), ` +
-    `intervalle ${pc(E.borne_basse)} à ${pc(E.borne_haute)} ; cote d'équilibre ${fr(E.cote_equilibre)}, prudente ${fr(E.cote_equilibre_prudente)}.</p>`;
+    (C ? `Filtre du championnat : au moins <b>${fr(C.seuil * 100, 0)} %</b> des matchs précédents du championnat ont compté 2 buts ou plus (seuil choisi sur la première moitié de la période, vérifié sur la seconde). ` : "") +
+    `Marché affiché : plus de 1,5 buts, cote minimale <b>${fr(r.cote_min)}</b>. Sur <b>${e(E.matchs)}</b> matchs déjà joués où ${C ? "la règle et le filtre étaient remplis" : "la règle était remplie"}, le +1,5 est passé <b>${pc(E.taux)}</b> du temps (hors règle : ${pc(E.hors_regle.taux)}), ` +
+    `intervalle ${pc(E.borne_basse)} à ${pc(E.borne_haute)}.` +
+    (C && V ? ` Moitié non vue pour le choix du seuil : ${pc(V.seconde_moitie_non_vue.taux)} sur ${e(V.seconde_moitie_non_vue.matchs)} matchs (règle seule : ${pc(V.regle_seule_seconde_moitie.taux)} sur ${e(V.regle_seule_seconde_moitie.matchs)}).` : "") + `</p>`;
 }
 function phraseRegle(m) {
   const x = m.regle_buts, R = (DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.regle) || {}; if (!x) return "";
-  return `<div class="om-info"><b>${e(m.domicile)}</b> (à domicile) et <b>${e(m.exterieur)}</b> (à l'extérieur) marquent à eux deux <b>${fr(x.marques, 1)}</b> buts par match (règle : ${fr(R.marques_min, 1)} ou plus) et en encaissent <b>${fr(x.encaisses, 1)}</b> (règle : ${fr(R.encaisses_min, 1)} ou plus), sur ${e(x.n_dom)} et ${e(x.n_ext)} matchs au même lieu.</div>`;
+  return `<div class="om-info"><b>${e(m.domicile)}</b> (à domicile) et <b>${e(m.exterieur)}</b> (à l'extérieur) marquent à eux deux <b>${fr(x.marques, 1)}</b> buts par match (règle : ${fr(R.marques_min, 1)} ou plus) et en encaissent <b>${fr(x.encaisses, 1)}</b> (règle : ${fr(R.encaisses_min, 1)} ou plus), sur ${e(x.n_dom)} et ${e(x.n_ext)} matchs au même lieu.${x.taux_championnat != null ? ` Dans ce championnat, ${fr(x.taux_championnat * 100, 0)} % des ${e(x.n_championnat)} matchs précédents ont compté 2 buts ou plus (filtre : ${fr(((DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.championnat) || {}).seuil * 100, 0)} % ou plus).` : ""}</div>`;
 }
 function resume(m, onglet) {
   if (onglet === "plus15") {
