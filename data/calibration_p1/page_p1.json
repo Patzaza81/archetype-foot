@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-22T08:52:47Z",
+ "genere_le": "2026-11-23T02:43:36Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -9,103 +9,103 @@
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 663,
+  "lignes": 664,
   "anomalies": [],
-  "derniere_empreinte": "6d068aeca3418a136448c395b7861ba0bb52369f6d00522d8fe7f8842c2b3e9e"
+  "derniere_empreinte": "eefe15c20f6cb43db74881cf2b6351bb7c58d70667edde14185354d4edb2dfae"
  },
  "apprentissage": {
-  "matchs_termines": 505,
+  "matchs_termines": 580,
   "periode": [
    "2026-11-05",
-   "2026-11-21"
+   "2026-11-22"
   ],
   "corrections_validees": [],
   "texte": "Aucune correction validee : P1 inchange."
  },
  "performance": {
-  "matchs_termines": 505,
+  "matchs_termines": 580,
   "periode": [
    "2026-11-05",
-   "2026-11-21"
+   "2026-11-22"
   ],
   "par_version": {
    "original": {
-    "logloss_1x2": 1.01248777961164,
-    "brier_1x2": 0.6062152971261288,
-    "favori_correct": 255,
-    "favori_taux": 0.504950495049505,
-    "favori_erreur_type": 0.02224861738272962,
+    "logloss_1x2": 1.005346049062355,
+    "brier_1x2": 0.6008961448190694,
+    "favori_correct": 296,
+    "favori_taux": 0.5103448275862069,
+    "favori_erreur_type": 0.02075692591278007,
     "marches": {
      "o15": {
-      "n": 505,
-      "frequence_reelle": 0.7623762376237624,
-      "probabilite_moyenne": 0.7585603654509439,
-      "brier": 0.18277690655705714
+      "n": 580,
+      "frequence_reelle": 0.7655172413793103,
+      "probabilite_moyenne": 0.7580431728460795,
+      "brier": 0.18074161007896794
      },
      "o25": {
-      "n": 505,
-      "frequence_reelle": 0.5267326732673268,
-      "probabilite_moyenne": 0.5230729297744685,
-      "brier": 0.2426994095791414
+      "n": 580,
+      "frequence_reelle": 0.5379310344827586,
+      "probabilite_moyenne": 0.5221884436668187,
+      "brier": 0.24290962990158332
      },
      "o35": {
-      "n": 505,
-      "frequence_reelle": 0.299009900990099,
-      "probabilite_moyenne": 0.3075293303092475,
-      "brier": 0.21027900748406078
+      "n": 580,
+      "frequence_reelle": 0.32068965517241377,
+      "probabilite_moyenne": 0.3065306211274404,
+      "brier": 0.2176535141355466
      },
      "btts": {
-      "n": 505,
-      "frequence_reelle": 0.5445544554455446,
-      "probabilite_moyenne": 0.5413358989167097,
-      "brier": 0.24991941661008027
+      "n": 580,
+      "frequence_reelle": 0.5465517241379311,
+      "probabilite_moyenne": 0.539319282010008,
+      "brier": 0.2506075771839303
      }
     }
    },
    "calibre": {
-    "logloss_1x2": 1.01248777961164,
-    "brier_1x2": 0.6062152971261288,
-    "favori_correct": 255,
-    "favori_taux": 0.504950495049505,
-    "favori_erreur_type": 0.02224861738272962,
+    "logloss_1x2": 1.005346049062355,
+    "brier_1x2": 0.6008961448190694,
+    "favori_correct": 296,
+    "favori_taux": 0.5103448275862069,
+    "favori_erreur_type": 0.02075692591278007,
     "marches": {
      "o15": {
-      "n": 505,
-      "frequence_reelle": 0.7623762376237624,
-      "probabilite_moyenne": 0.7585603654509439,
-      "brier": 0.18277690655705714
+      "n": 580,
+      "frequence_reelle": 0.7655172413793103,
+      "probabilite_moyenne": 0.7580431728460795,
+      "brier": 0.18074161007896794
      },
      "o25": {
-      "n": 505,
-      "frequence_reelle": 0.5267326732673268,
-      "probabilite_moyenne": 0.5230729297744685,
-      "brier": 0.2426994095791414
+      "n": 580,
+      "frequence_reelle": 0.5379310344827586,
+      "probabilite_moyenne": 0.5221884436668187,
+      "brier": 0.24290962990158332
      },
      "o35": {
-      "n": 505,
-      "frequence_reelle": 0.299009900990099,
-      "probabilite_moyenne": 0.3075293303092475,
-      "brier": 0.21027900748406078
+      "n": 580,
+      "frequence_reelle": 0.32068965517241377,
+      "probabilite_moyenne": 0.3065306211274404,
+      "brier": 0.2176535141355466
      },
      "btts": {
-      "n": 505,
-      "frequence_reelle": 0.5445544554455446,
-      "probabilite_moyenne": 0.5413358989167097,
-      "brier": 0.24991941661008027
+      "n": 580,
+      "frequence_reelle": 0.5465517241379311,
+      "probabilite_moyenne": 0.539319282010008,
+      "brier": 0.2506075771839303
      }
     }
    }
   }
  },
  "performance_paris": {
-  "matchs_termines": 505,
-  "paris": 479,
-  "matchs_sans_pari": 26,
-  "gagnes": 292,
-  "taux": 0.6096033402922756,
-  "taux_erreur_type": 0.022289943049778545,
-  "rendement_moyen": -0.04006263048016702,
-  "rendement_erreur_type": 0.038461510906557576
+  "matchs_termines": 580,
+  "paris": 550,
+  "matchs_sans_pari": 30,
+  "gagnes": 323,
+  "taux": 0.5872727272727273,
+  "taux_erreur_type": 0.02099278971778731,
+  "rendement_moyen": -0.06916363636363636,
+  "rendement_erreur_type": 0.036408212320855414
  },
  "matchs": [
   {
@@ -225128,9 +225128,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3291531311367941,
+     "logloss_1x2": 1.111232192317526,
+     "brier_1x2": 0.691315124617513,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04479041978634898,
+      "o25": 0.1950701873547407,
+      "o35": 0.11191861611310208,
+      "btts": 0.17100168492216422
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3291531311367941,
+     "logloss_1x2": 1.111232192317526,
+     "brier_1x2": 0.691315124617513,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04479041978634898,
+      "o25": 0.1950701873547407,
+      "o35": 0.11191861611310208,
+      "btts": 0.17100168492216422
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.6000000000000001
+    }
+   }
   },
   {
    "match_id": "2u8w6x0ww0lx9iumyz4fjpl3o",
@@ -226188,9 +226233,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.32069454389478186,
+     "logloss_1x2": 1.1372661855403754,
+     "brier_1x2": 0.7128410447555911,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03648291714586399,
+      "o25": 0.3470825982815396,
+      "o35": 0.13337768619915769,
+      "btts": 0.370737004190702
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.32069454389478186,
+     "logloss_1x2": 1.1372661855403754,
+     "brier_1x2": 0.7128410447555911,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03648291714586399,
+      "o25": 0.3470825982815396,
+      "o35": 0.13337768619915769,
+      "btts": 0.370737004190702
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4ooygx75ek09etocygfqgfm6s",
@@ -226487,9 +226577,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2762438076100237,
+     "logloss_1x2": 1.2864714422927312,
+     "brier_1x2": 0.8152389009550408,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04617267360613282,
+      "o25": 0.19925534019909652,
+      "o35": 0.10888253522498256,
+      "btts": 0.18261869706025544
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2762438076100237,
+     "logloss_1x2": 1.2864714422927312,
+     "brier_1x2": 0.8152389009550408,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04617267360613282,
+      "o25": 0.19925534019909652,
+      "o35": 0.10888253522498256,
+      "btts": 0.18261869706025544
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": true,
+     "gain": 2.95
+    }
+   }
   },
   {
    "match_id": "9h5vuq907ykbavusmhursyr6c",
@@ -226930,9 +227065,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38803495150801964,
+     "logloss_1x2": 0.9466598622096957,
+     "brier_1x2": 0.566850957403285,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.576946877019559,
+      "o25": 0.2678901329986698,
+      "o35": 0.08766252250471378,
+      "btts": 0.310466257044652
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38803495150801964,
+     "logloss_1x2": 0.9466598622096957,
+     "brier_1x2": 0.566850957403285,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.576946877019559,
+      "o25": 0.2678901329986698,
+      "o35": 0.08766252250471378,
+      "btts": 0.310466257044652
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.48
+    }
+   }
   },
   {
    "match_id": "1a8cu94vg3jy5zmdngi67n1g4",
@@ -227195,9 +227375,49 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.29155450798743315,
+     "logloss_1x2": 1.2325282992917395,
+     "brier_1x2": 0.7571669966436763,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.34747481460952667,
+      "o25": 0.1016450639166467,
+      "o35": 0.019567944496486727,
+      "btts": 0.15341090693635862
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.29155450798743315,
+     "logloss_1x2": 1.2325282992917395,
+     "brier_1x2": 0.7571669966436763,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.34747481460952667,
+      "o25": 0.1016450639166467,
+      "o35": 0.019567944496486727,
+      "btts": 0.15341090693635862
+     }
+    }
+   }
   },
   {
    "match_id": "d1a71kzdu4vsdqlxx0a162fpw",
@@ -227517,9 +227737,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.36966880640241556,
+     "logloss_1x2": 0.9951477920323697,
+     "brier_1x2": 0.6022863484500682,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.560510687417813,
+      "o25": 0.25279260230984646,
+      "o35": 0.07991080261954425,
+      "btts": 0.29801548187440763
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.36966880640241556,
+     "logloss_1x2": 0.9951477920323697,
+     "brier_1x2": 0.6022863484500682,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.560510687417813,
+      "o25": 0.25279260230984646,
+      "o35": 0.07991080261954425,
+      "btts": 0.29801548187440763
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "9cku4jz79u89ikyxvkahrpo9g",
@@ -227918,9 +228183,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23694128986934454,
+     "logloss_1x2": 1.4399428906054623,
+     "brier_1x2": 0.9449688011952624,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07022150298319418,
+      "o25": 0.2349212593646705,
+      "o35": 0.0711318911465722,
+      "btts": 0.26628707806551544
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23694128986934454,
+     "logloss_1x2": 1.4399428906054623,
+     "brier_1x2": 0.9449688011952624,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07022150298319418,
+      "o25": 0.2349212593646705,
+      "o35": 0.0711318911465722,
+      "btts": 0.26628707806551544
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "1gw27710i5px2tnz0y3yzzj10",
@@ -228265,9 +228575,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.78195393913047,
+     "logloss_1x2": 0.24595944153926513,
+     "brier_1x2": 0.07634625682549825,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06947088119178506,
+      "o25": 0.2636367790654061,
+      "o35": 0.5353478417780613,
+      "btts": 0.47609594406495565
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.78195393913047,
+     "logloss_1x2": 0.24595944153926513,
+     "brier_1x2": 0.07634625682549825,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06947088119178506,
+      "o25": 0.2636367790654061,
+      "o35": 0.5353478417780613,
+      "btts": 0.47609594406495565
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "1gkkj92r62d36c345dikqttsk",
@@ -228599,9 +228954,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4072143968033809,
+     "logloss_1x2": 0.8984154587633019,
+     "brier_1x2": 0.5271180820891764,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.1509264267786644,
+      "o25": 0.43411843620869556,
+      "o35": 0.7141294840254363,
+      "btts": 0.34765192875781054
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4072143968033809,
+     "logloss_1x2": 0.8984154587633019,
+     "brier_1x2": 0.5271180820891764,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.1509264267786644,
+      "o25": 0.43411843620869556,
+      "o35": 0.7141294840254363,
+      "btts": 0.34765192875781054
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "5chx9l4lrlmwjpwtnp3wumfis",
@@ -229006,9 +229406,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.554105166729107,
+     "logloss_1x2": 0.5904007786096118,
+     "brier_1x2": 0.29863775255415387,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06267727447903412,
+      "o25": 0.245924068057262,
+      "o35": 0.5128610656472252,
+      "btts": 0.2418840109366501
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.554105166729107,
+     "logloss_1x2": 0.5904007786096118,
+     "brier_1x2": 0.29863775255415387,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06267727447903412,
+      "o25": 0.245924068057262,
+      "o35": 0.5128610656472252,
+      "btts": 0.2418840109366501
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": true,
+     "gain": 0.3500000000000001
+    }
+   }
   },
   {
    "match_id": "7swd2xv6gei68ddws82y8ku8k",
@@ -229353,9 +229798,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6552123422715544,
+     "logloss_1x2": 0.4227959092099018,
+     "brier_1x2": 0.18192853781589025,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07737647445938571,
+      "o25": 0.28333967762070117,
+      "o35": 0.5593433888931931,
+      "btts": 0.17480614758968985
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6552123422715544,
+     "logloss_1x2": 0.4227959092099018,
+     "brier_1x2": 0.18192853781589025,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07737647445938571,
+      "o25": 0.28333967762070117,
+      "o35": 0.5593433888931931,
+      "btts": 0.17480614758968985
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "21hsq00fm42okqrvh9j8s5250",
@@ -229748,9 +230238,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.25449659323952084,
+     "logloss_1x2": 1.3684678291734103,
+     "brier_1x2": 0.8636815232958205,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07411187521956458,
+      "o25": 0.27531469329426916,
+      "o35": 0.5496943147196334,
+      "btts": 0.24504240307689143
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.25449659323952084,
+     "logloss_1x2": 1.3684678291734103,
+     "brier_1x2": 0.8636815232958205,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07411187521956458,
+      "o25": 0.27531469329426916,
+      "o35": 0.5496943147196334,
+      "btts": 0.24504240307689143
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "19vd57u69ytg0ptl5kbppfxuc",
@@ -229976,9 +230511,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.42714846157404784,
+     "logloss_1x2": 0.8506236409968764,
+     "brier_1x2": 0.4922905023720163,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.3997554222482707,
+      "o25": 0.1317529117982268,
+      "o35": 0.028995892288415294,
+      "btts": 0.18153223268796237
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.42714846157404784,
+     "logloss_1x2": 0.8506236409968764,
+     "brier_1x2": 0.4922905023720163,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.3997554222482707,
+      "o25": 0.1317529117982268,
+      "o35": 0.028995892288415294,
+      "btts": 0.18153223268796237
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "eu4xboq902cp4sh8umidx4b2s",
@@ -230347,9 +230927,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.26029540051761924,
+     "logloss_1x2": 1.3459381370662025,
+     "brier_1x2": 0.8304477898798953,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07126823542703856,
+      "o25": 0.232441194640531,
+      "o35": 0.06994766209334022,
+      "btts": 0.22698757535629754
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.26029540051761924,
+     "logloss_1x2": 1.3459381370662025,
+     "brier_1x2": 0.8304477898798953,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07126823542703856,
+      "o25": 0.232441194640531,
+      "o35": 0.06994766209334022,
+      "btts": 0.22698757535629754
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.42999999999999994
+    }
+   }
   },
   {
    "match_id": "1llwxb3gjmtsgc9knb0wbj84",
@@ -230742,9 +231367,49 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2820776752729179,
+     "logloss_1x2": 1.2655728017416157,
+     "brier_1x2": 0.7984806791365414,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.053150541256889325,
+      "o25": 0.21968470495226353,
+      "o35": 0.47781080334441844,
+      "btts": 0.19602979968430445
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2820776752729179,
+     "logloss_1x2": 1.2655728017416157,
+     "brier_1x2": 0.7984806791365414,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.053150541256889325,
+      "o25": 0.21968470495226353,
+      "o35": 0.47781080334441844,
+      "btts": 0.19602979968430445
+     }
+    }
+   }
   },
   {
    "match_id": "e3avuu9jlm09d1geoxyk0vq50",
@@ -231064,9 +231729,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 4,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.38351669720336135,
+     "logloss_1x2": 0.9583721201308047,
+     "brier_1x2": 0.5795154329127804,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03535937086410516,
+      "o25": 0.1650951072831866,
+      "o35": 0.3970855257466549,
+      "btts": 0.3801437317894203
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.38351669720336135,
+     "logloss_1x2": 0.9583721201308047,
+     "brier_1x2": 0.5795154329127804,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03535937086410516,
+      "o25": 0.1650951072831866,
+      "o35": 0.3970855257466549,
+      "btts": 0.3801437317894203
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "e1x3zuo3vefbydy7hafp8io0k",
@@ -231399,9 +232109,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2431722979922986,
+     "logloss_1x2": 1.4139850416596051,
+     "brier_1x2": 0.8745377471780391,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.047078846568885786,
+      "o25": 0.20197301247349084,
+      "o35": 0.45286265405472537,
+      "btts": 0.18147333200603794
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2431722979922986,
+     "logloss_1x2": 1.4139850416596051,
+     "brier_1x2": 0.8745377471780391,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.047078846568885786,
+      "o25": 0.20197301247349084,
+      "o35": 0.45286265405472537,
+      "btts": 0.18147333200603794
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "e2m00qij0b58luq3ste8dwsno",
@@ -231734,9 +232489,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2271889818013147,
+     "logloss_1x2": 1.4819730889038951,
+     "brier_1x2": 0.9130372739049628,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6942248512713711,
+      "o25": 0.3933525102806128,
+      "o35": 0.1640854051981666,
+      "btts": 0.4004761087722649
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2271889818013147,
+     "logloss_1x2": 1.4819730889038951,
+     "brier_1x2": 0.9130372739049628,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6942248512713711,
+      "o25": 0.3933525102806128,
+      "o35": 0.1640854051981666,
+      "btts": 0.4004761087722649
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "daexu0awdbklk9fgbdfsisjys",
@@ -232087,9 +232887,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24674182629820118,
+     "logloss_1x2": 1.3994127266550933,
+     "brier_1x2": 0.8513817080368962,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6215631828713581,
+      "o25": 0.311784482002752,
+      "o35": 0.11194736253860692,
+      "btts": 0.3470179100988057
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24674182629820118,
+     "logloss_1x2": 1.3994127266550933,
+     "brier_1x2": 0.8513817080368962,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6215631828713581,
+      "o25": 0.311784482002752,
+      "o35": 0.11194736253860692,
+      "btts": 0.3470179100988057
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.51
+    }
+   }
   },
   {
    "match_id": "19j38f65ofviqai5s8sygv5lg",
@@ -232364,9 +233209,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.528763341394144,
+     "logloss_1x2": 0.6372143169888698,
+     "brier_1x2": 0.335301276734717,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.12148758958220998,
+      "o25": 0.3795238544475803,
+      "o35": 0.03443184014814776,
+      "btts": 0.34351449016840385
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.528763341394144,
+     "logloss_1x2": 0.6372143169888698,
+     "brier_1x2": 0.335301276734717,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.12148758958220998,
+      "o25": 0.3795238544475803,
+      "o35": 0.03443184014814776,
+      "btts": 0.34351449016840385
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "6hmlxfisvccz8nrbmybd3k6qc",
@@ -232753,9 +233643,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.475682911247027,
+     "logloss_1x2": 0.7430037995714885,
+     "brier_1x2": 0.41466869321008126,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02853176613167518,
+      "o25": 0.14155145521056986,
+      "o35": 0.3583144911737509,
+      "btts": 0.1363322728832558
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.475682911247027,
+     "logloss_1x2": 0.7430037995714885,
+     "brier_1x2": 0.41466869321008126,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02853176613167518,
+      "o25": 0.14155145521056986,
+      "o35": 0.3583144911737509,
+      "btts": 0.1363322728832558
+     }
+    },
+    "pari": {
+     "cle": "o15+",
+     "gagne": true,
+     "gain": 0.20999999999999996
+    }
+   }
   },
   {
    "match_id": "6gjt7moeumhv6q194zqh6115g",
@@ -233172,9 +234107,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23420333311324748,
+     "logloss_1x2": 1.451565596010111,
+     "brier_1x2": 0.9166757382318922,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6204598361465118,
+      "o25": 0.3106454381568473,
+      "o35": 0.11128418232714836,
+      "btts": 0.32024041456556146
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23420333311324748,
+     "logloss_1x2": 1.451565596010111,
+     "brier_1x2": 0.9166757382318922,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6204598361465118,
+      "o25": 0.3106454381568473,
+      "o35": 0.11128418232714836,
+      "btts": 0.32024041456556146
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.6100000000000001
+    }
+   }
   },
   {
    "match_id": "82k5i1q9r1t13h6d9s5jwh34k",
@@ -233567,9 +234547,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6680862931593854,
+     "logloss_1x2": 0.4033379324123614,
+     "brier_1x2": 0.16557772060949538,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.018563773366266842,
+      "o25": 0.10334828287770623,
+      "o35": 0.2887652658714969,
+      "btts": 0.15866112067696003
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6680862931593854,
+     "logloss_1x2": 0.4033379324123614,
+     "brier_1x2": 0.16557772060949538,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.018563773366266842,
+      "o25": 0.10334828287770623,
+      "o35": 0.2887652658714969,
+      "btts": 0.15866112067696003
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4hkbn7f3ult90sfsccjjp2djo",
@@ -233938,9 +234963,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38651802416407177,
+     "logloss_1x2": 0.9505767777235801,
+     "brier_1x2": 0.5677868749509762,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07648181381669013,
+      "o25": 0.2811554518753101,
+      "o35": 0.06444192010876995,
+      "btts": 0.26975119762474764
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38651802416407177,
+     "logloss_1x2": 0.9505767777235801,
+     "brier_1x2": 0.5677868749509762,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07648181381669013,
+      "o25": 0.2811554518753101,
+      "o35": 0.06444192010876995,
+      "btts": 0.26975119762474764
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.5
+    }
+   }
   },
   {
    "match_id": "29vqqu3lts7a8dzp1lmx752c4",
@@ -234345,9 +235415,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23952580925218955,
+     "logloss_1x2": 1.4290941048800294,
+     "brier_1x2": 0.8675875628326962,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.035368135255877405,
+      "o25": 0.16512423546862376,
+      "o35": 0.39713184646570493,
+      "btts": 0.14708579745310865
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23952580925218955,
+     "logloss_1x2": 1.4290941048800294,
+     "brier_1x2": 0.8675875628326962,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.035368135255877405,
+      "o25": 0.16512423546862376,
+      "o35": 0.39713184646570493,
+      "btts": 0.14708579745310865
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "cz2mldkbpcwr3csry812y8hsk",
@@ -234728,9 +235843,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4684862481951763,
+     "logloss_1x2": 0.7582485305729342,
+     "brier_1x2": 0.4240855286511759,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06389892437593546,
+      "o25": 0.24916654796244905,
+      "o35": 0.0789280970871635,
+      "btts": 0.21797394320031283
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4684862481951763,
+     "logloss_1x2": 0.7582485305729342,
+     "brier_1x2": 0.4240855286511759,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06389892437593546,
+      "o25": 0.24916654796244905,
+      "o35": 0.0789280970871635,
+      "btts": 0.21797394320031283
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "d0c110xzywzz2pl31lfkrks2c",
@@ -235111,9 +236271,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 4,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.43720892157058716,
+     "logloss_1x2": 0.8273441167338228,
+     "brier_1x2": 0.4758082778472843,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.075132451156376,
+      "o25": 0.27783979219673277,
+      "o35": 0.5527485347262098,
+      "btts": 0.23383228765898684
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.43720892157058716,
+     "logloss_1x2": 0.8273441167338228,
+     "brier_1x2": 0.4758082778472843,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.075132451156376,
+      "o25": 0.27783979219673277,
+      "o35": 0.5527485347262098,
+      "btts": 0.23383228765898684
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "6c6mh5tqjmis2mcwu3d9nxono",
@@ -235506,9 +236711,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.17442894644810011,
+     "logloss_1x2": 1.7462378039399489,
+     "brier_1x2": 1.0831193001259707,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.5064133353007864,
+      "o25": 0.20688325537095534,
+      "o35": 0.0582286497831386,
+      "btts": 0.20198472648374532
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.17442894644810011,
+     "logloss_1x2": 1.7462378039399489,
+     "brier_1x2": 1.0831193001259707,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.5064133353007864,
+      "o25": 0.20688325537095534,
+      "o35": 0.0582286497831386,
+      "btts": 0.20198472648374532
+     }
+    },
+    "pari": {
+     "cle": "N2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "6b7vztuam8vzqv1gwglqahkwk",
@@ -235901,9 +237151,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.25222233885290685,
+     "logloss_1x2": 1.377444283430609,
+     "brier_1x2": 0.8748461214955396,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05077368881335834,
+      "o25": 0.21285077605337274,
+      "o35": 0.0996443560073831,
+      "btts": 0.19914968558155643
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.25222233885290685,
+     "logloss_1x2": 1.377444283430609,
+     "brier_1x2": 0.8748461214955396,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05077368881335834,
+      "o25": 0.21285077605337274,
+      "o35": 0.0996443560073831,
+      "btts": 0.19914968558155643
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "9e5hhcepqkq8mskqqw9ng1zis",
@@ -236284,9 +237579,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.7491745356014176,
+     "logloss_1x2": 0.288783297775984,
+     "brier_1x2": 0.09798625376631945,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05193001365557404,
+      "o25": 0.21619095803219868,
+      "o35": 0.4729760550855936,
+      "btts": 0.3630851859274623
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.7491745356014176,
+     "logloss_1x2": 0.288783297775984,
+     "brier_1x2": 0.09798625376631945,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05193001365557404,
+      "o25": 0.21619095803219868,
+      "o35": 0.4729760550855936,
+      "btts": 0.3630851859274623
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "aynm36gv7h5qb64kngu4e25g4",
@@ -236618,9 +237958,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.704069074592521,
+     "logloss_1x2": 0.3508788103183621,
+     "brier_1x2": 0.13184988618482346,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.014588943237729433,
+      "o25": 0.08635208813425091,
+      "o35": 0.24554584007204258,
+      "btts": 0.36418979543621605
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.704069074592521,
+     "logloss_1x2": 0.3508788103183621,
+     "brier_1x2": 0.13184988618482346,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.014588943237729433,
+      "o25": 0.08635208813425091,
+      "o35": 0.24554584007204258,
+      "btts": 0.36418979543621605
+     }
+    },
+    "pari": {
+     "cle": "btts+",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "b141w4ouch620pxiyviljyeqc",
@@ -237013,9 +238398,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 5,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.46683330466136647,
+     "logloss_1x2": 0.7617830343680794,
+     "brier_1x2": 0.4285807387634973,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03381738990747866,
+      "o25": 0.15992931555989506,
+      "o35": 0.38880901408189666,
+      "btts": 0.1493719828219416
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.46683330466136647,
+     "logloss_1x2": 0.7617830343680794,
+     "brier_1x2": 0.4285807387634973,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03381738990747866,
+      "o25": 0.15992931555989506,
+      "o35": 0.38880901408189666,
+      "btts": 0.1493719828219416
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "5ctzjg8ac65ykepyae2gi3mdw",
@@ -237390,9 +238820,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4112651841344824,
+     "logloss_1x2": 0.8885170556765963,
+     "brier_1x2": 0.5251530147424298,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.6366231059852719,
+      "o25": 0.32761537604020313,
+      "o35": 0.12134753304683926,
+      "btts": 0.3586132572120388
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4112651841344824,
+     "logloss_1x2": 0.8885170556765963,
+     "brier_1x2": 0.5251530147424298,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.6366231059852719,
+      "o25": 0.32761537604020313,
+      "o35": 0.12134753304683926,
+      "btts": 0.3586132572120388
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.71
+    }
+   }
   },
   {
    "match_id": "4wfi4qj9ndn19vvw8gc5e71n8",
@@ -237700,9 +239175,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3424288844099191,
+     "logloss_1x2": 1.0716912795987137,
+     "brier_1x2": 0.6565041063982417,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07580772086627524,
+      "o25": 0.22214275637656247,
+      "o35": 0.06511907207058544,
+      "btts": 0.27075730414821986
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3424288844099191,
+     "logloss_1x2": 1.0716912795987137,
+     "brier_1x2": 0.6565041063982417,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07580772086627524,
+      "o25": 0.22214275637656247,
+      "o35": 0.06511907207058544,
+      "btts": 0.27075730414821986
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.47
+    }
+   }
   },
   {
    "match_id": "93muyaa7wra70ckq6zypc4opg",
@@ -238101,9 +239621,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.657198083301155,
+     "logloss_1x2": 0.41976980928530516,
+     "brier_1x2": 0.17674923959392924,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02449891172527656,
+      "o25": 0.12673009592056303,
+      "o35": 0.33241027065719914,
+      "btts": 0.17900443546636347
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.657198083301155,
+     "logloss_1x2": 0.41976980928530516,
+     "brier_1x2": 0.17674923959392924,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02449891172527656,
+      "o25": 0.12673009592056303,
+      "o35": 0.33241027065719914,
+      "btts": 0.17900443546636347
+     }
+    },
+    "pari": {
+     "cle": "btts+",
+     "gagne": true,
+     "gain": 0.81
+    }
+   }
   },
   {
    "match_id": "a744hoz9src0dkwo16sn8rr4k",
@@ -238424,9 +239989,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6039428741089188,
+     "logloss_1x2": 0.5042756648100948,
+     "brier_1x2": 0.23696270212196746,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06776601782766285,
+      "o25": 0.2592631579917108,
+      "o35": 0.5298783563131596,
+      "btts": 0.22291128438177335
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6039428741089188,
+     "logloss_1x2": 0.5042756648100948,
+     "brier_1x2": 0.23696270212196746,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06776601782766285,
+      "o25": 0.2592631579917108,
+      "o35": 0.5298783563131596,
+      "btts": 0.22291128438177335
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "xdkhcxfgzntn1234t84balg4",
@@ -238771,9 +240381,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2595127124996064,
+     "logloss_1x2": 1.3489495891382985,
+     "brier_1x2": 0.8304299950529321,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06880798666290763,
+      "o25": 0.23833695620757084,
+      "o35": 0.07277648825951073,
+      "btts": 0.22138087300558876
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2595127124996064,
+     "logloss_1x2": 1.3489495891382985,
+     "brier_1x2": 0.8304299950529321,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06880798666290763,
+      "o25": 0.23833695620757084,
+      "o35": 0.07277648825951073,
+      "btts": 0.22138087300558876
+     }
+    },
+    "pari": {
+     "cle": "o15+",
+     "gagne": true,
+     "gain": 0.43999999999999995
+    }
+   }
   },
   {
    "match_id": "7sahe5933q71mpt2juyiafwus",
@@ -239154,9 +240809,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24553308636875473,
+     "logloss_1x2": 1.4043235694689158,
+     "brier_1x2": 0.8958029340458025,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06594291284682813,
+      "o25": 0.2455064541927176,
+      "o35": 0.07627964817339296,
+      "btts": 0.2369204529731389
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24553308636875473,
+     "logloss_1x2": 1.4043235694689158,
+     "brier_1x2": 0.8958029340458025,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06594291284682813,
+      "o25": 0.2455064541927176,
+      "o35": 0.07627964817339296,
+      "btts": 0.2369204529731389
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "7uqldjza8udrm8ujbwlaqov84",
@@ -239513,9 +241213,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.356931508913496,
+     "logloss_1x2": 1.0302113673913298,
+     "brier_1x2": 0.628075109550147,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06372447521516113,
+      "o25": 0.2512982446078248,
+      "o35": 0.07916023752774164,
+      "btts": 0.29650043974570767
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.356931508913496,
+     "logloss_1x2": 1.0302113673913298,
+     "brier_1x2": 0.628075109550147,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06372447521516113,
+      "o25": 0.2512982446078248,
+      "o35": 0.07916023752774164,
+      "btts": 0.29650043974570767
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "e4e7v9degyjuoqgdzmkcu4vf8",
@@ -239848,9 +241593,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.44016272902558384,
+     "logloss_1x2": 0.8206107817487939,
+     "brier_1x2": 0.47076334657880353,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07470785111996946,
+      "o25": 0.27679108063661795,
+      "o35": 0.5514821054346604,
+      "btts": 0.23352977538862235
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.44016272902558384,
+     "logloss_1x2": 0.8206107817487939,
+     "brier_1x2": 0.47076334657880353,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07470785111996946,
+      "o25": 0.27679108063661795,
+      "o35": 0.5514821054346604,
+      "btts": 0.23352977538862235
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": true,
+     "gain": 1.3599999999999999
+    }
+   }
   },
   {
    "match_id": "beohtksn0a6bubogi1u3dn8yc",
@@ -240171,9 +241961,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2884069210291541,
+     "logloss_1x2": 1.2433828758386456,
+     "brier_1x2": 0.7895935999298257,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.1454233393253678,
+      "o25": 0.4243794190671078,
+      "o35": 0.7054483829970976,
+      "btts": 0.3593552296634199
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2884069210291541,
+     "logloss_1x2": 1.2433828758386456,
+     "brier_1x2": 0.7895935999298257,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.1454233393253678,
+      "o25": 0.4243794190671078,
+      "o35": 0.7054483829970976,
+      "btts": 0.3593552296634199
+     }
+    },
+    "pari": {
+     "cle": "o25-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "et5hlmiyec2r7d6ddp60poh78",
@@ -240566,9 +242401,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.27785932906182487,
+     "logloss_1x2": 1.280640303927027,
+     "brier_1x2": 0.797181523291563,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.10185821234527549,
+      "o25": 0.3392267971074525,
+      "o35": 0.6222028517542175,
+      "btts": 0.2823329095388271
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.27785932906182487,
+     "logloss_1x2": 1.280640303927027,
+     "brier_1x2": 0.797181523291563,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.10185821234527549,
+      "o25": 0.3392267971074525,
+      "o35": 0.6222028517542175,
+      "btts": 0.2823329095388271
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "2ctsajlvrjwh6i65n3ngnxn8",
@@ -240955,9 +242835,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4072103181637617,
+     "logloss_1x2": 0.89842547476489,
+     "brier_1x2": 0.5292339299020518,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07308865598562375,
+      "o25": 0.27276780085091995,
+      "o35": 0.06795314639682995,
+      "btts": 0.22632063449248174
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4072103181637617,
+     "logloss_1x2": 0.89842547476489,
+     "brier_1x2": 0.5292339299020518,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.07308865598562375,
+      "o25": 0.27276780085091995,
+      "o35": 0.06795314639682995,
+      "btts": 0.22632063449248174
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.3600000000000001
+    }
+   }
   },
   {
    "match_id": "yek80cnhnkw43ljhcm4vzlec",
@@ -241326,9 +243251,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45069083789781605,
+     "logloss_1x2": 0.7969736780969646,
+     "brier_1x2": 0.45261797459322295,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.47039342476559487,
+      "o25": 0.17933574082230602,
+      "o35": 0.04659469355327367,
+      "btts": 0.22368634439982343
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45069083789781605,
+     "logloss_1x2": 0.7969736780969646,
+     "brier_1x2": 0.45261797459322295,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.47039342476559487,
+      "o25": 0.17933574082230602,
+      "o35": 0.04659469355327367,
+      "btts": 0.22368634439982343
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": true,
+     "gain": 1.2999999999999998
+    }
+   }
   },
   {
    "match_id": "dbw288qdpij26xufgv7wre710",
@@ -241697,9 +243667,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 6,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4550284882823133,
+     "logloss_1x2": 0.7873952503817319,
+     "brier_1x2": 0.44739626998042004,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04304073975604872,
+      "o25": 0.18970145339556463,
+      "o35": 0.43490886429102593,
+      "btts": 0.17042602690777864
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4550284882823133,
+     "logloss_1x2": 0.7873952503817319,
+     "brier_1x2": 0.44739626998042004,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04304073975604872,
+      "o25": 0.18970145339556463,
+      "o35": 0.43490886429102593,
+      "btts": 0.17042602690777864
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": true,
+     "gain": 1.4
+    }
+   }
   },
   {
    "match_id": "83u0icd3b8doe95t75ypcp1xw",
@@ -242031,9 +244046,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3573401314172452,
+     "logloss_1x2": 1.0290672017119034,
+     "brier_1x2": 0.6300276626077069,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04790330251875029,
+      "o25": 0.2044281585424572,
+      "o35": 0.45638719889731344,
+      "btts": 0.1758163629863985
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3573401314172452,
+     "logloss_1x2": 1.0290672017119034,
+     "brier_1x2": 0.6300276626077069,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04790330251875029,
+      "o25": 0.2044281585424572,
+      "o35": 0.45638719889731344,
+      "btts": 0.1758163629863985
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4ita2kw93608youzp31pt2ec4",
@@ -242426,9 +244486,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3267577261333784,
+     "logloss_1x2": 1.1185362813606332,
+     "brier_1x2": 0.6850709139094656,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11511570328337602,
+      "o25": 0.1555039961139393,
+      "o35": 0.03737833170269711,
+      "btts": 0.2096801186389833
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3267577261333784,
+     "logloss_1x2": 1.1185362813606332,
+     "brier_1x2": 0.6850709139094656,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.11511570328337602,
+      "o25": 0.1555039961139393,
+      "o35": 0.03737833170269711,
+      "btts": 0.2096801186389833
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.33000000000000007
+    }
+   }
   },
   {
    "match_id": "y272nzlv6sstou0tuc5mg4r8",
@@ -242797,9 +244902,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6366019798406399,
+     "logloss_1x2": 0.45161065411598367,
+     "brier_1x2": 0.1994196273853309,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04778198108338644,
+      "o25": 0.30059035959247254,
+      "o35": 0.10550636396458106,
+      "btts": 0.2538367647448575
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6366019798406399,
+     "logloss_1x2": 0.45161065411598367,
+     "brier_1x2": 0.1994196273853309,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04778198108338644,
+      "o25": 0.30059035959247254,
+      "o35": 0.10550636396458106,
+      "btts": 0.2538367647448575
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.6299999999999999
+    }
+   }
   },
   {
    "match_id": "14p144hf5bux0xbfbkvtgh4pg",
@@ -243228,9 +245378,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 6,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4706512419825689,
+     "logloss_1x2": 0.753637922125782,
+     "brier_1x2": 0.4203152669948882,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.08760720706618913,
+      "o25": 0.30756064034093106,
+      "o35": 0.5874833936362578,
+      "btts": 0.2634700680165225
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4706512419825689,
+     "logloss_1x2": 0.753637922125782,
+     "brier_1x2": 0.4203152669948882,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.08760720706618913,
+      "o25": 0.30756064034093106,
+      "o35": 0.5874833936362578,
+      "btts": 0.2634700680165225
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "28dfzccdfsz5tzuxpwoyglo9g",
@@ -243581,9 +245776,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23264463134604654,
+     "logloss_1x2": 1.4582431770546784,
+     "brier_1x2": 0.8868605453679084,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02884469935860227,
+      "o25": 0.14267073457667537,
+      "o35": 0.3602211203284098,
+      "btts": 0.13201743257783205
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23264463134604654,
+     "logloss_1x2": 1.4582431770546784,
+     "brier_1x2": 0.8868605453679084,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02884469935860227,
+      "o25": 0.14267073457667537,
+      "o35": 0.3602211203284098,
+      "btts": 0.13201743257783205
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "b0etb6qirapatzbjxkkc4sjkk",
@@ -243976,9 +246216,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2598732718369258,
+     "logloss_1x2": 1.3475611828042307,
+     "brier_1x2": 0.8672578477651366,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.7074006408821182,
+      "o25": 0.40963478436484496,
+      "o35": 0.17561214163940722,
+      "btts": 0.4009521258315248
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.2598732718369258,
+     "logloss_1x2": 1.3475611828042307,
+     "brier_1x2": 0.8672578477651366,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.7074006408821182,
+      "o25": 0.40963478436484496,
+      "o35": 0.17561214163940722,
+      "btts": 0.4009521258315248
+     }
+    },
+    "pari": {
+     "cle": "N2",
+     "gagne": true,
+     "gain": 1.17
+    }
+   }
   },
   {
    "match_id": "9cw5rf9y85voxhy4b55ewfm6s",
@@ -244395,9 +246680,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.25514427698253633,
+     "logloss_1x2": 1.3659261017353284,
+     "brier_1x2": 0.8573889611628095,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07208294082219006,
+      "o25": 0.2702493629172266,
+      "o35": 0.5435166021646751,
+      "btts": 0.23809166306096746
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.25514427698253633,
+     "logloss_1x2": 1.3659261017353284,
+     "brier_1x2": 0.8573889611628095,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.07208294082219006,
+      "o25": 0.2702493629172266,
+      "o35": 0.5435166021646751,
+      "btts": 0.23809166306096746
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "5yh41svatntsc5b8ia9udipec",
@@ -244928,7 +247258,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -245329,9 +247659,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 5,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.570409449648343,
+     "logloss_1x2": 0.5614008433146086,
+     "brier_1x2": 0.27742490633914413,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.06034315535203272,
+      "o25": 0.23965510282107327,
+      "o35": 0.504682431883653,
+      "btts": 0.24360641140867115
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.570409449648343,
+     "logloss_1x2": 0.5614008433146086,
+     "brier_1x2": 0.27742490633914413,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.06034315535203272,
+      "o25": 0.23965510282107327,
+      "o35": 0.504682431883653,
+      "btts": 0.24360641140867115
+     }
+    },
+    "pari": {
+     "cle": "N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "cyr90ujag3xlroa4i8vba7q50",
@@ -245676,9 +248051,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6921731253154324,
+     "logloss_1x2": 0.3679191735628728,
+     "brier_1x2": 0.14378565022409331,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6579437507688289,
+      "o25": 0.35095918430771056,
+      "o35": 0.13583557769601493,
+      "btts": 0.25510584847850865
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6921731253154324,
+     "logloss_1x2": 0.3679191735628728,
+     "brier_1x2": 0.14378565022409331,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.6579437507688289,
+      "o25": 0.35095918430771056,
+      "o35": 0.13583557769601493,
+      "btts": 0.25510584847850865
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.95
+    }
+   }
   },
   {
    "match_id": "a5r7gki6u0kmsj9cy4pwe42z8",
@@ -246035,9 +248455,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24163408963796124,
+     "logloss_1x2": 1.420330723380202,
+     "brier_1x2": 0.8627212811966549,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03793984562931493,
+      "o25": 0.3403464048983534,
+      "o35": 0.12915590982604605,
+      "btts": 0.15319928628428445
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.24163408963796124,
+     "logloss_1x2": 1.420330723380202,
+     "brier_1x2": 0.8627212811966549,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03793984562931493,
+      "o25": 0.3403464048983534,
+      "o35": 0.12915590982604605,
+      "btts": 0.15319928628428445
+     }
+    },
+    "pari": {
+     "cle": "o15+",
+     "gagne": true,
+     "gain": 0.27
+    }
+   }
   },
   {
    "match_id": "e3sw4swum5zkhyggkd1uz7cic",
@@ -246351,9 +248816,49 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.274734733465842,
+     "logloss_1x2": 1.291949252425677,
+     "brier_1x2": 0.791604589266298,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.0933046750549904,
+      "o25": 0.1882527039805127,
+      "o35": 0.050246403521482734,
+      "btts": 0.2605481749293063
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.274734733465842,
+     "logloss_1x2": 1.291949252425677,
+     "brier_1x2": 0.791604589266298,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.0933046750549904,
+      "o25": 0.1882527039805127,
+      "o35": 0.050246403521482734,
+      "btts": 0.2605481749293063
+     }
+    }
+   }
   },
   {
    "match_id": "5tpbezn2g2z3wkvhxuykmyexg",
@@ -246662,9 +249167,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.48620328519939604,
+     "logloss_1x2": 0.7211284602340153,
+     "brier_1x2": 0.39666032531548095,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.043800294992798715,
+      "o25": 0.1920420367569756,
+      "o35": 0.4383775636223809,
+      "btts": 0.33476619198110297
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.48620328519939604,
+     "logloss_1x2": 0.7211284602340153,
+     "brier_1x2": 0.39666032531548095,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.043800294992798715,
+      "o25": 0.1920420367569756,
+      "o35": 0.4383775636223809,
+      "btts": 0.33476619198110297
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4wrsp64aq5fpx9pq0b76gdlhw",
@@ -247033,9 +249583,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5459334614103465,
+     "logloss_1x2": 0.6052581762122573,
+     "brier_1x2": 0.3093533206102518,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03220216996935756,
+      "o25": 0.1544274675236706,
+      "o35": 0.3798559230414633,
+      "btts": 0.3577021171361305
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5459334614103465,
+     "logloss_1x2": 0.6052581762122573,
+     "brier_1x2": 0.3093533206102518,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03220216996935756,
+      "o25": 0.1544274675236706,
+      "o35": 0.3798559230414633,
+      "btts": 0.3577021171361305
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "940rer8c8v4c4lo5ecx04ij9w",
@@ -247428,9 +250023,49 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.7158170812251108,
+     "logloss_1x2": 0.33433061780960205,
+     "brier_1x2": 0.124497806126059,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05494324109444638,
+      "o25": 0.2765837210129575,
+      "o35": 0.09226548575928145,
+      "btts": 0.17835033899433317
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.7158170812251108,
+     "logloss_1x2": 0.33433061780960205,
+     "brier_1x2": 0.124497806126059,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.05494324109444638,
+      "o25": 0.2765837210129575,
+      "o35": 0.09226548575928145,
+      "btts": 0.17835033899433317
+     }
+    }
+   }
   },
   {
    "match_id": "6h9ikbxfrv2mk853ih4pdjs44",
@@ -247847,9 +250482,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 5,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3261726694117364,
+     "logloss_1x2": 1.120328377063988,
+     "brier_1x2": 0.7018562900510392,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03243899242574919,
+      "o25": 0.1552401353191063,
+      "o35": 0.38118751602776424,
+      "btts": 0.3874997672518519
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3261726694117364,
+     "logloss_1x2": 1.120328377063988,
+     "brier_1x2": 0.7018562900510392,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03243899242574919,
+      "o25": 0.1552401353191063,
+      "o35": 0.38118751602776424,
+      "btts": 0.3874997672518519
+     }
+    },
+    "pari": {
+     "cle": "12",
+     "gagne": true,
+     "gain": 0.31000000000000005
+    }
+   }
   },
   {
    "match_id": "xptnneoo1vx5gdtndxijuvis",
@@ -248157,9 +250837,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 6,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6729166887760105,
+     "logloss_1x2": 0.39613374782328975,
+     "brier_1x2": 0.16477220225364636,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08082986264521705,
+      "o25": 0.291667769346178,
+      "o35": 0.5691822918953188,
+      "btts": 0.36328017967275483
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6729166887760105,
+     "logloss_1x2": 0.39613374782328975,
+     "brier_1x2": 0.16477220225364636,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08082986264521705,
+      "o25": 0.291667769346178,
+      "o35": 0.5691822918953188,
+      "btts": 0.36328017967275483
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "7tihhdch6myqobao6oexk4gt0",
@@ -248492,9 +251217,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 5,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5085069574018143,
+     "logloss_1x2": 0.6762763813809984,
+     "brier_1x2": 0.3631177009598233,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.031267044726259526,
+      "o25": 0.15119775447462058,
+      "o35": 0.3745317035941553,
+      "btts": 0.1497360715336636
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5085069574018143,
+     "logloss_1x2": 0.6762763813809984,
+     "brier_1x2": 0.3631177009598233,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.031267044726259526,
+      "o25": 0.15119775447462058,
+      "o35": 0.3745317035941553,
+      "btts": 0.1497360715336636
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "es64hwb6qzic38gxouugqozys",
@@ -248893,9 +251663,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.23531021541601177,
+     "logloss_1x2": 1.4468505697585103,
+     "brier_1x2": 0.906761051864502,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.09008425347615523,
+      "o25": 0.31322855712202724,
+      "o35": 0.5938645422488051,
+      "btts": 0.2781516683903358
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.23531021541601177,
+     "logloss_1x2": 1.4468505697585103,
+     "brier_1x2": 0.906761051864502,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.09008425347615523,
+      "o25": 0.31322855712202724,
+      "o35": 0.5938645422488051,
+      "btts": 0.2781516683903358
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "83ihhupbrznxj8emnypfelhjo",
@@ -249227,9 +252042,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.49276036975992954,
+     "logloss_1x2": 0.707732288503205,
+     "brier_1x2": 0.3860246444432239,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5020898013982886,
+      "o25": 0.20345335105392748,
+      "o35": 0.056723468615125706,
+      "btts": 0.23553854875620103
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.49276036975992954,
+     "logloss_1x2": 0.707732288503205,
+     "brier_1x2": 0.3860246444432239,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5020898013982886,
+      "o25": 0.20345335105392748,
+      "o35": 0.056723468615125706,
+      "btts": 0.23553854875620103
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "4hvmfki7vnpef2r8igovaxvys",
@@ -249592,9 +252452,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4447054454497732,
+     "logloss_1x2": 0.8103431363194707,
+     "brier_1x2": 0.4625328027795972,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10440134422123609,
+      "o25": 0.34465103935078306,
+      "o35": 0.04308936366261067,
+      "btts": 0.2858758399767761
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4447054454497732,
+     "logloss_1x2": 0.8103431363194707,
+     "brier_1x2": 0.4625328027795972,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10440134422123609,
+      "o25": 0.34465103935078306,
+      "o35": 0.04308936366261067,
+      "btts": 0.2858758399767761
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.4099999999999999
+    }
+   }
   },
   {
    "match_id": "yqxhae2ucrmy935re2llrdhw",
@@ -249927,9 +252832,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6768805710969048,
+     "logloss_1x2": 0.3902604306466742,
+     "brier_1x2": 0.15777731269209133,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03200563705782932,
+      "o25": 0.15375149981991076,
+      "o35": 0.37874598591624403,
+      "btts": 0.28177971211251435
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.6768805710969048,
+     "logloss_1x2": 0.3902604306466742,
+     "brier_1x2": 0.15777731269209133,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.03200563705782932,
+      "o25": 0.15375149981991076,
+      "o35": 0.37874598591624403,
+      "btts": 0.28177971211251435
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "5hd74gibwraj5h33g57l3caac",
@@ -250249,9 +253199,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.24327223021335034,
+     "logloss_1x2": 1.4135741737531404,
+     "brier_1x2": 0.8837029845055482,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.09883091033364627,
+      "o25": 0.3326842820090472,
+      "o35": 0.04650306179804237,
+      "btts": 0.2888445581279908
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.24327223021335034,
+     "logloss_1x2": 1.4135741737531404,
+     "brier_1x2": 0.8837029845055482,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.09883091033364627,
+      "o25": 0.3326842820090472,
+      "o35": 0.04650306179804237,
+      "btts": 0.2888445581279908
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.5700000000000001
+    }
+   }
   },
   {
    "match_id": "b2tni59w6aughn87o749gs0lw",
@@ -250620,9 +253615,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4753004402449695,
+     "logloss_1x2": 0.7438081691160854,
+     "brier_1x2": 0.4156102356084782,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02600451997404338,
+      "o25": 0.404745914575889,
+      "o35": 0.1721111767637638,
+      "btts": 0.4106059851360422
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4753004402449695,
+     "logloss_1x2": 0.7438081691160854,
+     "brier_1x2": 0.4156102356084782,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.02600451997404338,
+      "o25": 0.404745914575889,
+      "o35": 0.1721111767637638,
+      "btts": 0.4106059851360422
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": true,
+     "gain": 1.2599999999999998
+    }
+   }
   },
   {
    "match_id": "2t9g7c5gelvmejwr6tc9sn190",
@@ -251237,9 +254277,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5820388540444619,
+     "logloss_1x2": 0.5412180739524505,
+     "brier_1x2": 0.26245650018959255,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04939007419903968,
+      "o25": 0.2088146588135738,
+      "o35": 0.4626302781541611,
+      "btts": 0.22177672525320216
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5820388540444619,
+     "logloss_1x2": 0.5412180739524505,
+     "brier_1x2": 0.26245650018959255,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04939007419903968,
+      "o25": 0.2088146588135738,
+      "o35": 0.4626302781541611,
+      "btts": 0.22177672525320216
+     }
+    },
+    "pari": {
+     "cle": "o25-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "a63dkvhm26i8236zm0nns47bo",
@@ -251547,9 +254632,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.17065972495088277,
+     "logloss_1x2": 1.7680836175538746,
+     "brier_1x2": 1.1347602511369521,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.019907499836747205,
+      "o25": 0.10883000540444038,
+      "o35": 0.29933387139357476,
+      "btts": 0.15244003441989898
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.17065972495088277,
+     "logloss_1x2": 1.7680836175538746,
+     "brier_1x2": 1.1347602511369521,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.019907499836747205,
+      "o25": 0.10883000540444038,
+      "o35": 0.29933387139357476,
+      "btts": 0.15244003441989898
+     }
+    },
+    "pari": {
+     "cle": "o25+",
+     "gagne": true,
+     "gain": 0.51
+    }
+   }
   },
   {
    "match_id": "7rzitakki3g6g7m9yj4totn2s",
@@ -251930,9 +255060,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 4,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23110446055798695,
+     "logloss_1x2": 1.4648854604688295,
+     "brier_1x2": 0.9121506054334011,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.035521758182445386,
+      "o25": 0.16563437976468204,
+      "o35": 0.39794248327247966,
+      "btts": 0.1589882843539334
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.23110446055798695,
+     "logloss_1x2": 1.4648854604688295,
+     "brier_1x2": 0.9121506054334011,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.035521758182445386,
+      "o25": 0.16563437976468204,
+      "o35": 0.39794248327247966,
+      "btts": 0.1589882843539334
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "82vk3mqrxovp5nbu31vtpmvis",
@@ -252325,9 +255500,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.48396532301713274,
+     "logloss_1x2": 0.7257420214910665,
+     "brier_1x2": 0.40042158035876724,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.12730660671628077,
+      "o25": 0.3908276573993542,
+      "o35": 0.03198941225781424,
+      "btts": 0.17826197928756812
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.48396532301713274,
+     "logloss_1x2": 0.7257420214910665,
+     "brier_1x2": 0.40042158035876724,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.12730660671628077,
+      "o25": 0.3908276573993542,
+      "o35": 0.03198941225781424,
+      "btts": 0.17826197928756812
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.29000000000000004
+    }
+   }
   },
   {
    "match_id": "4gbdv1hx631z6rmnq0p3aqot0",
@@ -252732,9 +255952,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45440698852420086,
+     "logloss_1x2": 0.7887620320187236,
+     "brier_1x2": 0.4465788279456498,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.44054933486734515,
+      "o25": 0.15822477800900436,
+      "o35": 0.038390162809979915,
+      "btts": 0.20276507920704206
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.45440698852420086,
+     "logloss_1x2": 0.7887620320187236,
+     "brier_1x2": 0.4465788279456498,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.44054933486734515,
+      "o25": 0.15822477800900436,
+      "o35": 0.038390162809979915,
+      "btts": 0.20276507920704206
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.27
+    }
+   }
   },
   {
    "match_id": "2prp4sqbimxp41b0ykkb00o44",
@@ -253361,9 +256626,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5109247343454932,
+     "logloss_1x2": 0.671532990535819,
+     "brier_1x2": 0.35889841747325285,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5292863247222489,
+      "o25": 0.22560700454059934,
+      "o35": 0.06672732899853176,
+      "btts": 0.24977668317863014
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5109247343454932,
+     "logloss_1x2": 0.671532990535819,
+     "brier_1x2": 0.35889841747325285,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5292863247222489,
+      "o25": 0.22560700454059934,
+      "o35": 0.06672732899853176,
+      "btts": 0.24977668317863014
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.3700000000000001
+    }
+   }
   },
   {
    "match_id": "2rsg7zxvd3ctjh0lfkyh4v8r8",
@@ -254014,9 +257324,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5015240229867347,
+     "logloss_1x2": 0.6901037704607543,
+     "brier_1x2": 0.37281965519052507,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5919741714500967,
+      "o25": 0.28218851403276274,
+      "o35": 0.0952871820278838,
+      "btts": 0.30203525414000426
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5015240229867347,
+     "logloss_1x2": 0.6901037704607543,
+     "brier_1x2": 0.37281965519052507,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5919741714500967,
+      "o25": 0.28218851403276274,
+      "o35": 0.0952871820278838,
+      "btts": 0.30203525414000426
+     }
+    },
+    "pari": {
+     "cle": "12",
+     "gagne": true,
+     "gain": 0.32000000000000006
+    }
+   }
   },
   {
    "match_id": "9hip3h6ayxmvtc8glld68nndg",
@@ -254457,7 +257812,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -254900,7 +258255,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -280025,6 +283380,371 @@
       "date": "2021-10-23",
       "domicile": false,
       "marques": 1,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "26594lu9y7n4rw0yj0eojj2fo",
+   "date": "2026-11-26",
+   "coup_d_envoi_utc": "2026-11-26T20:00:00Z",
+   "competition": "Angleterre : League One",
+   "division": "E2",
+   "domicile": "Doncaster",
+   "exterieur": "Huddersfield",
+   "p1_original": {
+    "dom": 0.3020353603475032,
+    "nul": 0.2505946481374565,
+    "ext": 0.44736999151504014,
+    "o15": 0.7640250534683165,
+    "o25": 0.5237259139875635,
+    "o35": 0.30172929186108033,
+    "btts": 0.5558656516159279
+   },
+   "p1_calibre": {
+    "dom": 0.3020353603475032,
+    "nul": 0.2505946481374565,
+    "ext": 0.44736999151504014,
+    "o15": 0.7640250534683165,
+    "o25": 0.5237259139875635,
+    "o35": 0.30172929186108033,
+    "btts": 0.5558656516159279
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.2255819142251851,
+    "buts_attendus_ext": 1.5459214204040788,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 105,
+    "matchs_anterieurs_ext": 106,
+    "fd_dom": "Doncaster",
+    "fd_ext": "Huddersfield"
+   },
+   "gele_le": "2026-11-23T02:43:29Z",
+   "empreinte": "eefe15c20f6cb43db74881cf2b6351bb7c58d70667edde14185354d4edb2dfae",
+   "mode": "parallele",
+   "n_historique_competition": 2923,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.6982707081389197,
+     "cote": 1.54,
+     "valeur": 0.07533689053393622
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Doncaster",
+      "p1": 0.3020353603475032,
+      "cote": 4.07,
+      "valeur": 0.2292839166143381
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2505946481374565,
+      "cote": 3.98,
+      "valeur": -0.0026333004129230897
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Huddersfield",
+      "p1": 0.44736999151504014,
+      "cote": 1.78,
+      "valeur": -0.20368141510322857
+     },
+     {
+      "cle": "1N",
+      "libelle": "Doncaster ou match nul",
+      "p1": 0.5526300084849598,
+      "cote": 1.97,
+      "valeur": 0.08868111671537071
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Huddersfield",
+      "p1": 0.6979646396524967,
+      "cote": 1.25,
+      "valeur": -0.1275442004343792
+     },
+     {
+      "cle": "12",
+      "libelle": "Doncaster ou Huddersfield (pas de nul)",
+      "p1": 0.7494053518625434,
+      "cote": 1.26,
+      "valeur": -0.0557492566531953
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7640250534683165,
+      "cote": 1.16,
+      "valeur": -0.11373093797675293
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2359749465316835,
+      "cote": 4.79,
+      "valeur": 0.13031999388676385
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5237259139875635,
+      "cote": 1.56,
+      "valeur": -0.18298757417940092
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4762740860124365,
+      "cote": 2.33,
+      "valeur": 0.10971862040897706
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.30172929186108033,
+      "cote": 2.38,
+      "valeur": -0.2818842853706288
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6982707081389197,
+      "cote": 1.54,
+      "valeur": 0.07533689053393622
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.5558656516159279,
+      "cote": 1.54,
+      "valeur": -0.143966896511471
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.44413434838407206,
+      "cote": 2.31,
+      "valeur": 0.02595034476720648
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 4.07,
+    "N": 3.98,
+    "2": 1.78,
+    "1N": 1.97,
+    "N2": 1.25,
+    "12": 1.26,
+    "o15+": 1.16,
+    "o15-": 4.79,
+    "o25+": 1.56,
+    "o25-": 2.33,
+    "o35+": 2.38,
+    "o35-": 1.54,
+    "btts+": 1.54,
+    "btts-": 2.31
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Sheffield Weds",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Stockport",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Burton",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Plymouth",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Notts County",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Barnsley",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Bradford",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Plymouth",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Burton",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Bromley",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Mansfield",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Cambridge",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Milton Keynes Dons",
+      "marques": 1,
+      "encaisses": 1
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-31",
+      "adversaire": "Milton Keynes Dons",
+      "marques": 1,
+      "encaisses": 6
+     },
+     {
+      "date": "2026-10-27",
+      "adversaire": "Luton",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Leicester",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Peterboro",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "AFC Wimbledon",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Stevenage",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Mansfield",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-03",
+      "adversaire": "Luton",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Wigan",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Peterboro",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Sheffield Weds",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Notts County",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Oxford",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "AFC Wimbledon",
+      "marques": 3,
+      "encaisses": 0
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-02-17",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2025-08-19",
+      "domicile": false,
+      "marques": 0,
       "encaisses": 2
      }
     ]
