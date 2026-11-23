@@ -33,7 +33,7 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 
 - Onglet « Étude » d'Analyse Verdict (depuis le 21/11/2026 ; `verif_etude.py`, `data/verif_pronostics/etude_regles.json`, branche `onglet-etude`) : condition « le double des buts marqués + une meilleure défense » (écart mince / moyen / grand), marchés retenus seulement s'ils dépassent 70 % dans l'étude sur matchs joués, sélection gelée « etude » : `docs/ETUDE_DOUBLE_DEFENSE.md`
 
-- Onglet « +1,5 buts » d'Analyse Verdict (depuis le 21/11/2026, fusionné ; `verif_regle_buts.py`, `data/verif_pronostics/regle_buts.json`) : tout +1,5 coté 1,24 ou plus (seuil propre à cet onglet, conservé par Patrick le 22/11 ; les autres onglets : 1,26), évaluable (4 matchs au même lieu), verdict de la page non filtrant ; la règle de buts de Patrick (buts marqués cumulés ≥ 3,5 et encaissés cumulés ≥ 2,8) + filtre du championnat = repère « Règle validée » ; tout le +1,5 de l'onglet est aussi dans l'onglet Étude ; sélections gelées « plus15 » (onglet entier) et « regle_buts » (règle remplie) : `docs/REGLE_BUTS_PLUS_1_5.md`
+- Onglet « +1,5 buts » d'Analyse Verdict (depuis le 21/11/2026, fusionné ; `verif_regle_buts.py`, `data/verif_pronostics/regle_buts.json`) : ne montre QUE les matchs qui remplissent la règle d'admission (buts marqués cumulés ≥ 3,5 et encaissés cumulés ≥ 2,8, 4 matchs au même lieu, filtre du championnat) avec le marché plus de 1,5 buts coté ≥ 1,24 (seuil propre à cet onglet ; autres onglets : 1,26), sans verdict affiché ; les mêmes matchs sont dans l'onglet Étude ; sélections gelées « plus15 » et « regle_buts » : `docs/REGLE_BUTS_PLUS_1_5.md`
 
 ## Règles de sécurité
 
