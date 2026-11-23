@@ -196,9 +196,8 @@ def test_depot_seuil_de_championnat_coherent():
                                   ([(2, 0)] * 6, [(2, 2)] * 6),           # 2,0 encaissés : règle non remplie
                                   ([(1, 1)] * 6, [(2, 2)] * 6),           # 3,0 marqués
                                   ([(0, 0)] * 6, [(0, 0)] * 6)])          # verdict « NE TIENT PAS » : il reste dans l'onglet, avec son verdict
-def test_onglet_montre_aussi_les_matchs_hors_regle(A, B):
-    f = _fiche(A, B, OU(1.30)); P = f["plus15"]
-    assert P["regle_remplie"] is False and P["pari"]["marche"] == "total_plus_1.5" and P["pari"]["cote"] == 1.30 and P["pari"]["regle"] is False and "regle_buts" not in f
+def test_onglet_ecarte_les_matchs_hors_regle(A, B):                         # l'onglet = seulement les matchs qui remplissent la règle (22/11/2026)
+    f = _fiche(A, B, OU(1.30)); assert "plus15" not in f and "regle_buts" not in f
 
 @pytest.mark.parametrize("A, B", [([(2, 1)] * 3, [(2, 2)] * 6), ([(2, 1)] * 6, [(2, 2)] * 3), ([], [(2, 2)] * 6), ([(2, 1)] * 6, [])])
 def test_onglet_ecarte_un_match_non_evaluable(A, B):                       # moins de 4 matchs au même lieu : rejeté, comme partout
@@ -208,13 +207,12 @@ def test_onglet_match_de_la_regle_porte_le_repere():
     f = _fiche(OUI_A, OUI_B, OU(1.30)); P = f["plus15"]
     assert P["regle_remplie"] is True and P["pari"]["regle"] is True and f["regle_buts"]["pari"] == P["pari"] and P["marques"] == 4.0 and P["encaisses"] == 3.0
 
-def test_onglet_donne_le_taux_du_championnat_meme_hors_regle():
-    f = _fiche([(2, 1)] * 6, [(1, 2)] * 6, OU(1.30), CFG_CH, _tot(40, 40))
-    assert f["plus15"]["regle_remplie"] is False and f["plus15"]["n_championnat"] == 40 and f["plus15"]["taux_championnat"] > 0.9 and f["plus15"]["marques"] == 3.0
+def test_onglet_donne_le_taux_du_championnat():
+    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(40, 40))
+    assert f["plus15"]["regle_remplie"] is True and f["plus15"]["n_championnat"] == 40 and f["plus15"]["taux_championnat"] > 0.9
 
-def test_championnat_pauvre_garde_le_match_dans_l_onglet_sans_le_repere():   # le filtre de championnat ne retire plus rien : il ne décide que du repère « règle remplie »
-    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(0, 40))
-    assert f["plus15"]["regle_remplie"] is False and "regle_buts" not in f and f["plus15"]["pari"]["cote"] == 1.30
+def test_championnat_pauvre_retire_le_match_de_l_onglet():
+    f = _fiche(OUI_A, OUI_B, OU(1.30), CFG_CH, _tot(0, 40)); assert "plus15" not in f and "regle_buts" not in f
 
 def test_selection_plus15_gelee_avant_le_match(tmp_path):
     j = str(tmp_path / "sel.jsonl"); pari = {"marche": "total_plus_1.5", "cote": 1.3, "taux": 0.8, "verdict": "TIENT"}
