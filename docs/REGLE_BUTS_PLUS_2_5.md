@@ -54,3 +54,13 @@ Demande de Patrick : étude profonde plutôt que des conditions ajoutées une à
 - La cote Football-Data (moyenne de clôture) porte plus d'information que tous les paramètres de buts : AUC 0,601 seule, 0,603 avec les 5 mesures (3 225 matchs avec cote). Cote seule entre 1,26 et 1,45 : 239 matchs, 74,1 %.
 - Règle et cote Football-Data entre 1,26 et 1,45 : 22 réussis sur 26 (84,6 %), contre 20 sur 35 (57,1 %) au-dessus de 1,45 (Fisher 0,027 ; les deux périodes vont dans le même sens). Échantillon petit (la cote Football-Data n'existe que pour une partie des matchs) et sens inverse sur la page du 24/11 avec les cotes Betpawa (5 sur 8 jusqu'à 1,45, 5 sur 6 au-dessus) : plafond retenu malgré tout (condition 6) : sur 177 matchs communs les cotes Betpawa et Football-Data sont les mêmes, et 14 matchs ne pèsent pas face à 61. À revérifier avec les matchs Betpawa à venir.
 - Limite : les variantes ont été comparées sur les mêmes matchs jamais vus, les chiffres sont donc légèrement favorables à toutes. Scripts d'étude hors dépôt.
+
+## Test sur un grand échantillon indépendant (24/11/2026, demande de Patrick)
+
+Source : résultats publics sur GitHub (cache Soccerverse et footballcsv : Angleterre 1 à 4, Allemagne 1 à 3, Espagne 1, Italie, France, Autriche, Pays-Bas, Portugal, Brésil, Argentine), saisons 2000 à 2020, 78 279 matchs évaluables (4 matchs au même lieu). Aucun de ces matchs n'a servi à chercher les seuils. Les conditions 1 à 5 sont testées telles quelles (la cote n'existe pas dans ces fichiers : condition 6 non testable ici).
+
+- Règle (conditions 1 à 5) : 729 matchs, 472 à 3 buts ou plus = **64,7 %** (intervalle 61,2 à 68,1 %). Tous les matchs : 48,9 %. Hors règle : 48,7 %.
+- Écart avec l'étude 2025-26 (75,0 % sur 104 matchs) : le grand échantillon dit environ 65 % ; 75 % était dans le haut de l'intervalle.
+- Stable par période : 2000-04 59,7 %, 2005-09 65,1 %, 2010-14 62,9 %, 2015-19 71,0 %.
+- Stable par championnat : Autriche 62,6 % (115), Allemagne 60,7 % (112), Pays-Bas 65,3 % (346), Espagne 71,2 % (59), Angleterre 67,6 % (34). Sans les Pays-Bas : 246 sur 383 = 64,2 %.
+- Des championnats à peu de buts (France, Portugal, Argentine, Angleterre 4) n'ont aucun match retenu : la condition 1 les écarte.
