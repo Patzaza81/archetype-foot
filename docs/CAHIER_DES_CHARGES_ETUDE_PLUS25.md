@@ -1,12 +1,14 @@
-# Cahier des charges : trouver la meilleure approche pour le marché « plus de 2,5 buts »
+# Cahier des charges : trouver, marché par marché, la meilleure approche à partir des 4 piliers de Patrick (premier cas : le « plus de 2,5 buts »)
 
-Rédigé le 24/11/2026 pour Patrick (fondateur d'ARCHETYPE Foot, Douala). Destinataire : un analyste (ChatGPT) qui a accès au dépôt `Patzaza81/archetype-foot` et refait l'étude de zéro, puis conclut.
+Rédigé le 24/11/2026 (complété le même jour avec les 4 piliers) pour Patrick (fondateur d'ARCHETYPE Foot, Douala). Destinataire : un analyste (ChatGPT) qui a accès au dépôt `Patzaza81/archetype-foot` et refait l'étude de zéro, puis conclut.
 
 ## 1. Objectif
 
 Trouver, avec des données réelles, la méthode qui sélectionne les matchs où il y aura **3 buts ou plus** avec le **taux de réussite le plus élevé et le plus constant**, sur des matchs jamais vus pendant la recherche, avec un nombre de matchs suffisant pour être utile.
 
-Question finale à laquelle répondre : **« Quelle est la meilleure approche pour le +2,5 buts, avec quels chiffres, et quelle est sa vraie fiabilité ? »**
+L'étude ne se limite pas au +2,5 : elle doit **tester chaque marché séparément** (tous se calculent à partir des scores) et dire **quels marchés réagissent le mieux aux 4 piliers** (§ 3) : victoire domicile, victoire extérieur, double chance (1N, N2, 12), plus de 1,5 / 2,5 / 3,5 buts, moins de 2,5 / 3,5 / 4,5 buts, les deux équipes marquent, l'équipe à domicile marque 1 but ou plus / 2 buts ou plus, l'équipe à l'extérieur idem, combos double chance + plus de 1,5 / moins de 4,5 buts.
+
+Questions finales auxquelles répondre : **« Pour chaque marché, quelle zone de valeurs des 4 piliers donne le meilleur taux de réussite, avec quels chiffres sur des matchs jamais vus ? » et « Quelle est la meilleure approche pour le +2,5 buts, et quelle est sa vraie fiabilité ? »**
 
 ## 2. Règles de Patrick (obligatoires)
 
@@ -19,13 +21,31 @@ Question finale à laquelle répondre : **« Quelle est la meilleure approche po
 7. Réponses **courtes, précises, concrètes**. Pas de justification de l'échec, pas de bavardage.
 8. **Ne rien modifier dans le dépôt, ne rien fusionner.** Travailler dans un dossier à part et livrer un rapport et le code.
 
-## 3. Paramètres de Patrick (point de départ, pas une limite)
+## 3. Les 4 piliers de Patrick (base de toute l'analyse)
 
-- Moyenne de **buts marqués** de chaque équipe à son lieu (domicile pour l'une, extérieur pour l'autre), leur somme, leur différence.
-- Moyenne de **buts encaissés** de chaque équipe à son lieu, leur somme, leur différence.
-- Le **xG du championnat** (approché ici par la moyenne de buts par match du championnat).
-- Comparer les deux équipes entre elles (doubler les buts marqués, meilleure défense…), associer, croiser (marqués d'un côté + encaissés de l'autre).
-- Toutes les mesures sont calculées sur les matchs joués **avant** le match (pas de fuite, pas de match du même jour).
+Sur la page Analyse Verdict, chaque match affiche, pour chaque équipe **dans le rôle du match**, deux moyennes et le nombre de matchs (exemple de Patrick, captures du 24/11/2026) :
+
+| | Marque | Encaisse | Matchs |
+|---|---|---|---|
+| Équipe à **domicile**, à domicile | 2,6 | 1,6 | 8 |
+| Équipe à **l'extérieur**, à l'extérieur | 1,0 | 1,3 | 6 |
+
+Ce sont les **4 piliers** : `M_dom` (marque à domicile), `E_dom` (encaisse à domicile), `M_ext` (marque à l'extérieur), `E_ext` (encaisse à l'extérieur). Toute l'étude part d'eux. Ils sont calculés sur les matchs joués avant le match, saison en cours, au même lieu, 4 matchs au minimum.
+
+**Ce qu'il faut exploiter : les écarts, rapports et intervalles entre ces 4 nombres.** Au minimum, calculer et tester :
+- l'écart d'attaque `M_dom − M_ext` (ici +1,6) et le rapport `M_dom / M_ext` (ici 2,6 fois plus de buts marqués) ;
+- l'écart de défense `E_dom − E_ext` (ici **+0,3 : l'équipe à domicile encaisse 0,3 de plus que l'adversaire** ; attention au sens, utiliser toujours l'écart signé et non la description orale) ;
+- les croisements : attaque domicile contre défense extérieure `M_dom − E_ext` (ici +1,3), attaque extérieure contre défense domicile `M_ext − E_dom` (ici −0,6) ;
+- les sommes `M_dom + M_ext` (buts marqués) et `E_dom + E_ext` (buts encaissés), et les croisements `M_dom + E_ext`, `M_ext + E_dom` (buts attendus de chaque côté) ;
+- le **xG du championnat** (approché par la moyenne de buts par match du championnat avant le match ; ajouter le xG par équipe quand il existe), seul ou comparé aux piliers (écart entre les buts attendus d'une équipe et la moyenne du championnat) ;
+- toute autre donnée utile (moyennes sur toute la saison, part de matchs où l'équipe marque, encaisse ou voit 3 buts ou plus, forme récente), à ajouter seulement si elle améliore les résultats de façon mesurable sur des matchs jamais vus.
+
+**Méthode attendue (marché par marché) :**
+1. Construire la table de milliers de cas : une ligne par match avec les 4 piliers, tous les écarts et rapports, le xG du championnat, le nombre de matchs, et le résultat 0/1 de CHAQUE marché (calculé depuis le score).
+2. Pour chaque marché, découper chaque écart ou rapport en **intervalles** (quantiles des données, jamais des bornes posées à la main), puis des couples et triplets d'intervalles. Mesurer, dans chaque zone, le taux de réussite du marché avec nombre de matchs et intervalle de Wilson. Chercher les **corrélations** : quelle zone de quel écart déclenche quel marché ?
+3. Exemple de patron à vérifier : « domicile marque 2,6 fois plus que l'extérieur et encaisse à peu près autant » → l'équipe à domicile gagne-t-elle, et avec quel taux sur des milliers de cas semblables ? Faire de même pour chaque schéma (attaque forte contre défense faible, deux défenses fortes, deux attaques faibles…) et dire quel marché en profite.
+4. Garder une zone seulement si elle tient sur deux moitiés de la période de recherche, puis la **tester sur des matchs jamais vus** (§ 5).
+5. À la fin seulement : appliquer la cote (≥ 1,26) pour chaque marché retenu et donner le nombre de matchs et le taux restants.
 
 ## 4. Données disponibles
 
@@ -88,7 +108,8 @@ Constats déjà établis (à confirmer ou infirmer) :
 1. Un **rapport court** (2 pages maximum) : meilleure approche recommandée, tableau des résultats sur les trois échantillons (matchs, réussis, taux, Wilson, période), courbe volume/fiabilité, stabilité par année et par championnat, ce que la cote apporte.
 2. Le **code reproductible** (Python 3.12, numpy ; scikit-learn accepté pour l'étude seulement : l'application en production n'utilise que numpy) dans un dossier à part, avec la commande qui régénère tous les chiffres.
 3. La **réponse à la question finale** en cinq lignes, avec le niveau de certitude (petit échantillon, risque de sur-ajustement) dit clairement.
-4. Si une meilleure approche existe : la **spécification exacte** (mesures, formule ou règle, seuils appris et leur origine) pour qu'elle soit implémentée dans `verif_regle_plus25.py` sans ambiguïté.
+4. Un **tableau marché par marché** : pour chaque marché, la meilleure zone (ou règle) issue des 4 piliers, le nombre de matchs, le taux, Wilson, le résultat sur matchs jamais vus, puis avec la cote ≥ 1,26 ; classer les marchés du plus fiable au moins fiable.
+5. Si une meilleure approche existe : la **spécification exacte** (mesures, formule ou règle, seuils appris et leur origine) pour qu'elle soit implémentée dans `verif_regle_plus25.py` sans ambiguïté.
 
 ## 9. Critères d'acceptation
 
@@ -97,3 +118,10 @@ Constats déjà établis (à confirmer ou infirmer) :
 - Aucun résultat annoncé sans nombre de matchs, taux et intervalle.
 - Le résultat final est mesuré sur un échantillon que la recherche n'a jamais vu, et la comparaison avec la référence est faite sur les mêmes matchs.
 - Les deux écarts suivants sont expliqués ou mesurés : (a) pourquoi la page en production a réussi 8 sur 18 alors que l'étude annonce environ 70 % (domaine : championnats de femmes, équipes réserves, moyennes du championnat tirées du flux), (b) si le plafond de cote 1,45 tient avec les cotes Betpawa du flux.
+- Le tableau marché par marché est livré, avec pour chaque marché des zones des 4 piliers (écarts, rapports, intervalles) tirées des données et testées sur matchs jamais vus.
+
+## 10. Repères déjà obtenus sur d'autres marchés (étude du 23/11/2026, bloc 2025-2026, à reconfirmer)
+
+- Double chance domicile (1N) et « l'équipe à domicile marque 1 but ou plus » : environ 90 % à 93 % de réussite sur des matchs jamais vus, mais surtout sur des matchs dont la cote est sous 1,26.
+- Victoire et +2,5 : environ 70 % à 75 % au mieux sur des matchs jamais vus avec la cote ≥ 1,26.
+- Ces repères sont à confirmer ou infirmer avec la méthode ci-dessus, sur le grand échantillon et sur le flux Betpawa.
