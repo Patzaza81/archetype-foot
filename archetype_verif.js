@@ -16,7 +16,7 @@ function horaire(ko) {           // UTC -> heure du Cameroun (UTC+1)
   const d = ko ? new Date(ko) : null; if (!d || Number.isNaN(d.getTime())) return { heure: "—", date: "" };
   const c = new Date(d.getTime() + 3600000); return { heure: c.toISOString().slice(11, 16).replace(":", "h"), date: jourFr(c.toISOString().slice(0, 10)) };
 }
-const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["etude", "Étude"], ["plus15", "+1,5 buts"], ["plus25", "+2,5 buts"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
+const ONGLETS_PAGE = [["tous", "Tous"], ["top20", "Top 20"], ["regles", "Règles"], ["etude", "Étude"], ["plus15", "+1,5 buts"], ["plus25", "+2,5 buts"], ["categories", "Catégories"], ["buts", "Buts"], ["equipes", "Équipes"], ["combos", "Combos"], ["victoire", "Victoire"]];
 const TITRES = { buts: "Marchés de buts", equipes: "Marchés d'équipes", combos: "Marchés combos", victoire: "Marchés de victoire", regles: "Marchés à règle validée", etude: "Marchés retenus par l'étude" };
 const COTE_TOP = 1.34;
 const ORDRE_FAMILLES = ["buts", "equipes", "victoire", "combos"];
@@ -29,7 +29,7 @@ const etudeOk = (p, f) => p.etude && (f.ecart === "tous" || p.etude.ecart === f.
 const maj1 = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
 let TOP = new Map();
 const pariTotalEtude = (m) => { if (!m.plus15) return []; const p = m.plus15.pari, E = DONNEES && DONNEES.regle_buts && DONNEES.regle_buts.etude; const nm = (p.reussite_dom[1] || 0) + (p.reussite_ext[1] || 0); return [{ ...p, etude: m.plus15.regle_remplie && E ? { taux: E.taux, n: E.matchs, ecart: "buts", lieu: "match" } : { taux: p.taux, n: nm, ecart: "buts", lieu: "match" } }]; };   // tout le +1,5 de l'onglet « +1,5 buts » est aussi dans l'Étude ; règle remplie = taux de l'étude de la règle, sinon taux du match (même lieu)
-const paris = (m, onglet, f) => (onglet === "plus15" ? (m.plus15 ? [m.plus15.pari] : []) : onglet === "plus25" ? (m.plus25 ? [m.plus25.pari] : []) : onglet === "etude" ? (m.etude_paris || []).concat(pariTotalEtude(m)).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
+const paris = (m, onglet, f) => (onglet === "plus15" ? (m.plus15 ? [m.plus15.pari] : []) : onglet === "plus25" ? (m.plus25 ? [m.plus25.pari] : []) : onglet === "categories" ? ((m.categories && m.categories.paris) || []) : onglet === "etude" ? (m.etude_paris || []).concat(pariTotalEtude(m)).filter((p) => etudeOk(p, f || ETUDE_F)).sort((a, b) => b.etude.taux - a.etude.taux || b.taux - a.taux) : onglet === "tous" || onglet === "top20" ? ORDRE_FAMILLES.flatMap((k) => (m.paris && m.paris[k]) || []) : onglet === "regles" ? ORDRE_FAMILLES.flatMap((k) => ((m.paris && m.paris[k]) || []).filter((p) => p.regle)) : (m.paris && m.paris[onglet]) || []);
 // Onglet Étude : seuls les matchs qui ont au moins un marché retenu par l'étude y figurent ; les filtres (écart, lieu, marché) portent sur ces marchés.
 const etudeMatch = (m, f) => paris(m, "etude", f || ETUDE_F).length > 0;
 const meilleur = (L) => L.slice().sort((a, b) => b.taux - a.taux || (a.verdict === b.verdict ? 0 : a.verdict === "TIENT" ? -1 : 1) || (b.reussite_dom[1] + b.reussite_ext[1]) - (a.reussite_dom[1] + a.reussite_ext[1]))[0];
@@ -38,7 +38,7 @@ function ligne(p, fini, reco) {
   const pct = Math.round(Number(p.taux) * 100), [kd, nd] = p.reussite_dom, [ke, ne] = p.reussite_ext, tient = p.verdict === "TIENT", libVerdict = tient ? "Tient" : p.verdict === "NE TIENT PAS" ? "Ne tient pas" : "Tient avec réserve";
   const badge = fini && p.gagne != null ? `<span class="om-badge om-${p.gagne ? "WIN" : "LOSS"}">${p.gagne ? "GAGNÉ" : "PERDU"}</span>` : "";
   return `<div class="vf-pari"><div class="om-ligne"><span>${e(p.libelle)}<small class="om-sous">Réussi ${kd} sur ${nd} (domicile) et ${ke} sur ${ne} (extérieur) · ${e(maj1(p.lecture_xg))}${p.etude && ONGLET === "etude" ? ` · Étude : ${e(p.etude.n)} ${p.etude.ecart === "buts" ? "matchs, règle de buts + championnat" : "cas, écart de défense " + e(p.etude.ecart)}` : ""}${ONGLET === "plus15" && p.regle ? textePlus15(DONNEES && DONNEES.regle_buts) : ""}${ONGLET === "plus25" ? textePlus25(DONNEES && DONNEES.regle_plus25) : ""}</small></span>` +
-    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> ${["plus15", "plus25", "etude"].includes(ONGLET) ? "" : `<span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${libVerdict}</span>`}${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
+    `<span class="vf-droite"><span class="om-cote">Cote ${fr(p.cote)}</span> ${["plus15", "plus25", "etude", "categories"].includes(ONGLET) ? "" : `<span class="vf-verdict vf-${tient ? "tient" : "reserve"}">${libVerdict}</span>`}${reco ? ` <span class="vf-reco">Recommandé</span>` : ""}${p.etude && ONGLET === "etude" ? ` <span class="vf-etude" title="Réussite de ce marché dans l'étude (matchs déjà joués), pour cette catégorie d'écart de défense et ce lieu">Étude ${Math.round(p.etude.taux * 100)} %</span>` : ""}${p.regle ? ` <span class="vf-regle" title="Ce marché a une condition validée sur les résultats passés, et elle est remplie pour ce match">Règle validée</span>` : ""} ${badge}</span></div>` +
     `<div class="vf-taux"><div class="om-jauge"><i style="width:${pct}%"></i></div><span>${pct} %</span></div></div>`;
 }
 // Critère du Top 20 (09/11, d'après les résultats réels des 7 et 8 nov) : la réussite observée seule ne classe pas (les paris « les plus solides » sont les moins réussis),
@@ -99,7 +99,26 @@ function phraseRegle25(m) {
   return `<div class="om-info">Championnat à <b>${fr(x.championnat)}</b> buts par match ; différence de buts de <b>${e(m.domicile)}</b> supérieure de <b>${fr(x.ecart_diff_buts)}</b> à celle de <b>${e(m.exterieur)}</b> ; ` +
     `${e(m.domicile)} a marqué dans <b>${fr(x.freq_dom_marque * 100, 0)} %</b> de ses ${e(x.n_dom)} matchs à domicile ; ${e(m.exterieur)} marque <b>${fr(x.ext_marques, 1)}</b> but par match à l'extérieur (${e(x.n_ext)} matchs). <b>Règle remplie.</b></div>`;
 }
+// Onglet « Catégories » (24/11/2026) : la fiche du match tombe dans un intervalle retenu du marché (un seuil par marché, décision de Patrick). Valeurs écrites par verif_categories.py et verif_pronostic.py : aucun calcul ici.
+const bornes = (c) => (c.bas != null && c.haut != null ? `entre ${fr(c.bas)} et ${fr(c.haut)}` : c.bas != null ? `à partir de ${fr(c.bas)}` : `sous ${fr(c.haut)}`);
+function noteCategories(d) {
+  const R = d.categories; if (!R) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
+  const lignes = Object.entries(R.marches).map(([nom, M]) => { const [k1, n1] = M.test_2017_2020, [k2, n2] = M.bloc_2025_26, pc = (k, n) => (n ? Math.round((k / n) * 100) + " %" : "—");
+    return `<tr><td style="text-align:left">${e(nom)}</td><td>${e(Math.round(M.seuil * 100))} %</td><td>${e(M.intervalles)}</td><td>${pc(k1, n1)} (${e(n1)})</td><td>${pc(k2, n2)} (${e(n2)})</td></tr>`; }).join("");
+  return `<p class="om-info" style="margin:8px 14px">Pour chaque marché, des intervalles de la fiche (buts marqués et encaissés au lieu du match, xG de la saison, moyenne du championnat) ont été cherchés sur les matchs de 2000 à 2016 et gardés seulement s'ils atteignent le seuil de ce marché. ` +
+    `Un match n'est montré que s'il tombe dans un intervalle ET que le marché est coté <b>${fr(d.cote_min)}</b> ou plus. La réussite indiquée est celle des matchs <b>jamais vus pendant la recherche</b> (2017-2020 et saison 2025-26) : un taux passé, pas une probabilité.</p>` +
+    `<details class="om-bloc" style="margin:8px 14px"><summary>Seuils et résultats par marché (intervalles figés le ${e(R.gele_le)})</summary><table class="om-table"><tr><th>Marché</th><th>Seuil</th><th>Intervalles</th><th>2017-2020 (matchs)</th><th>2025-26 (matchs)</th></tr>${lignes}</table></details>`;
+}
+function phraseCategories(m, p) {
+  const C = p.categorie; if (!C) return "";
+  return `<div class="om-info">Ce match tombe dans un intervalle retenu (seuil ${e(Math.round(C.seuil * 100))} % pour ce marché) : ${C.conditions.map((c) => `${e(c.libelle)} <b>${fr(c.valeur)}</b> (${bornes(c)})`).join(" ; ")}. ` +
+    `Dans cet intervalle, matchs jamais vus : <b>${e(C.vus[0])}</b> réussis sur <b>${e(C.vus[1])}</b> (${C.taux_vu == null ? "—" : Math.round(C.taux_vu * 100) + " %"}, borne basse ${C.marge == null ? "—" : Math.round(C.marge * 100) + " %"}).</div>`;
+}
 function resume(m, onglet) {
+  if (onglet === "categories") {
+    const p = paris(m, onglet)[0]; if (!p) return "";
+    return phraseCategories(m, p) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Marché le plus sûr de la catégorie</div>${ligne(p, m.statut === "termine")}</div>`;
+  }
   if (onglet === "plus25") {
     const p = paris(m, onglet)[0]; if (!p) return "";
     return phraseRegle25(m) + `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Plus de 2,5 buts · règle remplie</div>${ligne(p, m.statut === "termine")}</div>`;
@@ -121,6 +140,7 @@ function resume(m, onglet) {
 }
 function listes(m, onglet) {            // carte dépliée : tous les paris de l'onglet, du plus au moins réussi
   if (onglet === "plus15" || onglet === "plus25") return "";   // un seul marché : tout est déjà dans le résumé
+  if (onglet === "categories") { const L = paris(m, onglet); return L.length > 1 ? `<div class="om-bloc vf-famille"><div class="om-bloc-titre">Marchés de la catégorie (${L.length}) · du plus sûr au moins sûr</div>${L.map((p) => ligne(p, m.statut === "termine") + phraseCategories(m, p)).join("")}</div>` : ""; }
   if (onglet === "etude") { const L = paris(m, onglet); return L.length ? `<div class="om-bloc vf-famille"><div class="om-bloc-titre">${TITRES.etude} (${L.length}) · du plus au moins réussi dans l'étude</div>${L.map((p) => ligne(p, m.statut === "termine")).join("")}</div>` : ""; }
   const fini = m.statut === "termine", cles = onglet === "tous" || onglet === "regles" ? ORDRE_FAMILLES : [onglet];
   return cles.map((k) => {
@@ -206,7 +226,7 @@ function filtresEtude(d) {
 }
 function barreOnglets(d) {
   const n = (o) => o === "top20" ? TOP.size : (d.matchs || []).filter((m) => (o === "etude" ? etudeMatch(m, TOUT) : paris(m, o, TOUT).length)).length;
-  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : ONGLET === "plus15" ? noteRegle(d) : ONGLET === "plus25" ? noteRegle25(d) : "");
+  return `<div class="om-onglets vf-onglets" role="tablist">${ONGLETS_PAGE.map(([k, t]) => `<button type="button" class="om-onglet${k === ONGLET ? " om-onglet-actif" : ""}" role="tab" aria-selected="${k === ONGLET}" data-vf="${k}">${t} <small>${n(k)}</small></button>`).join("")}</div>` + (ONGLET === "etude" ? filtresEtude(d) : ONGLET === "plus15" ? noteRegle(d) : ONGLET === "plus25" ? noteRegle25(d) : ONGLET === "categories" ? noteCategories(d) : "");
 }
 function rendu(d) {
   TOP = top20(d);
@@ -219,7 +239,7 @@ function rendu(d) {
 }
 // Réussite réelle du Top 20 et de l'onglet Règles : leur dernier état gelé avant le coup d'envoi (journal_selections.jsonl), matchs terminés. Rien n'est affiché tant qu'aucun n'est terminé.
 function selectionsGelees(d) {
-  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"], ["plus15", "Onglet +1,5 buts"], ["regle_buts", "+1,5 : règle remplie"], ["plus25", "Onglet +2,5 buts"]];
+  const S = d.bilan_selections || {}, noms = [["top20", "Top 20 (recommandé)"], ["regles", "Onglet Règles"], ["etude", "Onglet Étude"], ["plus15", "Onglet +1,5 buts"], ["regle_buts", "+1,5 : règle remplie"], ["plus25", "Onglet +2,5 buts"], ["categories", "Onglet Catégories"]];
   return noms.filter(([k]) => S[k] && S[k].paris).map(([k, t]) => `<tr><td style="text-align:left">${t}</td><td>${e(S[k].paris)}</td><td>${e(S[k].reussis)}</td><td>${Math.round(S[k].taux_reel * 100)} %</td></tr>`).join("");
 }
 function bilan(d) {
