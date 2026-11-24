@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "source": {
+  "fichier": "data/bloc_saisons/bloc_2526_2627.json.gz",
+  "matchs_joues": 16558,
+  "du": "2025-01-23",
+  "au": "2026-10-16",
+  "matchs_evaluables": 11127
+ },
+ "regle": {
+  "marche": "total_plus_2.5",
+  "n_min": 4,
+  "n_championnat_min": 10,
+  "championnat_min": 2.88,
+  "ecart_diff_buts_min": 1.09,
+  "freq_dom_marque_min": 0.6,
+  "ext_marques_max": 1.33,
+  "cote_min": 1.26,
+  "coupure": "2026-02-01",
+  "origine": "seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"
+ },
+ "etude": {
+  "matchs": 299,
+  "reussis": 228,
+  "taux": 0.7625,
+  "borne_basse": 0.7112,
+  "borne_haute": 0.8073,
+  "cote_moyenne": 1.482,
+  "recherche": {
+   "matchs": 140,
+   "reussis": 113,
+   "taux": 0.8071,
+   "borne_basse": 0.7339,
+   "borne_haute": 0.8639,
+   "cote_moyenne": 1.5
+  },
+  "non_vus": {
+   "matchs": 159,
+   "reussis": 115,
+   "taux": 0.7233,
+   "borne_basse": 0.6491,
+   "borne_haute": 0.7869,
+   "cote_moyenne": 1.47
+  },
+  "non_vus_cote_min": {
+   "matchs": 62,
+   "reussis": 44,
+   "taux": 0.7097,
+   "borne_basse": 0.5871,
+   "borne_haute": 0.8078,
+   "cote_moyenne": 1.484
+  },
+  "hors_regle": {
+   "matchs": 10828,
+   "reussis": 5637,
+   "taux": 0.5206
+  },
+  "tous_non_vus": {
+   "matchs": 5478,
+   "reussis": 2955,
+   "taux": 0.5394
+  }
+ }
+}

@@ -35,6 +35,8 @@ Avant toute modification concernée, lire le document spécialisé correspondant
 
 - Onglet « +1,5 buts » d'Analyse Verdict (depuis le 21/11/2026, fusionné ; `verif_regle_buts.py`, `data/verif_pronostics/regle_buts.json`) : ne montre QUE les matchs qui remplissent la règle d'admission (buts marqués cumulés ≥ 3,5 et encaissés cumulés ≥ 2,8, 4 matchs au même lieu, filtre du championnat) avec le marché plus de 1,5 buts coté ≥ 1,24 (seuil propre à cet onglet ; autres onglets : 1,26), sans verdict affiché ; les mêmes matchs sont dans l'onglet Étude ; sélections gelées « plus15 » et « regle_buts » : `docs/REGLE_BUTS_PLUS_1_5.md`
 
+- Onglet « +2,5 buts » d'Analyse Verdict (depuis le 23/11/2026 ; `verif_regle_plus25.py`, `data/verif_pronostics/regle_plus25.json`) : règle de l'étude sur les paramètres de Patrick (championnat ≥ 2,88 buts par match, différence de buts domicile − extérieur ≥ 1,09, l'équipe à domicile marque dans ≥ 60 % de ses matchs chez elle, l'extérieur marque ≤ 1,33 dehors, 4 matchs au même lieu) ; la cote n'entre pas dans la règle, seulement à la fin (≥ 1,26) ; aucun autre onglet modifié ; sélection gelée « plus25 » : `docs/REGLE_BUTS_PLUS_2_5.md`
+
 ## Règles de sécurité
 
 - Les documents spécialisés font partie des instructions du projet : ne pas les ignorer lorsqu'une tâche relève de leur domaine.

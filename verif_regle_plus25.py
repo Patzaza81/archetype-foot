@@ -1,0 +1,107 @@
+# -*- coding: utf-8 -*-
+"""Règle « plus de 2,5 buts » (étude du 23/11/2026, demande de Patrick), pour l'onglet « +2,5 buts » d'Analyse Verdict.
+
+Paramètres de Patrick : buts marqués et encaissés de chaque équipe (au même lieu et sur la saison), comparés entre les deux équipes, et la moyenne de buts du championnat.
+La cote n'entre PAS dans la règle : elle ne sert qu'à la fin (cote >= cote minimale de la page, 1,26).
+
+Règle (les quatre conditions ensemble, saison en cours, matchs joués AVANT le match ; au moins 4 matchs au même lieu pour chaque équipe) :
+  1. le championnat compte au moins CHAMP_MIN buts par match (matchs précédents du championnat, au moins NCHAMP_MIN matchs) ;
+  2. différence de buts par match de l'équipe à domicile (saison entière) moins celle de l'équipe à l'extérieur >= ECART_MIN ;
+  3. l'équipe à domicile a marqué dans au moins FREQ_DOM_MIN de ses matchs à domicile ;
+  4. l'équipe à l'extérieur marque au plus EXT_MAX but par match à l'extérieur.
+Origine des seuils : aucun n'est posé à la main. Ils ont été trouvés sur les matchs joués AVANT la coupure (recherche sur les paramètres de Patrick, seuils pris parmi les
+vingtiles des données, règle retenue seulement si elle tenait sur les deux moitiés de cette période), puis vérifiés sur les matchs joués APRÈS la coupure, jamais vus pendant la recherche.
+Commande : python verif_regle_plus25.py  (relit les matchs joués et réécrit data/verif_pronostics/regle_plus25.json)."""
+import gzip, json, math, os
+from collections import defaultdict
+
+RACINE = os.path.dirname(os.path.abspath(__file__))
+BLOC = os.path.join(RACINE, "data", "bloc_saisons", "bloc_2526_2627.json.gz")
+CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "regle_plus25.json")
+MARCHE = "total_plus_2.5"
+NMIN = 4              # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
+NCHAMP_MIN = 10       # moyenne du championnat lue sur au moins 10 matchs précédents (comme dans l'étude)
+CHAMP_MIN = 2.88      # étude 23/11/2026 : buts par match du championnat
+ECART_MIN = 1.09      # étude 23/11/2026 : différence de buts par match (saison) domicile - extérieur
+FREQ_DOM_MIN = 0.60   # étude 23/11/2026 : part des matchs à domicile où l'équipe à domicile a marqué
+EXT_MAX = 1.33        # étude 23/11/2026 : buts marqués par match de l'équipe à l'extérieur, à l'extérieur
+COUPURE = "2026-02-01"   # avant : matchs de la recherche ; à partir de cette date : matchs jamais vus pendant la recherche (vérification)
+Z95 = 1.96
+EPS = 1e-9
+
+def mesures(lieu_dom, lieu_ext, saison_dom, saison_ext, champ):
+    """lieu_dom : [(marqués, encaissés)] de l'équipe à domicile À DOMICILE ; lieu_ext : idem pour l'équipe à l'extérieur À L'EXTÉRIEUR ;
+    saison_dom / saison_ext : {"buts_marques", "buts_encaisses"} sur toute la saison ; champ = (total de buts, matchs) des matchs précédents du championnat.
+    -> dict des quatre valeurs (None si une donnée manque). Ne juge pas la règle."""
+    nd, ne = len(lieu_dom or []), len(lieu_ext or [])
+    gd = lambda S: None if not S or S.get("buts_marques") is None or S.get("buts_encaisses") is None else S["buts_marques"] - S["buts_encaisses"]
+    a, b = gd(saison_dom), gd(saison_ext)
+    tot, nc = champ if champ else (0, 0)
+    return {"n_dom": nd, "n_ext": ne, "n_championnat": nc,
+            "championnat": round(tot / nc, 3) if nc else None,
+            "ecart_diff_buts": None if a is None or b is None else round(a - b, 3),
+            "freq_dom_marque": round(sum(1 for m, _ in lieu_dom if m >= 1) / nd, 3) if nd else None,
+            "ext_marques": round(sum(m for m, _ in lieu_ext) / ne, 3) if ne else None}
+
+def remplie(x):
+    """Les quatre conditions de la règle (et 4 matchs au même lieu de chaque côté, 10 matchs de championnat). Donnée absente = non."""
+    if not x or min(x.get("n_dom") or 0, x.get("n_ext") or 0) < NMIN or (x.get("n_championnat") or 0) < NCHAMP_MIN: return False
+    if None in (x.get("championnat"), x.get("ecart_diff_buts"), x.get("freq_dom_marque"), x.get("ext_marques")): return False
+    return (x["championnat"] >= CHAMP_MIN - EPS and x["ecart_diff_buts"] >= ECART_MIN - EPS and x["freq_dom_marque"] >= FREQ_DOM_MIN - EPS and x["ext_marques"] <= EXT_MAX + EPS)
+
+def wilson(k, n, z=Z95):
+    if n == 0: return (0.0, 0.0)
+    p = k / n; den = 1 + z * z / n; c = (p + z * z / (2 * n)) / den; h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / den
+    return (c - h, c + h)
+
+def cas_joues(liste):
+    """Matchs joués, dans l'ordre du temps, avec les valeurs de la règle calculées sur les matchs des JOURS PRÉCÉDENTS seulement (aucune fuite).
+    -> [{date, total, cote (plus de 2,5, moyenne clôture ou None), **mesures}] pour les matchs où chaque équipe a 4 matchs au même lieu."""
+    L = sorted((m for m in liste if m.get("buts_dom") is not None and m.get("buts_ext") is not None), key=lambda m: (m["date"], m.get("id", "")))
+    LIEU = defaultdict(list); TOUS = defaultdict(list); CH = defaultdict(lambda: [0, 0]); attente = []; jour = None; cas = []
+    for m in L:
+        if m["date"] != jour:
+            for k, h, a, g1, g2 in attente:
+                LIEU[k + (h, "d")].append((g1, g2)); LIEU[k + (a, "e")].append((g2, g1)); TOUS[k + (h,)].append((g1, g2)); TOUS[k + (a,)].append((g2, g1)); CH[k][0] += g1 + g2; CH[k][1] += 1
+            attente = []; jour = m["date"]
+        k = (m.get("division"), m.get("saison")); h, a, g1, g2 = m["domicile"], m["exterieur"], m["buts_dom"], m["buts_ext"]
+        attente.append((k, h, a, g1, g2))
+        ld, le = LIEU[k + (h, "d")], LIEU[k + (a, "e")]
+        if len(ld) < NMIN or len(le) < NMIN: continue
+        sa = lambda T: {"buts_marques": sum(x[0] for x in T) / len(T), "buts_encaisses": sum(x[1] for x in T) / len(T)}
+        x = mesures(ld, le, sa(TOUS[k + (h,)]), sa(TOUS[k + (a,)]), tuple(CH[k]))
+        ou = (((m.get("cotes") or {}).get("plus_moins_2_5_cloture") or {}).get("moy") or [None])[0]
+        cas.append({"date": m["date"], "total": g1 + g2, "cote": ou, **x})
+    return cas
+
+def _stats(Z, cote_min=None):
+    if cote_min is not None: Z = [c for c in Z if c["cote"] is not None and c["cote"] >= cote_min]
+    k = sum(c["total"] >= 3 for c in Z); n = len(Z); lo, hi = wilson(k, n); C = [c["cote"] for c in Z if c["cote"] is not None]
+    return {"matchs": n, "reussis": k, "taux": round(k / n, 4) if n else None, "borne_basse": round(lo, 4), "borne_haute": round(hi, 4), "cote_moyenne": round(sum(C) / len(C), 3) if C else None}
+
+def calculer(chemin_bloc=BLOC, cote_min=1.26):
+    d = json.load(gzip.open(chemin_bloc)); liste = d["liste"]; cas = cas_joues(liste)
+    jours = [m["date"] for m in liste if m.get("buts_dom") is not None]
+    R = [c for c in cas if remplie(c)]; H = [c for c in cas if not remplie(c)]
+    av, ap = [c for c in R if c["date"] < COUPURE], [c for c in R if c["date"] >= COUPURE]
+    et = _stats(R)
+    et.update(recherche=_stats(av), non_vus=_stats(ap), non_vus_cote_min=_stats(ap, cote_min), hors_regle={k: v for k, v in _stats(H).items() if k in ("matchs", "reussis", "taux")},
+              tous_non_vus={k: v for k, v in _stats([c for c in cas if c["date"] >= COUPURE]).items() if k in ("matchs", "reussis", "taux")})
+    return {"version": 1, "source": {"fichier": "data/bloc_saisons/bloc_2526_2627.json.gz", "matchs_joues": len(jours), "du": min(jours), "au": max(jours), "matchs_evaluables": len(cas)},
+            "regle": {"marche": MARCHE, "n_min": NMIN, "n_championnat_min": NCHAMP_MIN, "championnat_min": CHAMP_MIN, "ecart_diff_buts_min": ECART_MIN, "freq_dom_marque_min": FREQ_DOM_MIN,
+                      "ext_marques_max": EXT_MAX, "cote_min": cote_min, "coupure": COUPURE,
+                      "origine": "seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"},
+            "etude": et}
+
+def ecrire(chemin=CHEMIN, chemin_bloc=BLOC):
+    r = calculer(chemin_bloc); os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    with open(chemin, "w", encoding="utf-8") as f: json.dump(r, f, ensure_ascii=False, indent=1)
+    return r
+
+def charger(chemin=CHEMIN):
+    try:
+        with open(chemin, encoding="utf-8") as f: return json.load(f)
+    except (OSError, ValueError): return None
+
+if __name__ == "__main__":
+    r = ecrire(); print(json.dumps(r["etude"], ensure_ascii=False))
