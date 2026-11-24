@@ -554,6 +554,11 @@ def fiche_match(x, maintenant, cfg, totaux=None):
                         "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "xg_est": champ["xg_est"], "avantage_dom": arr(av), "matchs": champ["n"]}},
             "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {}), **({"regle_buts": RBL} if RBL else {}), **({"plus15": P15} if P15 and P15["regle_remplie"] else {}), **({"plus25": P25} if P25 else {}), **({"categories": CAT} if CAT else {})}
 
+def periode_4_jours(ko, maintenant):
+    """Période de 4 jours d'un match, comptée depuis aujourd'hui (jour de Douala) : 0 = aujourd'hui et les 3 jours suivants, -1 = les 4 jours d'avant, etc. (Patrick, 24/11/2026 : « les 3 meilleurs pour chaque marché sur les 4 jours »)."""
+    j, d = _jour_cameroun(ko), _jour_cameroun(maintenant)
+    return (datetime.date.fromisoformat(j) - datetime.date.fromisoformat(d)).days // 4 if j and d else None
+
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"); cfg = cfg or config()
@@ -565,7 +570,7 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
             fm = fiche_match(x, maintenant, cfg, totaux)
             if any(fm["paris"].values()) or fm.get("etude_paris") or fm.get("regle_buts") or fm.get("plus15") or fm.get("plus25") or fm.get("categories"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
     import verif_categories as VC
-    VC.limiter_bande(M, lambda m: _jour_cameroun(m["coup_d_envoi_utc"]))          # 3 meilleurs du jour et du marché dans la bande de cote 1,24-1,25
+    VC.limiter_bande(M, lambda m: periode_4_jours(m["coup_d_envoi_utc"], maintenant))          # 3 meilleurs de chaque marché sur les 4 jours, dans la bande de cote 1,24-1,25
     M = [m for m in M if any(m["paris"].values()) or m.get("etude_paris") or m.get("regle_buts") or m.get("plus15") or m.get("plus25") or m.get("categories")]       # un match qui n'avait que des paris de bande écartés disparaît
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()

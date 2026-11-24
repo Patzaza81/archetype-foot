@@ -16,7 +16,7 @@ CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "categories_zones.json
 NMIN = 4            # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
 NCHAMP_MIN = 10     # moyenne du championnat lue sur au moins 10 matchs précédents ; sinon les intervalles qui utilisent le xG ou le championnat ne s'appliquent pas
 COTE_MIN_MARCHE = {"total_plus_1.5": 1.24}   # Patrick (24/11/2026) : exceptionnellement 1,24 pour le plus de 1,5 seulement (sa cote médiane est de 1,21) ; les autres marchés gardent la cote minimale de la page (1,26)
-BANDE_COTE = (1.24, 1.26)   # Patrick (24/11/2026) : pour tous les autres marchés, les 3 meilleurs de chaque jour dont la cote est de 1,24 ou 1,25 s'ajoutent aux marchés cotés 1,26 et plus
+BANDE_COTE = (1.24, 1.26)   # Patrick (24/11/2026) : pour tous les autres marchés, les 3 meilleurs sur 4 jours dont la cote est de 1,24 ou 1,25 s'ajoutent aux marchés cotés 1,26 et plus ; rien n'est forcé s'il n'y en a pas
 NB_BANDE = 3
 Z95 = 1.96
 VARIABLES_XG = ("sMh", "sCh", "sMa", "sCa", "EH", "EA", "ET", "dE", "rE", "mu", "EHm", "EAm", "gH", "gA")
@@ -121,8 +121,8 @@ def resume(zones=None):
     return {"gele_le": zones.get("gele_le"), "marches": out}
 
 def limiter_bande(matchs, jour, n=None):
-    """Garde, pour chaque jour et chaque marché, les n meilleurs paris de la bande de cote 1,24-1,25 (les meilleurs = marge la plus haute, puis ordre du match_id) ; les paris cotés 1,26 et plus ne sont jamais limités.
-    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> jour du match. Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
+    """Garde, pour chaque période et chaque marché, les n meilleurs paris de la bande de cote 1,24-1,25 (les meilleurs = marge la plus haute, puis ordre du match_id) ; les paris cotés 1,26 et plus ne sont jamais limités.
+    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> période du match (la page passe la période de 4 jours, voir verif_pronostic.periode_4_jours). Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
     n = NB_BANDE if n is None else n; cand = {}
     for m in matchs:
         for p in (m.get("categories") or {}).get("paris", []):

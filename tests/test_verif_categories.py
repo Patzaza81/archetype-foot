@@ -218,7 +218,7 @@ def test_les_autres_marches_sous_1_24_jamais_retenus(marche, cotes):
 def test_cote_min_fonction():
     assert VC.cote_min("total_plus_1.5", 1.26) == 1.24 and VC.cote_min("1", 1.26) == 1.26 and VC.cote_min("total_plus_1.5", 1.20) == 1.20
 
-# ---------------------------------------------------------------- bande de cote 1,24-1,25 : les 3 meilleurs du jour pour chaque marché (Patrick, 24/11/2026)
+# ---------------------------------------------------------------- bande de cote 1,24-1,25 : les 3 meilleurs sur 4 jours pour chaque marché (Patrick, 24/11/2026)
 def _par(marche, cote, marge, bande):
     e = {"marche": marche, "cote": cote, "categorie": {"marge": marge}}
     if bande: e["categorie"]["bande"] = True
@@ -281,4 +281,25 @@ def test_page_bande_trois_meilleurs_du_jour(tmp_path):
 
 def test_page_web_note_bande():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
-    assert "C.bande" in js and "3 meilleurs du jour" in js
+    assert "C.bande" in js and "3 meilleurs sur 4 jours" in js
+
+@pytest.mark.parametrize("ko, attendu", [("2026-11-24T15:00:00Z", 0), ("2026-11-27T15:00:00Z", 0), ("2026-11-28T15:00:00Z", 1), ("2026-11-23T15:00:00Z", -1), ("2026-11-20T15:00:00Z", -1), ("2026-11-19T15:00:00Z", -2), (None, None)])
+def test_periode_4_jours_depuis_aujourd_hui(ko, attendu): assert v.periode_4_jours(ko, "2026-11-24T09:00:00Z") == attendu
+
+def test_periode_4_jours_jour_de_douala():                      # 23h30 UTC = 00h30 le lendemain à Douala : c'est déjà le jour suivant
+    assert v.periode_4_jours("2026-11-24T23:30:00Z", "2026-11-24T09:00:00Z") == v.periode_4_jours("2026-11-25T10:00:00Z", "2026-11-24T09:00:00Z") == 0
+
+def test_page_bande_3_meilleurs_sur_les_4_jours_pas_par_jour(tmp_path):
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-21", mid="j%d" % i) for i in range(3)] + [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-22", mid="k%d" % i) for i in range(3)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert len([m for m in d["matchs"] if m.get("categories")]) == 3                              # 6 candidats sur 2 jours de la même période : 3 gardés au total
+
+def test_page_bande_periode_suivante_a_ses_propres_3_places(tmp_path):
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-21", mid="p%d" % i) for i in range(4)] + [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-25", mid="q%d" % i) for i in range(4)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert len([m for m in d["matchs"] if m.get("categories")]) == 6                              # 21-24 : 3 ; 25-28 : 3
+
+def test_aucune_bande_rien_n_est_force():                         # aucun candidat : aucun pari ajouté, aucune erreur
+    M = [_m("n0", "2026-11-24", _par("1", 1.40, 0.7, False))]; VC.limiter_bande(M, JOUR); assert M[0]["categories"]["paris"][0]["cote"] == 1.40
