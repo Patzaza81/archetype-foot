@@ -1,0 +1,781 @@
+{
+ "version": 1,
+ "gele_le": "2026-11-24",
+ "calibration_xg": {
+  "am": 0.5143987552697895,
+  "bm": 0.636495380802537,
+  "ae": 0.6778612434417268,
+  "be": 0.5229681901034573,
+  "n": 316.0
+ },
+ "marches": {
+  "Victoire domicile": {
+   "marche": "1",
+   "seuil": 0.7,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "hM",
+       1.8,
+       null
+      ],
+      [
+       "rE",
+       1.2435903680786258,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 4587,
+       "s": 3310
+      },
+      "test_2017_2020": {
+       "n": 1008,
+       "s": 734
+      },
+      "bloc_2025_26": {
+       "n": 784,
+       "s": 558
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 4587,
+     "reussis": 3310,
+     "part_des_matchs": 0.07
+    },
+    "test_2017_2020": {
+     "matchs": 1008,
+     "reussis": 734,
+     "part_des_matchs": 0.0792
+    },
+    "bloc_2025_26": {
+     "matchs": 784,
+     "reussis": 558,
+     "part_des_matchs": 0.0705
+    }
+   }
+  },
+  "Victoire extérieur": {
+   "marche": "2",
+   "seuil": 0.6,
+   "version": "A",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "EHm",
+       null,
+       -0.2051530457292001
+      ],
+      [
+       "EAm",
+       0.3057936025969239,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 686,
+       "s": 442
+      },
+      "test_2017_2020": {
+       "n": 222,
+       "s": 145
+      },
+      "bloc_2025_26": {
+       "n": 107,
+       "s": 72
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "X1g",
+       2.428571428571429,
+       2.533333333333333
+      ],
+      [
+       "ET",
+       2.9740280515826623,
+       3.0670912686392
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 70,
+       "s": 49
+      },
+      "test_2017_2020": {
+       "n": 28,
+       "s": 17
+      },
+      "bloc_2025_26": {
+       "n": 36,
+       "s": 17
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "hM",
+       null,
+       1.0909090909090908
+      ],
+      [
+       "SM",
+       3.846153846153846,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 18,
+       "s": 17
+      },
+      "test_2017_2020": {
+       "n": 3,
+       "s": 3
+      },
+      "bloc_2025_26": {
+       "n": 4,
+       "s": 3
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "hC",
+       1.8333333333333333,
+       null
+      ],
+      [
+       "SC",
+       2.4343434343434343,
+       2.5
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 8,
+       "s": 8
+      },
+      "test_2017_2020": {
+       "n": 1,
+       "s": 0
+      },
+      "bloc_2025_26": {
+       "n": 1,
+       "s": 1
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 758,
+     "reussis": 499,
+     "part_des_matchs": 0.0116
+    },
+    "test_2017_2020": {
+     "matchs": 248,
+     "reussis": 161,
+     "part_des_matchs": 0.0195
+    },
+    "bloc_2025_26": {
+     "matchs": 143,
+     "reussis": 89,
+     "part_des_matchs": 0.0129
+    }
+   }
+  },
+  "Plus de 1,5": {
+   "marche": "total_plus_1.5",
+   "seuil": 0.8,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "hM",
+       2.2,
+       null
+      ],
+      [
+       "EH",
+       1.5585241180381346,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 3554,
+       "s": 2908
+      },
+      "test_2017_2020": {
+       "n": 724,
+       "s": 618
+      },
+      "bloc_2025_26": {
+       "n": 710,
+       "s": 610
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "dC",
+       -0.25,
+       0.375
+      ],
+      [
+       "EH",
+       1.5585241180381346,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 722,
+       "s": 596
+      },
+      "test_2017_2020": {
+       "n": 187,
+       "s": 159
+      },
+      "bloc_2025_26": {
+       "n": 245,
+       "s": 209
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 3793,
+     "reussis": 3118,
+     "part_des_matchs": 0.0579
+    },
+    "test_2017_2020": {
+     "matchs": 806,
+     "reussis": 686,
+     "part_des_matchs": 0.0633
+    },
+    "bloc_2025_26": {
+     "matchs": 799,
+     "reussis": 683,
+     "part_des_matchs": 0.0718
+    }
+   }
+  },
+  "X1": {
+   "marche": "1N",
+   "seuil": 0.9,
+   "version": "A",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "dM",
+       1.2222222222222223,
+       null
+      ],
+      [
+       "rE",
+       1.2435903680786258,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 3274,
+       "s": 2982
+      },
+      "test_2017_2020": {
+       "n": 726,
+       "s": 661
+      },
+      "bloc_2025_26": {
+       "n": 486,
+       "s": 432
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 3274,
+     "reussis": 2982,
+     "part_des_matchs": 0.0499
+    },
+    "test_2017_2020": {
+     "matchs": 726,
+     "reussis": 661,
+     "part_des_matchs": 0.057
+    },
+    "bloc_2025_26": {
+     "matchs": 486,
+     "reussis": 432,
+     "part_des_matchs": 0.0437
+    }
+   }
+  },
+  "X2": {
+   "marche": "N2",
+   "seuil": 0.75,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "dE",
+       null,
+       -0.3094590818406564
+      ],
+      [
+       "EAm",
+       0.2424672781049581,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 4227,
+       "s": 3265
+      },
+      "test_2017_2020": {
+       "n": 964,
+       "s": 761
+      },
+      "bloc_2025_26": {
+       "n": 655,
+       "s": 516
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 4227,
+     "reussis": 3265,
+     "part_des_matchs": 0.0645
+    },
+    "test_2017_2020": {
+     "matchs": 964,
+     "reussis": 761,
+     "part_des_matchs": 0.0757
+    },
+    "bloc_2025_26": {
+     "matchs": 655,
+     "reussis": 516,
+     "part_des_matchs": 0.0589
+    }
+   }
+  },
+  "Domicile marque 1+": {
+   "marche": "dom_plus_0.5",
+   "seuil": 0.9,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "SM",
+       3.5,
+       null
+      ],
+      [
+       "rE",
+       1.2435903680786258,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 1616,
+       "s": 1492
+      },
+      "test_2017_2020": {
+       "n": 405,
+       "s": 372
+      },
+      "bloc_2025_26": {
+       "n": 296,
+       "s": 280
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 1616,
+     "reussis": 1492,
+     "part_des_matchs": 0.0247
+    },
+    "test_2017_2020": {
+     "matchs": 405,
+     "reussis": 372,
+     "part_des_matchs": 0.0318
+    },
+    "bloc_2025_26": {
+     "matchs": 296,
+     "reussis": 280,
+     "part_des_matchs": 0.0266
+    }
+   }
+  },
+  "Extérieur marque 1+": {
+   "marche": "ext_plus_0.5",
+   "seuil": 0.8,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "EHm",
+       null,
+       -0.0816074504644357
+      ],
+      [
+       "EAm",
+       0.2424672781049581,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 2762,
+       "s": 2284
+      },
+      "test_2017_2020": {
+       "n": 665,
+       "s": 562
+      },
+      "bloc_2025_26": {
+       "n": 442,
+       "s": 378
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 2762,
+     "reussis": 2284,
+     "part_des_matchs": 0.0421
+    },
+    "test_2017_2020": {
+     "matchs": 665,
+     "reussis": 562,
+     "part_des_matchs": 0.0522
+    },
+    "bloc_2025_26": {
+     "matchs": 442,
+     "reussis": 378,
+     "part_des_matchs": 0.0397
+    }
+   }
+  },
+  "X1 + plus de 1,5": {
+   "marche": "1N&total_plus_1.5",
+   "seuil": 0.7,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "A1",
+       -0.8571428571428571,
+       null
+      ],
+      [
+       "dE",
+       0.2964155383437534,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 6137,
+       "s": 4435
+      },
+      "test_2017_2020": {
+       "n": 1390,
+       "s": 1003
+      },
+      "bloc_2025_26": {
+       "n": 1106,
+       "s": 779
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 6137,
+     "reussis": 4435,
+     "part_des_matchs": 0.0936
+    },
+    "test_2017_2020": {
+     "matchs": 1390,
+     "reussis": 1003,
+     "part_des_matchs": 0.1092
+    },
+    "bloc_2025_26": {
+     "matchs": 1106,
+     "reussis": 779,
+     "part_des_matchs": 0.0994
+    }
+   }
+  },
+  "X2 + plus de 1,5": {
+   "marche": "N2&total_plus_1.5",
+   "seuil": 0.6,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "EHm",
+       null,
+       -0.1450265485593993
+      ],
+      [
+       "EAm",
+       0.2424672781049581,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 1726,
+       "s": 1109
+      },
+      "test_2017_2020": {
+       "n": 462,
+       "s": 320
+      },
+      "bloc_2025_26": {
+       "n": 293,
+       "s": 193
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 1726,
+     "reussis": 1109,
+     "part_des_matchs": 0.0263
+    },
+    "test_2017_2020": {
+     "matchs": 462,
+     "reussis": 320,
+     "part_des_matchs": 0.0363
+    },
+    "bloc_2025_26": {
+     "matchs": 293,
+     "reussis": 193,
+     "part_des_matchs": 0.0263
+    }
+   }
+  },
+  "X1 + moins de 4,5": {
+   "marche": "1N&total_moins_4.5",
+   "seuil": 0.74,
+   "version": "A",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "SM",
+       2.0588235294117645,
+       3.15
+      ],
+      [
+       "EA",
+       null,
+       1.1695547186588064
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 3513,
+       "s": 2654
+      },
+      "test_2017_2020": {
+       "n": 753,
+       "s": 559
+      },
+      "bloc_2025_26": {
+       "n": 571,
+       "s": 415
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "rE",
+       1.148746069377482,
+       null
+      ],
+      [
+       "mu",
+       null,
+       1.171641791044776
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 1267,
+       "s": 987
+      },
+      "test_2017_2020": {
+       "n": 349,
+       "s": 272
+      },
+      "bloc_2025_26": {
+       "n": 208,
+       "s": 157
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "EH",
+       1.4760800576293651,
+       null
+      ],
+      [
+       "ET",
+       2.548644651860811,
+       2.607282274328956
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 230,
+       "s": 184
+      },
+      "test_2017_2020": {
+       "n": 60,
+       "s": 38
+      },
+      "bloc_2025_26": {
+       "n": 46,
+       "s": 39
+      }
+     }
+    },
+    {
+     "conditions": [
+      [
+       "aC",
+       1.1111111111111112,
+       1.25
+      ],
+      [
+       "dC",
+       null,
+       -0.8999999999999999
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 47,
+       "s": 40
+      },
+      "test_2017_2020": {
+       "n": 10,
+       "s": 6
+      },
+      "bloc_2025_26": {
+       "n": 10,
+       "s": 5
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 4331,
+     "reussis": 3300,
+     "part_des_matchs": 0.0661
+    },
+    "test_2017_2020": {
+     "matchs": 955,
+     "reussis": 714,
+     "part_des_matchs": 0.075
+    },
+    "bloc_2025_26": {
+     "matchs": 713,
+     "reussis": 527,
+     "part_des_matchs": 0.0641
+    }
+   }
+  },
+  "X2 + moins de 4,5": {
+   "marche": "N2&total_moins_4.5",
+   "seuil": 0.65,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "EHm",
+       null,
+       -0.0816074504644357
+      ],
+      [
+       "EAm",
+       0.2424672781049581,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 2762,
+       "s": 1888
+      },
+      "test_2017_2020": {
+       "n": 665,
+       "s": 454
+      },
+      "bloc_2025_26": {
+       "n": 442,
+       "s": 309
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 2762,
+     "reussis": 1888,
+     "part_des_matchs": 0.0421
+    },
+    "test_2017_2020": {
+     "matchs": 665,
+     "reussis": 454,
+     "part_des_matchs": 0.0522
+    },
+    "bloc_2025_26": {
+     "matchs": 442,
+     "reussis": 309,
+     "part_des_matchs": 0.0397
+    }
+   }
+  }
+ }
+}
