@@ -6,7 +6,13 @@ Rédigé le 24/11/2026 (complété le même jour avec les 4 piliers) pour Patric
 
 Trouver, avec des données réelles, la méthode qui sélectionne les matchs où il y aura **3 buts ou plus** avec le **taux de réussite le plus élevé et le plus constant**, sur des matchs jamais vus pendant la recherche, avec un nombre de matchs suffisant pour être utile.
 
-L'étude ne se limite pas au +2,5 : elle doit **tester chaque marché séparément** (tous se calculent à partir des scores) et dire **quels marchés réagissent le mieux aux 4 piliers** (§ 3) : victoire domicile, victoire extérieur, double chance (1N, N2, 12), plus de 1,5 / 2,5 / 3,5 buts, moins de 2,5 / 3,5 / 4,5 buts, les deux équipes marquent, l'équipe à domicile marque 1 but ou plus / 2 buts ou plus, l'équipe à l'extérieur idem, combos double chance + plus de 1,5 / moins de 4,5 buts.
+L'étude ne se limite pas au +2,5 : elle doit **tester chaque marché séparément** (tous se calculent à partir des scores) et dire **quels marchés réagissent le mieux aux 4 piliers** (§ 3). **Périmètre imposé par Patrick, rien d'autre, rien de moins :**
+1. Victoire de l'équipe à domicile ; victoire de l'équipe à l'extérieur (pas de nul, pas de double chance dans cet onglet).
+2. Double chance : X1 (domicile ou nul) ; X2 (extérieur ou nul).
+3. Plus de 1,5 buts ; plus de 2,5 buts.
+4. L'équipe à domicile marque au moins 0,5 but (1 but ou plus) ; au moins 1,5 but (2 buts ou plus) ; idem pour l'équipe à l'extérieur.
+5. Combinés : X1 + plus de 1,5 buts ; X2 + plus de 1,5 buts ; X1 + moins de 4,5 buts ; X2 + moins de 4,5 buts (le marché « moins de 4,5 buts » seul n'est PAS étudié).
+Chaque marché est évalué séparément, avec ses propres zones des 4 piliers, ses seuils appris, son compromis volume / fiabilité. Cotes Betpawa disponibles dans le flux : 1X2, double chance, plus/moins de 1,5 / 2,5 / 4,5, buts de l'équipe à domicile (0,5 et 1,5) ; **pas de cote pour l'équipe à l'extérieur ni pour les combinés** : pour ces marchés, dire que la cote ne peut pas être contrôlée au lieu de l'inventer.
 
 Questions finales auxquelles répondre : **« Pour chaque marché, quelle zone de valeurs des 4 piliers donne le meilleur taux de réussite, avec quels chiffres sur des matchs jamais vus ? » et « Quelle est la meilleure approche pour le +2,5 buts, et quelle est sa vraie fiabilité ? »**
 
