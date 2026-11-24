@@ -27,6 +27,7 @@ ECART_MIN = 1.09      # étude 23/11/2026 : différence de buts par match (saiso
 FREQ_DOM_MIN = 0.60   # étude 23/11/2026 : part des matchs à domicile où l'équipe à domicile a marqué
 EXT_MAX = 1.33        # étude 23/11/2026 : buts marqués par match de l'équipe à l'extérieur, à l'extérieur
 FREQ25_MIN = 0.57     # 24/11/2026 : part des matchs (deux équipes, chacune à son lieu) à 3 buts ou plus ; seuil choisi sur la période de recherche seulement (vingtiles, meilleure borne basse sur ses deux moitiés)
+COTE_MAX = 1.45        # 24/11/2026 : cote maximale (le marché est d'accord) ; choisie sur la période de recherche (rupture de 100 % à 62 % entre 1,35-1,45 et 1,45-1,6), confirmée sur les matchs jamais vus ; cotes Betpawa = Football-Data (rapport médian 1,00 sur 177 matchs communs)
 COUPURE = "2026-02-01"   # avant : matchs de la recherche ; à partir de cette date : matchs jamais vus pendant la recherche (vérification)
 Z95 = 1.96
 EPS = 1e-9
@@ -80,7 +81,7 @@ def cas_joues(liste):
     return cas
 
 def _stats(Z, cote_min=None):
-    if cote_min is not None: Z = [c for c in Z if c["cote"] is not None and c["cote"] >= cote_min]
+    if cote_min is not None: Z = [c for c in Z if c["cote"] is not None and cote_min <= c["cote"] <= COTE_MAX + EPS]
     k = sum(c["total"] >= 3 for c in Z); n = len(Z); lo, hi = wilson(k, n); C = [c["cote"] for c in Z if c["cote"] is not None]
     return {"matchs": n, "reussis": k, "taux": round(k / n, 4) if n else None, "borne_basse": round(lo, 4), "borne_haute": round(hi, 4), "cote_moyenne": round(sum(C) / len(C), 3) if C else None}
 
@@ -92,9 +93,9 @@ def calculer(chemin_bloc=BLOC, cote_min=1.26):
     et = _stats(R)
     et.update(recherche=_stats(av), non_vus=_stats(ap), non_vus_cote_min=_stats(ap, cote_min), hors_regle={k: v for k, v in _stats(H).items() if k in ("matchs", "reussis", "taux")},
               tous_non_vus={k: v for k, v in _stats([c for c in cas if c["date"] >= COUPURE]).items() if k in ("matchs", "reussis", "taux")})
-    return {"version": 2, "source": {"fichier": "data/bloc_saisons/bloc_2526_2627.json.gz", "matchs_joues": len(jours), "du": min(jours), "au": max(jours), "matchs_evaluables": len(cas)},
+    return {"version": 3, "source": {"fichier": "data/bloc_saisons/bloc_2526_2627.json.gz", "matchs_joues": len(jours), "du": min(jours), "au": max(jours), "matchs_evaluables": len(cas)},
             "regle": {"marche": MARCHE, "n_min": NMIN, "n_championnat_min": NCHAMP_MIN, "championnat_min": CHAMP_MIN, "ecart_diff_buts_min": ECART_MIN, "freq_dom_marque_min": FREQ_DOM_MIN,
-                      "ext_marques_max": EXT_MAX, "freq_plus25_min": FREQ25_MIN, "cote_min": cote_min, "coupure": COUPURE,
+                      "ext_marques_max": EXT_MAX, "freq_plus25_min": FREQ25_MIN, "cote_min": cote_min, "cote_max": COTE_MAX, "coupure": COUPURE,
                       "origine": "fréquence des +2,5 ajoutée le 24/11/2026 (Patrick) ; seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"},
             "etude": et}
 

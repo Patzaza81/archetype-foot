@@ -515,7 +515,7 @@ def fiche_match(x, maintenant, cfg, totaux=None):
     regle_25 = R25.charger(); P25 = None
     if regle_25:
         c25 = cotes_betpawa(x.get("cotes_betpawa") or {}).get(R25.MARCHE)
-        if c25 is not None and c25 >= cfg["cote_min"]:
+        if c25 is not None and cfg["cote_min"] <= c25 <= R25.COTE_MAX + R25.EPS:
             mes = R25.mesures(matchs_meme_lieu(x, "equipe_dom", True), matchs_meme_lieu(x, "equipe_ext", False), SA, SB, championnat_total_avant(x, totaux if totaux is not None else totaux_championnats()))
             if R25.remplie(mes):
                 r = constat(x, R25.MARCHE, c25, cfg)

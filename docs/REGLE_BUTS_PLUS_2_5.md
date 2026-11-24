@@ -13,7 +13,9 @@ Saison en cours, matchs joués avant le match, au moins **4 matchs au même lieu
 
 5. (24/11/2026, demande de Patrick après Viborg – Randers) dans les matchs des deux équipes à leur lieu (domicile de l'une + extérieur de l'autre), au moins **57 %** ont compté 3 buts ou plus. Viborg – Randers : 7 sur 13 (54 %), écarté.
 
-La **cote n'entre pas dans la règle** (consigne de Patrick : la cote seulement à l'aboutissement). L'onglet ne montre que les matchs qui remplissent la règle et dont le « plus de 2,5 buts » Betpawa est coté **1,26 ou plus** (cote minimale de la page). Le verdict de la page n'est pas affiché.
+6. (24/11/2026, fin de procédure) cote du plus de 2,5 buts **entre 1,26 et 1,45** : le marché est d'accord. Plafond choisi sur la période de recherche (précision 5 sur 5 sous 1,45, 10 sur 16 au-dessus), confirmé sur les matchs jamais vus (17 sur 21 sous 1,45, 10 sur 19 au-dessus ; ensemble 22 sur 26 contre 20 sur 35, Fisher 0,027). Les cotes Betpawa et Football-Data sont les mêmes sur 177 matchs communs (rapport médian 1,00). Échantillon petit : à suivre.
+
+La **cote n'entre pas dans les conditions de buts** (consigne de Patrick : la cote seulement à l'aboutissement). L'onglet ne montre que les matchs qui remplissent la règle et dont le « plus de 2,5 buts » Betpawa est coté **1,26 ou plus** (cote minimale de la page). Le verdict de la page n'est pas affiché.
 
 ## Origine des seuils
 
@@ -23,7 +25,7 @@ Paramètres de Patrick : buts marqués et encaissés de chaque équipe, comparé
 
 - Période de recherche : 92 matchs, +2,5 réussi 83,7 %.
 - **Matchs jamais vus (01/02 au 16/10/2026) : 104 matchs, +2,5 réussi 75,0 %** (intervalle 65,9 à 82,3 %), contre 53,9 % pour tous les matchs de la même période. Avant l'ajout de la condition 5 : 159 matchs à 72,3 %.
-- Jamais vus et cote Football-Data ≥ 1,26 : 40 matchs, 67,5 % (avant : 62 matchs, 71,0 %), cote moyenne 1,46. Échantillon petit : la condition 5 gagne environ 3 points sur tous les matchs jamais vus mais n'améliore pas le sous-ensemble à cote ≥ 1,26.
+- Jamais vus et cote Football-Data de 1,26 à 1,45 : 21 matchs, 81,0 % (17 sur 21). Avec la cote ≥ 1,26 sans plafond : 40 matchs, 67,5 %. Échantillon petit : la condition 5 gagne environ 3 points sur tous les matchs jamais vus mais n'améliore pas le sous-ensemble à cote ≥ 1,26.
 - Page du 24/11/2026 : 18 matchs (27 avant), dont 14 terminés : 10 réussis ; les 9 matchs écartés : 5 réussis. Les cotes Betpawa ne sont pas dans cet échantillon : le parallèle Betpawa se fera sur les sélections gelées.
 - Hors règle (toute la période) : 52,1 %.
 
@@ -50,5 +52,5 @@ Demande de Patrick : étude profonde plutôt que des conditions ajoutées une à
 
 - Plafond : environ 75 % sur ces matchs, quelle que soit la méthode. La règle est déjà à ce niveau ; aucun modèle ne la bat de façon nette.
 - La cote Football-Data (moyenne de clôture) porte plus d'information que tous les paramètres de buts : AUC 0,601 seule, 0,603 avec les 5 mesures (3 225 matchs avec cote). Cote seule entre 1,26 et 1,45 : 239 matchs, 74,1 %.
-- Règle et cote Football-Data entre 1,26 et 1,45 : 22 réussis sur 26 (84,6 %), contre 20 sur 35 (57,1 %) au-dessus de 1,45 (Fisher 0,027 ; les deux périodes vont dans le même sens). Échantillon petit (la cote Football-Data n'existe que pour une partie des matchs) et sens inverse sur la page du 24/11 avec les cotes Betpawa (5 sur 8 jusqu'à 1,45, 5 sur 6 au-dessus) : plafond de cote NON retenu, à revérifier quand les matchs avec cote Betpawa seront plus nombreux.
+- Règle et cote Football-Data entre 1,26 et 1,45 : 22 réussis sur 26 (84,6 %), contre 20 sur 35 (57,1 %) au-dessus de 1,45 (Fisher 0,027 ; les deux périodes vont dans le même sens). Échantillon petit (la cote Football-Data n'existe que pour une partie des matchs) et sens inverse sur la page du 24/11 avec les cotes Betpawa (5 sur 8 jusqu'à 1,45, 5 sur 6 au-dessus) : plafond retenu malgré tout (condition 6) : sur 177 matchs communs les cotes Betpawa et Football-Data sont les mêmes, et 14 matchs ne pèsent pas face à 61. À revérifier avec les matchs Betpawa à venir.
 - Limite : les variantes ont été comparées sur les mêmes matchs jamais vus, les chiffres sont donc légèrement favorables à toutes. Scripts d'étude hors dépôt.

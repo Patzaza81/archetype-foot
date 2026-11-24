@@ -114,13 +114,13 @@ def _fiche(A, B, cotes, regle="depot", totaux=TOT, **k):
     with mk.patch.object(R, "charger", return_value=(R.charger() if regle == "depot" else regle)), mk.patch.object(RB, "charger", return_value=None):
         return v.fiche_match(_x(A, B, cotes, **k), "2026-11-21T06:00:00Z", {"cote_min": 1.26, "sans_regles": True}, totaux)
 
-@pytest.mark.parametrize("cote", [1.26, 1.45, 2.10])
+@pytest.mark.parametrize("cote", [1.26, 1.35, 1.45])
 def test_fiche_regle_remplie_avec_cote_suffisante(cote):
     f = _fiche(OUI_A, OUI_B, OU(cote)); x = f["plus25"]; p = x["pari"]
     assert p["marche"] == "total_plus_2.5" and p["cote"] == cote and p["regle"] and x["championnat"] == 3.0 and x["ecart_diff_buts"] == 4.0 and x["freq_dom_marque"] == 1.0 and x["ext_marques"] == 1.0
 
-@pytest.mark.parametrize("cotes", [OU(1.25), OU(1.10), {}, {"over_under_1.5": {"plus": 1.3, "moins": 3.5}}])
-def test_fiche_sans_cote_valable_pas_d_onglet(cotes):          # la cote vient à la fin : sous 1,26 ou absente, rien
+@pytest.mark.parametrize("cotes", [OU(1.25), OU(1.10), OU(1.46), OU(1.80), OU(2.10), {}, {"over_under_1.5": {"plus": 1.3, "moins": 3.5}}])
+def test_fiche_sans_cote_valable_pas_d_onglet(cotes):          # la cote vient à la fin : sous 1,26, au-dessus de 1,45 ou absente, rien
     assert "plus25" not in _fiche(OUI_A, OUI_B, cotes)
 
 @pytest.mark.parametrize("A, B, tot", [(OUI_A, OUI_B, {"Ch": [("2026-10-01", 2)] * 40}),        # championnat à 2,0 buts
@@ -131,18 +131,18 @@ def test_fiche_sans_cote_valable_pas_d_onglet(cotes):          # la cote vient �
                                        ([(1, 0)] * 6, [(0, 1)] * 6, TOT),                         # aucun match à 3 buts ou plus aux deux lieux
                                        (OUI_A, OUI_B, {"Ch": [("2026-10-01", 3)] * 9})])          # 9 matchs de championnat seulement
 def test_fiche_regle_non_remplie_pas_d_onglet(A, B, tot):
-    assert "plus25" not in _fiche(A, B, OU(1.50), totaux=tot)
+    assert "plus25" not in _fiche(A, B, OU(1.40), totaux=tot)
 
 def test_fiche_championnat_ne_regarde_pas_l_avenir():           # matchs du championnat le jour même et après : ignorés
     tot = {"Ch": [("2026-10-01", 2)] * 40 + [("2026-11-21", 9)] * 40 + [("2026-11-25", 9)] * 40}
-    assert "plus25" not in _fiche(OUI_A, OUI_B, OU(1.50), totaux=tot)
+    assert "plus25" not in _fiche(OUI_A, OUI_B, OU(1.40), totaux=tot)
 
 def test_fiche_sans_etude_pas_d_onglet():
-    assert "plus25" not in _fiche(OUI_A, OUI_B, OU(1.50), regle=None)
+    assert "plus25" not in _fiche(OUI_A, OUI_B, OU(1.40), regle=None)
 
 def test_fiche_les_autres_onglets_ne_changent_pas():           # avec ou sans la règle +2,5 : mêmes paris dans tous les autres onglets
-    a = _fiche(OUI_A, OUI_B, {**OU(1.50), "1x2": {"1": 1.4, "N": 4.0, "2": 7.0}})
-    b = _fiche(OUI_A, OUI_B, {**OU(1.50), "1x2": {"1": 1.4, "N": 4.0, "2": 7.0}}, regle=None)
+    a = _fiche(OUI_A, OUI_B, {**OU(1.40), "1x2": {"1": 1.4, "N": 4.0, "2": 7.0}})
+    b = _fiche(OUI_A, OUI_B, {**OU(1.40), "1x2": {"1": 1.4, "N": 4.0, "2": 7.0}}, regle=None)
     assert "plus25" in a and "plus25" not in b and {k: a[k] for k in a if k != "plus25"} == b
 
 # ---------------------------------------------------------------- page, gel des sélections, page web
@@ -153,7 +153,7 @@ def _flux(tmp_path, matchs):
 
 def test_page_porte_l_etude_et_le_match(tmp_path):
     with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
-        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, [_x(OUI_A, OUI_B, OU(1.50))]), cfg={"cote_min": 1.26, "sans_regles": True})
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, [_x(OUI_A, OUI_B, OU(1.40))]), cfg={"cote_min": 1.26, "sans_regles": True})
     assert d["regle_plus25"]["regle"]["marche"] == "total_plus_2.5" and [m["match_id"] for m in d["matchs"] if m.get("plus25")] == ["t1"]
 
 def test_selection_plus25_gelee_avant_le_match(tmp_path):
