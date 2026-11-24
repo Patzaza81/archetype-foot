@@ -86,20 +86,11 @@ def test_mesures_depuis_les_matchs():
 @pytest.mark.parametrize("nd, ne", [(3, 8), (8, 3), (0, 5), (2, 2)])
 def test_moins_de_4_matchs_au_meme_lieu_aucune_mesure(nd, ne): assert VC.mesures([(1, 1)] * nd, [(1, 1)] * ne, {"buts_marques": 1, "buts_encaisses": 1}, {"buts_marques": 1, "buts_encaisses": 1}, (300, 100), ZONES) is None
 
-@pytest.mark.parametrize("champ", [(12, 4), (3, 1), (0, 0), None])
-def test_championnat_de_moins_de_5_matchs_pas_de_xg(champ):
+@pytest.mark.parametrize("champ", [(27, 9), (0, 0), None])
+def test_championnat_de_moins_de_10_matchs_pas_de_xg(champ):
     c = VC.mesures([(2, 0)] * 5, [(0, 1)] * 5, {"buts_marques": 2, "buts_encaisses": 0}, {"buts_marques": 0, "buts_encaisses": 1}, champ, ZONES)
     assert "EH" not in c and "mu" not in c and c["hM"] == 2                                    # les piliers restent, le xG et le championnat manquent
     assert not any(e["marche"] in ("total_plus_1.5",) for e in VC.evaluer(c, ZONES))            # un intervalle qui demande le xG ne s'applique jamais sans lui
-
-@pytest.mark.parametrize("champ", [(15, 5), (18, 6), (30, 10), (300, 100)])
-def test_championnat_d_au_moins_5_matchs_donne_le_xg(champ):          # 5 matchs suffisent (Patrick, 24/11/2026) ; 10 n'est plus exigé
-    c = VC.mesures([(2, 0)] * 5, [(0, 1)] * 5, {"buts_marques": 2, "buts_encaisses": 0}, {"buts_marques": 0, "buts_encaisses": 1}, champ, ZONES)
-    assert c["mu"] == pytest.approx(champ[0] / (2 * champ[1])) and "EHm" in c and VC.NCHAMP_MIN == 5
-
-@pytest.mark.parametrize("n", [5, 6, 9, 10])
-def test_fiche_championnat_de_5_matchs_donne_la_victoire_domicile(n):
-    f = _fiche(FORT, FAIBLE, C1X2, totaux={"Ch": [("2026-10-01", 3)] * n}); assert "1" in [p["marche"] for p in f["categories"]["paris"]]
 
 def test_sans_saison_pas_de_xg():
     c = VC.mesures([(2, 0)] * 5, [(0, 1)] * 5, None, {"buts_marques": 0, "buts_encaisses": 1}, (300, 100), ZONES); assert "EH" not in c
@@ -158,12 +149,12 @@ def test_fiche_cote_insuffisante_ou_absente_pas_de_marche(cotes):          # la 
 def test_fiche_hors_intervalle_pas_de_victoire_domicile(A, B):
     assert "1" not in [p["marche"] for p in (_fiche(A, B, C1X2).get("categories") or {}).get("paris", [])]
 
-@pytest.mark.parametrize("tot", [{"Ch": [("2026-10-01", 3)] * 4}, {"Ch": [("2026-10-01", 3)]}, {}])
-def test_fiche_championnat_trop_court_pas_de_marche_xg(tot):      # la victoire domicile utilise le xG relatif au championnat : moins de 5 matchs = rien
+@pytest.mark.parametrize("tot", [{"Ch": [("2026-10-01", 3)] * 9}, {}])
+def test_fiche_championnat_trop_court_pas_de_marche_xg(tot):      # la victoire domicile utilise le xG relatif au championnat : moins de 10 matchs = rien
     assert "categories" not in _fiche(FORT, FAIBLE, C1X2, totaux=tot)
 
-def test_fiche_championnat_ne_regarde_pas_l_avenir():             # matchs du championnat le jour même et après : ignorés, il reste 4 matchs
-    tot = {"Ch": [("2026-10-01", 3)] * 4 + [("2026-11-21", 3)] * 40 + [("2026-11-25", 3)] * 40}
+def test_fiche_championnat_ne_regarde_pas_l_avenir():             # matchs du championnat le jour même et après : ignorés, il reste 9 matchs
+    tot = {"Ch": [("2026-10-01", 3)] * 9 + [("2026-11-21", 3)] * 40 + [("2026-11-25", 3)] * 40}
     assert "categories" not in _fiche(FORT, FAIBLE, C1X2, totaux=tot)
 
 def test_fiche_sans_table_pas_d_onglet(): assert "categories" not in _fiche(FORT, FAIBLE, C1X2, zones=None)

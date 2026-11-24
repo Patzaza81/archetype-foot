@@ -2,7 +2,7 @@
 """Onglet « Catégories » d'Analyse Verdict (24/11/2026, demande de Patrick) : à partir de la fiche des deux équipes, dire pour quels marchés le match tombe dans un intervalle favorable.
 
 Fiche : les 4 piliers AU LIEU DU MATCH (buts marqués et encaissés par match de l'équipe à domicile À DOMICILE, de l'équipe à l'extérieur À L'EXTÉRIEUR, 4 matchs minimum au même lieu)
-et le xG calculé sur TOUS les lieux de la saison en cours, rapporté à la moyenne de buts du championnat en cours (au moins 5 matchs précédents du championnat, décision de Patrick du 24/11/2026).
+et le xG calculé sur TOUS les lieux de la saison en cours, rapporté à la moyenne de buts du championnat en cours (au moins 10 matchs précédents du championnat).
 Intervalles : `data/verif_pronostics/categories_zones.json`, figés le 24/11/2026. Chaque marché a son seuil (décision de Patrick) et son propre ensemble d'intervalles, jamais généralisé.
 Les intervalles ont été cherchés sur les matchs de 2000 à 2016 (apprentissage 2000-2012, validation 2013-2016) puis mesurés sur des matchs jamais vus (2017-2020 et saison 2025-26). Un intervalle d'un marché
 n'est retenu que s'il atteint le seuil du marché ; version « B » = avec certitude (borne basse de Wilson 95 %) sur chacune des deux moitiés de la période de recherche, version « A » = sur l'ensemble.
@@ -14,7 +14,7 @@ import json, math, os
 RACINE = os.path.dirname(os.path.abspath(__file__))
 CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "categories_zones.json")
 NMIN = 4            # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
-NCHAMP_MIN = 5      # Patrick (24/11/2026) : moyenne du championnat lue sur au moins 5 matchs précédents (10 au départ) ; sinon les intervalles qui utilisent le xG ou le championnat ne s'appliquent pas
+NCHAMP_MIN = 10     # moyenne du championnat lue sur au moins 10 matchs précédents ; sinon les intervalles qui utilisent le xG ou le championnat ne s'appliquent pas
 Z95 = 1.96
 VARIABLES_XG = ("sMh", "sCh", "sMa", "sCa", "EH", "EA", "ET", "dE", "rE", "mu", "EHm", "EAm", "gH", "gA")
 
@@ -60,7 +60,7 @@ def caracteristiques(hM, hC, aM, aC, sMh=None, sCh=None, sMa=None, sCa=None, mu=
 def mesures(lieu_dom, lieu_ext, saison_dom, saison_ext, champ, zones=None):
     """lieu_dom : [(marqués, encaissés)] de l'équipe à domicile À DOMICILE ; lieu_ext : idem pour l'équipe à l'extérieur À L'EXTÉRIEUR (saison en cours, avant le match) ;
     saison_dom / saison_ext : {"buts_marques", "buts_encaisses"} moyennes sur TOUTE la saison (tous lieux) ; champ = (total de buts, nombre de matchs) du championnat avant le match.
-    -> dict des mesures, ou None s'il manque 4 matchs au même lieu pour l'une des équipes. Sans xG ou sans 5 matchs de championnat, seuls les piliers sont donnés."""
+    -> dict des mesures, ou None s'il manque 4 matchs au même lieu pour l'une des équipes. Sans xG ou sans 10 matchs de championnat, seuls les piliers sont donnés."""
     zones = zones or charger()
     if not lieu_dom or not lieu_ext or len(lieu_dom) < NMIN or len(lieu_ext) < NMIN: return None
     nd, ne = len(lieu_dom), len(lieu_ext)
