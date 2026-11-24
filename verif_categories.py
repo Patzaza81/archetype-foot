@@ -122,16 +122,16 @@ def resume(zones=None):
 
 def limiter_bande(matchs, jour, n=None):
     """Garde, pour chaque période et chaque marché, les n meilleurs paris de la bande de cote 1,24-1,25 (les meilleurs = marge la plus haute, puis ordre du match_id) ; les paris cotés 1,26 et plus ne sont jamais limités.
-    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> période du match (la page passe la période de 4 jours, voir verif_pronostic.periode_4_jours). Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
+    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> fenêtre du match (la page passe la fenêtre « aujourd'hui + 3 jours », voir verif_pronostic.periode_4_jours) ; hors fenêtre (None), un pari de la bande n'est pas retenu. Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
     n = NB_BANDE if n is None else n; cand = {}
     for m in matchs:
         for p in (m.get("categories") or {}).get("paris", []):
-            if p["categorie"].get("bande"):
+            if p["categorie"].get("bande") and jour(m) is not None:
                 d = cand.setdefault((jour(m), p["marche"]), {}); d[m["match_id"]] = max(d.get(m["match_id"], -1), p["categorie"]["marge"])
     garde = {(k, mid) for k, d in cand.items() for mid, _ in sorted(d.items(), key=lambda t: (-t[1], str(t[0])))[:n]}
     for m in matchs:
         C = m.get("categories")
         if not C: continue
-        C["paris"] = [p for p in C["paris"] if not p["categorie"].get("bande") or ((jour(m), p["marche"]), m["match_id"]) in garde]
+        C["paris"] = [p for p in C["paris"] if not p["categorie"].get("bande") or (jour(m) is not None and ((jour(m), p["marche"]), m["match_id"]) in garde)]
         if not C["paris"]: del m["categories"]
     return matchs

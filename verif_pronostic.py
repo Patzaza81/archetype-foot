@@ -555,9 +555,9 @@ def fiche_match(x, maintenant, cfg, totaux=None):
             "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {}), **({"regle_buts": RBL} if RBL else {}), **({"plus15": P15} if P15 and P15["regle_remplie"] else {}), **({"plus25": P25} if P25 else {}), **({"categories": CAT} if CAT else {})}
 
 def periode_4_jours(ko, maintenant):
-    """Période de 4 jours d'un match, comptée depuis aujourd'hui (jour de Douala) : 0 = aujourd'hui et les 3 jours suivants, -1 = les 4 jours d'avant, etc. (Patrick, 24/11/2026 : « les 3 meilleurs pour chaque marché sur les 4 jours »)."""
+    """Fenêtre des 4 jours de la bande de cote 1,24-1,25 : aujourd'hui et les 3 jours suivants (jour de Douala) -> 0 ; un match hors de cette fenêtre (déjà passé, plus tard, sans coup d'envoi) -> None (Patrick, 24/11/2026 : « compter 4 jours à partir d'aujourd'hui »)."""
     j, d = _jour_cameroun(ko), _jour_cameroun(maintenant)
-    return (datetime.date.fromisoformat(j) - datetime.date.fromisoformat(d)).days // 4 if j and d else None
+    return 0 if j and d and 0 <= (datetime.date.fromisoformat(j) - datetime.date.fromisoformat(d)).days <= 3 else None
 
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
