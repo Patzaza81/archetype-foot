@@ -1,5 +1,5 @@
 {
- "version": 3,
+ "version": 4,
  "source": {
   "fichier": "data/bloc_saisons/bloc_2526_2627.json.gz",
   "matchs_joues": 16558,
@@ -11,56 +11,67 @@
   "marche": "total_plus_2.5",
   "n_min": 4,
   "n_championnat_min": 10,
-  "championnat_min": 2.88,
-  "ecart_diff_buts_min": 1.09,
-  "freq_dom_marque_min": 0.6,
-  "ext_marques_max": 1.33,
-  "freq_plus25_min": 0.57,
+  "seuil_proba": 0.6225,
   "cote_min": 1.26,
   "cote_max": 1.45,
-  "coupure": "2026-02-01",
-  "origine": "fréquence des +2,5 ajoutée le 24/11/2026 (Patrick) ; seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"
+  "origine": "modèle appris sur 2000-2012 (49 000 matchs), seuil = plus petit dont la précision sur 2013-2016 atteint 70 % (cible de Patrick), vérifié sur 2017-2021 et 2025-2026 ; cote à la fin (Patrick, 23/11/2026)"
  },
  "etude": {
-  "matchs": 196,
-  "reussis": 155,
-  "taux": 0.7908,
-  "borne_basse": 0.7286,
-  "borne_haute": 0.8419,
-  "cote_moyenne": 1.444,
-  "recherche": {
-   "matchs": 92,
-   "reussis": 77,
-   "taux": 0.837,
-   "borne_basse": 0.7483,
-   "borne_haute": 0.8986,
-   "cote_moyenne": 1.456
-  },
+  "matchs": 299,
+  "reussis": 213,
+  "taux": 0.7124,
+  "borne_basse": 0.6586,
+  "borne_haute": 0.7607,
+  "cote_moyenne": 1.416,
   "non_vus": {
-   "matchs": 104,
-   "reussis": 78,
-   "taux": 0.75,
-   "borne_basse": 0.6589,
-   "borne_haute": 0.8233,
-   "cote_moyenne": 1.437
+   "matchs": 299,
+   "reussis": 213,
+   "taux": 0.7124,
+   "borne_basse": 0.6586,
+   "borne_haute": 0.7607,
+   "cote_moyenne": 1.416
   },
   "non_vus_cote_min": {
-   "matchs": 21,
-   "reussis": 17,
-   "taux": 0.8095,
-   "borne_basse": 0.6,
-   "borne_haute": 0.9233,
-   "cote_moyenne": 1.349
+   "matchs": 44,
+   "reussis": 35,
+   "taux": 0.7955,
+   "borne_basse": 0.655,
+   "borne_haute": 0.8885,
+   "cote_moyenne": 1.36
   },
   "hors_regle": {
-   "matchs": 10931,
-   "reussis": 5710,
-   "taux": 0.5224
+   "matchs": 10828,
+   "reussis": 5652,
+   "taux": 0.522
   },
   "tous_non_vus": {
-   "matchs": 5478,
-   "reussis": 2955,
-   "taux": 0.5394
-  }
+   "matchs": 11127,
+   "reussis": 5865,
+   "taux": 0.5271
+  },
+  "grands_echantillons": [
+   {
+    "nom": "2013-2016 (choix du seuil)",
+    "matchs": 265,
+    "reussis": 188,
+    "taux": 0.7094,
+    "tous": {
+     "matchs": 16650,
+     "reussis": 8059,
+     "taux": 0.484
+    }
+   },
+   {
+    "nom": "2017-2021 (jamais vu)",
+    "matchs": 178,
+    "reussis": 135,
+    "taux": 0.7584,
+    "tous": {
+     "matchs": 12728,
+     "reussis": 6331,
+     "taux": 0.4974
+    }
+   }
+  ]
  }
 }

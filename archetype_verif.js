@@ -87,18 +87,19 @@ function textePlus25(R) {
 }
 function noteRegle25(d) {
   const R = d.regle_plus25; if (!R) return `<p class="om-info" style="margin:8px 14px">Étude indisponible : aucun marché n'est affiché.</p>`;
-  const r = R.regle, E = R.etude, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
-  return `<p class="om-info" style="margin:8px 14px">Règle (les quatre ensemble, ${e(r.n_min)} matchs minimum au même lieu) : le championnat compte au moins <b>${fr(r.championnat_min)}</b> buts par match ; ` +
-    `sur la saison, la différence de buts par match de l'équipe à domicile dépasse celle de l'adversaire d'au moins <b>${fr(r.ecart_diff_buts_min)}</b> ; l'équipe à domicile a marqué dans au moins <b>${fr(r.freq_dom_marque_min * 100, 0)} %</b> de ses matchs à domicile ; ` +
-    `l'équipe à l'extérieur marque au plus <b>${fr(r.ext_marques_max)}</b> but par match à l'extérieur` + (r.freq_plus25_min != null ? ` ; dans les matchs des deux équipes à leur lieu, au moins <b>${fr(r.freq_plus25_min * 100, 0)} %</b> ont compté 3 buts ou plus` : "") + `. La cote vient à la fin : seuls les +2,5 cotés de <b>${fr(d.cote_min)}</b> à <b>${fr(r.cote_max)}</b> sont montrés (le marché est d'accord). ` +
-    `Sur <b>${e(E.non_vus.matchs)}</b> matchs jamais vus pendant l'étude, le +2,5 est passé <b>${pc(E.non_vus.taux)}</b> du temps (tous les matchs de la même période : ${pc(E.tous_non_vus.taux)}) ; ` +
-    `avec la cote ${fr(r.cote_min)} à ${fr(r.cote_max)} : ${pc(E.non_vus_cote_min.taux)} sur ${e(E.non_vus_cote_min.matchs)} matchs.</p>`;
+  const r = R.regle, E = R.etude, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %"), G = E.grands_echantillons || [];
+  return `<p class="om-info" style="margin:8px 14px">Un modèle estime la probabilité de <b>3 buts ou plus</b> à partir des buts marqués et encaissés de chaque équipe (à son lieu et sur la saison) et de la moyenne de buts du championnat (${e(r.n_min)} matchs minimum au même lieu). ` +
+    `Il a été appris une seule fois sur des matchs de 2000 à 2012 ; le match est retenu si cette probabilité atteint <b>${pc(r.seuil_proba)}</b>, seuil pris sur les données : le plus petit dont la réussite en 2013-2016 atteint 70 %. ` +
+    `La cote vient à la fin : seuls les +2,5 cotés de <b>${fr(r.cote_min)}</b> à <b>${fr(r.cote_max)}</b> sont montrés (le marché est d'accord). ` +
+    G.filter(g => g.nom.includes("jamais vu")).map(g => `Matchs jamais vus ${e(g.nom.replace(" (jamais vu)", ""))} : réussi <b>${pc(g.taux)}</b> sur ${e(g.matchs)} matchs (tous les matchs : ${pc(g.tous.taux)}). `).join("") +
+    `Saisons 2025-2026, jamais vues non plus : <b>${pc(E.non_vus.taux)}</b> sur <b>${e(E.non_vus.matchs)}</b> matchs (tous les matchs : ${pc(E.tous_non_vus.taux)}) ; ` +
+    `avec la cote de ${fr(r.cote_min)} à ${fr(r.cote_max)} : ${pc(E.non_vus_cote_min.taux)} sur ${e(E.non_vus_cote_min.matchs)} matchs.</p>`;
 }
 function phraseRegle25(m) {
   const x = m.plus25; if (!x) return "";
-  return `<div class="om-info">Championnat à <b>${fr(x.championnat)}</b> buts par match ; différence de buts de <b>${e(m.domicile)}</b> supérieure de <b>${fr(x.ecart_diff_buts)}</b> à celle de <b>${e(m.exterieur)}</b> ; ` +
-    `${e(m.domicile)} a marqué dans <b>${fr(x.freq_dom_marque * 100, 0)} %</b> de ses ${e(x.n_dom)} matchs à domicile ; ${e(m.exterieur)} marque <b>${fr(x.ext_marques, 1)}</b> but par match à l'extérieur (${e(x.n_ext)} matchs)` +
-    (x.plus25_matchs ? ` ; 3 buts ou plus dans <b>${e(x.plus25_matchs[0])}</b> de leurs <b>${e(x.plus25_matchs[1])}</b> matchs à ce lieu (${fr(x.freq_plus25 * 100, 0)} %)` : "") + `. <b>Règle remplie.</b></div>`;
+  return `<div class="om-info">Probabilité estimée de 3 buts ou plus : <b>${fr(x.proba * 100, 0)} %</b>. Championnat à <b>${fr(x.championnat)}</b> buts par match ; ` +
+    `${e(m.domicile)} marque <b>${fr(x.dom_marques, 1)}</b> et encaisse <b>${fr(x.dom_encaisses, 1)}</b> à domicile (${e(x.n_dom)} matchs) ; ${e(m.exterieur)} marque <b>${fr(x.ext_marques, 1)}</b> et encaisse <b>${fr(x.ext_encaisses, 1)}</b> à l'extérieur (${e(x.n_ext)} matchs)` +
+    (x.plus25_matchs ? ` ; 3 buts ou plus dans <b>${e(x.plus25_matchs[0])}</b> de leurs <b>${e(x.plus25_matchs[1])}</b> matchs à ce lieu` : "") + `. <b>Match retenu.</b></div>`;
 }
 function resume(m, onglet) {
   if (onglet === "plus25") {

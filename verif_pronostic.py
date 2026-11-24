@@ -236,6 +236,11 @@ def championnat_total_avant(x, totaux):
     L = [t for d, t in (totaux or {}).get(x.get("competition"), []) if d < x["date"]]
     return (sum(L), len(L))
 
+def championnat_stats_avant(x, totaux):
+    """(total de buts, matchs, matchs à 3 buts ou plus) du championnat du match x, joués AVANT sa date. Sert au modèle de l'onglet « +2,5 buts »."""
+    L = [t for d, t in (totaux or {}).get(x.get("competition"), []) if d < x["date"]]
+    return (sum(L), len(L), sum(t >= 3 for t in L))
+
 def matchs_meme_lieu(x, eq, dom):
     """[(marqués, encaissés)] de l'équipe au lieu du match (dom=True : à domicile), saison en cours, avant le match : même sélection que constat(). Sert à l'onglet « +2,5 buts »."""
     a = x.get("assemblage") or {}; saison = a.get("saison_football_data")
@@ -516,7 +521,7 @@ def fiche_match(x, maintenant, cfg, totaux=None):
     if regle_25:
         c25 = cotes_betpawa(x.get("cotes_betpawa") or {}).get(R25.MARCHE)
         if c25 is not None and cfg["cote_min"] <= c25 <= R25.COTE_MAX + R25.EPS:
-            mes = R25.mesures(matchs_meme_lieu(x, "equipe_dom", True), matchs_meme_lieu(x, "equipe_ext", False), SA, SB, championnat_total_avant(x, totaux if totaux is not None else totaux_championnats()))
+            mes = R25.mesures(matchs_meme_lieu(x, "equipe_dom", True), matchs_meme_lieu(x, "equipe_ext", False), SA, SB, championnat_stats_avant(x, totaux if totaux is not None else totaux_championnats()))
             if R25.remplie(mes):
                 r = constat(x, R25.MARCHE, c25, cfg)
                 if "A" in r:
