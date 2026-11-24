@@ -32,12 +32,18 @@ Sur la page Analyse Verdict, chaque match affiche, pour chaque équipe **dans le
 
 Ce sont les **4 piliers** : `M_dom` (marque à domicile), `E_dom` (encaisse à domicile), `M_ext` (marque à l'extérieur), `E_ext` (encaisse à l'extérieur). Toute l'étude part d'eux. Ils sont calculés sur les matchs joués avant le match, saison en cours, au même lieu, 4 matchs au minimum.
 
+**Règle des lieux (essentielle, à respecter partout) :**
+- **Les 4 piliers ne comptent que les matchs joués à ce lieu.** Pour l'équipe à domicile : seulement ses matchs à domicile. Pour l'équipe à l'extérieur : seulement ses matchs à l'extérieur. Ses matchs à domicile ne comptent pas, ceux de l'autre équipe à l'extérieur non plus. Jamais de mélange (une équipe qui marque beaucoup chez elle mais peu dehors doit apparaître comme telle).
+- **Le xG, lui, regroupe tous les matchs de la saison en cours, domicile ET extérieur, sans distinction de lieu** (xG créé moyen et xG concédé moyen par match, car le xG par lieu a trop peu de matchs). Il sert de lecture de tendance en plus des 4 piliers : xG créé supérieur aux buts marqués = attaque qui peut mieux faire ; xG concédé supérieur aux buts encaissés = défense chanceuse ; buts attendus d'une équipe = moyenne de ce que son attaque crée et de ce que la défense adverse concède (fonction `xg_attendus` de `verif_pronostic.py`).
+- **Le xG du championnat** est la moyenne de xG par équipe et par match sur TOUS les matchs du championnat, domicile et extérieur confondus (fonction `moyenne_championnat`). On le compare au xG des équipes (une équipe au-dessus de la moyenne du championnat a une attaque ou une défense plus ouverte que la moyenne).
+- **Où est le xG :** le vrai xG n'existe que dans les historiques d'équipes du flux (`data/archive_test`, champs `xg` et `xg_concede` de chaque match, équipes Football-Data, environ 1 match sur 5). Pour les autres équipes, le système le **calcule** à partir des buts de la saison avec une droite apprise sur les équipes Football-Data (`modele_xg`). Le bloc `bloc_saisons` n'a PAS de xG (il a tirs, tirs cadrés, corners) : pour les études sur ce bloc, utiliser la moyenne de buts de la saison de l'équipe (tous lieux) comme approximation du xG, et le dire.
+
 **Ce qu'il faut exploiter : les écarts, rapports et intervalles entre ces 4 nombres.** Au minimum, calculer et tester :
 - l'écart d'attaque `M_dom − M_ext` (ici +1,6) et le rapport `M_dom / M_ext` (ici 2,6 fois plus de buts marqués) ;
 - l'écart de défense `E_dom − E_ext` (ici **+0,3 : l'équipe à domicile encaisse 0,3 de plus que l'adversaire** ; attention au sens, utiliser toujours l'écart signé et non la description orale) ;
 - les croisements : attaque domicile contre défense extérieure `M_dom − E_ext` (ici +1,3), attaque extérieure contre défense domicile `M_ext − E_dom` (ici −0,6) ;
 - les sommes `M_dom + M_ext` (buts marqués) et `E_dom + E_ext` (buts encaissés), et les croisements `M_dom + E_ext`, `M_ext + E_dom` (buts attendus de chaque côté) ;
-- le **xG du championnat** (approché par la moyenne de buts par match du championnat avant le match ; ajouter le xG par équipe quand il existe), seul ou comparé aux piliers (écart entre les buts attendus d'une équipe et la moyenne du championnat) ;
+- le **xG** de chaque équipe et du championnat, calculé sur tous les lieux (règle des lieux ci-dessus), seul ou comparé aux piliers (écart entre les buts attendus d'une équipe et la moyenne du championnat, écart xG − buts) ;
 - toute autre donnée utile (moyennes sur toute la saison, part de matchs où l'équipe marque, encaisse ou voit 3 buts ou plus, forme récente), à ajouter seulement si elle améliore les résultats de façon mesurable sur des matchs jamais vus.
 
 **Méthode attendue (marché par marché) :**
@@ -53,7 +59,7 @@ Ce sont les **4 piliers** : `M_dom` (marque à domicile), `E_dom` (encaisse à d
 |---|---|---|
 | Bloc Football-Data 2025-2027 | `data/bloc_saisons/bloc_2526_2627.json.gz` (clé `liste`, 16 558 matchs, 38 divisions, du 2025-01-23 au 2026-10-16) | `id, saison, division, date, domicile, exterieur, buts_dom, buts_ext, cotes` ; cotes Football-Data (1X2, plus/moins 2,5 : `cotes.plus_moins_2_5_cloture.moy[0]` = cote du plus de 2,5) |
 | Flux du système avec cotes Betpawa | `data/archive_test/AAAA-MM-JJ.json.gz` (du 2026-09-28 au 2026-11-02) | un dictionnaire par jour ; par match : `cotes_betpawa.over_under_2.5.plus`, équipes, historiques d'équipes (`assemblage`) |
-| Historique d'équipes (cache) | `data/assemblage/equipes.json` | matchs des équipes de la fenêtre J0 à J+3 (incomplet, pas une base de championnats) |
+| Historique d'équipes (cache) | `data/assemblage/equipes.json` ; dans le flux : `assemblage.equipe_dom.matchs` et `equipe_ext.matchs` | matchs des équipes de la fenêtre J0 à J+3 (incomplet, pas une base de championnats) ; par match : `domicile` (vrai/faux = lieu de CETTE équipe), `adversaire`, `buts_marques`, `buts_encaisses`, `xg`, `xg_concede` (équipes Football-Data) |
 | Étude actuelle | `verif_regle_plus25.py`, `data/verif_pronostics/regle_plus25.json`, `data/verif_pronostics/modele_plus25.json`, `docs/REGLE_BUTS_PLUS_2_5.md` | fonction `cas_joues` (mesures sans fuite), modèle gelé, résultats |
 | **Grand échantillon public** (hors dépôt) | GitHub `footballcsv/cache.soccerverse` (miroir nommé `france` dans nos essais, dossiers `AAAA-AA/eng.csv`, `de.csv`, `es.csv`, `it.csv`, `fr.csv`, `at.csv`, `nl.csv`, `pt.csv`, `br.csv`, `ar.csv`), `footballcsv/england`, `footballcsv/deutschland`, `footballcsv/espana` | colonnes `Date, Team 1, FT (ex. 2-1), Team 2` : résultats seulement, **sans cotes**, de 1888 à 2021 ; 78 279 matchs évaluables de 2000 à 2020 |
 
@@ -97,6 +103,8 @@ Cible : 3 buts ou plus (« plus de 2,5 »). Intervalle : Wilson 95 %.
 | Même modèle + cote Football-Data au-dessus de 1,45 | bloc 2025-2026 | 40 | 37,5 % |
 | Cote Football-Data seule entre 1,26 et 1,45 | bloc 2025-2026 (depuis le 01/02/2026) | 239 | 74,1 % |
 | Page de vérification en production (modèle + cote Betpawa), 20 au 22/11/2026 | 18 matchs terminés | 18 | 8 réussis (44 %) : échantillon petit mais décevant ; cause non encore établie |
+
+Ce que la référence a utilisé exactement (pour pouvoir la reproduire) : les mesures de lieu (buts marqués et encaissés, parts de matchs à 3 buts ou plus, où l'équipe marque, etc.) sont calculées sur les matchs au lieu du match seulement ; les mesures de saison (buts marqués, encaissés, différence de buts) sur tous les lieux ; le championnat par sa moyenne de buts et sa part de matchs à 3 buts ou plus (tous matchs). **Le vrai xG n'a PAS été utilisé** (absent du bloc et du grand échantillon) : c'est une piste ouverte, à tester sur le flux (`xg`, `xg_concede`).
 
 Constats déjà établis (à confirmer ou infirmer) :
 - La **cote** (probabilité implicite du marché) prédit mieux le +2,5 que toutes les mesures de buts seules (indice AUC 0,601 contre 0,57 à 0,58) ; ajouter les mesures de buts à la cote n'améliore presque rien (0,603).
