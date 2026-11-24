@@ -9,7 +9,7 @@ import verif_regle_buts as RB
 import verif_pronostic as v
 
 # valeurs qui remplissent la règle (championnat 3,0 ; écart 1,5 ; l'équipe à domicile marque 5 fois sur 5 ; l'extérieur marque 1,0)
-OK = {"n_dom": 5, "n_ext": 5, "n_championnat": 40, "championnat": 3.0, "ecart_diff_buts": 1.5, "freq_dom_marque": 1.0, "ext_marques": 1.0}
+OK = {"n_dom": 5, "n_ext": 5, "n_championnat": 40, "championnat": 3.0, "ecart_diff_buts": 1.5, "freq_dom_marque": 1.0, "ext_marques": 1.0, "freq_plus25": 0.7}
 
 # ---------------------------------------------------------------- la règle : chaque condition
 @pytest.mark.parametrize("ch", [2.88, 3.0, 3.6])                     # 2,88 exactement : « au moins »
@@ -42,11 +42,22 @@ def test_assez_de_matchs(nd, ne, nc): assert R.remplie({**OK, "n_dom": nd, "n_ex
 @pytest.mark.parametrize("nd, ne, nc", [(3, 8, 40), (8, 3, 40), (8, 8, 9), (0, 0, 0)])
 def test_pas_assez_de_matchs(nd, ne, nc): assert not R.remplie({**OK, "n_dom": nd, "n_ext": ne, "n_championnat": nc})
 
+@pytest.mark.parametrize("fq", [0.57, 0.7, 1.0])                    # 0,57 exactement : « au moins »
+def test_assez_de_matchs_a_3_buts(fq): assert R.remplie({**OK, "freq_plus25": fq})
+
+@pytest.mark.parametrize("fq", [0.56, 0.538, 0.3, None])            # 0,538 = 7 sur 13 (Viborg - Randers, 22/11/2026)
+def test_pas_assez_de_matchs_a_3_buts(fq): assert not R.remplie({**OK, "freq_plus25": fq})
+
+def test_viborg_randers_ecarte():                                    # le cas signalé par Patrick (24/11) : 4 sur 7 à domicile, 3 sur 6 à l'extérieur = 7 sur 13
+    vib = [(1, 0), (1, 2), (4, 1), (0, 2), (4, 0), (2, 1), (1, 0)]; ran = [(1, 2), (0, 0), (2, 4), (3, 0), (0, 1), (0, 1)]   # (marqués, encaissés) de chaque équipe à son lieu
+    x = R.mesures(vib, ran, {"buts_marques": 2.5, "buts_encaisses": 0.5}, {"buts_marques": 1.0, "buts_encaisses": 1.4}, (300, 100))
+    assert x["plus25_matchs"] == [7, 13] and x["freq_plus25"] == 0.538 and not R.remplie(x)
+
 def test_remplie_sans_donnees(): assert not R.remplie(None) and not R.remplie({})
 
 def test_mesures():
     x = R.mesures([(2, 0), (1, 1), (0, 2), (3, 1)], [(1, 2)] * 4, {"buts_marques": 2.0, "buts_encaisses": 0.5}, {"buts_marques": 1.0, "buts_encaisses": 1.5}, (60, 20))
-    assert x == {"n_dom": 4, "n_ext": 4, "n_championnat": 20, "championnat": 3.0, "ecart_diff_buts": 2.0, "freq_dom_marque": 0.75, "ext_marques": 1.0}
+    assert x == {"n_dom": 4, "n_ext": 4, "n_championnat": 20, "championnat": 3.0, "ecart_diff_buts": 2.0, "freq_dom_marque": 0.75, "ext_marques": 1.0, "freq_plus25": 0.625, "plus25_matchs": [5, 8]}
 
 # ---------------------------------------------------------------- étude sur matchs joués : sans fuite
 def _m(jour, dom, ext, gd, ge, div="T", saison="2627", ou=None):
@@ -117,6 +128,7 @@ def test_fiche_sans_cote_valable_pas_d_onglet(cotes):          # la cote vient �
                                        ([(0, 0)] * 3 + [(3, 0)] * 3, OUI_B, TOT),                  # l'équipe à domicile n'a marqué que 3 fois sur 6 chez elle
                                        ([(1, 1)] * 6, [(1, 1)] * 6, TOT),                         # écart de différence de buts nul
                                        ([(3, 0)] * 3, OUI_B, TOT),                                # 3 matchs au même lieu
+                                       ([(1, 0)] * 6, [(0, 1)] * 6, TOT),                         # aucun match à 3 buts ou plus aux deux lieux
                                        (OUI_A, OUI_B, {"Ch": [("2026-10-01", 3)] * 9})])          # 9 matchs de championnat seulement
 def test_fiche_regle_non_remplie_pas_d_onglet(A, B, tot):
     assert "plus25" not in _fiche(A, B, OU(1.50), totaux=tot)
@@ -157,3 +169,4 @@ def test_page_web_onglet():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert '["plus25", "+2,5 buts"]' in js and "m.plus25 ? [m.plus25.pari]" in js and '"Onglet +2,5 buts"' in js and "noteRegle25(d)" in js
     assert '["plus15", "+1,5 buts"]' in js                                    # l'onglet +1,5 reste en place
+    assert "r.freq_plus25_min" in js and "x.plus25_matchs" in js

@@ -11,6 +11,8 @@ Saison en cours, matchs joués avant le match, au moins **4 matchs au même lieu
 3. l'équipe à domicile a **marqué dans au moins 60 %** de ses matchs à domicile ;
 4. l'équipe à l'extérieur marque **au plus 1,33 but par match** à l'extérieur.
 
+5. (24/11/2026, demande de Patrick après Viborg – Randers) dans les matchs des deux équipes à leur lieu (domicile de l'une + extérieur de l'autre), au moins **57 %** ont compté 3 buts ou plus. Viborg – Randers : 7 sur 13 (54 %), écarté.
+
 La **cote n'entre pas dans la règle** (consigne de Patrick : la cote seulement à l'aboutissement). L'onglet ne montre que les matchs qui remplissent la règle et dont le « plus de 2,5 buts » Betpawa est coté **1,26 ou plus** (cote minimale de la page). Le verdict de la page n'est pas affiché.
 
 ## Origine des seuils
@@ -19,9 +21,10 @@ Paramètres de Patrick : buts marqués et encaissés de chaque équipe, comparé
 
 ## Résultats (matchs déjà joués, `data/bloc_saisons`, 11 127 matchs évaluables)
 
-- Période de recherche : 140 matchs, +2,5 réussi 80,7 %.
-- **Matchs jamais vus (01/02 au 16/10/2026) : 159 matchs, +2,5 réussi 72,3 %** (intervalle 64,9 à 78,7 %), contre 53,9 % pour tous les matchs de la même période.
-- Jamais vus et cote Football-Data ≥ 1,26 : 62 matchs, 71,0 %, cote moyenne 1,48. Les cotes Betpawa ne sont pas dans cet échantillon : le parallèle Betpawa se fera sur les sélections gelées.
+- Période de recherche : 92 matchs, +2,5 réussi 83,7 %.
+- **Matchs jamais vus (01/02 au 16/10/2026) : 104 matchs, +2,5 réussi 75,0 %** (intervalle 65,9 à 82,3 %), contre 53,9 % pour tous les matchs de la même période. Avant l'ajout de la condition 5 : 159 matchs à 72,3 %.
+- Jamais vus et cote Football-Data ≥ 1,26 : 40 matchs, 67,5 % (avant : 62 matchs, 71,0 %), cote moyenne 1,46. Échantillon petit : la condition 5 gagne environ 3 points sur tous les matchs jamais vus mais n'améliore pas le sous-ensemble à cote ≥ 1,26.
+- Page du 24/11/2026 : 18 matchs (27 avant), dont 14 terminés : 10 réussis ; les 9 matchs écartés : 5 réussis. Les cotes Betpawa ne sont pas dans cet échantillon : le parallèle Betpawa se fera sur les sélections gelées.
 - Hors règle (toute la période) : 52,1 %.
 
 ## Mesure réelle

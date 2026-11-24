@@ -8,7 +8,8 @@ Règle (les quatre conditions ensemble, saison en cours, matchs joués AVANT le 
   1. le championnat compte au moins CHAMP_MIN buts par match (matchs précédents du championnat, au moins NCHAMP_MIN matchs) ;
   2. différence de buts par match de l'équipe à domicile (saison entière) moins celle de l'équipe à l'extérieur >= ECART_MIN ;
   3. l'équipe à domicile a marqué dans au moins FREQ_DOM_MIN de ses matchs à domicile ;
-  4. l'équipe à l'extérieur marque au plus EXT_MAX but par match à l'extérieur.
+  4. l'équipe à l'extérieur marque au plus EXT_MAX but par match à l'extérieur ;
+  5. (24/11/2026, demande de Patrick) dans les matchs des deux équipes à leur lieu (domicile de l'une + extérieur de l'autre), au moins FREQ25_MIN ont compté 3 buts ou plus.
 Origine des seuils : aucun n'est posé à la main. Ils ont été trouvés sur les matchs joués AVANT la coupure (recherche sur les paramètres de Patrick, seuils pris parmi les
 vingtiles des données, règle retenue seulement si elle tenait sur les deux moitiés de cette période), puis vérifiés sur les matchs joués APRÈS la coupure, jamais vus pendant la recherche.
 Commande : python verif_regle_plus25.py  (relit les matchs joués et réécrit data/verif_pronostics/regle_plus25.json)."""
@@ -25,6 +26,7 @@ CHAMP_MIN = 2.88      # étude 23/11/2026 : buts par match du championnat
 ECART_MIN = 1.09      # étude 23/11/2026 : différence de buts par match (saison) domicile - extérieur
 FREQ_DOM_MIN = 0.60   # étude 23/11/2026 : part des matchs à domicile où l'équipe à domicile a marqué
 EXT_MAX = 1.33        # étude 23/11/2026 : buts marqués par match de l'équipe à l'extérieur, à l'extérieur
+FREQ25_MIN = 0.57     # 24/11/2026 : part des matchs (deux équipes, chacune à son lieu) à 3 buts ou plus ; seuil choisi sur la période de recherche seulement (vingtiles, meilleure borne basse sur ses deux moitiés)
 COUPURE = "2026-02-01"   # avant : matchs de la recherche ; à partir de cette date : matchs jamais vus pendant la recherche (vérification)
 Z95 = 1.96
 EPS = 1e-9
@@ -41,13 +43,16 @@ def mesures(lieu_dom, lieu_ext, saison_dom, saison_ext, champ):
             "championnat": round(tot / nc, 3) if nc else None,
             "ecart_diff_buts": None if a is None or b is None else round(a - b, 3),
             "freq_dom_marque": round(sum(1 for m, _ in lieu_dom if m >= 1) / nd, 3) if nd else None,
-            "ext_marques": round(sum(m for m, _ in lieu_ext) / ne, 3) if ne else None}
+            "ext_marques": round(sum(m for m, _ in lieu_ext) / ne, 3) if ne else None,
+            "freq_plus25": round(sum(1 for m, e in list(lieu_dom) + list(lieu_ext) if m + e >= 3) / (nd + ne), 3) if nd + ne else None,
+            "plus25_matchs": [sum(1 for m, e in list(lieu_dom) + list(lieu_ext) if m + e >= 3), nd + ne]}
 
 def remplie(x):
     """Les quatre conditions de la règle (et 4 matchs au même lieu de chaque côté, 10 matchs de championnat). Donnée absente = non."""
     if not x or min(x.get("n_dom") or 0, x.get("n_ext") or 0) < NMIN or (x.get("n_championnat") or 0) < NCHAMP_MIN: return False
-    if None in (x.get("championnat"), x.get("ecart_diff_buts"), x.get("freq_dom_marque"), x.get("ext_marques")): return False
-    return (x["championnat"] >= CHAMP_MIN - EPS and x["ecart_diff_buts"] >= ECART_MIN - EPS and x["freq_dom_marque"] >= FREQ_DOM_MIN - EPS and x["ext_marques"] <= EXT_MAX + EPS)
+    if None in (x.get("championnat"), x.get("ecart_diff_buts"), x.get("freq_dom_marque"), x.get("ext_marques"), x.get("freq_plus25")): return False
+    return (x["championnat"] >= CHAMP_MIN - EPS and x["ecart_diff_buts"] >= ECART_MIN - EPS and x["freq_dom_marque"] >= FREQ_DOM_MIN - EPS and x["ext_marques"] <= EXT_MAX + EPS
+            and x["freq_plus25"] >= FREQ25_MIN - EPS)
 
 def wilson(k, n, z=Z95):
     if n == 0: return (0.0, 0.0)
@@ -87,10 +92,10 @@ def calculer(chemin_bloc=BLOC, cote_min=1.26):
     et = _stats(R)
     et.update(recherche=_stats(av), non_vus=_stats(ap), non_vus_cote_min=_stats(ap, cote_min), hors_regle={k: v for k, v in _stats(H).items() if k in ("matchs", "reussis", "taux")},
               tous_non_vus={k: v for k, v in _stats([c for c in cas if c["date"] >= COUPURE]).items() if k in ("matchs", "reussis", "taux")})
-    return {"version": 1, "source": {"fichier": "data/bloc_saisons/bloc_2526_2627.json.gz", "matchs_joues": len(jours), "du": min(jours), "au": max(jours), "matchs_evaluables": len(cas)},
+    return {"version": 2, "source": {"fichier": "data/bloc_saisons/bloc_2526_2627.json.gz", "matchs_joues": len(jours), "du": min(jours), "au": max(jours), "matchs_evaluables": len(cas)},
             "regle": {"marche": MARCHE, "n_min": NMIN, "n_championnat_min": NCHAMP_MIN, "championnat_min": CHAMP_MIN, "ecart_diff_buts_min": ECART_MIN, "freq_dom_marque_min": FREQ_DOM_MIN,
-                      "ext_marques_max": EXT_MAX, "cote_min": cote_min, "coupure": COUPURE,
-                      "origine": "seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"},
+                      "ext_marques_max": EXT_MAX, "freq_plus25_min": FREQ25_MIN, "cote_min": cote_min, "coupure": COUPURE,
+                      "origine": "fréquence des +2,5 ajoutée le 24/11/2026 (Patrick) ; seuils trouvés sur les matchs avant la coupure (paramètres de Patrick, aucune cote), vérifiés sur les matchs après la coupure ; cote appliquée seulement à la fin (Patrick, 23/11/2026)"},
             "etude": et}
 
 def ecrire(chemin=CHEMIN, chemin_bloc=BLOC):
