@@ -195,3 +195,25 @@ def test_page_web_onglet():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert '["categories", "Catégories"]' in js and "m.categories && m.categories.paris" in js and '"Onglet Catégories"' in js and "noteCategories(d)" in js
     assert '["plus25", "+2,5 buts"]' in js and '["plus15", "+1,5 buts"]' in js and '["etude", "Étude"]' in js          # les autres onglets restent en place
+
+# ---------------------------------------------------------------- cote minimale 1,24 pour le plus de 1,5 seulement (Patrick, 24/11/2026)
+FORT3 = [(3, 0)] * 6                                          # hM 3,0 : dans un intervalle du plus de 1,5 (hM >= 2,2 et xG attendu du domicile >= 1,56)
+
+def _p15(cote, extra=None):
+    f = _fiche(FORT3, FAIBLE, {"over_under_1.5": {"plus": cote, "moins": 5.0}, **(extra or {})})
+    return [p for p in (f.get("categories") or {}).get("paris", []) if p["marche"] == "total_plus_1.5"]
+
+@pytest.mark.parametrize("cote", [1.24, 1.25, 1.26, 1.40])
+def test_plus_de_1_5_retenu_des_1_24(cote): assert len(_p15(cote)) == 1 and _p15(cote)[0]["cote"] == cote
+
+@pytest.mark.parametrize("cote", [1.23, 1.20, 1.10])
+def test_plus_de_1_5_sous_1_24_jamais_retenu(cote): assert _p15(cote) == []
+
+def test_plus_de_1_5_sans_cote_jamais_retenu(): assert _p15(1.5, None) != [] and "total_plus_1.5" not in [p["marche"] for p in (_fiche(FORT3, FAIBLE, {}).get("categories") or {}).get("paris", [])]
+
+@pytest.mark.parametrize("marche, cotes", [("1", {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}), ("1", {"1x2": {"1": 1.24, "N": 4.0, "2": 9.0}}), ("1N", {"double_chance": {"1N": 1.25, "N2": 5.0, "12": 1.2}})])
+def test_les_autres_marches_gardent_1_26(marche, cotes):         # l'exception ne vaut que pour le plus de 1,5
+    assert marche not in [p["marche"] for p in (_fiche(FORT3, FAIBLE, cotes).get("categories") or {}).get("paris", [])]
+
+def test_cote_min_fonction():
+    assert VC.cote_min("total_plus_1.5", 1.26) == 1.24 and VC.cote_min("1", 1.26) == 1.26 and VC.cote_min("total_plus_1.5", 1.20) == 1.20

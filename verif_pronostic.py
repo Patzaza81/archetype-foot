@@ -532,8 +532,9 @@ def fiche_match(x, maintenant, cfg, totaux=None):
             cotes_c = cotes_betpawa(x.get("cotes_betpawa") or {}); PC = []
             for cat in VC.evaluer(mes_c, zones_c):
                 cc = cotes_c.get(cat["marche"])
-                if cc is None or cc < cfg["cote_min"]: continue
-                r = constat(x, cat["marche"], cc, cfg)
+                cm = VC.cote_min(cat["marche"], cfg["cote_min"])        # 1,26 ; 1,24 pour le plus de 1,5 seulement (Patrick, 24/11)
+                if cc is None or cc < cm: continue
+                r = constat(x, cat["marche"], cc, {**cfg, "cote_min": cm})
                 if "A" not in r: continue
                 A, B = r["A"], r["B"]
                 e = {"marche": cat["marche"], "libelle": r["libelle"], "cote": cc, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"],
