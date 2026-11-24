@@ -1,0 +1,21 @@
+DONNEES DE L'ETUDE ARCHETYPE FOOT (24/11/2026) - fichiers CSV lisibles directement, aucune compression interne.
+Cahier des charges complet : CAHIER_DES_CHARGES_ETUDE.md (a lire en premier).
+
+1) bloc_matchs_footballdata.csv (16 558 matchs joues, 38 divisions Football-Data, 2025-01-23 au 2026-10-16)
+   id, saison, division, date, domicile, exterieur, buts_dom, buts_ext, cote_1/N/2_cloture et cote_plus/moins_2_5_cloture (moyennes Football-Data, peuvent etre vides).
+   Pas de xG dans ce fichier.
+
+2) grand_echantillon_2000_2021.csv (100 422 matchs, resultats seulement, SANS cotes, SANS xG)
+   ligue (eng, de, es, it, fr, at, nl, pt, br, ar, eng.2, eng.3, eng.4, eng.5, de.2, de.3, es.2), saison, date, domicile, exterieur, buts_dom, buts_ext.
+   Source publique GitHub (Soccerverse / footballcsv). Les equipes d'une meme ligue gardent le meme nom d'une saison a l'autre.
+
+3) flux_matchs_betpawa.csv (5 739 matchs du flux du 28/09 au 02/11/2026 ; 4 820 avec score)
+   match_id, date, competition, domicile, exterieur, buts_dom, buts_ext (vides si pas encore joue), cotes Betpawa :
+   bp_1, bp_N, bp_2, bp_dc_1N, bp_dc_12, bp_dc_N2, bp_plus_1_5, bp_moins_1_5, bp_plus_2_5, bp_moins_2_5, bp_moins_4_5, bp_btts_oui, bp_dom_plus_0_5, bp_dom_plus_1_5.
+   Pas de cote Betpawa pour l'equipe a l'exterieur ni pour les combines.
+
+4) flux_historiques_equipes.csv (26 142 matchs d'equipes, dedoublonnes)
+   equipe, competition, saison, date, a_domicile (1 = cette equipe jouait a domicile), adversaire, buts_marques, buts_encaisses, xg_cree, xg_concede (3 594 lignes avec xG, equipes Football-Data), source.
+   Sert a calculer les 4 piliers (au lieu du match SEULEMENT) et le xG (TOUS lieux confondus) des matchs du fichier 3, avec les matchs joues AVANT la date du match.
+
+Regles a respecter : piliers = matchs a ce lieu seulement ; xG = tous les matchs de la saison, domicile et exterieur confondus ; jamais de match du jour ni de l'avenir ; 4 matchs minimum au meme lieu ; cote seulement a la fin (minimum 1,26).
