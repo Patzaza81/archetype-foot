@@ -16,6 +16,8 @@ CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "categories_zones.json
 NMIN = 4            # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
 NCHAMP_MIN = 10     # moyenne du championnat lue sur au moins 10 matchs précédents ; sinon les intervalles qui utilisent le xG ou le championnat ne s'appliquent pas
 COTE_MIN_MARCHE = {"total_plus_1.5": 1.24}   # Patrick (24/11/2026) : exceptionnellement 1,24 pour le plus de 1,5 seulement (sa cote médiane est de 1,21) ; les autres marchés gardent la cote minimale de la page (1,26)
+BANDE_COTE = (1.24, 1.26)   # Patrick (24/11/2026) : pour tous les autres marchés, les 3 meilleurs de chaque jour dont la cote est de 1,24 ou 1,25 s'ajoutent aux marchés cotés 1,26 et plus
+NB_BANDE = 3
 Z95 = 1.96
 VARIABLES_XG = ("sMh", "sCh", "sMa", "sCa", "EH", "EA", "ET", "dE", "rE", "mu", "EHm", "EAm", "gH", "gA")
 
@@ -117,3 +119,19 @@ def resume(zones=None):
         out[nom] = {"marche": M["marche"], "seuil": M["seuil"], "version": M["version"], "intervalles": len(M["intervalles"]), "test_2017_2020": vus[0], "bloc_2025_26": vus[1],
                     "part_test_2017_2020": st["test_2017_2020"]["part_des_matchs"]}
     return {"gele_le": zones.get("gele_le"), "marches": out}
+
+def limiter_bande(matchs, jour, n=None):
+    """Garde, pour chaque jour et chaque marché, les n meilleurs paris de la bande de cote 1,24-1,25 (les meilleurs = marge la plus haute, puis ordre du match_id) ; les paris cotés 1,26 et plus ne sont jamais limités.
+    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> jour du match. Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
+    n = NB_BANDE if n is None else n; cand = {}
+    for m in matchs:
+        for p in (m.get("categories") or {}).get("paris", []):
+            if p["categorie"].get("bande"):
+                d = cand.setdefault((jour(m), p["marche"]), {}); d[m["match_id"]] = max(d.get(m["match_id"], -1), p["categorie"]["marge"])
+    garde = {(k, mid) for k, d in cand.items() for mid, _ in sorted(d.items(), key=lambda t: (-t[1], str(t[0])))[:n]}
+    for m in matchs:
+        C = m.get("categories")
+        if not C: continue
+        C["paris"] = [p for p in C["paris"] if not p["categorie"].get("bande") or ((jour(m), p["marche"]), m["match_id"]) in garde]
+        if not C["paris"]: del m["categories"]
+    return matchs
