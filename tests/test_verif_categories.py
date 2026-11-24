@@ -15,7 +15,7 @@ REF = json.load(open(pathlib.Path(__file__).with_name("categories_exemples.json"
 ZONES = VC.charger()
 # seuils de Patrick (24/11/2026), un par marché
 SEUILS = {"1": 0.70, "2": 0.60, "total_plus_1.5": 0.80, "1N": 0.90, "N2": 0.75, "dom_plus_0.5": 0.90, "ext_plus_0.5": 0.80,
-          "1N&total_plus_1.5": 0.70, "N2&total_plus_1.5": 0.60, "1N&total_moins_4.5": 0.74, "N2&total_moins_4.5": 0.65}
+          "1N&total_plus_1.5": 0.70, "N2&total_plus_1.5": 0.60, "1N&total_moins_4.5": 0.70, "N2&total_moins_4.5": 0.65}
 ENT = ("hM", "hC", "aM", "aC", "sMh", "sCh", "sMa", "sCa", "mu")
 
 def _fiche_ref(l):
