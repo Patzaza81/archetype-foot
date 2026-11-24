@@ -1,5 +1,5 @@
 {
- "genere_le": "2026-11-23T02:43:36Z",
+ "genere_le": "2026-11-24T06:39:14Z",
  "source": "journal gele data/calibration_p1/parallele/journal.jsonl + scores data/archive_test",
  "mode": "parallele",
  "calibration": {
@@ -9,103 +9,103 @@
   "texte": "Aucune correction validee : P1 calibre = P1 original."
  },
  "journal": {
-  "lignes": 664,
+  "lignes": 666,
   "anomalies": [],
-  "derniere_empreinte": "eefe15c20f6cb43db74881cf2b6351bb7c58d70667edde14185354d4edb2dfae"
+  "derniere_empreinte": "0911ff78b6446c79ebf894d369940a19f0fc17e9d21d2ce3866614152513b6dc"
  },
  "apprentissage": {
-  "matchs_termines": 580,
+  "matchs_termines": 597,
   "periode": [
    "2026-11-05",
-   "2026-11-22"
+   "2026-11-23"
   ],
   "corrections_validees": [],
   "texte": "Aucune correction validee : P1 inchange."
  },
  "performance": {
-  "matchs_termines": 580,
+  "matchs_termines": 597,
   "periode": [
    "2026-11-05",
-   "2026-11-22"
+   "2026-11-23"
   ],
   "par_version": {
    "original": {
-    "logloss_1x2": 1.005346049062355,
-    "brier_1x2": 0.6008961448190694,
-    "favori_correct": 296,
-    "favori_taux": 0.5103448275862069,
-    "favori_erreur_type": 0.02075692591278007,
+    "logloss_1x2": 1.003546355695421,
+    "brier_1x2": 0.5997316946609944,
+    "favori_correct": 306,
+    "favori_taux": 0.5125628140703518,
+    "favori_erreur_type": 0.020457177388500575,
     "marches": {
      "o15": {
-      "n": 580,
-      "frequence_reelle": 0.7655172413793103,
-      "probabilite_moyenne": 0.7580431728460795,
-      "brier": 0.18074161007896794
+      "n": 597,
+      "frequence_reelle": 0.7638190954773869,
+      "probabilite_moyenne": 0.7583922899050947,
+      "brier": 0.1817449576963253
      },
      "o25": {
-      "n": 580,
-      "frequence_reelle": 0.5379310344827586,
-      "probabilite_moyenne": 0.5221884436668187,
-      "brier": 0.24290962990158332
+      "n": 597,
+      "frequence_reelle": 0.5376884422110553,
+      "probabilite_moyenne": 0.5227282012252487,
+      "brier": 0.24305269995560508
      },
      "o35": {
-      "n": 580,
-      "frequence_reelle": 0.32068965517241377,
-      "probabilite_moyenne": 0.3065306211274404,
-      "brier": 0.2176535141355466
+      "n": 597,
+      "frequence_reelle": 0.3232830820770519,
+      "probabilite_moyenne": 0.3070927907166919,
+      "brier": 0.2191916666781786
      },
      "btts": {
-      "n": 580,
-      "frequence_reelle": 0.5465517241379311,
-      "probabilite_moyenne": 0.539319282010008,
-      "brier": 0.2506075771839303
+      "n": 597,
+      "frequence_reelle": 0.5443886097152428,
+      "probabilite_moyenne": 0.5396386206982672,
+      "brier": 0.2511208612695768
      }
     }
    },
    "calibre": {
-    "logloss_1x2": 1.005346049062355,
-    "brier_1x2": 0.6008961448190694,
-    "favori_correct": 296,
-    "favori_taux": 0.5103448275862069,
-    "favori_erreur_type": 0.02075692591278007,
+    "logloss_1x2": 1.003546355695421,
+    "brier_1x2": 0.5997316946609944,
+    "favori_correct": 306,
+    "favori_taux": 0.5125628140703518,
+    "favori_erreur_type": 0.020457177388500575,
     "marches": {
      "o15": {
-      "n": 580,
-      "frequence_reelle": 0.7655172413793103,
-      "probabilite_moyenne": 0.7580431728460795,
-      "brier": 0.18074161007896794
+      "n": 597,
+      "frequence_reelle": 0.7638190954773869,
+      "probabilite_moyenne": 0.7583922899050947,
+      "brier": 0.1817449576963253
      },
      "o25": {
-      "n": 580,
-      "frequence_reelle": 0.5379310344827586,
-      "probabilite_moyenne": 0.5221884436668187,
-      "brier": 0.24290962990158332
+      "n": 597,
+      "frequence_reelle": 0.5376884422110553,
+      "probabilite_moyenne": 0.5227282012252487,
+      "brier": 0.24305269995560508
      },
      "o35": {
-      "n": 580,
-      "frequence_reelle": 0.32068965517241377,
-      "probabilite_moyenne": 0.3065306211274404,
-      "brier": 0.2176535141355466
+      "n": 597,
+      "frequence_reelle": 0.3232830820770519,
+      "probabilite_moyenne": 0.3070927907166919,
+      "brier": 0.2191916666781786
      },
      "btts": {
-      "n": 580,
-      "frequence_reelle": 0.5465517241379311,
-      "probabilite_moyenne": 0.539319282010008,
-      "brier": 0.2506075771839303
+      "n": 597,
+      "frequence_reelle": 0.5443886097152428,
+      "probabilite_moyenne": 0.5396386206982672,
+      "brier": 0.2511208612695768
      }
     }
    }
   }
  },
  "performance_paris": {
-  "matchs_termines": 580,
-  "paris": 550,
-  "matchs_sans_pari": 30,
-  "gagnes": 323,
-  "taux": 0.5872727272727273,
-  "taux_erreur_type": 0.02099278971778731,
-  "rendement_moyen": -0.06916363636363636,
-  "rendement_erreur_type": 0.036408212320855414
+  "matchs_termines": 597,
+  "paris": 566,
+  "matchs_sans_pari": 31,
+  "gagnes": 330,
+  "taux": 0.5830388692579506,
+  "taux_erreur_type": 0.02072470343564263,
+  "rendement_moyen": -0.07669611307420494,
+  "rendement_erreur_type": 0.03584673840414363
  },
  "matchs": [
   {
@@ -257812,9 +257812,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4322941103915946,
+     "logloss_1x2": 0.8386491112931114,
+     "brier_1x2": 0.48571362693438935,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5933150722050016,
+      "o25": 0.2834878724630944,
+      "o35": 0.0959937446227378,
+      "btts": 0.3193676481324302
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.4322941103915946,
+     "logloss_1x2": 0.8386491112931114,
+     "brier_1x2": 0.48571362693438935,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.5933150722050016,
+      "o25": 0.2834878724630944,
+      "o35": 0.0959937446227378,
+      "btts": 0.3193676481324302
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.56
+    }
+   }
   },
   {
    "match_id": "9hvjk1jfm0uqeoo6vvn9hqvbo",
@@ -258255,9 +258300,54 @@
      }
     ]
    },
-   "statut": "en_cours_ou_resultat_attendu",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2571954767430501,
+     "logloss_1x2": 1.3579188733088927,
+     "brier_1x2": 0.8350273310462695,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06453437347492577,
+      "o25": 0.25084291835765044,
+      "o35": 0.5191962922429527,
+      "btts": 0.21298596912290857
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2571954767430501,
+     "logloss_1x2": 1.3579188733088927,
+     "brier_1x2": 0.8350273310462695,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.06453437347492577,
+      "o25": 0.25084291835765044,
+      "o35": 0.5191962922429527,
+      "btts": 0.21298596912290857
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "1hj41lxnzn01j4kwi0klfq6fo",
@@ -258602,9 +258692,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.28495290044461713,
+     "logloss_1x2": 1.2554313739685237,
+     "brier_1x2": 0.794440120717143,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.13516332491573765,
+      "o25": 0.13182477367779408,
+      "o35": 0.02902001992330919,
+      "btts": 0.34268102254486654
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.28495290044461713,
+     "logloss_1x2": 1.2554313739685237,
+     "brier_1x2": 0.794440120717143,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.13516332491573765,
+      "o25": 0.13182477367779408,
+      "o35": 0.02902001992330919,
+      "btts": 0.34268102254486654
+     }
+    },
+    "pari": {
+     "cle": "2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "worlcpbc1ibpzbdrirob37ys",
@@ -258973,9 +259108,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4110775976932263,
+     "logloss_1x2": 0.8889732801334896,
+     "brier_1x2": 0.5208769795550237,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.4700539073819687,
+      "o25": 0.1790870051088141,
+      "o35": 0.046494406765864915,
+      "btts": 0.2298676543109392
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4110775976932263,
+     "logloss_1x2": 0.8889732801334896,
+     "brier_1x2": 0.5208769795550237,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.4700539073819687,
+      "o25": 0.1790870051088141,
+      "o35": 0.046494406765864915,
+      "btts": 0.2298676543109392
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "9dirrcydsp0tcov0kcbas74es",
@@ -259344,9 +259524,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.8469654632230191,
+     "logloss_1x2": 0.16609536057698435,
+     "brier_1x2": 0.036545944898152126,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.7861502245214158,
+      "o25": 0.518203476076968,
+      "o35": 0.262558004701241,
+      "btts": 0.21133858931206653
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.8469654632230191,
+     "logloss_1x2": 0.16609536057698435,
+     "brier_1x2": 0.036545944898152126,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.7861502245214158,
+      "o25": 0.518203476076968,
+      "o35": 0.262558004701241,
+      "btts": 0.21133858931206653
+     }
+    },
+    "pari": {
+     "cle": "o15+",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "94ekmnf0x83rnqm8icsdhnvv8",
@@ -259751,9 +259976,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3280010159678116,
+     "logloss_1x2": 1.1147385731399502,
+     "brier_1x2": 0.6989926145227703,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.6877629807608356,
+      "o25": 0.38554462772285664,
+      "o35": 0.15869230654160124,
+      "btts": 0.4021089647698465
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.3280010159678116,
+     "logloss_1x2": 1.1147385731399502,
+     "brier_1x2": 0.6989926145227703,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.6877629807608356,
+      "o25": 0.38554462772285664,
+      "o35": 0.15869230654160124,
+      "btts": 0.4021089647698465
+     }
+    },
+    "pari": {
+     "cle": "N2",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "czdtyunf4zqavplreju7orhn8",
@@ -260073,9 +260343,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5421847165388984,
+     "logloss_1x2": 0.6121485301811457,
+     "brier_1x2": 0.3147326634264485,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.025706050651830167,
+      "o25": 0.13124717647833345,
+      "o35": 0.340438350855626,
+      "btts": 0.14071233672753009
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5421847165388984,
+     "logloss_1x2": 0.6121485301811457,
+     "brier_1x2": 0.3147326634264485,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.025706050651830167,
+      "o25": 0.13124717647833345,
+      "o35": 0.340438350855626,
+      "btts": 0.14071233672753009
+     }
+    },
+    "pari": {
+     "cle": "12",
+     "gagne": true,
+     "gain": 0.28
+    }
+   }
   },
   {
    "match_id": "6g6wzdg2aj72p4352an0ml2j8",
@@ -260492,9 +260807,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 0,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4253503526447174,
+     "logloss_1x2": 0.8548420904910743,
+     "brier_1x2": 0.5002290311961242,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.034891816269958444,
+      "o25": 0.35474221065326034,
+      "o35": 0.1382544365507036,
+      "btts": 0.3792388925299732
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4253503526447174,
+     "logloss_1x2": 0.8548420904910743,
+     "brier_1x2": 0.5002290311961242,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.034891816269958444,
+      "o25": 0.35474221065326034,
+      "o35": 0.1382544365507036,
+      "btts": 0.3792388925299732
+     }
+    },
+    "pari": {
+     "cle": "N2",
+     "gagne": true,
+     "gain": 0.53
+    }
+   }
   },
   {
    "match_id": "13p72tfwy10fn6l94g9cfjsic",
@@ -260923,9 +261283,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3807198692707524,
+     "logloss_1x2": 0.9656914255430739,
+     "brier_1x2": 0.5776851687478066,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.09210182533213493,
+      "o25": 0.3177921144704164,
+      "o35": 0.5989483171307085,
+      "btts": 0.2573336956437522
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.3807198692707524,
+     "logloss_1x2": 0.9656914255430739,
+     "brier_1x2": 0.5776851687478066,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.09210182533213493,
+      "o25": 0.3177921144704164,
+      "o35": 0.5989483171307085,
+      "btts": 0.2573336956437522
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "dytcm1mw6l0nyvht36e1pwcus",
@@ -261354,9 +261759,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38103641048927345,
+     "logloss_1x2": 0.9648603428328918,
+     "brier_1x2": 0.5914589598083205,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.014785107243936765,
+      "o25": 0.087221359773003,
+      "o35": 0.2437722758843347,
+      "btts": 0.49337802235461464
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.38103641048927345,
+     "logloss_1x2": 0.9648603428328918,
+     "brier_1x2": 0.5914589598083205,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.014785107243936765,
+      "o25": 0.087221359773003,
+      "o35": 0.2437722758843347,
+      "btts": 0.49337802235461464
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 1.1
+    }
+   }
   },
   {
    "match_id": "dz5tflubfe118q4fkzd3go74k",
@@ -261785,9 +262235,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 2,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5556204711512956,
+     "logloss_1x2": 0.5876698236559911,
+     "brier_1x2": 0.2965643379869546,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.020834449577838667,
+      "o25": 0.11254310432968484,
+      "o35": 0.3063702020379728,
+      "btts": 0.12761358097763664
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.5556204711512956,
+     "logloss_1x2": 0.5876698236559911,
+     "brier_1x2": 0.2965643379869546,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.020834449577838667,
+      "o25": 0.11254310432968484,
+      "o35": 0.3063702020379728,
+      "btts": 0.12761358097763664
+     }
+    },
+    "pari": {
+     "cle": "1N",
+     "gagne": true,
+     "gain": 0.33000000000000007
+    }
+   }
   },
   {
    "match_id": "4h943cym7oqq1cv6n8tqpvpxw",
@@ -262150,9 +262645,49 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4812468957687313,
+     "logloss_1x2": 0.7313748437516349,
+     "brier_1x2": 0.40479165873718387,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03868536102109131,
+      "o25": 0.17596884668116275,
+      "o35": 0.41411541922224243,
+      "btts": 0.16411684303661628
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.4812468957687313,
+     "logloss_1x2": 0.7313748437516349,
+     "brier_1x2": 0.40479165873718387,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.03868536102109131,
+      "o25": 0.17596884668116275,
+      "o35": 0.41411541922224243,
+      "btts": 0.16411684303661628
+     }
+    }
+   }
   },
   {
    "match_id": "43kt31ggx7usfpagknerzqgpg",
@@ -262484,9 +263019,54 @@
     ],
     "h2h": []
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": false,
+     "o25": false,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.42166798306129,
+     "logloss_1x2": 0.863537044609017,
+     "brier_1x2": 0.5018135412567899,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.44380379975461626,
+      "o25": 0.16045381884696316,
+      "o35": 0.03922692664609009,
+      "btts": 0.21077069063345696
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.42166798306129,
+     "logloss_1x2": 0.863537044609017,
+     "brier_1x2": 0.5018135412567899,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.44380379975461626,
+      "o25": 0.16045381884696316,
+      "o35": 0.03922692664609009,
+      "btts": 0.21077069063345696
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.28
+    }
+   }
   },
   {
    "match_id": "44j8dm51hjonw8k6173s9a61g",
@@ -262831,9 +263411,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 2,
+    "buts_ext": 3,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": false,
+     "ext": true,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "ext",
+     "p_issue": 0.23819850269027099,
+     "logloss_1x2": 1.4346509080157444,
+     "brier_1x2": 0.8965000353803056,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10041880960575694,
+      "o25": 0.3361277786337063,
+      "o35": 0.6189028036023155,
+      "btts": 0.2933981405377379
+     }
+    },
+    "calibre": {
+     "issue_1x2": "ext",
+     "p_issue": 0.23819850269027099,
+     "logloss_1x2": 1.4346509080157444,
+     "brier_1x2": 0.8965000353803056,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.10041880960575694,
+      "o25": 0.3361277786337063,
+      "o35": 0.6189028036023155,
+      "btts": 0.2933981405377379
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "7tto7hbwd8o4wifwovvhbk1zo",
@@ -263190,9 +263815,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 3,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": false,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.30675592351607095,
+     "logloss_1x2": 1.1817028850117244,
+     "brier_1x2": 0.7437171635806081,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04022140109705846,
+      "o25": 0.18087455098147434,
+      "o35": 0.12296803638080533,
+      "btts": 0.35475201243487003
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.30675592351607095,
+     "logloss_1x2": 1.1817028850117244,
+     "brier_1x2": 0.7437171635806081,
+     "favori": "ext",
+     "brier": {
+      "o15": 0.04022140109705846,
+      "o25": 0.18087455098147434,
+      "o35": 0.12296803638080533,
+      "btts": 0.35475201243487003
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": true,
+     "gain": 0.55
+    }
+   }
   },
   {
    "match_id": "4veowc3ye0ziovl62553c2g44",
@@ -263561,9 +264231,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 4,
+    "buts_ext": 0,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": true,
+     "nul": false,
+     "ext": false,
+     "o15": true,
+     "o25": true,
+     "o35": true,
+     "btts": false
+    },
+    "original": {
+     "issue_1x2": "dom",
+     "p_issue": 0.46736435887447675,
+     "logloss_1x2": 0.7606461137975372,
+     "brier_1x2": 0.42559322849518444,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08018334942985562,
+      "o25": 0.2901208583291472,
+      "o35": 0.5673679168344679,
+      "btts": 0.2508445045254879
+     }
+    },
+    "calibre": {
+     "issue_1x2": "dom",
+     "p_issue": 0.46736435887447675,
+     "logloss_1x2": 0.7606461137975372,
+     "brier_1x2": 0.42559322849518444,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.08018334942985562,
+      "o25": 0.2901208583291472,
+      "o35": 0.5673679168344679,
+      "btts": 0.2508445045254879
+     }
+    },
+    "pari": {
+     "cle": "o35-",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "8371uo2o7j0j4yx1kkf9r9yj8",
@@ -263920,9 +264635,54 @@
      }
     ]
    },
-   "statut": "a_venir",
-   "resultat": null,
-   "evaluation": null
+   "statut": "termine",
+   "resultat": {
+    "buts_dom": 1,
+    "buts_ext": 1,
+    "source": "historique_pronostics.json"
+   },
+   "evaluation": {
+    "realise": {
+     "dom": false,
+     "nul": true,
+     "ext": false,
+     "o15": true,
+     "o25": false,
+     "o35": false,
+     "btts": true
+    },
+    "original": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2375124315070761,
+     "logloss_1x2": 1.4375353136896092,
+     "brier_1x2": 0.8953753112639204,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04299404566084319,
+      "o25": 0.31879403799355566,
+      "o35": 0.11606734831263278,
+      "btts": 0.17625084366304364
+     }
+    },
+    "calibre": {
+     "issue_1x2": "nul",
+     "p_issue": 0.2375124315070761,
+     "logloss_1x2": 1.4375353136896092,
+     "brier_1x2": 0.8953753112639204,
+     "favori": "dom",
+     "brier": {
+      "o15": 0.04299404566084319,
+      "o25": 0.31879403799355566,
+      "o35": 0.11606734831263278,
+      "btts": 0.17625084366304364
+     }
+    },
+    "pari": {
+     "cle": "1",
+     "gagne": false,
+     "gain": -1.0
+    }
+   }
   },
   {
    "match_id": "2srs1nuli18bhewtdpv2frwus",
@@ -264561,7 +265321,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -265226,7 +265986,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -265879,7 +266639,7 @@
      }
     ]
    },
-   "statut": "a_venir",
+   "statut": "en_cours_ou_resultat_attendu",
    "resultat": null,
    "evaluation": null
   },
@@ -266073,6 +266833,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Modena",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
       "date": "2026-11-01",
       "adversaire": "Empoli",
       "marques": 2,
@@ -266110,6 +266876,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Palermo",
+      "marques": 3,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Padova",
@@ -266362,6 +267134,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Sampdoria",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Cremonese",
       "marques": 0,
@@ -266387,6 +267165,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Pisa",
+      "marques": 0,
+      "encaisses": 1
+     },
      {
       "date": "2026-11-01",
       "adversaire": "Juve Stabia",
@@ -266602,6 +267386,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-20",
+      "adversaire": "Verona",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Sudtirol",
       "marques": 1,
@@ -266633,6 +267423,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Vicenza",
+      "marques": 2,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-06",
       "adversaire": "Palermo",
@@ -266854,6 +267650,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Catanzaro",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
       "date": "2026-11-06",
       "adversaire": "Ascoli",
       "marques": 1,
@@ -266891,6 +267693,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Cremonese",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Cesena",
@@ -267161,6 +267969,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Ascoli",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
       "date": "2026-11-01",
       "adversaire": "Palermo",
       "marques": 1,
@@ -267198,6 +268012,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Virtus Entella",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-11-08",
       "adversaire": "Sampdoria",
@@ -267425,6 +268245,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Carrarese",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Sampdoria",
       "marques": 0,
@@ -267456,6 +268282,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-20",
+      "adversaire": "Cesena",
+      "marques": 0,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-01",
       "adversaire": "Carrarese",
@@ -267663,6 +268495,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Lincoln",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-30",
       "adversaire": "Sheffield United",
       "marques": 0,
@@ -267706,6 +268544,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Middlesbrough",
+      "marques": 0,
+      "encaisses": 2
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Bolton",
@@ -267982,6 +268826,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "West Ham",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Stoke",
       "marques": 0,
@@ -268025,6 +268875,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Norwich",
+      "marques": 1,
+      "encaisses": 2
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Wolves",
@@ -268387,6 +269243,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Wolves",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Middlesbrough",
       "marques": 0,
@@ -268430,6 +269292,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Wrexham",
+      "marques": 0,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Birmingham",
@@ -268593,6 +269461,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Bristol City",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Charlton",
       "marques": 3,
@@ -268736,6 +269610,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "West Brom",
+      "marques": 2,
+      "encaisses": 2
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Blackburn",
@@ -268954,6 +269834,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Cardiff",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Watford",
       "marques": 3,
@@ -268997,6 +269883,12 @@
      }
     ],
     "ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Millwall",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Southampton",
@@ -269409,6 +270301,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Bolton",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Burnley",
       "marques": 0,
@@ -269452,6 +270350,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Preston",
+      "marques": 1,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "West Brom",
@@ -269615,6 +270519,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Watford",
+      "marques": 4,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-30",
       "adversaire": "Wrexham",
       "marques": 1,
@@ -269758,6 +270668,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Derby",
+      "marques": 2,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "QPR",
@@ -269934,6 +270850,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Wigan",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "Mansfield",
       "marques": 1,
@@ -269971,6 +270893,12 @@
      }
     ],
     "ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Huddersfield",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-24",
       "adversaire": "Luton",
@@ -270097,6 +271025,377 @@
      }
     ],
     "h2h": []
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "16qdwf025flh3uils5440ror8",
+   "date": "2026-11-24",
+   "coup_d_envoi_utc": "2026-11-24T19:45:00Z",
+   "competition": "Angleterre : League One",
+   "division": "E2",
+   "domicile": "Bradford",
+   "exterieur": "Barnsley",
+   "p1_original": {
+    "dom": 0.4835626540076426,
+    "nul": 0.2568414468610444,
+    "ext": 0.259595899131313,
+    "o15": 0.7259835426766549,
+    "o25": 0.4730059111007826,
+    "o35": 0.2566243461479509,
+    "btts": 0.50639566903463
+   },
+   "p1_calibre": {
+    "dom": 0.4835626540076426,
+    "nul": 0.2568414468610444,
+    "ext": 0.259595899131313,
+    "o15": 0.7259835426766549,
+    "o25": 0.4730059111007826,
+    "o35": 0.2566243461479509,
+    "btts": 0.50639566903463
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.5229884340319944,
+    "buts_attendus_ext": 1.043027742239327,
+    "k": 20,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 60,
+    "matchs_anterieurs_ext": 198,
+    "fd_dom": "Bradford",
+    "fd_ext": "Barnsley"
+   },
+   "gele_le": "2026-11-24T06:39:10Z",
+   "empreinte": "0911ff78b6446c79ebf894d369940a19f0fc17e9d21d2ce3866614152513b6dc",
+   "mode": "parallele",
+   "n_historique_competition": 2935,
+   "pari": {
+    "retenu": {
+     "cle": "o35-",
+     "libelle": "Moins de 3,5 buts",
+     "p1": 0.7433756538520491,
+     "cote": 1.63,
+     "valeur": 0.2117023157788398
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Bradford",
+      "p1": 0.4835626540076426,
+      "cote": 1.56,
+      "valeur": -0.24564225974807752
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.2568414468610444,
+      "cote": 4.48,
+      "valeur": 0.15064968193747896
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Barnsley",
+      "p1": 0.259595899131313,
+      "cote": 5.12,
+      "valeur": 0.3291310035523225
+     },
+     {
+      "cle": "1N",
+      "libelle": "Bradford ou match nul",
+      "p1": 0.740404100868687,
+      "cote": 1.19,
+      "valeur": -0.11891911996626248
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Barnsley",
+      "p1": 0.5164373459923574,
+      "cote": 2.28,
+      "valeur": 0.1774771488625746
+     },
+     {
+      "cle": "12",
+      "libelle": "Bradford ou Barnsley (pas de nul)",
+      "p1": 0.7431585531389555,
+      "cote": 1.22,
+      "valeur": -0.09334656517047424
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7259835426766549,
+      "cote": 1.13,
+      "valeur": -0.17963859677538008
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.2740164573233451,
+      "cote": 5.44,
+      "valeur": 0.4906495278389975
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.4730059111007826,
+      "cote": 1.47,
+      "valeur": -0.30468131068184956
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.5269940888992174,
+      "cote": 2.57,
+      "valeur": 0.35437480847098857
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.2566243461479509,
+      "cote": 2.19,
+      "valeur": -0.4379926819359876
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.7433756538520491,
+      "cote": 1.63,
+      "valeur": 0.2117023157788398
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.50639566903463,
+      "cote": 1.54,
+      "valeur": -0.22015066968666985
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.49360433096537004,
+      "cote": 2.31,
+      "valeur": 0.14022600453000478
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 1.56,
+    "N": 4.48,
+    "2": 5.12,
+    "1N": 1.19,
+    "N2": 2.28,
+    "12": 1.22,
+    "o15+": 1.13,
+    "o15-": 5.44,
+    "o25+": 1.47,
+    "o25-": 2.57,
+    "o35+": 2.19,
+    "o35-": 1.63,
+    "btts+": 1.54,
+    "btts-": 2.31
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Doncaster",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-31",
+      "adversaire": "Huddersfield",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Stevenage",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Leyton Orient",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Mansfield",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Cambridge",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Peterboro",
+      "marques": 2,
+      "encaisses": 0
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-14",
+      "adversaire": "Wigan",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "Reading",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Luton",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Stockport",
+      "marques": 1,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Plymouth",
+      "marques": 0,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Leyton Orient",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Doncaster",
+      "marques": 0,
+      "encaisses": 0
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-10-24",
+      "adversaire": "Oxford",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-20",
+      "adversaire": "Burton",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-03",
+      "adversaire": "Reading",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Luton",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Notts County",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Plymouth",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-08-20",
+      "adversaire": "Sheffield Weds",
+      "marques": 1,
+      "encaisses": 0
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-20",
+      "adversaire": "Sheffield Weds",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-31",
+      "adversaire": "Oxford",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Cambridge",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Leicester",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Stevenage",
+      "marques": 1,
+      "encaisses": 5
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Blackpool",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Bromley",
+      "marques": 0,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-04-18",
+      "domicile": false,
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2025-10-18",
+      "domicile": true,
+      "marques": 2,
+      "encaisses": 2
+     }
+    ]
    },
    "statut": "a_venir",
    "resultat": null,
@@ -270254,6 +271553,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Oxford",
+      "marques": 3,
+      "encaisses": 4
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "AFC Wimbledon",
       "marques": 1,
@@ -270291,6 +271596,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Reading",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Wigan",
@@ -270530,6 +271841,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-20",
+      "adversaire": "Barnsley",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "Doncaster",
       "marques": 0,
@@ -270567,6 +271884,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Notts County",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Leicester",
@@ -270838,6 +272161,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Fleetwood Town",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "Tranmere",
       "marques": 1,
@@ -270951,6 +272280,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Port Vale",
+      "marques": 2,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-27",
       "adversaire": "York",
@@ -271279,6 +272614,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Barnet",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "York",
       "marques": 0,
@@ -271316,6 +272657,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Rochdale",
+      "marques": 3,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-03",
       "adversaire": "Oldham",
@@ -271662,6 +273009,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Solihull",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
       "date": "2026-11-14",
       "adversaire": "Harrogate",
       "marques": 0,
@@ -271717,6 +273070,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Hornchurch",
+      "marques": 4,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Southend",
@@ -272069,6 +273428,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Barrow",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Altrincham",
       "marques": 4,
@@ -272118,6 +273483,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Eastleigh",
+      "marques": 1,
+      "encaisses": 3
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Woking",
@@ -272470,6 +273841,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Tamworth",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Barrow",
       "marques": 1,
@@ -272519,6 +273896,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Forest Green",
+      "marques": 3,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-14",
       "adversaire": "Boreham Wood",
@@ -272919,6 +274302,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Yeovil",
+      "marques": 2,
+      "encaisses": 3
+     },
+     {
       "date": "2026-09-26",
       "adversaire": "Sutton",
       "marques": 3,
@@ -272950,6 +274339,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-20",
+      "adversaire": "Boreham Wood",
+      "marques": 2,
+      "encaisses": 3
+     },
      {
       "date": "2026-11-14",
       "adversaire": "Aldershot",
@@ -273308,6 +274703,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Kidderminster",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
       "date": "2026-11-14",
       "adversaire": "Eastleigh",
       "marques": 2,
@@ -273363,6 +274764,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Woking",
+      "marques": 5,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Yeovil",
@@ -273727,6 +275134,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Wealdstone",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
       "date": "2026-10-30",
       "adversaire": "Fylde",
       "marques": 1,
@@ -273782,6 +275195,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Boston Utd",
+      "marques": 1,
+      "encaisses": 0
+     },
      {
       "date": "2026-11-14",
       "adversaire": "Solihull",
@@ -274121,6 +275540,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Aldershot",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Boston Utd",
       "marques": 1,
@@ -274176,6 +275601,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Hartlepool",
+      "marques": 1,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-14",
       "adversaire": "Barrow",
@@ -274528,6 +275959,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Halifax",
+      "marques": 0,
+      "encaisses": 5
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Tamworth",
       "marques": 1,
@@ -274577,6 +276014,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Harrogate",
+      "marques": 2,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Sutton",
@@ -274816,6 +276259,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Dundee United",
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
       "date": "2026-10-25",
       "adversaire": "Celtic",
       "marques": 1,
@@ -274929,6 +276378,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Hearts",
+      "marques": 0,
+      "encaisses": 8
+     },
      {
       "date": "2026-10-28",
       "adversaire": "Kilmarnock",
@@ -275147,6 +276602,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Charlton",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Cardiff",
       "marques": 3,
@@ -275190,6 +276651,12 @@
      }
     ],
     "ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Southampton",
+      "marques": 0,
+      "encaisses": 2
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Millwall",
@@ -275549,6 +277016,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Kilmarnock",
+      "marques": 4,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-24",
       "adversaire": "Dundee United",
       "marques": 2,
@@ -275580,6 +277053,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Motherwell",
+      "marques": 2,
+      "encaisses": 1
+     },
      {
       "date": "2026-11-07",
       "adversaire": "St Mirren",
@@ -279914,6 +281393,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Sudtirol",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
       "date": "2026-11-08",
       "adversaire": "Vicenza",
       "marques": 4,
@@ -279951,6 +281436,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-22",
+      "adversaire": "Mantova",
+      "marques": 4,
+      "encaisses": 1
+     },
      {
       "date": "2026-11-01",
       "adversaire": "Pisa",
@@ -280278,6 +281769,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-20",
+      "adversaire": "Southend",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
       "date": "2026-11-14",
       "adversaire": "Yeovil",
       "marques": 2,
@@ -280333,6 +281830,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Scunthorpe",
+      "marques": 2,
+      "encaisses": 0
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Gateshead",
@@ -280633,6 +282136,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-22",
+      "adversaire": "Arezzo",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Catanzaro",
       "marques": 1,
@@ -280664,6 +282173,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Benevento",
+      "marques": 3,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Virtus Entella",
@@ -280898,6 +282413,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-22",
+      "adversaire": "Avellino",
+      "marques": 1,
+      "encaisses": 4
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Modena",
       "marques": 1,
@@ -280929,6 +282450,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-22",
+      "adversaire": "Padova",
+      "marques": 1,
+      "encaisses": 1
+     },
      {
       "date": "2026-11-01",
       "adversaire": "Ascoli",
@@ -281144,6 +282671,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Portsmouth",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Bristol City",
       "marques": 2,
@@ -281187,6 +282720,12 @@
      }
     ],
     "ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Swansea",
+      "marques": 2,
+      "encaisses": 2
+     },
      {
       "date": "2026-10-31",
       "adversaire": "West Ham",
@@ -281514,6 +283053,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-22",
+      "adversaire": "Blackburn",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Portsmouth",
       "marques": 0,
@@ -281557,6 +283102,12 @@
      }
     ],
     "ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Stoke",
+      "marques": 0,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Lincoln",
@@ -281947,6 +283498,12 @@
     ],
     "ext": [
      {
+      "date": "2026-11-22",
+      "adversaire": "Burnley",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Swansea",
       "marques": 0,
@@ -281990,6 +283547,12 @@
      }
     ],
     "dom_ext": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Sheffield United",
+      "marques": 0,
+      "encaisses": 4
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Norwich",
@@ -282422,6 +283985,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Worthing",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Forest Green",
       "marques": 2,
@@ -282471,6 +284040,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Fylde",
+      "marques": 2,
+      "encaisses": 2
+     },
      {
       "date": "2026-11-14",
       "adversaire": "Halifax",
@@ -282804,6 +284379,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Gateshead",
+      "marques": 2,
+      "encaisses": 1
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Boreham Wood",
       "marques": 3,
@@ -282859,6 +284440,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Altrincham",
+      "marques": 2,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Kidderminster",
@@ -283135,6 +284722,12 @@
    "derniers_matchs": {
     "dom": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Birmingham",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Preston",
       "marques": 2,
@@ -283278,6 +284871,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "QPR",
+      "marques": 0,
+      "encaisses": 1
+     },
      {
       "date": "2026-10-31",
       "adversaire": "Derby",
@@ -283648,6 +285247,12 @@
     ],
     "dom_ext": [
      {
+      "date": "2026-11-21",
+      "adversaire": "Bradford",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
       "date": "2026-10-31",
       "adversaire": "Milton Keynes Dons",
       "marques": 1,
@@ -283691,6 +285296,12 @@
      }
     ],
     "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Leicester",
+      "marques": 0,
+      "encaisses": 1
+     },
      {
       "date": "2026-11-03",
       "adversaire": "Luton",
@@ -283745,6 +285356,413 @@
       "date": "2025-08-19",
       "domicile": false,
       "marques": 0,
+      "encaisses": 2
+     }
+    ]
+   },
+   "statut": "a_venir",
+   "resultat": null,
+   "evaluation": null
+  },
+  {
+   "match_id": "2b4yiu3wy119f2tpqstsc3h90",
+   "date": "2026-11-27",
+   "coup_d_envoi_utc": "2026-11-27T20:00:00Z",
+   "competition": "Angleterre : Championnat",
+   "division": "E1",
+   "domicile": "Southampton",
+   "exterieur": "Middlesbrough",
+   "p1_original": {
+    "dom": 0.47114902307747725,
+    "nul": 0.24164852299113515,
+    "ext": 0.28720245393138744,
+    "o15": 0.7862692792331595,
+    "o25": 0.5552847219368834,
+    "o35": 0.33158402181156654,
+    "btts": 0.576736490339542
+   },
+   "p1_calibre": {
+    "dom": 0.47114902307747725,
+    "nul": 0.24164852299113515,
+    "ext": 0.28720245393138744,
+    "o15": 0.7862692792331595,
+    "o25": 0.5552847219368834,
+    "o35": 0.33158402181156654,
+    "btts": 0.576736490339542
+   },
+   "methode": {
+    "dom": "P1",
+    "nul": "P1",
+    "ext": "P1",
+    "o15": "P1",
+    "o25": "P1",
+    "o35": "P1",
+    "btts": "P1"
+   },
+   "detail": {
+    "buts_attendus_dom": 1.6602581127012515,
+    "buts_attendus_ext": 1.24514001534395,
+    "k": 40,
+    "demi_vie_jours": 365,
+    "matchs_anterieurs_dom": 108,
+    "matchs_anterieurs_ext": 246,
+    "fd_dom": "Southampton",
+    "fd_ext": "Middlesbrough"
+   },
+   "gele_le": "2026-11-24T06:39:10Z",
+   "empreinte": "d2bd59916ad6cb13894b65a2cf628c234f47f8380162a2c4626f391dda1e869a",
+   "mode": "parallele",
+   "n_historique_competition": 2952,
+   "pari": {
+    "retenu": {
+     "cle": "1N",
+     "libelle": "Southampton ou match nul",
+     "p1": 0.7127975460686125,
+     "cote": 1.63,
+     "valeur": 0.1618600000918382
+    },
+    "marches": [
+     {
+      "cle": "1",
+      "libelle": "Victoire Southampton",
+      "p1": 0.47114902307747725,
+      "cote": 2.89,
+      "valeur": 0.3616206766939094
+     },
+     {
+      "cle": "N",
+      "libelle": "Match nul",
+      "p1": 0.24164852299113515,
+      "cote": 3.84,
+      "valeur": -0.0720696717140411
+     },
+     {
+      "cle": "2",
+      "libelle": "Victoire Middlesbrough",
+      "p1": 0.28720245393138744,
+      "cote": 2.26,
+      "valeur": -0.3509224541150645
+     },
+     {
+      "cle": "1N",
+      "libelle": "Southampton ou match nul",
+      "p1": 0.7127975460686125,
+      "cote": 1.63,
+      "valeur": 0.1618600000918382
+     },
+     {
+      "cle": "N2",
+      "libelle": "Match nul ou Middlesbrough",
+      "p1": 0.5288509769225226,
+      "cote": 1.42,
+      "valeur": -0.24903161277001795
+     },
+     {
+      "cle": "12",
+      "libelle": "Southampton ou Middlesbrough (pas de nul)",
+      "p1": 0.7583514770088646,
+      "cote": 1.28,
+      "valeur": -0.029310109428653308
+     },
+     {
+      "cle": "o15+",
+      "libelle": "Plus de 1,5 but",
+      "p1": 0.7862692792331595,
+      "cote": 1.16,
+      "valeur": -0.08792763608953502
+     },
+     {
+      "cle": "o15-",
+      "libelle": "Moins de 1,5 but",
+      "p1": 0.21373072076684052,
+      "cote": 5.0,
+      "valeur": 0.06865360383420249
+     },
+     {
+      "cle": "o25+",
+      "libelle": "Plus de 2,5 buts",
+      "p1": 0.5552847219368834,
+      "cote": 1.55,
+      "valeur": -0.13930868099783078
+     },
+     {
+      "cle": "o25-",
+      "libelle": "Moins de 2,5 buts",
+      "p1": 0.4447152780631166,
+      "cote": 2.42,
+      "valeur": 0.07621097291274226
+     },
+     {
+      "cle": "o35+",
+      "libelle": "Plus de 3,5 buts",
+      "p1": 0.33158402181156654,
+      "cote": 2.33,
+      "valeur": -0.22740922917904993
+     },
+     {
+      "cle": "o35-",
+      "libelle": "Moins de 3,5 buts",
+      "p1": 0.6684159781884335,
+      "cote": 1.58,
+      "valeur": 0.05609724553772488
+     },
+     {
+      "cle": "btts+",
+      "libelle": "Les deux équipes marquent",
+      "p1": 0.576736490339542,
+      "cote": 1.5,
+      "valeur": -0.134895264490687
+     },
+     {
+      "cle": "btts-",
+      "libelle": "Au moins une équipe ne marque pas",
+      "p1": 0.423263509660458,
+      "cote": 2.56,
+      "valeur": 0.0835545847307726
+     }
+    ],
+    "cotes_disponibles": 14
+   },
+   "cotes_au_gel": {
+    "1": 2.89,
+    "N": 3.84,
+    "2": 2.26,
+    "1N": 1.63,
+    "N2": 1.42,
+    "12": 1.28,
+    "o15+": 1.16,
+    "o15-": 5.0,
+    "o25+": 1.55,
+    "o25-": 2.42,
+    "o35+": 2.33,
+    "o35-": 1.58,
+    "btts+": 1.5,
+    "btts-": 2.56
+   },
+   "derniers_matchs": {
+    "dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Derby",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-31",
+      "adversaire": "QPR",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Bolton",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-11",
+      "adversaire": "Portsmouth",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Bristol City",
+      "marques": 4,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-08",
+      "adversaire": "Swansea",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "Millwall",
+      "marques": 5,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Stoke",
+      "marques": 3,
+      "encaisses": 1
+     }
+    ],
+    "ext": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Watford",
+      "marques": 0,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-11-04",
+      "adversaire": "Wrexham",
+      "marques": 0,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-23",
+      "adversaire": "Bolton",
+      "marques": 5,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-13",
+      "adversaire": "Stoke",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Birmingham",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "QPR",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-02",
+      "adversaire": "Burnley",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-22",
+      "adversaire": "Blackburn",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "dom_ext": [
+     {
+      "date": "2026-11-07",
+      "adversaire": "Preston",
+      "marques": 0,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-11-03",
+      "adversaire": "West Brom",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-10-24",
+      "adversaire": "West Ham",
+      "marques": 3,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-14",
+      "adversaire": "Norwich",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-19",
+      "adversaire": "Wrexham",
+      "marques": 1,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-05",
+      "adversaire": "Lincoln",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-09-01",
+      "adversaire": "Birmingham",
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-16",
+      "adversaire": "Watford",
+      "marques": 1,
+      "encaisses": 2
+     }
+    ],
+    "ext_dom": [
+     {
+      "date": "2026-11-21",
+      "adversaire": "Bristol City",
+      "marques": 2,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-31",
+      "adversaire": "Charlton",
+      "marques": 3,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-10-17",
+      "adversaire": "Cardiff",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-10-10",
+      "adversaire": "Wolves",
+      "marques": 1,
+      "encaisses": 0
+     },
+     {
+      "date": "2026-09-15",
+      "adversaire": "Millwall",
+      "marques": 2,
+      "encaisses": 2
+     },
+     {
+      "date": "2026-09-12",
+      "adversaire": "Norwich",
+      "marques": 4,
+      "encaisses": 3
+     },
+     {
+      "date": "2026-08-29",
+      "adversaire": "West Brom",
+      "marques": 3,
+      "encaisses": 1
+     },
+     {
+      "date": "2026-08-15",
+      "adversaire": "Lincoln",
+      "marques": 2,
+      "encaisses": 1
+     }
+    ],
+    "h2h": [
+     {
+      "date": "2026-01-04",
+      "domicile": false,
+      "marques": 0,
+      "encaisses": 4
+     },
+     {
+      "date": "2025-09-27",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2024-03-29",
+      "domicile": true,
+      "marques": 1,
+      "encaisses": 1
+     },
+     {
+      "date": "2023-09-23",
+      "domicile": false,
+      "marques": 1,
       "encaisses": 2
      }
     ]
