@@ -90,14 +90,15 @@ function noteRegle25(d) {
   const r = R.regle, E = R.etude, pc = (x) => (x == null ? "—" : fr(x * 100, 1) + " %");
   return `<p class="om-info" style="margin:8px 14px">Règle (les quatre ensemble, ${e(r.n_min)} matchs minimum au même lieu) : le championnat compte au moins <b>${fr(r.championnat_min)}</b> buts par match ; ` +
     `sur la saison, la différence de buts par match de l'équipe à domicile dépasse celle de l'adversaire d'au moins <b>${fr(r.ecart_diff_buts_min)}</b> ; l'équipe à domicile a marqué dans au moins <b>${fr(r.freq_dom_marque_min * 100, 0)} %</b> de ses matchs à domicile ; ` +
-    `l'équipe à l'extérieur marque au plus <b>${fr(r.ext_marques_max)}</b> but par match à l'extérieur. La cote n'entre pas dans la règle : seuls les +2,5 cotés <b>${fr(d.cote_min)}</b> ou plus sont montrés. ` +
+    `l'équipe à l'extérieur marque au plus <b>${fr(r.ext_marques_max)}</b> but par match à l'extérieur` + (r.freq_plus25_min != null ? ` ; dans les matchs des deux équipes à leur lieu, au moins <b>${fr(r.freq_plus25_min * 100, 0)} %</b> ont compté 3 buts ou plus` : "") + `. La cote vient à la fin : seuls les +2,5 cotés de <b>${fr(d.cote_min)}</b> à <b>${fr(r.cote_max)}</b> sont montrés (le marché est d'accord). ` +
     `Sur <b>${e(E.non_vus.matchs)}</b> matchs jamais vus pendant l'étude, le +2,5 est passé <b>${pc(E.non_vus.taux)}</b> du temps (tous les matchs de la même période : ${pc(E.tous_non_vus.taux)}) ; ` +
-    `à cote ${fr(r.cote_min)} ou plus : ${pc(E.non_vus_cote_min.taux)} sur ${e(E.non_vus_cote_min.matchs)} matchs.</p>`;
+    `avec la cote ${fr(r.cote_min)} à ${fr(r.cote_max)} : ${pc(E.non_vus_cote_min.taux)} sur ${e(E.non_vus_cote_min.matchs)} matchs.</p>`;
 }
 function phraseRegle25(m) {
   const x = m.plus25; if (!x) return "";
   return `<div class="om-info">Championnat à <b>${fr(x.championnat)}</b> buts par match ; différence de buts de <b>${e(m.domicile)}</b> supérieure de <b>${fr(x.ecart_diff_buts)}</b> à celle de <b>${e(m.exterieur)}</b> ; ` +
-    `${e(m.domicile)} a marqué dans <b>${fr(x.freq_dom_marque * 100, 0)} %</b> de ses ${e(x.n_dom)} matchs à domicile ; ${e(m.exterieur)} marque <b>${fr(x.ext_marques, 1)}</b> but par match à l'extérieur (${e(x.n_ext)} matchs). <b>Règle remplie.</b></div>`;
+    `${e(m.domicile)} a marqué dans <b>${fr(x.freq_dom_marque * 100, 0)} %</b> de ses ${e(x.n_dom)} matchs à domicile ; ${e(m.exterieur)} marque <b>${fr(x.ext_marques, 1)}</b> but par match à l'extérieur (${e(x.n_ext)} matchs)` +
+    (x.plus25_matchs ? ` ; 3 buts ou plus dans <b>${e(x.plus25_matchs[0])}</b> de leurs <b>${e(x.plus25_matchs[1])}</b> matchs à ce lieu (${fr(x.freq_plus25 * 100, 0)} %)` : "") + `. <b>Règle remplie.</b></div>`;
 }
 function resume(m, onglet) {
   if (onglet === "plus25") {
