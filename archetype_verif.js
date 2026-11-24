@@ -106,13 +106,13 @@ function noteCategories(d) {
   const lignes = Object.entries(R.marches).map(([nom, M]) => { const [k1, n1] = M.test_2017_2020, [k2, n2] = M.bloc_2025_26, pc = (k, n) => (n ? Math.round((k / n) * 100) + " %" : "—");
     return `<tr><td style="text-align:left">${e(nom)}</td><td>${e(Math.round(M.seuil * 100))} %</td><td>${e(M.intervalles)}</td><td>${pc(k1, n1)} (${e(n1)})</td><td>${pc(k2, n2)} (${e(n2)})</td></tr>`; }).join("");
   return `<p class="om-info" style="margin:8px 14px">Pour chaque marché, des intervalles de la fiche (buts marqués et encaissés au lieu du match, xG de la saison, moyenne du championnat) ont été cherchés sur les matchs de 2000 à 2016 et gardés seulement s'ils atteignent le seuil de ce marché. ` +
-    `Un match n'est montré que s'il tombe dans un intervalle ET que le marché est coté <b>${fr(d.cote_min)}</b> ou plus. La réussite indiquée est celle des matchs <b>jamais vus pendant la recherche</b> (2017-2020 et saison 2025-26) : un taux passé, pas une probabilité.</p>` +
+    `Un match n'est montré que s'il tombe dans un intervalle ET que le marché est coté <b>${fr(d.cote_min)}</b> ou plus (1,24 pour le plus de 1,5 ; pour les autres marchés, s'ajoutent les 3 meilleurs sur 4 jours cotés 1,24 ou 1,25). La réussite indiquée est celle des matchs <b>jamais vus pendant la recherche</b> (2017-2020 et saison 2025-26) : un taux passé, pas une probabilité.</p>` +
     `<details class="om-bloc" style="margin:8px 14px"><summary>Seuils et résultats par marché (intervalles figés le ${e(R.gele_le)})</summary><table class="om-table"><tr><th>Marché</th><th>Seuil</th><th>Intervalles</th><th>2017-2020 (matchs)</th><th>2025-26 (matchs)</th></tr>${lignes}</table></details>`;
 }
 function phraseCategories(m, p) {
   const C = p.categorie; if (!C) return "";
   return `<div class="om-info">Ce match tombe dans un intervalle retenu (seuil ${e(Math.round(C.seuil * 100))} % pour ce marché) : ${C.conditions.map((c) => `${e(c.libelle)} <b>${fr(c.valeur)}</b> (${bornes(c)})`).join(" ; ")}. ` +
-    `Dans cet intervalle, matchs jamais vus : <b>${e(C.vus[0])}</b> réussis sur <b>${e(C.vus[1])}</b> (${C.taux_vu == null ? "—" : Math.round(C.taux_vu * 100) + " %"}, borne basse ${C.marge == null ? "—" : Math.round(C.marge * 100) + " %"}).</div>`;
+    `Dans cet intervalle, matchs jamais vus : <b>${e(C.vus[0])}</b> réussis sur <b>${e(C.vus[1])}</b> (${C.taux_vu == null ? "—" : Math.round(C.taux_vu * 100) + " %"}, borne basse ${C.marge == null ? "—" : Math.round(C.marge * 100) + " %"}).${C.bande ? " Cote de " + fr(p.cote) + " : l'un des 3 meilleurs sur 4 jours pour ce marché dans la bande 1,24-1,25." : ""}</div>`;
 }
 function resume(m, onglet) {
   if (onglet === "categories") {

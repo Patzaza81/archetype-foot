@@ -137,8 +137,8 @@ def test_fiche_dans_un_intervalle_avec_cote_suffisante(cote):
     c = P[0]["categorie"]["conditions"]; assert [x["variable"] for x in c] == ["hM", "rE"] and c[0]["valeur"] == 2.0 and c[0]["bas"] == 1.8
     assert f["categories"]["mesures"]["hM"] == 2.0 and P[0]["categorie"]["vus"][1] == 1792
 
-@pytest.mark.parametrize("cotes", [{"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, {"1x2": {"1": 1.10, "N": 6.0, "2": 15.0}}, {}, {"over_under_1.5": {"plus": 1.1, "moins": 6.0}}])
-def test_fiche_cote_insuffisante_ou_absente_pas_de_marche(cotes):          # la cote vient à la fin : sous 1,26 ou absente, jamais proposé
+@pytest.mark.parametrize("cotes", [{"1x2": {"1": 1.239, "N": 4.0, "2": 9.0}}, {"1x2": {"1": 1.10, "N": 6.0, "2": 15.0}}, {}, {"over_under_1.5": {"plus": 1.1, "moins": 6.0}}])
+def test_fiche_cote_insuffisante_ou_absente_pas_de_marche(cotes):          # la cote vient à la fin : sous 1,24 ou absente, jamais proposé
     assert "1" not in [p["marche"] for p in (_fiche(FORT, FAIBLE, cotes).get("categories") or {}).get("paris", [])]
 
 @pytest.mark.parametrize("A, B", [([(1, 1)] * 6, [(1, 1)] * 6),                       # équipes équilibrées
@@ -195,3 +195,117 @@ def test_page_web_onglet():
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert '["categories", "Catégories"]' in js and "m.categories && m.categories.paris" in js and '"Onglet Catégories"' in js and "noteCategories(d)" in js
     assert '["plus25", "+2,5 buts"]' in js and '["plus15", "+1,5 buts"]' in js and '["etude", "Étude"]' in js          # les autres onglets restent en place
+
+# ---------------------------------------------------------------- cote minimale 1,24 pour le plus de 1,5 seulement (Patrick, 24/11/2026)
+FORT3 = [(3, 0)] * 6                                          # hM 3,0 : dans un intervalle du plus de 1,5 (hM >= 2,2 et xG attendu du domicile >= 1,56)
+
+def _p15(cote, extra=None):
+    f = _fiche(FORT3, FAIBLE, {"over_under_1.5": {"plus": cote, "moins": 5.0}, **(extra or {})})
+    return [p for p in (f.get("categories") or {}).get("paris", []) if p["marche"] == "total_plus_1.5"]
+
+@pytest.mark.parametrize("cote", [1.24, 1.25, 1.26, 1.40])
+def test_plus_de_1_5_retenu_des_1_24(cote): assert len(_p15(cote)) == 1 and _p15(cote)[0]["cote"] == cote
+
+@pytest.mark.parametrize("cote", [1.23, 1.20, 1.10])
+def test_plus_de_1_5_sous_1_24_jamais_retenu(cote): assert _p15(cote) == []
+
+def test_plus_de_1_5_sans_cote_jamais_retenu(): assert _p15(1.5, None) != [] and "total_plus_1.5" not in [p["marche"] for p in (_fiche(FORT3, FAIBLE, {}).get("categories") or {}).get("paris", [])]
+
+@pytest.mark.parametrize("marche, cotes", [("1", {"1x2": {"1": 1.23, "N": 4.0, "2": 9.0}}), ("1", {"1x2": {"1": 1.10, "N": 4.0, "2": 9.0}}), ("1N", {"double_chance": {"1N": 1.22, "N2": 5.0, "12": 1.2}})])
+def test_les_autres_marches_sous_1_24_jamais_retenus(marche, cotes):
+    assert marche not in [p["marche"] for p in (_fiche(FORT3, FAIBLE, cotes).get("categories") or {}).get("paris", [])]
+
+def test_cote_min_fonction():
+    assert VC.cote_min("total_plus_1.5", 1.26) == 1.24 and VC.cote_min("1", 1.26) == 1.26 and VC.cote_min("total_plus_1.5", 1.20) == 1.20
+
+# ---------------------------------------------------------------- bande de cote 1,24-1,25 : les 3 meilleurs sur 4 jours pour chaque marché (Patrick, 24/11/2026)
+def _par(marche, cote, marge, bande):
+    e = {"marche": marche, "cote": cote, "categorie": {"marge": marge}}
+    if bande: e["categorie"]["bande"] = True
+    return e
+
+def _m(mid, jour, *paris): return {"match_id": mid, "coup_d_envoi_utc": jour + "T15:00:00Z", "categories": {"paris": list(paris)}}
+JOUR = lambda m: m["coup_d_envoi_utc"][:10]
+
+@pytest.mark.parametrize("cote", [1.24, 1.25])
+def test_fiche_bande_1_24_1_25_marquee(cote):
+    p = _fiche(FORT, FAIBLE, {"1x2": {"1": cote, "N": 4.0, "2": 9.0}})["categories"]["paris"]
+    assert [x["marche"] for x in p] == ["1"] and p[0]["categorie"]["bande"] is True and p[0]["cote"] == cote
+
+@pytest.mark.parametrize("cote", [1.26, 1.40, 2.0])
+def test_fiche_1_26_et_plus_jamais_dans_la_bande(cote):
+    p = _fiche(FORT, FAIBLE, {"1x2": {"1": cote, "N": 4.0, "2": 9.0}})["categories"]["paris"]; assert "bande" not in p[0]["categorie"]
+
+@pytest.mark.parametrize("cote", [1.239, 1.20, 1.05])
+def test_fiche_sous_1_24_pas_de_bande(cote):
+    assert "1" not in [x["marche"] for x in (_fiche(FORT, FAIBLE, {"1x2": {"1": cote, "N": 4.0, "2": 9.0}}).get("categories") or {}).get("paris", [])]
+
+def test_plus_de_1_5_a_1_24_n_est_pas_limite_par_la_bande():          # le plus de 1,5 a déjà 1,24 comme cote minimale : pas de bande, pas de limite
+    assert "bande" not in _p15(1.24)[0]["categorie"]
+
+def test_limiter_trois_meilleurs_par_jour_et_marche():
+    M = [_m("a%d" % i, "2026-11-24", _par("1", 1.25, 0.60 + i / 100, True)) for i in range(5)]      # marges 0,60 ... 0,64
+    VC.limiter_bande(M, JOUR)
+    assert [m["match_id"] for m in M if m.get("categories")] == ["a2", "a3", "a4"]                  # les 3 meilleures marges
+    assert all("categories" not in M[i] for i in (0, 1))                                             # un match sans pari restant perd sa clé
+
+def test_limiter_exactement_3_ou_moins_rien_retire():
+    for n in (1, 2, 3):
+        M = [_m("b%d" % i, "2026-11-24", _par("1", 1.24, 0.5 + i / 100, True)) for i in range(n)]; VC.limiter_bande(M, JOUR); assert all(m.get("categories") for m in M)
+
+def test_limiter_un_jour_et_un_marche_separes():
+    M = [_m("c%d" % i, "2026-11-24", _par("1", 1.25, 0.5 + i / 100, True)) for i in range(4)] + [_m("d%d" % i, "2026-11-25", _par("1", 1.25, 0.5 + i / 100, True)) for i in range(3)] + \
+        [_m("e%d" % i, "2026-11-24", _par("2", 1.25, 0.5 + i / 100, True)) for i in range(3)]
+    VC.limiter_bande(M, JOUR)
+    assert sum(1 for m in M if m.get("categories")) == 3 + 3 + 3                                    # 3 pour le marché 1 du 24, 3 pour le marché 1 du 25, 3 pour le marché 2 du 24
+
+def test_limiter_ne_touche_jamais_les_cotes_1_26_et_plus():
+    M = [_m("f%d" % i, "2026-11-24", _par("1", 1.30, 0.5, False)) for i in range(6)] + [_m("g%d" % i, "2026-11-24", _par("1", 1.25, 0.9 - i / 100, True)) for i in range(5)]
+    VC.limiter_bande(M, JOUR); assert sum(1 for m in M if m.get("categories")) == 6 + 3
+
+def test_limiter_un_match_garde_ses_autres_paris():
+    M = [_m("h0", "2026-11-24", _par("1", 1.25, 0.1, True), _par("1N", 1.5, 0.9, False))] + [_m("h%d" % i, "2026-11-24", _par("1", 1.25, 0.8, True)) for i in range(1, 5)]
+    VC.limiter_bande(M, JOUR); assert [p["marche"] for p in M[0]["categories"]["paris"]] == ["1N"]    # le pari de bande est écarté, le pari à 1,50 reste
+
+def test_limiter_doublon_de_match_compte_une_fois():
+    M = [_m("i0", "2026-11-24", _par("1", 1.25, 0.9, True)), _m("i0", "2026-11-24", _par("1", 1.25, 0.9, True))] + [_m("i%d" % i, "2026-11-24", _par("1", 1.25, 0.8 - i / 100, True)) for i in range(1, 4)]
+    VC.limiter_bande(M, JOUR); assert [m["match_id"] for m in M if m.get("categories")] == ["i0", "i0", "i1", "i2"]     # i0 (deux copies) + i1 + i2 = 3 matchs
+
+def test_limiter_sans_categories(): M = [{"match_id": "z", "coup_d_envoi_utc": "2026-11-24T15:00:00Z"}]; assert VC.limiter_bande(M, JOUR) == M
+
+def test_page_bande_trois_meilleurs_du_jour(tmp_path):
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, mid="m%d" % i) for i in range(5)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert len([m for m in d["matchs"] if m.get("categories")]) == 3 and d["nb_matchs"] == 3
+
+def test_page_web_note_bande():
+    js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
+    assert "C.bande" in js and "3 meilleurs sur 4 jours" in js
+
+@pytest.mark.parametrize("ko, attendu", [("2026-11-24T15:00:00Z", 0), ("2026-11-26T15:00:00Z", 0), ("2026-11-27T15:00:00Z", 0), ("2026-11-28T15:00:00Z", None), ("2026-11-23T15:00:00Z", None), ("2026-11-20T15:00:00Z", None), (None, None)])
+def test_periode_4_jours_depuis_aujourd_hui(ko, attendu): assert v.periode_4_jours(ko, "2026-11-24T09:00:00Z") == attendu
+
+def test_periode_4_jours_jour_de_douala():                      # 23h30 UTC = 00h30 le lendemain à Douala : c'est déjà le jour suivant
+    assert v.periode_4_jours("2026-11-24T23:30:00Z", "2026-11-24T09:00:00Z") == v.periode_4_jours("2026-11-25T10:00:00Z", "2026-11-24T09:00:00Z") == 0
+
+def test_page_bande_3_meilleurs_sur_les_4_jours_pas_par_jour(tmp_path):
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-21", mid="j%d" % i) for i in range(3)] + [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-22", mid="k%d" % i) for i in range(3)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert len([m for m in d["matchs"] if m.get("categories")]) == 3                              # 6 candidats sur 2 jours de la même période : 3 gardés au total
+
+def test_page_bande_hors_des_4_jours_pas_retenue(tmp_path):      # aujourd'hui = 21/11 : le 25/11 est à J+4, hors fenêtre ; les jours passés aussi
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour=j, mid="%s%d" % (j[-2:], i)) for j in ("2026-11-21", "2026-11-25") for i in range(2)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert sorted(m["match_id"] for m in d["matchs"] if m.get("categories")) == ["210", "211"]
+
+def test_page_bande_jours_passes_pas_retenus(tmp_path):
+    ms = [_x(FORT, FAIBLE, {"1x2": {"1": 1.25, "N": 4.0, "2": 9.0}}, jour="2026-11-19", mid="pas%d" % i) for i in range(2)]
+    with mk.patch.object(RB, "charger", return_value=None), mk.patch.object(R25, "charger", return_value=None), mk.patch.object(v, "totaux_championnats", return_value=TOT):
+        d = v.page_donnees(0, "2026-11-21T06:00:00Z", flux=_flux(tmp_path, ms), cfg={"cote_min": 1.26, "sans_regles": True})
+    assert not [m for m in d["matchs"] if m.get("categories")]
+
+def test_aucune_bande_rien_n_est_force():                         # aucun candidat : aucun pari ajouté, aucune erreur
+    M = [_m("n0", "2026-11-24", _par("1", 1.40, 0.7, False))]; VC.limiter_bande(M, JOUR); assert M[0]["categories"]["paris"][0]["cote"] == 1.40

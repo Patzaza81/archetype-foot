@@ -6,7 +6,7 @@ et le xG calculé sur TOUS les lieux de la saison en cours, rapporté à la moye
 Intervalles : `data/verif_pronostics/categories_zones.json`, figés le 24/11/2026. Chaque marché a son seuil (décision de Patrick) et son propre ensemble d'intervalles, jamais généralisé.
 Les intervalles ont été cherchés sur les matchs de 2000 à 2016 (apprentissage 2000-2012, validation 2013-2016) puis mesurés sur des matchs jamais vus (2017-2020 et saison 2025-26). Un intervalle d'un marché
 n'est retenu que s'il atteint le seuil du marché ; version « B » = avec certitude (borne basse de Wilson 95 %) sur chacune des deux moitiés de la période de recherche, version « A » = sur l'ensemble.
-La cote n'entre PAS dans la catégorisation : elle vient à la fin, cote >= cote minimale de la page (1,26), et un marché sans cote n'est jamais proposé.
+La cote n'entre PAS dans la catégorisation : elle vient à la fin, cote >= cote minimale de la page (1,26) (1,24 pour le plus de 1,5 seulement), et un marché sans cote n'est jamais proposé.
 Le xG de la saison (buts attendus par équipe) est estimé par une droite apprise sur 316 équipes à xG réel : xG créé = am + bm x buts marqués par match ; xG concédé = ae + be x buts encaissés par match.
 Commande de test : python -m pytest tests/test_verif_categories.py"""
 import json, math, os
@@ -15,6 +15,9 @@ RACINE = os.path.dirname(os.path.abspath(__file__))
 CHEMIN = os.path.join(RACINE, "data", "verif_pronostics", "categories_zones.json")
 NMIN = 4            # règle de Patrick : 4 matchs minimum au même lieu pour chaque équipe
 NCHAMP_MIN = 10     # moyenne du championnat lue sur au moins 10 matchs précédents ; sinon les intervalles qui utilisent le xG ou le championnat ne s'appliquent pas
+COTE_MIN_MARCHE = {"total_plus_1.5": 1.24}   # Patrick (24/11/2026) : exceptionnellement 1,24 pour le plus de 1,5 seulement (sa cote médiane est de 1,21) ; les autres marchés gardent la cote minimale de la page (1,26)
+BANDE_COTE = (1.24, 1.26)   # Patrick (24/11/2026) : pour tous les autres marchés, les 3 meilleurs sur 4 jours dont la cote est de 1,24 ou 1,25 s'ajoutent aux marchés cotés 1,26 et plus ; rien n'est forcé s'il n'y en a pas
+NB_BANDE = 3
 Z95 = 1.96
 VARIABLES_XG = ("sMh", "sCh", "sMa", "sCa", "EH", "EA", "ET", "dE", "rE", "mu", "EHm", "EAm", "gH", "gA")
 
@@ -31,6 +34,10 @@ LIBELLES = {
     "rE": "xG attendu : rapport domicile / extérieur", "mu": "Buts par équipe et par match du championnat",
     "EHm": "xG attendu du domicile moins la moyenne du championnat", "EAm": "xG attendu de l'extérieur moins la moyenne du championnat",
     "gH": "Buts attendus du domicile moins son xG", "gA": "Buts attendus de l'extérieur moins son xG"}
+
+def cote_min(marche, cote_page):
+    """Cote minimale d'un marché de l'onglet : celle de la page (1,26), sauf exception décidée par Patrick pour un marché (COTE_MIN_MARCHE), jamais au-dessus de celle de la page."""
+    return min(cote_page, COTE_MIN_MARCHE.get(marche, cote_page))
 
 def charger(chemin=CHEMIN):
     try:
@@ -112,3 +119,19 @@ def resume(zones=None):
         out[nom] = {"marche": M["marche"], "seuil": M["seuil"], "version": M["version"], "intervalles": len(M["intervalles"]), "test_2017_2020": vus[0], "bloc_2025_26": vus[1],
                     "part_test_2017_2020": st["test_2017_2020"]["part_des_matchs"]}
     return {"gele_le": zones.get("gele_le"), "marches": out}
+
+def limiter_bande(matchs, jour, n=None):
+    """Garde, pour chaque période et chaque marché, les n meilleurs paris de la bande de cote 1,24-1,25 (les meilleurs = marge la plus haute, puis ordre du match_id) ; les paris cotés 1,26 et plus ne sont jamais limités.
+    matchs : fiches de la page (modifiées en place) ; jour(fiche) -> fenêtre du match (la page passe la fenêtre « aujourd'hui + 3 jours », voir verif_pronostic.periode_4_jours) ; hors fenêtre (None), un pari de la bande n'est pas retenu. Un match qui n'a plus aucun pari perd sa clé « categories ». Un match qui figure deux fois (même match_id) compte une seule fois."""
+    n = NB_BANDE if n is None else n; cand = {}
+    for m in matchs:
+        for p in (m.get("categories") or {}).get("paris", []):
+            if p["categorie"].get("bande") and jour(m) is not None:
+                d = cand.setdefault((jour(m), p["marche"]), {}); d[m["match_id"]] = max(d.get(m["match_id"], -1), p["categorie"]["marge"])
+    garde = {(k, mid) for k, d in cand.items() for mid, _ in sorted(d.items(), key=lambda t: (-t[1], str(t[0])))[:n]}
+    for m in matchs:
+        C = m.get("categories")
+        if not C: continue
+        C["paris"] = [p for p in C["paris"] if not p["categorie"].get("bande") or (jour(m) is not None and ((jour(m), p["marche"]), m["match_id"]) in garde)]
+        if not C["paris"]: del m["categories"]
+    return matchs

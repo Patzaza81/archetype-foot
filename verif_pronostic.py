@@ -532,12 +532,15 @@ def fiche_match(x, maintenant, cfg, totaux=None):
             cotes_c = cotes_betpawa(x.get("cotes_betpawa") or {}); PC = []
             for cat in VC.evaluer(mes_c, zones_c):
                 cc = cotes_c.get(cat["marche"])
-                if cc is None or cc < cfg["cote_min"]: continue
-                r = constat(x, cat["marche"], cc, cfg)
+                cm = VC.cote_min(cat["marche"], cfg["cote_min"])        # 1,26 ; 1,24 pour le plus de 1,5 seulement (Patrick, 24/11)
+                bande = cc is not None and cc < cm and VC.BANDE_COTE[0] <= cc < VC.BANDE_COTE[1]       # 1,24 ou 1,25 : gardé seulement parmi les 3 meilleurs du jour pour ce marché (page_donnees)
+                if cc is None or (cc < cm and not bande): continue
+                r = constat(x, cat["marche"], cc, {**cfg, "cote_min": min(cm, cc)})
                 if "A" not in r: continue
                 A, B = r["A"], r["B"]
                 e = {"marche": cat["marche"], "libelle": r["libelle"], "cote": cc, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"],
                      "categorie": {k: cat[k] for k in ("seuil", "version", "nb_intervalles", "conditions", "vus", "taux_vu", "marge")}}
+                if bande: e["categorie"]["bande"] = True
                 if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[cat["marche"]]])
                 PC.append(e)
             if PC: CAT = {"mesures": {k: (round(v, 3) if isinstance(v, float) else v) for k, v in mes_c.items()}, "paris": PC}
@@ -551,6 +554,11 @@ def fiche_match(x, maintenant, cfg, totaux=None):
                         "championnat": {"buts": arr(champ["buts"]), "xg": arr(champ["xg"]), "xg_est": champ["xg_est"], "avantage_dom": arr(av), "matchs": champ["n"]}},
             "paris": G, "derniers_matchs": derniers_matchs(x), **({"etude": info, "etude_paris": EP} if info else {}), **({"regle_buts": RBL} if RBL else {}), **({"plus15": P15} if P15 and P15["regle_remplie"] else {}), **({"plus25": P25} if P25 else {}), **({"categories": CAT} if CAT else {})}
 
+def periode_4_jours(ko, maintenant):
+    """Fenêtre des 4 jours de la bande de cote 1,24-1,25 : aujourd'hui et les 3 jours suivants (jour de Douala) -> 0 ; un match hors de cette fenêtre (déjà passé, plus tard, sans coup d'envoi) -> None (Patrick, 24/11/2026 : « compter 4 jours à partir d'aujourd'hui »)."""
+    j, d = _jour_cameroun(ko), _jour_cameroun(maintenant)
+    return 0 if j and d and 0 <= (datetime.date.fromisoformat(j) - datetime.date.fromisoformat(d)).days <= 3 else None
+
 def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     """Toutes les fiches (matchs a partir de J - jours_passes, avec cotes et au moins un pari qui passe les filtres). Deterministe, aucune valeur inventee."""
     maintenant = maintenant or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"); cfg = cfg or config()
@@ -561,6 +569,9 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
             if not x.get("cotes_betpawa"): continue
             fm = fiche_match(x, maintenant, cfg, totaux)
             if any(fm["paris"].values()) or fm.get("etude_paris") or fm.get("regle_buts") or fm.get("plus15") or fm.get("plus25") or fm.get("categories"): M.append(fm)       # onglet Étude : un match sans marché retenu par l'étude est écarté
+    import verif_categories as VC
+    VC.limiter_bande(M, lambda m: periode_4_jours(m["coup_d_envoi_utc"], maintenant))          # 3 meilleurs de chaque marché sur les 4 jours, dans la bande de cote 1,24-1,25
+    M = [m for m in M if any(m["paris"].values()) or m.get("etude_paris") or m.get("regle_buts") or m.get("plus15") or m.get("plus25") or m.get("categories")]       # un match qui n'avait que des paris de bande écartés disparaît
     M.sort(key=lambda m: (m["coup_d_envoi_utc"] or "", m["domicile"]))
     try: b = bilan()
     except RuntimeError as err: b = {"erreur": str(err), "par_verdict": {}}
