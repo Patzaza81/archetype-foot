@@ -132,11 +132,18 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
     train_groups: dict[tuple, list[dict]] = defaultdict(list)
     validation_groups: dict[tuple, list[dict]] = defaultdict(list)
     test_groups: dict[tuple, list[dict]] = defaultdict(list)
+    best_by_event: dict[tuple, dict] = {}
     for r in rows:
         key = (r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"]), _depth_band(r.get("bookmaker_count")))
-        if r["date"] < train_end:
+        period = "train" if r["date"] < train_end else "validation" if r["date"] < validation_end else "test"
+        event_key = (period, key, r["event_id"])
+        previous = best_by_event.get(event_key)
+        if previous is None or r["edge"] > previous["edge"]:
+            best_by_event[event_key] = r
+    for (period, key, _event_id), r in best_by_event.items():
+        if period == "train":
             train_groups[key].append(r)
-        elif r["date"] < validation_end:
+        elif period == "validation":
             validation_groups[key].append(r)
         else:
             test_groups[key].append(r)
