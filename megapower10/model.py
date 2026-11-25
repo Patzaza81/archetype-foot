@@ -89,9 +89,10 @@ def predict_one(history: list[MatchResult], target: MatchResult, *, window: int 
 def walk_forward(matches: Iterable[MatchResult], *, window: int = 8,
                  prior_matches: float = 4.0, max_goals: int = 10) -> list[dict]:
     ordered = sorted(matches, key=lambda m: (m.date, m.competition, m.event_id))
-    history: list[MatchResult] = []
+    history_by_league: dict[str, list[MatchResult]] = defaultdict(list)
     predictions = []
     for match in ordered:
+        history = history_by_league[match.competition]
         predictions.append(predict_one(history, match, window=window,
                                         prior_matches=prior_matches, max_goals=max_goals))
         history.append(match)
