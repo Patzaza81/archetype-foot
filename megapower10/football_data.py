@@ -154,8 +154,8 @@ def load_football_data(root: str | Path = "data/football_data") -> tuple[list[Hi
 
 def _price_score(value: str | None) -> int | None:
     try:
-        x = int(str(value).strip())
-        return x if x >= 0 else None
+        x = float(str(value).strip())
+        return int(x) if x >= 0 and x.is_integer() else None
     except (TypeError, ValueError):
         return None
 
