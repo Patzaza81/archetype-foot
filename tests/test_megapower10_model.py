@@ -14,6 +14,13 @@ class TestWalkForwardModel(unittest.TestCase):
         pred = predict_one(history, target)
         self.assertEqual(pred["n_league"], 2)
 
+    def test_zero_prior_handles_team_without_venue_history(self):
+        history = [MatchResult("1", "2026-01-01", "L1", "A", "B", 2, 0)]
+        target = MatchResult("2", "2026-02-01", "L1", "C", "D", 0, 0)
+        pred = predict_one(history, target, prior_matches=0)
+        self.assertEqual(pred["status"], "forecast")
+        self.assertGreater(pred["lambda_home"], 0)
+
     def test_leagues_are_not_pooled(self):
         history = [MatchResult("1", "2026-01-01", "L1", "A", "B", 3, 0)]
         target = MatchResult("2", "2026-02-01", "L2", "C", "D", 1, 0)
