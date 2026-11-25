@@ -71,3 +71,23 @@ python -m megapower10.beatthebookie_cli --input /chemin/closing_odds.csv.gz --mi
 ```
 
 Le workflow GitHub MEGAPOWER 10+ — Beat The Bookie archive télécharge la source publique via KaggleHub et publie le rapport comme artefact.
+
+
+## Résultats des replays indépendants — 25/11/2026
+
+Les rapports JSON complets sont conservés dans les artefacts GitHub Actions :
+- [Football-Data, 67 932 matchs](https://github.com/Patzaza81/archetype-foot/actions/runs/45532109149) — artefact `megapower10-historical-report`.
+- [Beat The Bookie, 479 440 matchs / 818 ligues](https://github.com/Patzaza81/archetype-foot/actions/runs/45532439844) — artefact `megapower10-beatthebookie-report`.
+
+| Replay | Prix bruts ≥10 | Réussite | ROI brut |
+|---|---:|---:|---:|
+| Football-Data ouverture | 7 444 | 4,81 % | −38,36 % |
+| Football-Data clôture | 9 962 | 4,94 % | −36,27 % |
+| Beat The Bookie, moyenne (référence non exécutable) | 24 497 | 4,17 % | −48,48 % |
+| Beat The Bookie, meilleur prix observé (hypothétique) | 42 843 | 5,79 % | −24,48 % |
+
+Sur Beat The Bookie, la sélection par seuils validés a donné 849 paris de test, 65 gagnés (7,66 %), −17,25 unités et −2,03 % de ROI ; cote moyenne 13,06. Son intervalle de Wilson à 95 % pour le taux de réussite est 6,05–9,64 %. Sur Football-Data, le portefeuille de test filtré était positif (+3,35 %) mais ne comptait que 164 paris. Ce résultat n'est pas confirmé par l'archive Beat The Bookie.
+
+Sur le test Beat The Bookie, la qualité probabiliste du modèle est inférieure au marché : Brier 0,2058 contre 0,1943 ; log-loss 0,6002 contre 0,5723. Le même constat apparaît sur Football-Data. **MEGAPOWER 10+ est donc techniquement construit et testé, mais pas validé comme moteur rentable. Le benchmark de 40 % de réussite n'est pas atteint.** Aucun seuil ne doit être promu en production sur ces seuls résultats.
+
+Ces archives historiques ne fournissent pas d'horodatage exact des prix. Le meilleur prix par issue de Beat The Bookie n'est pas une garantie d'exécution ni un arbitrage simultané. Les résultats sont bruts, sans commissions, limites ou contraintes de liquidité. Respecter la licence CC BY-SA 4.0 de Beat The Bookie.
