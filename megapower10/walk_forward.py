@@ -80,20 +80,24 @@ def _stats(rows: list[dict]) -> dict:
     wins = sum(bool(r["result"]) for r in ordered)
     profits = [(r["odds"] - 1.0) if r["result"] else -1.0 for r in ordered]
     profit = sum(profits)
+    daily_profit: dict[str, float] = defaultdict(float)
+    for row, delta in zip(ordered, profits):
+        daily_profit[row["date"]] += delta
     cumulative = peak = max_drawdown = 0.0
-    losing_streak = max_losing_streak = 0
-    for delta in profits:
+    losing_day_streak = max_losing_day_streak = 0
+    for day in sorted(daily_profit):
+        delta = daily_profit[day]
         cumulative += delta
         peak = max(peak, cumulative)
         max_drawdown = max(max_drawdown, peak - cumulative)
-        losing_streak = losing_streak + 1 if delta < 0 else 0
-        max_losing_streak = max(max_losing_streak, losing_streak)
+        losing_day_streak = losing_day_streak + 1 if delta < 0 else 0
+        max_losing_day_streak = max(max_losing_day_streak, losing_day_streak)
     execution_counts = Counter(r.get("execution_bookmaker") for r in ordered if r.get("execution_bookmaker"))
     return {
         "n": n, "wins": wins, "hit_rate": wins/n if n else None,
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
-        "profit_units": profit, "max_drawdown_units": max_drawdown,
-        "max_losing_streak": max_losing_streak,
+        "profit_units": profit, "max_daily_drawdown_units": max_drawdown,
+        "max_consecutive_losing_days": max_losing_day_streak,
         "execution_bookmakers": len(execution_counts),
         "top_execution_bookmakers": execution_counts.most_common(10),
         "mean_odds": sum(r["odds"] for r in ordered)/n if n else None,
