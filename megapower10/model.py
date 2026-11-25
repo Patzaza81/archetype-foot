@@ -61,14 +61,16 @@ def _forecast_from_stats(target: MatchResult, n_league: int, mu_h: float, mu_a: 
     lam_a = max(0.05, min(5.0, mu_a * attack_away * defence_home))
 
     ph, pa = _poisson(lam_h, max_goals), _poisson(lam_a, max_goals)
-    p_home = p_draw = p_away = p_over = 0.0
-    for hg, hp in enumerate(ph):
-        for ag, ap in enumerate(pa):
-            p = hp * ap
-            if hg > ag: p_home += p
-            elif hg == ag: p_draw += p
-            else: p_away += p
-            if hg + ag >= 3: p_over += p
+    p_home = p_draw = 0.0
+    away_cumulative = 0.0
+    for goals, p_goal in enumerate(ph):
+        p_home += p_goal * away_cumulative
+        p_draw += p_goal * pa[goals]
+        away_cumulative += pa[goals]
+    p_away = max(0.0, 1.0 - p_home - p_draw)
+    p_under = sum(ph[h] * pa[a] for h in range(min(2, max_goals) + 1)
+                  for a in range(min(2 - h, max_goals) + 1))
+    p_over = max(0.0, 1.0 - p_under)
     return {
         "event_id": target.event_id, "date": target.date, "competition": target.competition,
         "n_league": n_league, "lambda_home": lam_h, "lambda_away": lam_a,
