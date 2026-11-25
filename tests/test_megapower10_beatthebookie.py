@@ -45,6 +45,7 @@ class TestBeatTheBookieAdapter(unittest.TestCase):
             expected = (1/3.0) / (1/3.0 + 1/3.2 + 1/2.4)
             self.assertAlmostEqual(best_home["market_probability"], expected)
             self.assertEqual(best_home["odds"], 3.4)
+            self.assertEqual(best_home["execution_bookmaker"], "BookA")
 
 
 if __name__ == "__main__":
