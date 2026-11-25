@@ -34,7 +34,8 @@ def _poisson(lam: float, cap: int) -> list[float]:
 
 def _shrunk_average(values: list[int], prior_mean: float, prior_n: float, window: int) -> float:
     recent = values[-window:]
-    return (sum(recent) + prior_n * prior_mean) / (len(recent) + prior_n)
+    denominator = len(recent) + prior_n
+    return (sum(recent) + prior_n * prior_mean) / denominator if denominator > 0 else prior_mean
 
 
 def predict_one(history: list[MatchResult], target: MatchResult, *, window: int = 8,
