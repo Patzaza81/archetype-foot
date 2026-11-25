@@ -10,7 +10,7 @@ from collections import Counter, defaultdict
 import math
 from typing import Iterable
 
-from .core import odds_band, wilson
+from .core import MIN_RECOMMENDATION_ODDS, is_recommendation_odds, odds_band, wilson, require_recommendation_floor
 from .model import MatchResult, walk_forward
 
 
@@ -108,8 +108,9 @@ def _stats(rows: list[dict]) -> dict:
 
 
 def evaluate_edge(rows: Iterable[dict], *, min_edge: float = 0.0,
-                  min_odds: float = 1.01, max_odds: float = float("inf")) -> dict:
-    chosen = [r for r in rows if r["edge"] >= min_edge and min_odds <= r["odds"] < max_odds]
+                  min_odds: float = MIN_RECOMMENDATION_ODDS, max_odds: float = float("inf")) -> dict:
+    min_odds = require_recommendation_floor(min_odds)
+    chosen = [r for r in rows if is_recommendation_odds(r["odds"]) and r["edge"] >= min_edge and min_odds <= r["odds"] < max_odds]
     groups: dict[str, list[dict]] = defaultdict(list)
     for r in chosen:
         groups[odds_band(r["odds"])].append(r)
@@ -128,7 +129,7 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
                              min_support: int = 30,
                              thresholds: tuple[float, ...] = (0.0, .01, .02, .03, .05, .08, .10, .15, .20, .25)) -> dict:
     """Choose positive-ROI edge thresholds on validation only; final test remains untouched."""
-    rows = list(rows)
+    rows = [r for r in rows if is_recommendation_odds(r["odds"])]
     train_groups: dict[tuple, list[dict]] = defaultdict(list)
     validation_groups: dict[tuple, list[dict]] = defaultdict(list)
     test_groups: dict[tuple, list[dict]] = defaultdict(list)
@@ -174,6 +175,7 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
                                 -(r["test"]["n"] if r.get("test") else 0)))
     return {
         "cutoffs": {"train_before": train_end, "validation_before": validation_end},
+        "recommendation_policy": {"minimum_odds_inclusive": MIN_RECOMMENDATION_ODDS, "below_floor_rows_excluded": True},
         "counts": {"all": len(rows), "train": sum(map(len, train_groups.values())),
                    "validation": sum(map(len, validation_groups.values())),
                    "test": sum(map(len, test_groups.values()))},
