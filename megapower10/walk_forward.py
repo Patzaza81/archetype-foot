@@ -146,8 +146,8 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
                         "price_stage": stage, "odds_band": band, "status": "threshold_frozen_on_validation",
                         "min_edge": chosen_threshold, "validation": vm, "test": tm})
     results.sort(key=lambda r: (r["status"] != "threshold_frozen_on_validation",
-                                -(r.get("test", {}).get("roi") or -999) if r.get("test") else 0,
-                                -r.get("test", {}).get("n", 0) if r.get("test") else 0))
+                                -(r["test"]["roi"] if r.get("test") and r["test"]["roi"] is not None else -999),
+                                -(r["test"]["n"] if r.get("test") else 0))
     return {
         "cutoffs": {"train_before": train_end, "validation_before": validation_end},
         "counts": {"all": len(rows), "train": sum(map(len, train_groups.values())),
