@@ -29,6 +29,8 @@ class HistoricalPrice:
     odds: float
     result: bool
     source: str
+    reference_odds: float | None = None
+    execution_bookmaker: str = ""
 
 
 BOOKS_1X2 = {
