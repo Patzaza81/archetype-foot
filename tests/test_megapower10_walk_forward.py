@@ -2,7 +2,7 @@ import unittest
 
 from megapower10.model import MatchResult
 from megapower10.football_data import HistoricalPrice
-from megapower10.walk_forward import enrich_prices, chronological_edge_study
+from megapower10.walk_forward import enrich_prices, chronological_edge_study, forecast_quality_report
 
 
 class TestPriceJoin(unittest.TestCase):
@@ -22,6 +22,20 @@ class TestPriceJoin(unittest.TestCase):
         self.assertEqual(len(rows), 3)
         self.assertAlmostEqual(sum(r["market_probability"] for r in rows), 1.0)
         self.assertEqual(meta["priced_selections"], 3)
+
+    def test_probability_quality_compares_model_and_market(self):
+        rows = [
+            {"competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "opening",
+             "event_id": "e1", "model_probability": .6, "market_probability": .4, "result": True},
+            {"competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "opening",
+             "event_id": "e1", "model_probability": .2, "market_probability": .3, "result": False},
+            {"competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "opening",
+             "event_id": "e1", "model_probability": .2, "market_probability": .3, "result": False},
+        ]
+        report = forecast_quality_report(rows)
+        self.assertEqual(report["by_competition_market_bookmaker_stage"][0]["events"], 1)
+        self.assertLess(report["by_competition_market_bookmaker_stage"][0]["model_brier"],
+                        report["by_competition_market_bookmaker_stage"][0]["market_brier"])
 
     def test_validation_threshold_is_frozen_before_test(self):
         rows = []
