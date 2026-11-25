@@ -34,10 +34,14 @@ jobs:
         id: dataset
         run: |
           python -m pip install --quiet kagglehub
-          python -c 'import kagglehub,sys; output=sys.stdout; sys.stdout=sys.stderr; path=kagglehub.dataset_download("austro/beat-the-bookie-worldwide-football-dataset"); output.write(path + "\n")' > "$RUNNER_TEMP/megapower10_dataset_dir.txt"
-          DATASET_DIR=$(cat "$RUNNER_TEMP/megapower10_dataset_dir.txt")
-          CSV_PATH=$(find "$DATASET_DIR" -name "closing_odds.csv.gz" -type f -print -quit)
-          test -n "$CSV_PATH"
+          python -c 'import kagglehub; kagglehub.dataset_download("austro/beat-the-bookie-worldwide-football-dataset")'
+          DATASET_CACHE="$HOME/.cache/kagglehub/datasets/austro/beat-the-bookie-worldwide-football-dataset"
+          CSV_PATH=$(find "$DATASET_CACHE" -name "closing_odds.csv.gz" -type f -print -quit)
+          if [ -z "$CSV_PATH" ]; then
+            echo "closing_odds.csv.gz introuvable dans le cache KaggleHub: $DATASET_CACHE"
+            find "$DATASET_CACHE" -maxdepth 4 -type f -print || true
+            exit 1
+          fi
           echo "csv_path=$CSV_PATH" >> "$GITHUB_OUTPUT"
       - name: Compile engine
         run: python -m compileall -q megapower10
