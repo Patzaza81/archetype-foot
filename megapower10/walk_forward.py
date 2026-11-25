@@ -137,46 +137,56 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
     }
 
 
-def forecast_quality_report(rows: Iterable[dict]) -> dict:
-    """Compare model and de-vigged bookmaker probabilities on every fully priced event."""
+def forecast_quality_report(rows: Iterable[dict], *, train_end: str | None = None,
+                            validation_end: str | None = None) -> dict:
+    """Compare model and de-vigged bookmaker probabilities separately by time block."""
     groups: dict[tuple, list[dict]] = defaultdict(list)
-    for r in rows:
-        groups[(r["competition"], r["market"], r["bookmaker"], r["price_stage"], r["event_id"])].append(r)
-    aggregate: dict[tuple, list[tuple[float, float, float, float]]] = defaultdict(list)
     calibration: dict[tuple, list[tuple[float, int]]] = defaultdict(list)
-    for (competition, market, bookmaker, stage, _event), sample in groups.items():
+    for r in rows:
+        if train_end is None or validation_end is None:
+            period = "all_walk_forward"
+        elif r["date"] < train_end:
+            period = "train"
+        elif r["date"] < validation_end:
+            period = "validation"
+        else:
+            period = "test"
+        groups[(period, r["competition"], r["market"], r["bookmaker"], r["price_stage"], r["event_id"])].append(r)
+
+    aggregate: dict[tuple, list[tuple[float, float, float, float]]] = defaultdict(list)
+    for (period, competition, market, bookmaker, stage, _event), sample in groups.items():
         settled = [r for r in sample if r["result"] is not None]
         if not settled:
             continue
         model_brier = sum((r["model_probability"] - int(r["result"]))**2 for r in settled) / len(settled)
         market_brier = sum((r["market_probability"] - int(r["result"]))**2 for r in settled) / len(settled)
         model_logloss = -sum((int(r["result"]) * math.log(max(1e-12, r["model_probability"])) +
-                              (1-int(r["result"])) * __import__("math").log(max(1e-12, 1-r["model_probability"]))) for r in settled) / len(settled)
-        market_logloss = -sum((int(r["result"]) * __import__("math").log(max(1e-12, r["market_probability"])) +
-                               (1-int(r["result"])) * __import__("math").log(max(1e-12, 1-r["market_probability"]))) for r in settled) / len(settled)
-        key = (competition, market, bookmaker, stage)
+                              (1-int(r["result"])) * math.log(max(1e-12, 1-r["model_probability"]))) for r in settled) / len(settled)
+        market_logloss = -sum((int(r["result"]) * math.log(max(1e-12, r["market_probability"])) +
+                               (1-int(r["result"])) * math.log(max(1e-12, 1-r["market_probability"]))) for r in settled) / len(settled)
+        key = (period, competition, market, bookmaker, stage)
         aggregate[key].append((model_brier, market_brier, model_logloss, market_logloss))
         for r in settled:
             decile = min(9, int(r["model_probability"] * 10))
-            calibration[(competition, market, bookmaker, stage, decile)].append((r["model_probability"], int(r["result"])))
+            calibration[(period, competition, market, bookmaker, stage, decile)].append((r["model_probability"], int(r["result"])))
 
     quality = []
     for key, vals in aggregate.items():
         n = len(vals)
         quality.append({
-            "competition": key[0], "market": key[1], "bookmaker": key[2], "price_stage": key[3],
-            "events": n,
+            "period": key[0], "competition": key[1], "market": key[2], "bookmaker": key[3],
+            "price_stage": key[4], "events": n,
             "model_brier": sum(v[0] for v in vals)/n,
             "market_brier": sum(v[1] for v in vals)/n,
             "model_logloss": sum(v[2] for v in vals)/n,
             "market_logloss": sum(v[3] for v in vals)/n,
         })
-    quality.sort(key=lambda r: (r["competition"], r["market"], r["bookmaker"], r["price_stage"]))
+    quality.sort(key=lambda r: (r["period"], r["competition"], r["market"], r["bookmaker"], r["price_stage"]))
     bins = []
     for key, vals in sorted(calibration.items()):
-        bins.append({"competition": key[0], "market": key[1], "bookmaker": key[2],
-                     "price_stage": key[3], "model_probability_decile": key[4],
+        bins.append({"period": key[0], "competition": key[1], "market": key[2], "bookmaker": key[3],
+                     "price_stage": key[4], "model_probability_decile": key[5],
                      "n": len(vals), "mean_probability": sum(x[0] for x in vals)/len(vals),
                      "observed_rate": sum(x[1] for x in vals)/len(vals)})
     return {"method": "mean per-selection Brier and log loss on fully priced settled events",
-            "by_competition_market_bookmaker_stage": quality, "model_calibration_deciles": bins}
+            "by_period_competition_market_bookmaker_stage": quality, "model_calibration_deciles": bins}
