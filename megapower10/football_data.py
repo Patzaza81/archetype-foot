@@ -44,6 +44,7 @@ BOOKS_1X2 = {
 BOOKS_TOTALS = {
     "Bet365": ("B365>2.5", "B365<2.5", "B365C>2.5", "B365C<2.5"),
     "BetfairExchange": ("BFE>2.5", "BFE<2.5", "BFEC>2.5", "BFEC<2.5"),
+    "Pinnacle": ("P>2.5", "P<2.5", "PC>2.5", "PC<2.5"),
 }
 
 
