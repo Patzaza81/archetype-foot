@@ -180,7 +180,8 @@ def _metrics(rows: list[Quote]) -> dict[str, Any]:
         "n": n, "wins": wins, "hit_rate": wins/n if n else None,
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
         "profit_units": profit, "mean_odds": sum(prices)/n if n else None,
-        "break_even_rate_at_mean_odds": (1/(sum(prices)/n)) if n else None,
+        "mean_implied_break_even_rate": sum(1/q.odds for q in settled)/n if n else None,
+        "mean_clv_odds_ratio": (sum(q.odds/q.closing_odds - 1.0 for q in settled if q.closing_odds is not None) / sum(q.closing_odds is not None for q in settled)) if any(q.closing_odds is not None for q in settled) else None,
     }
 
 
@@ -215,11 +216,11 @@ def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[
         if m["n"] < min_support:
             status = "support_insufficient"
         elif m["roi"] is not None and m["roi"] > 0 and m["wilson_95"][0] > 0:
-            status = "descriptive_candidate_requires_chronological_test"
+            status = "positive_historical_roi_requires_holdout"
         else:
             status = "no_positive_evidence"
         rows.append({"competition": competition, "market": market, "odds_band": band, **m, "status": status})
-    rows.sort(key=lambda r: (r["status"] != "descriptive_candidate_requires_chronological_test",
+    rows.sort(key=lambda r: (r["status"] != "positive_historical_roi_requires_holdout",
                              -(r["roi"] if r["roi"] is not None else -999), -r["n"]))
     return {"groups": len(rows), "min_support": min_support, "results": rows}
 
