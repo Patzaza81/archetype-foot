@@ -110,18 +110,25 @@ def evaluate_edge(rows: Iterable[dict], *, min_edge: float = 0.0,
 def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation_end: str,
                              min_support: int = 30,
                              thresholds: tuple[float, ...] = (0.0, .01, .02, .03, .05, .08, .10, .15, .20, .25)) -> dict:
-    """Choose edge threshold on validation only; final test is untouched until selection is frozen."""
+    """Choose positive-ROI edge thresholds on validation only; final test remains untouched."""
     rows = list(rows)
-    train = [r for r in rows if r["date"] < train_end]
-    validation = [r for r in rows if train_end <= r["date"] < validation_end]
-    test = [r for r in rows if r["date"] >= validation_end]
-    keys = sorted({(r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"])) for r in rows})
+    train_groups: dict[tuple, list[dict]] = defaultdict(list)
+    validation_groups: dict[tuple, list[dict]] = defaultdict(list)
+    test_groups: dict[tuple, list[dict]] = defaultdict(list)
+    for r in rows:
+        key = (r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"]))
+        if r["date"] < train_end:
+            train_groups[key].append(r)
+        elif r["date"] < validation_end:
+            validation_groups[key].append(r)
+        else:
+            test_groups[key].append(r)
+    keys = sorted(set(train_groups) | set(validation_groups) | set(test_groups))
     results = []
     for competition, market, bookmaker, stage, band in keys:
-        def subset(part):
-            return [r for r in part if (r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"])) ==
-                    (competition, market, bookmaker, stage, band)]
-        v = subset(validation)
+        key = (competition, market, bookmaker, stage, band)
+        v = validation_groups.get(key, [])
+        t = test_groups.get(key, [])
         candidates = []
         for threshold in thresholds:
             scored = [r for r in v if r["edge"] >= threshold]
@@ -133,17 +140,20 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
                             "price_stage": stage, "odds_band": band, "status": "no_validation_candidate",
                             "validation": _stats(v), "test": None})
             continue
-        _, chosen_threshold, vm = max(candidates, key=lambda x: (x[0], x[2]["n"]))
-        tm = _stats([r for r in subset(test) if r["edge"] >= chosen_threshold])
+        _, chosen_threshold, vm = max(candidates, key=lambda x: (x[0], x[2]["n"], x[1]))
+        tm = _stats([r for r in t if r["edge"] >= chosen_threshold])
         results.append({"competition": competition, "market": market, "bookmaker": bookmaker,
                         "price_stage": stage, "odds_band": band, "status": "threshold_frozen_on_validation",
                         "min_edge": chosen_threshold, "validation": vm, "test": tm})
     results.sort(key=lambda r: (r["status"] != "threshold_frozen_on_validation",
-                                -(r.get("test", {}).get("roi") or -999), -r.get("test", {}).get("n", 0)))
+                                -(r.get("test", {}).get("roi") or -999) if r.get("test") else 0,
+                                -r.get("test", {}).get("n", 0) if r.get("test") else 0))
     return {
         "cutoffs": {"train_before": train_end, "validation_before": validation_end},
-        "counts": {"all": len(rows), "train": len(train), "validation": len(validation), "test": len(test)},
-        "method": "walk-forward forecasts; bookmaker-specific de-vig; validation-only edge selection; frozen final test",
+        "counts": {"all": len(rows), "train": sum(map(len, train_groups.values())),
+                   "validation": sum(map(len, validation_groups.values())),
+                   "test": sum(map(len, test_groups.values()))},
+        "method": "walk-forward forecasts; bookmaker-specific de-vig; validation-only positive-ROI threshold selection; frozen final test",
         "results": results,
     }
 
