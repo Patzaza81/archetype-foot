@@ -24,7 +24,7 @@ class TestPriceJoin(unittest.TestCase):
         self.assertEqual(meta["priced_selections"], 3)
 
     def test_negative_validation_does_not_select_a_test_strategy(self):
-        rows = [{"date": "2026-02-01" if i < 30 else "2026-04-01",
+        rows = [{"event_id": f"n{i}", "date": "2026-02-01" if i < 30 else "2026-04-01",
                  "competition": "L1", "market": "1X2", "bookmaker": "Book",
                  "price_stage": "opening", "odds": 1.2, "edge": .1,
                  "result": False} for i in range(60)]
@@ -50,7 +50,7 @@ class TestPriceJoin(unittest.TestCase):
     def test_validation_threshold_is_frozen_before_test(self):
         rows = []
         for i in range(60):
-            rows.append({"date": "2026-02-01" if i < 30 else "2026-04-01",
+            rows.append({"event_id": f"e{i}", "date": "2026-02-01" if i < 30 else "2026-04-01",
                          "competition": "L1", "market": "1X2", "bookmaker": "Book",
                          "price_stage": "opening", "odds": 12.0, "edge": .1,
                          "result": i % 2 == 0})
