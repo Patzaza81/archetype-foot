@@ -36,7 +36,7 @@ def main() -> int:
     enriched, join_report = enrich_prices(model_matches, prices,
                                           window=params["window"],
                                           prior_matches=params["prior_matches"])
-    edge_report = chronological_edge_study(enriched, train_end=train_end,
+    edge_report = chronological_edge_study([r for r in enriched if r["bookmaker"] == "BTB_best_available"], train_end=train_end,
                                            validation_end=validation_end,
                                            min_support=args.min_support)
     report = {
@@ -44,10 +44,11 @@ def main() -> int:
         "source": source,
         "model_tuning": tuning,
         "forecast_join": join_report,
-        "raw_10plus_average_market": evaluate([q for q in prices if q.bookmaker == "BTB_average"], min_odds=args.min_odds, max_odds=args.max_odds),
-        "raw_10plus_best_observed_price": evaluate([q for q in prices if q.bookmaker == "BTB_best_available"], min_odds=args.min_odds, max_odds=args.max_odds),
+        "reference_average_price_10plus_non_executable": evaluate([q for q in prices if q.bookmaker == "BTB_average"], min_odds=args.min_odds, max_odds=args.max_odds),
+        "best_observed_price_10plus_hypothetical_execution": evaluate([q for q in prices if q.bookmaker == "BTB_best_available"], min_odds=args.min_odds, max_odds=args.max_odds),
         "forecast_quality": forecast_quality_report(enriched, train_end=train_end, validation_end=validation_end),
         "edge_study": edge_report,
+        "average_price_note": "Le prix moyen est un repère statistique non exécutable ; aucun ROI moyen n’est utilisé pour sélectionner une stratégie.",
         "interpretation": "Les probabilités de référence sont calculées à partir des cotes moyennes du marché ; le ROI du portefeuille best_available utilise la meilleure cote observée par issue et indique le bookmaker déclaré pour cette issue. Il ne s'agit pas d'un arbitrage simultané. Les prix sont des clôtures historiques non horodatées à la seconde.",
     }
     rendered = json.dumps(report, ensure_ascii=False, indent=2, default=str)
