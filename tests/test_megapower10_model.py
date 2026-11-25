@@ -31,6 +31,11 @@ class TestWalkForwardModel(unittest.TestCase):
         self.assertAlmostEqual(p["H"] + p["D"] + p["A"], 1.0, places=8)
         self.assertAlmostEqual(p["over_2_5"] + p["under_2_5"], 1.0, places=8)
 
+    def test_tuning_falls_back_when_train_support_is_too_small(self):
+        matches = [MatchResult("1", "2026-01-01", "L1", "A", "B", 1, 0)]
+        tuned = tune_parameters(matches, train_end="2026-02-01", min_training_forecasts=30)
+        self.assertEqual(tuned["status"], "fallback_insufficient_training_history")
+
     def test_first_match_is_not_predicted(self):
         first = MatchResult("1", "2026-01-01", "L1", "A", "B", 1, 0)
         result = walk_forward([first])
