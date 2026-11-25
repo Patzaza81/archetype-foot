@@ -103,7 +103,7 @@ def walk_forward(matches: Iterable[MatchResult], *, window: int = 8,
 def tune_parameters(matches: Iterable[MatchResult], *, train_end: str,
                     windows: tuple[int, ...] = (4, 6, 8, 12),
                     priors: tuple[float, ...] = (0.0, 2.0, 4.0, 8.0),
-                    min_training_forecasts: int = 30) -> dict:
+                    min_training_forecasts: int = 30, min_per_competition: int = 30) -> dict:
     """Choose window/shrinkage only from walk-forward forecasts before train_end."""
     ordered = sorted(matches, key=lambda m: (m.date, m.competition, m.event_id))
     training_matches = [m for m in ordered if m.date < train_end]
@@ -123,11 +123,12 @@ def tune_parameters(matches: Iterable[MatchResult], *, train_end: str,
                 actual_over = 1.0 if m.home_goals + m.away_goals >= 3 else 0.0
                 loss_total = (probs["over_2_5"] - actual_over)**2
                 losses_by_comp[m.competition].append(0.5 * (loss_1x2 + loss_total))
-            n = sum(len(v) for v in losses_by_comp.values())
-            macro_scores = [sum(v)/len(v) for v in losses_by_comp.values() if v]
+            eligible_comp = [v for v in losses_by_comp.values() if len(v) >= min_per_competition]
+            n = sum(len(v) for v in eligible_comp)
+            macro_scores = [sum(v)/len(v) for v in eligible_comp]
             score = sum(macro_scores)/len(macro_scores) if macro_scores else None
             candidates.append({"window": window, "prior_matches": prior, "n": n,
-                               "competitions": len(macro_scores), "macro_brier_composite": score})
+                               "competitions": len(macro_scores), "min_per_competition": min_per_competition, "macro_brier_composite": score})
     eligible = [x for x in candidates if x["n"] >= min_training_forecasts and x["macro_brier_composite"] is not None]
     if not eligible:
         return {"selected": {"window": 8, "prior_matches": 4.0}, "status": "fallback_insufficient_training_history",
