@@ -687,11 +687,64 @@
      "part_des_matchs": 0.0397
     }
    }
+  },
+  "Moins de 3,5": {
+   "marche": "total_moins_3.5",
+   "seuil": 0.75,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "EH",
+       null,
+       1.3808616267615823
+      ],
+      [
+       "EA",
+       null,
+       1.5668783441905885
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 34654,
+       "s": 26370
+      },
+      "test_2017_2020": {
+       "n": 6564,
+       "s": 5024
+      },
+      "bloc_2025_26": {
+       "n": 5093,
+       "s": 3854
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 34654,
+     "reussis": 26370,
+     "part_des_matchs": 0.5287
+    },
+    "test_2017_2020": {
+     "matchs": 6564,
+     "reussis": 5024,
+     "part_des_matchs": 0.5157
+    },
+    "bloc_2025_26": {
+     "matchs": 5093,
+     "reussis": 3854,
+     "part_des_matchs": 0.4577
+    }
+   }
   }
  },
  "regele": {
   "1N&total_moins_4.5": "2026-11-24",
   "dom_plus_0.5": "2026-11-25",
-  "ext_plus_0.5": "2026-11-25"
+  "ext_plus_0.5": "2026-11-25",
+  "total_moins_3.5": "2026-11-25"
  }
 }
