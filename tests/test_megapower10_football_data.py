@@ -38,7 +38,7 @@ class TestFootballDataAdapter(unittest.TestCase):
             self.assertFalse(home_open.result)
             over = next(q for q in prices if q.market == "total_2_5" and q.selection == "over_2_5")
             self.assertTrue(over.result)
-            pinnacle_over = next(q for q in prices if q.bookmaker == "Pinnacle" and q.market == "total_2_5" and q.selection == "over_2_5")
+            pinnacle_over = next(q for q in prices if q.bookmaker == "Pinnacle" and q.market == "total_2_5" and q.selection == "over_2_5" and q.price_stage == "opening")
             self.assertEqual(pinnacle_over.odds, 2.0)
             self.assertNotIn(99.0, [q.odds for q in prices])
             self.assertEqual(summary["price_stages"], ["closing", "opening"])
