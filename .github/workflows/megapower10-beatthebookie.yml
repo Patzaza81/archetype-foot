@@ -1,0 +1,65 @@
+name: MEGAPOWER 10+ — Beat The Bookie archive
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "megapower10/**"
+      - ".github/workflows/megapower10-beatthebookie.yml"
+  workflow_dispatch:
+    inputs:
+      min_odds:
+        description: "Cote minimale incluse"
+        required: true
+        default: "10"
+      max_odds:
+        description: "Cote maximale exclue"
+        required: true
+        default: "1000"
+      min_support:
+        description: "Support minimal en validation"
+        required: true
+        default: "30"
+
+jobs:
+  historical-study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download public Kaggle archive
+        id: dataset
+        run: |
+          python -m pip install --quiet kagglehub
+          python -c 'import kagglehub; kagglehub.dataset_download("austro/beat-the-bookie-worldwide-football-dataset")'
+          DATASET_CACHE="$HOME/.cache/kagglehub/datasets/austro/beat-the-bookie-worldwide-football-dataset"
+          CSV_PATH=$(find "$DATASET_CACHE" -name "closing_odds.csv.gz" -type f -print -quit)
+          if [ -z "$CSV_PATH" ]; then
+            echo "closing_odds.csv.gz introuvable dans le cache KaggleHub: $DATASET_CACHE"
+            find "$DATASET_CACHE" -maxdepth 4 -type f -print || true
+            exit 1
+          fi
+          echo "csv_path=$CSV_PATH" >> "$GITHUB_OUTPUT"
+      - name: Compile engine
+        run: python -m compileall -q megapower10
+      - name: Run long-range walk-forward study
+        env:
+          MIN_ODDS: ${{ inputs.min_odds || '10' }}
+          MAX_ODDS: ${{ inputs.max_odds || '1000' }}
+          MIN_SUPPORT: ${{ inputs.min_support || '30' }}
+        run: |
+          python -m megapower10.beatthebookie_cli \
+            --input "${{ steps.dataset.outputs.csv_path }}" \
+            --min-odds "$MIN_ODDS" \
+            --max-odds "$MAX_ODDS" \
+            --min-support "$MIN_SUPPORT" \
+            --output beatthebookie-megapower10-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: megapower10-beatthebookie-report
+          path: beatthebookie-megapower10-report.json
+          if-no-files-found: error
+          retention-days: 30
