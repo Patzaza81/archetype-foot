@@ -48,7 +48,7 @@ def main() -> int:
         "forecast_join": join_report,
         "raw_10plus_opening": evaluate([q for q in prices if q.price_stage == "opening"], min_odds=args.min_odds, max_odds=args.max_odds),
         "raw_10plus_closing": evaluate([q for q in prices if q.price_stage == "closing"], min_odds=args.min_odds, max_odds=args.max_odds),
-        "forecast_quality": forecast_quality_report(enriched),
+        "forecast_quality": forecast_quality_report(enriched, train_end=train_end, validation_end=validation_end),
         "edge_study": edge_report,
         "interpretation": "Le modèle et ses paramètres sont appris en marche avant sur le seul bloc train. Chaque match est prédit avec les seuls résultats strictement antérieurs du même championnat. Les seuils d'écart sont choisis sur validation puis évalués sur un test chronologique séparé. Les prix Football-Data ouverture/clôture n'ont pas d'horodatage de capture : cette étude mesure un signal historique, pas un prix exécutable à une minute précise.",
     }
