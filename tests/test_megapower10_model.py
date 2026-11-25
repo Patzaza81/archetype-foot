@@ -21,6 +21,17 @@ class TestWalkForwardModel(unittest.TestCase):
         self.assertEqual(pred["status"], "forecast")
         self.assertGreater(pred["lambda_home"], 0)
 
+    def test_same_day_results_are_not_used(self):
+        matches = [
+            MatchResult("a", "2026-01-01", "L1", "A", "B", 3, 0),
+            MatchResult("b", "2026-01-01", "L1", "C", "D", 0, 2),
+            MatchResult("c", "2026-01-02", "L1", "A", "D", 1, 1),
+        ]
+        preds = walk_forward(matches)
+        self.assertEqual(preds[0]["n_league"], 0)
+        self.assertEqual(preds[1]["n_league"], 0)
+        self.assertEqual(preds[2]["n_league"], 2)
+
     def test_leagues_are_not_pooled(self):
         history = [MatchResult("1", "2026-01-01", "L1", "A", "B", 3, 0)]
         target = MatchResult("2", "2026-02-01", "L2", "C", "D", 1, 0)
