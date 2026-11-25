@@ -1,0 +1,20 @@
+name: MEGAPOWER 10+ tests
+
+on:
+  push:
+    branches: [megapower-10plus-engine]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile engine
+        run: python -m compileall -q megapower10
+      - name: Run isolated engine tests
+        run: python -m unittest tests.test_megapower10_core tests.test_megapower10_football_data -v
