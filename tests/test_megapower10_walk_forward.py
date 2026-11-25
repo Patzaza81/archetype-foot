@@ -26,7 +26,7 @@ class TestPriceJoin(unittest.TestCase):
     def test_negative_validation_does_not_select_a_test_strategy(self):
         rows = [{"event_id": f"n{i}", "date": "2026-02-01" if i < 30 else "2026-04-01",
                  "competition": "L1", "market": "1X2", "bookmaker": "Book",
-                 "price_stage": "opening", "odds": 1.2, "edge": .1,
+                 "price_stage": "opening", "odds": 10.2, "edge": .1,
                  "result": False} for i in range(60)]
         report = chronological_edge_study(rows, train_end="2026-01-01",
                                           validation_end="2026-03-01", min_support=10)
