@@ -44,7 +44,7 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
         if not required.issubset(by_selection):
             skipped_incomplete_market += len(group)
             continue
-        implied = {s: 1.0 / by_selection[s].odds for s in required}
+        implied = {s: 1.0 / (by_selection[s].reference_odds or by_selection[s].odds) for s in required}
         overround = sum(implied.values())
         if overround <= 0:
             continue
@@ -57,7 +57,7 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
             enriched.append({
                 "event_id": q.event_id, "date": q.kickoff_date, "competition": q.competition,
                 "season": q.season, "market": q.market, "selection": q.selection,
-                "bookmaker": q.bookmaker, "price_stage": q.price_stage, "odds": q.odds,
+                "bookmaker": q.bookmaker, "execution_bookmaker": getattr(q, "execution_bookmaker", ""),\n                "price_stage": q.price_stage, "odds": q.odds, "reference_odds": getattr(q, "reference_odds", None) or q.odds,
                 "result": q.result, "model_probability": p_model,
                 "market_probability": p_market, "edge": p_model - p_market, "market_overround": overround,
                 "opening_to_closing_odds_change": (price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) / q.odds - 1.0) if q.price_stage == "opening" and price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) else None,
