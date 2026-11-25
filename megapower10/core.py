@@ -192,7 +192,7 @@ def _metrics(rows: list[Quote]) -> dict[str, Any]:
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
         "profit_units": profit, "mean_odds": sum(prices)/n if n else None,
         "mean_implied_break_even_rate": sum(1/q.odds for q in settled)/n if n else None,
-        "mean_clv_odds_ratio": (sum(q.odds/q.closing_odds - 1.0 for q in settled if q.closing_odds is not None) / sum(q.closing_odds is not None for q in settled)) if any(q.closing_odds is not None for q in settled) else None,
+        "mean_clv_odds_ratio": (sum(q.odds/getattr(q, "closing_odds") - 1.0 for q in settled if getattr(q, "closing_odds", None) is not None) / sum(getattr(q, "closing_odds", None) is not None for q in settled)) if any(getattr(q, "closing_odds", None) is not None for q in settled) else None,
     }
 
 
