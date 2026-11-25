@@ -38,6 +38,7 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 | X2 + plus de 1,5 | `N2&total_plus_1.5` | 60 % | B | 1 | 69.3 % (462, 3.6 % des matchs) | 65.9 % (293, 2.6 % des matchs) |
 | X1 + moins de 4,5 | `1N&total_moins_4.5` | 70 % | B | 1 | 71.6 % (3189, 25.1 % des matchs) | 70.5 % (2377, 21.4 % des matchs) |
 | Moins de 3,5 buts | `total_moins_3.5` | 75 % | B | 1 | 76.5 % (6564, 51.6 % des matchs) | 75.7 % (5093, 45.8 % des matchs) |
+| Double chance 12 | `12` | 80 % | B | 1 | 83.5 % (1220, 9.6 % des matchs) | 82.1 % (1027, 9.2 % des matchs) |
 | X2 + moins de 4,5 | `N2&total_moins_4.5` | 65 % | B | 1 | 68.3 % (665, 5.2 % des matchs) | 69.9 % (442, 4.0 % des matchs) |
 
 ## Intervalles figés
@@ -119,6 +120,14 @@ Ancienne version (80 %, B) : `EHm < -0.082 et 0.242 ≤ EAm`, 5,2 % des matchs, 
 | EH < 1.381 et EA < 1.567 | 26370/34654 = 76.1 % | 5024/6564 = 76.5 % | 3854/5093 = 75.7 % |
 
 Les deux équipes ont un xG attendu faible (domicile sous 1,38, extérieur sous 1,57). Le marché « moins de 3,5 buts » réussit 72 % des matchs en moyenne : l'intervalle gagne environ 4 points. À 80 % il ne reste que 3,8 % des matchs (version A seulement), à 85 % rien ; le seuil de 75 % est le compromis choisi (proposition de Claude, validée par Patrick). Script : `etudes/categories_2026_11/refreeze_moins35.py`.
+
+### Double chance 12 — seuil 80 %, version B (ajouté le 25/11/2026, décision de Patrick)
+
+| Intervalle | 2000-2016 | 2017-2020 | Bloc 2025-26 |
+|---|---|---|---|
+| 3.353 ≤ X1g et 0.296 ≤ dE | 4536/5558 = 81.6 % | 1019/1220 = 83.5 % | 843/1027 = 82.1 % |
+
+« 12 » = l'une des deux équipes gagne (pas de nul). Seuils mesurés (version B, matchs jamais vus 2017-20 / 2025-26) : 80 % → 9,6 % / 9,2 % des matchs ; 81 % → 5,8 % / 4,6 % ; 84 % → 1,6 % / 1,0 % (90,1 % / 86,1 %) ; 85 % → 1,6 % / 0,9 %. Patrick a choisi 80 % le 25/11 comme « meilleur consensus » (84 % proposé puis écarté). Cote médiane du marché 1,28, 63 % des matchs cotés 1,26 ou plus. Script : `etudes/categories_2026_11/refreeze_dc12.py`.
 
 ### X2 + moins de 4,5 — seuil 65 %, version B
 
