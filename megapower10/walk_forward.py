@@ -6,7 +6,7 @@ archives remain separate because exact capture times are unavailable.
 """
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 import math
 from typing import Iterable
 
@@ -57,7 +57,7 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
             enriched.append({
                 "event_id": q.event_id, "date": q.kickoff_date, "competition": q.competition,
                 "season": q.season, "market": q.market, "selection": q.selection,
-                "bookmaker": q.bookmaker, "execution_bookmaker": getattr(q, "execution_bookmaker", ""),\n                "price_stage": q.price_stage, "odds": q.odds, "reference_odds": getattr(q, "reference_odds", None) or q.odds,
+                "bookmaker": q.bookmaker, "execution_bookmaker": getattr(q, "execution_bookmaker", "") or q.bookmaker,\n                "price_stage": q.price_stage, "odds": q.odds, "reference_odds": getattr(q, "reference_odds", None) or q.odds,
                 "result": q.result, "model_probability": p_model,
                 "market_probability": p_market, "edge": p_model - p_market, "market_overround": overround,
                 "opening_to_closing_odds_change": (price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) / q.odds - 1.0) if q.price_stage == "opening" and price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) else None,
@@ -87,11 +87,14 @@ def _stats(rows: list[dict]) -> dict:
         max_drawdown = max(max_drawdown, peak - cumulative)
         losing_streak = losing_streak + 1 if delta < 0 else 0
         max_losing_streak = max(max_losing_streak, losing_streak)
+    execution_counts = Counter(r.get("execution_bookmaker") for r in ordered if r.get("execution_bookmaker"))
     return {
         "n": n, "wins": wins, "hit_rate": wins/n if n else None,
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
         "profit_units": profit, "max_drawdown_units": max_drawdown,
         "max_losing_streak": max_losing_streak,
+        "execution_bookmakers": len(execution_counts),
+        "top_execution_bookmakers": execution_counts.most_common(10),
         "mean_odds": sum(r["odds"] for r in ordered)/n if n else None,
         "mean_edge": sum(r["edge"] for r in ordered)/n if n else None,
     }
