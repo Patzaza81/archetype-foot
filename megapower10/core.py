@@ -217,12 +217,12 @@ def evaluate(quotes: Iterable[Quote], *, min_odds: float = 1.01, max_odds: float
 
 def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[str, Any]:
     """Rank descriptive pockets by competition × market × odds band; no automatic promotion."""
-    groups: dict[tuple[str, str, str], list[Quote]] = defaultdict(list)
+    groups: dict[tuple[str, str, str, str], list[Quote]] = defaultdict(list)
     for q in quotes:
         if q.result is not None:
-            groups[(q.competition, q.market, odds_band(q.odds))].append(q)
+            groups[(q.competition, q.market, q.price_stage, odds_band(q.odds))].append(q)
     rows = []
-    for (competition, market, band), sample in groups.items():
+    for (competition, market, stage, band), sample in groups.items():
         m = _metrics(sample)
         if m["n"] < min_support:
             status = "support_insufficient"
