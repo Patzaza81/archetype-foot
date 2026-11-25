@@ -98,32 +98,39 @@ def predict_one(history: list[MatchResult], target: MatchResult, *, window: int 
 
 def walk_forward(matches, *, window: int = 8, prior_matches: float = 4.0,
                  max_goals: int = 10) -> list[dict]:
-    """Incremental walk-forward engine; updates team and league stats after each forecast."""
+    """Incremental walk-forward engine; same-day results are never visible."""
+    from itertools import groupby
     ordered = sorted(matches, key=lambda m: (m.date, m.competition, m.event_id))
     states: dict[str, dict] = {}
     predictions = []
-    for match in ordered:
-        state = states.setdefault(match.competition, {
-            "n": 0, "sum_home": 0, "sum_away": 0,
-            "home": defaultdict(list), "away": defaultdict(list),
-        })
-        n = state["n"]
-        if n == 0:
-            forecast = _forecast_from_stats(match, 0, 0.0, 0.0, {}, {},
-                                            window=window, prior_matches=prior_matches,
-                                            max_goals=max_goals)
-        else:
-            forecast = _forecast_from_stats(
-                match, n, state["sum_home"]/n, state["sum_away"]/n,
-                state["home"], state["away"], window=window,
-                prior_matches=prior_matches, max_goals=max_goals,
-            )
-        predictions.append(forecast)
-        state["home"][match.home].append((match.home_goals, match.away_goals))
-        state["away"][match.away].append((match.away_goals, match.home_goals))
-        state["n"] += 1
-        state["sum_home"] += match.home_goals
-        state["sum_away"] += match.away_goals
+    for date, date_group in groupby(ordered, key=lambda m: m.date):
+        todays_matches = list(date_group)
+        # Forecast the entire date against the state frozen at the start of that date.
+        for match in todays_matches:
+            state = states.setdefault(match.competition, {
+                "n": 0, "sum_home": 0, "sum_away": 0,
+                "home": defaultdict(list), "away": defaultdict(list),
+            })
+            n = state["n"]
+            if n == 0:
+                forecast = _forecast_from_stats(match, 0, 0.0, 0.0, {}, {},
+                                                window=window, prior_matches=prior_matches,
+                                                max_goals=max_goals)
+            else:
+                forecast = _forecast_from_stats(
+                    match, n, state["sum_home"]/n, state["sum_away"]/n,
+                    state["home"], state["away"], window=window,
+                    prior_matches=prior_matches, max_goals=max_goals,
+                )
+            predictions.append(forecast)
+        # Only after every match on the date is forecast are its results revealed.
+        for match in todays_matches:
+            state = states[match.competition]
+            state["home"][match.home].append((match.home_goals, match.away_goals))
+            state["away"][match.away].append((match.away_goals, match.home_goals))
+            state["n"] += 1
+            state["sum_home"] += match.home_goals
+            state["sum_away"] += match.away_goals
     return predictions
 
 
