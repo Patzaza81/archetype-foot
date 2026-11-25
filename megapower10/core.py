@@ -2,15 +2,15 @@
 
 Canonical JSONL: one row per bookmaker quote for one event/market/selection.
 Required: event_id, kickoff_utc, competition, market, selection, bookmaker,
- captured_at_utc, odds, result (bool or null), source. Optional: phase,
- model_probability, closing_odds, season, quote_id.
+captured_at_utc, odds, result (bool or null), source. Optional: phase,
+model_probability, closing_odds, season, quote_id.
 All timestamps must be ISO-8601 with timezone. No inferred prices/results.
 """
 from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import math
 from pathlib import Path
@@ -115,6 +115,41 @@ def validate_quotes(quotes: Iterable[Quote], *, prematch_only: bool = True) -> d
     return {"input": len(rows), "usable": usable, "errors": errors, "excluded": len(rows) - len(usable)}
 
 
+def decision_snapshot(quotes: Iterable[Quote], *, lead_minutes: int = 60, tolerance_minutes: int = 20) -> dict[str, Any]:
+    """One executable quote per event/market/selection/bookmaker near a fixed pre-kickoff decision time.
+
+    Selects the closest quote to kickoff-lead, never a quote after that decision time.
+    No best-price stitching across bookmakers. Quotes outside tolerance are omitted.
+    """
+    if lead_minutes < 0 or tolerance_minutes < 0:
+        raise ValueError("lead_minutes et tolerance_minutes doivent être >= 0")
+    groups: dict[tuple, list[Quote]] = defaultdict(list)
+    excluded = 0
+    for q in quotes:
+        if q.phase.lower() != "prematch" or q.captured_at_utc >= q.kickoff_utc:
+            excluded += 1
+            continue
+        groups[q.key].append(q)
+    chosen: list[Quote] = []
+    missing = 0
+    tolerance = timedelta(minutes=tolerance_minutes)
+    for rows in groups.values():
+        kickoff = rows[0].kickoff_utc
+        target = kickoff - timedelta(minutes=lead_minutes)
+        eligible = [q for q in rows if q.captured_at_utc <= target]
+        if not eligible:
+            missing += 1
+            continue
+        q = max(eligible, key=lambda x: x.captured_at_utc)
+        if target - q.captured_at_utc > tolerance:
+            missing += 1
+            continue
+        chosen.append(q)
+    chosen.sort(key=lambda q: (q.kickoff_utc, q.competition, q.market, q.event_id, q.selection, q.bookmaker))
+    return {"quotes": chosen, "groups": len(groups), "selected": len(chosen), "missing_snapshot": missing, "excluded": excluded,
+            "decision_rule": {"lead_minutes": lead_minutes, "tolerance_minutes": tolerance_minutes}}
+
+
 def odds_band(odds: float) -> str:
     if odds < 5: return "<5"
     if odds < 8: return "5-8"
@@ -146,7 +181,6 @@ def _metrics(rows: list[Quote]) -> dict[str, Any]:
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
         "profit_units": profit, "mean_odds": sum(prices)/n if n else None,
         "break_even_rate_at_mean_odds": (1/(sum(prices)/n)) if n else None,
-        "positive_ev_at_odds": sum((q.odds-1)*int(q.result)-int(not q.result) for q in settled),
     }
 
 
@@ -167,6 +201,27 @@ def evaluate(quotes: Iterable[Quote], *, min_odds: float = 1.01, max_odds: float
     return {"overall": _metrics(chosen), "by_odds_band": {k: _metrics(v) for k,v in sorted(groups.items())},
             "scope": {"min_odds_inclusive": min_odds, "max_odds_exclusive": max_odds,
                       "competition": competition, "market": market, "min_model_edge": min_model_edge}}
+
+
+def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[str, Any]:
+    """Rank descriptive pockets by competition × market × odds band; no automatic promotion."""
+    groups: dict[tuple[str, str, str], list[Quote]] = defaultdict(list)
+    for q in quotes:
+        if q.result is not None:
+            groups[(q.competition, q.market, odds_band(q.odds))].append(q)
+    rows = []
+    for (competition, market, band), sample in groups.items():
+        m = _metrics(sample)
+        if m["n"] < min_support:
+            status = "support_insufficient"
+        elif m["roi"] is not None and m["roi"] > 0 and m["wilson_95"][0] > 0:
+            status = "descriptive_candidate_requires_chronological_test"
+        else:
+            status = "no_positive_evidence"
+        rows.append({"competition": competition, "market": market, "odds_band": band, **m, "status": status})
+    rows.sort(key=lambda r: (r["status"] != "descriptive_candidate_requires_chronological_test",
+                             -(r["roi"] if r["roi"] is not None else -999), -r["n"]))
+    return {"groups": len(rows), "min_support": min_support, "results": rows}
 
 
 def chronological_split(quotes: Iterable[Quote], train_end: datetime, validation_end: datetime) -> dict[str, list[Quote]]:
