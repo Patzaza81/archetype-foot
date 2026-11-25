@@ -2,6 +2,12 @@
 
 Brique indépendante d'ARCHETYPE Foot. Elle ne modifie aucun moteur existant et ne lit aucun flux de production.
 
+## Contrat impératif des sélections
+
+- **Aucune recommandation, sélection de stratégie ou ligne de portefeuille sous 10.00.** La borne est inclusive : 10.00 est admissible, 9.99 est rejetée.
+- Le contrôle est centralisé dans `core.py` et réappliqué dans l'évaluation des edges et l'étude chronologique ; les deux CLI refusent `--min-odds` inférieur à 10.00.
+- Les cotes inférieures à 10.00 peuvent subsister uniquement comme données de référence nécessaires au calcul des probabilités de marché (de-vig) ; elles ne sont jamais des sélections ni des résultats de portefeuille.
+
 ## Moteur construit
 
 - Adaptateur Football-Data : résultats historiques + cotes individuelles d'ouverture/clôture disponibles dans les CSV.
