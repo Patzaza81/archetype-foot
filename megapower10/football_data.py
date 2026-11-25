@@ -101,7 +101,7 @@ def load_football_data(root: str | Path = "data/football_data") -> tuple[list[Hi
                     continue
                 if ftr not in ("H", "D", "A"):
                     ftr = "H" if fthg > ftag else "A" if fthg < ftag else "D"
-                competition = (row.get("League") or row.get("Div") or code).strip()
+                competition = f"{code}:{(row.get(\"League\") or row.get(\"Div\") or code).strip()}"
                 event_id = f"football-data:{season}:{code}:{date}:{home}:{away}"
                 source = f"Football-Data.co.uk/{path.as_posix()}"
                 for book, cols in BOOKS_1X2.items():
