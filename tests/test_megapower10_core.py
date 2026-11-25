@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import unittest
 
-from megapower10.core import from_dict, validate_quotes, odds_band, wilson, evaluate, chronological_split, decision_snapshot, discovery_report, MIN_RECOMMENDATION_ODDS
+from megapower10.core import from_dict, validate_quotes, odds_band, wilson, evaluate, chronological_split, decision_snapshot, discovery_report, MIN_RECOMMENDATION_ODDS, is_recommendation_odds
 
 BASE = {
     "event_id": "e1", "kickoff_utc": "2026-12-01T20:00:00Z", "competition": "L1",
@@ -55,6 +55,11 @@ class TestMegaPower10(unittest.TestCase):
         for price in (10.0, 10.01):
             self.assertEqual(evaluate([from_dict(dict(BASE, odds=price))])["overall"]["n"], 1)
         self.assertEqual(MIN_RECOMMENDATION_ODDS, 10.0)
+
+    def test_recommendation_price_must_be_finite(self):
+        for price in (float('nan'), float('inf'), float('-inf'), 0, -1):
+            self.assertFalse(is_recommendation_odds(price))
+        self.assertTrue(is_recommendation_odds(10.0))
 
     def test_evaluate_cannot_weaken_floor(self):
         with self.assertRaises(ValueError): evaluate([from_dict(BASE)], min_odds=9.0)
