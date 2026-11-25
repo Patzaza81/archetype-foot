@@ -214,7 +214,7 @@ def _metrics(rows: list[Quote]) -> dict[str, Any]:
     }
 
 
-def evaluate(quotes: Iterable[Quote], *, min_odds: float = 1.01, max_odds: float = float("inf"),
+def evaluate(quotes: Iterable[Quote], *, min_odds: float = MIN_RECOMMENDATION_ODDS, max_odds: float = float("inf"),
              competition: str | None = None, market: str | None = None,
              min_model_edge: float | None = None) -> dict[str, Any]:
     """Evaluate only eligible 10+ prices; lower odds are never recommendations."""
