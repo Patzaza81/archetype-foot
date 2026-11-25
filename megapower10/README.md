@@ -29,7 +29,7 @@ Les bornes train/validation sont calculées par dates distinctes (60 % / 80 %) o
 
 ## Source et limites à respecter
 
-Football-Data fournit des cotes d'ouverture/clôture, mais pas leur horodatage exact ni l'heure de capture. Ces observations servent à l'étude historique ; elles ne prouvent pas qu'un prix était encore disponible à une minute précise. Les prix d'ouverture et de clôture restent deux jeux séparés. Le mouvement ouverture → clôture n'est pas présenté comme un CLV horodaté.
+Football-Data fournit des cotes d'ouverture/clôture, mais pas leur horodatage exact ni l'heure de capture. Ses conditions d'utilisation doivent être respectées : cette source ne doit pas être intégrée à une offre commerciale ou à un entraînement automatisé destiné à un produit commercial sans autorisation explicite du fournisseur. Ces observations servent à l'étude historique ; elles ne prouvent pas qu'un prix était encore disponible à une minute précise. Les prix d'ouverture et de clôture restent deux jeux séparés. Le mouvement ouverture → clôture n'est pas présenté comme un CLV horodaté.
 
 La première version couvre 1X2 et total 2,5 uniquement. Les marchés exotiques (scores exacts, BTTS, corners, cartons, mi-temps, handicaps détaillés) nécessitent des archives dédiées et des règles de règlement propres à chaque marché.
 
