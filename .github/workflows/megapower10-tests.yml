@@ -17,4 +17,4 @@ jobs:
       - name: Compile engine
         run: python -m compileall -q megapower10
       - name: Run isolated engine tests
-        run: python -m unittest tests.test_megapower10_core tests.test_megapower10_football_data -v
+        run: python -m unittest discover -s tests -p "test_megapower10*.py" -v
