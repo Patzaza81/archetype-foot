@@ -54,7 +54,7 @@ def _dt(value: Any, field: str) -> datetime:
 
 
 def from_dict(row: dict[str, Any]) -> Quote:
-    required = ("event_id", "kickoff_utc", "competition", "market", "selection", "bookmaker", "captured_at_utc", "odds", "result", "source")
+    required = ("event_id", "kickoff_utc", "competition", "market", "selection", "bookmaker", "odds", "result", "source")
     missing = [k for k in required if k not in row or row[k] is None or row[k] == ""]
     if missing:
         raise ValueError("champs manquants: " + ", ".join(missing))
@@ -76,9 +76,9 @@ def from_dict(row: dict[str, Any]) -> Quote:
     return Quote(
         event_id=str(row["event_id"]), kickoff_utc=_dt(row["kickoff_utc"], "kickoff_utc"),
         competition=str(row["competition"]), market=str(row["market"]), selection=str(row["selection"]),
-        bookmaker=str(row["bookmaker"]), captured_at_utc=_dt(row["captured_at_utc"], "captured_at_utc"),
+        bookmaker=str(row["bookmaker"]), captured_at_utc=captured,
         odds=odds, result=result, source=str(row["source"]), phase=str(row.get("phase", "prematch")),
-        model_probability=p, closing_odds=close, season=str(row.get("season", "")), quote_id=str(row.get("quote_id", "")),
+        model_probability=p, closing_odds=close, season=str(row.get("season", "")), quote_id=str(row.get("quote_id", "")), price_stage=stage,
     )
 
 
@@ -127,7 +127,7 @@ def decision_snapshot(quotes: Iterable[Quote], *, lead_minutes: int = 60, tolera
     groups: dict[tuple, list[Quote]] = defaultdict(list)
     excluded = 0
     for q in quotes:
-        if q.phase.lower() != "prematch" or q.captured_at_utc >= q.kickoff_utc:
+        if q.phase.lower() != "prematch" or q.captured_at_utc is None or q.captured_at_utc >= q.kickoff_utc:
             excluded += 1
             continue
         groups[q.key].append(q)
@@ -137,7 +137,7 @@ def decision_snapshot(quotes: Iterable[Quote], *, lead_minutes: int = 60, tolera
     for rows in groups.values():
         kickoff = rows[0].kickoff_utc
         target = kickoff - timedelta(minutes=lead_minutes)
-        eligible = [q for q in rows if q.captured_at_utc <= target]
+        eligible = [q for q in rows if q.captured_at_utc is not None and q.captured_at_utc <= target]
         if not eligible:
             missing += 1
             continue
