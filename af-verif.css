@@ -27,3 +27,11 @@
 .vf-filtre-titre{flex:0 0 100%;font-size:11px;font-weight:700;opacity:.7;margin-top:4px}
 /* onglet Étude : carte repliée = le meilleur marché ; dépliée = tous les marchés retenus (le meilleur y figure déjà) */
 .ax-carte:not(.ax-replie) .vf-meilleur{display:none}
+
+/* onglet Catégories (25/11/2026) : le nom du marché retenu en gros, en haut de la carte, pour le repérer au premier regard */
+.vf-cat-marches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 8px}
+.vf-cat-chip{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;background:#087F78;color:#fff;box-shadow:0 1px 3px rgba(8,127,120,.35)}
+.vf-cat-nom{font:800 17px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.1px}
+.vf-cat-cote{font:700 13px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.22);white-space:nowrap}
+.vf-cat-chip .om-badge{margin-left:2px}
+.theme-nuit .vf-cat-chip{background:#12625C;box-shadow:none}

@@ -116,8 +116,10 @@ function phraseCategories(m, p) {
 }
 function resume(m, onglet) {
   if (onglet === "categories") {
-    const p = paris(m, onglet)[0]; if (!p) return "";
-    return phraseCategories(m, p) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Marché le plus sûr de la catégorie</div>${ligne(p, m.statut === "termine")}</div>`;
+    const L = paris(m, onglet), p = L[0]; if (!p) return "";
+    const badge = (q) => (m.statut === "termine" && q.gagne != null ? ` <span class="om-badge om-${q.gagne ? "WIN" : "LOSS"}">${q.gagne ? "GAGNÉ" : "PERDU"}</span>` : "");
+    const bandeau = `<div class="vf-cat-marches" role="list" aria-label="Marchés retenus pour ce match">${L.map((q) => `<span class="vf-cat-chip" role="listitem"><span class="vf-cat-nom">${e(q.libelle)}</span><span class="vf-cat-cote">Cote ${fr(q.cote)}</span>${badge(q)}</span>`).join("")}</div>`;
+    return bandeau + phraseCategories(m, p) + `<div class="om-bloc vf-famille vf-meilleur"><div class="om-bloc-titre">Marché le plus sûr de la catégorie</div>${ligne(p, m.statut === "termine")}</div>`;
   }
   if (onglet === "plus25") {
     const p = paris(m, onglet)[0]; if (!p) return "";

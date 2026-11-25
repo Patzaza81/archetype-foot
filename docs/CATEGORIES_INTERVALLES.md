@@ -160,3 +160,6 @@ Victoire domicile, plus de 1,5, X1, domicile marque 1+ et X1 + plus de 1,5 : ide
 
 ## Régénérer
 Les intervalles sont figés : ne pas les recalculer sans décision de Patrick. Pour les rejouer : `etudes/categories_2026_11/freeze_final.py` (nécessite les tables de l'étude construites par `build.py` à partir du dossier `etude_neutre` de la branche `etude-neutre`). Tout changement d'intervalle ou de seuil : mettre à jour `categories_zones.json`, ce document et `tests/test_verif_categories.py` ensemble.
+
+## Affichage (25/11/2026)
+Dans l'onglet Catégories, le **nom de chaque marché retenu est affiché en gros, dans un bandeau coloré, en haut de la carte du match** (avec sa cote, et GAGNÉ/PERDU une fois le match terminé), avant le texte d'explication (demande de Patrick : le repérer au premier regard). Un match retenu pour plusieurs marchés montre un bandeau par marché, du plus sûr au moins sûr. Code : `archetype_verif.js` (`resume`), `af-verif.css` (`.vf-cat-*`).
