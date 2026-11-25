@@ -226,7 +226,7 @@ def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[
         m = _metrics(sample)
         if m["n"] < min_support:
             status = "support_insufficient"
-        elif m["roi"] is not None and m["roi"] > 0 and m["wilson_95"][0] > 0:
+        elif m["roi"] is not None and m["roi"] > 0:
             status = "positive_historical_roi_requires_holdout"
         else:
             status = "no_positive_evidence"
