@@ -10,9 +10,11 @@ SORTIE = ['EH', 'EA', 'ET', 'dE', 'rE', 'EHm', 'EAm', 'X1g', 'SM', 'rM', 'A1', '
 rng = np.random.RandomState(24)
 mem = {m: np.zeros(len(g), bool) for m in Z}
 for m, M in Z.items():
+    if m == 'Plus de 1,5': continue      # règle des 2 buts (25/11) : lit F2h, F2a, n_dom, n_ext ; testée à part dans tests/test_verif_categories.py
     for z in M['intervalles']: mem[m] |= masque(g, conv([c for c in z['conditions']]))
 choix = set()
 for m in Z:
+    if m == 'Plus de 1,5': continue
     p = np.where(mem[m])[0]; f = np.where(~mem[m])[0]
     choix |= set(rng.choice(p, min(4, len(p)), replace=False)); choix |= set(rng.choice(f, 4, replace=False))
 # lignes proches d'un bord (juste dedans / juste dehors) pour chaque intervalle à 1 condition de seuil
