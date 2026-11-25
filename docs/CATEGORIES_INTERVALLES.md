@@ -163,3 +163,6 @@ Les intervalles sont figés : ne pas les recalculer sans décision de Patrick. P
 
 ## Affichage (25/11/2026)
 Dans l'onglet Catégories, le **nom de chaque marché retenu est affiché en gros, dans un bandeau coloré, en haut de la carte du match** (avec sa cote, et GAGNÉ/PERDU une fois le match terminé), avant le texte d'explication (demande de Patrick : le repérer au premier regard). Un match retenu pour plusieurs marchés montre un bandeau par marché, du plus sûr au moins sûr. Code : `archetype_verif.js` (`resume`), `af-verif.css` (`.vf-cat-*`).
+
+## Correctif du 25/11/2026 : page vide
+`page_verif.json` contenait un `NaN` (rapport de buts marqués domicile / extérieur quand l'extérieur n'a marqué aucun but). `NaN` n'est pas du JSON valide : le navigateur refusait tout le fichier et la page Analyse Verdict restait vide (message « Données indisponibles »). `ecrire_page` convertit maintenant tout `NaN` / infini en `null` et écrit en JSON strict (`allow_nan=False`) ; tests dans `tests/test_verif_pronostic.py`.

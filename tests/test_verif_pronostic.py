@@ -264,3 +264,31 @@ def test_page_garde_sept_jours_et_meme_cote_que_la_page():
     import pathlib
     js = (pathlib.Path(v.RACINE) / "archetype_verif.js").read_text(encoding="utf-8")
     assert v.JOURS_PASSES_PAGE == 7 and f"const COTE_TOP = {v.COTE_TOP};" in js and "selectionsGelees(d)" in js
+
+
+# Le 25/11/2026 un NaN (rapport de buts divise par zero) dans page_verif.json a rendu le fichier illisible pour le navigateur : page vide.
+def _ecrit_et_relit_strict(d):
+    chemin = os.path.join(tempfile.mkdtemp(), "page.json")
+    v.ecrire_page(d, chemin)
+    texte = open(chemin, encoding="utf-8").read()
+    def refuse(c): raise ValueError("constante non JSON : " + c)
+    return json.loads(texte, parse_constant=refuse)       # comme JSON.parse du navigateur : NaN / Infinity refuses
+
+def test_page_nan_devient_null():
+    r = _ecrit_et_relit_strict({"matchs": [{"categories": {"mesures": {"rM": float("nan"), "rC": 1.5}}}]})
+    assert r["matchs"][0]["categories"]["mesures"] == {"rM": None, "rC": 1.5}
+
+def test_page_infini_devient_null():
+    assert _ecrit_et_relit_strict({"a": float("inf"), "b": [float("-inf"), 2.0]}) == {"a": None, "b": [None, 2.0]}
+
+def test_page_valeurs_normales_inchangees():
+    d = {"a": 0.0, "b": -3.25, "c": [1, 2.5, "x", None, True], "d": {"e": 7}}
+    assert _ecrit_et_relit_strict(d) == d
+
+def test_page_numpy_nan_devient_null():
+    assert _ecrit_et_relit_strict({"x": np.float64("nan"), "y": np.float64(2.5)}) == {"x": None, "y": 2.5}
+
+def test_page_nan_dans_le_fichier_publie_absent():
+    import pathlib
+    texte = (pathlib.Path(v.RACINE) / "data/verif_pronostics/page_verif.json").read_text(encoding="utf-8")
+    json.loads(texte, parse_constant=lambda c: (_ for _ in ()).throw(ValueError(c)))

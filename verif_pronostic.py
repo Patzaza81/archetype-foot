@@ -578,9 +578,17 @@ def page_donnees(jours_passes=0, maintenant=None, flux=FLUX, cfg=None):
     import verif_etude as VE
     return {"genere_le": maintenant, "cote_min": cfg["cote_min"], "minimum_matchs_meme_lieu": NMIN, "modele_xg": modele_xg(), "bilan": b.get("par_verdict", {}), "nb_matchs": len(M), "etude": VE.resume(VE.charger()), "regle_buts": __import__("verif_regle_buts").charger(), "regle_plus25": __import__("verif_regle_plus25").charger(), "categories": __import__("verif_categories").resume(), "matchs": M}
 
+def _sans_nan(o):
+    """NaN / infini ne sont pas du JSON valide : le navigateur refuse alors tout le fichier et la page reste vide (25/11/2026). Ils deviennent null."""
+    if isinstance(o, float): return o if math.isfinite(o) else None
+    if isinstance(o, dict): return {k: _sans_nan(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)): return [_sans_nan(v) for v in o]
+    return o
+
 def ecrire_page(d=None, chemin=PAGE):
     d = d or page_donnees(); os.makedirs(os.path.dirname(chemin), exist_ok=True)
-    json.dump(d, open(chemin, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":")); return d
+    with open(chemin, "w", encoding="utf-8") as f: json.dump(_sans_nan(d), f, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    return d
 
 # ---------------------------------------------------------------- selections de la page gelees AVANT le coup d'envoi (Top 20 et onglet Regles) : pour mesurer leur reussite REELLE
 JOURNAL_SELECTIONS = os.path.join(DOSSIER, "journal_selections.jsonl")
