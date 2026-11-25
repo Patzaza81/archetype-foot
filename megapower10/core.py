@@ -73,6 +73,9 @@ def from_dict(row: dict[str, Any]) -> Quote:
     close = None if close is None else float(close)
     if close is not None and (not math.isfinite(close) or close <= 1.0):
         raise ValueError("closing_odds invalide")
+    stage = str(row.get("price_stage", "snapshot")).lower()
+    captured_raw = row.get("captured_at_utc")
+    captured = None if captured_raw in (None, "") and stage in ("opening", "closing") else _dt(captured_raw, "captured_at_utc")
     return Quote(
         event_id=str(row["event_id"]), kickoff_utc=_dt(row["kickoff_utc"], "kickoff_utc"),
         competition=str(row["competition"]), market=str(row["market"]), selection=str(row["selection"]),
@@ -101,7 +104,11 @@ def validate_quotes(quotes: Iterable[Quote], *, prematch_only: bool = True) -> d
     seen: set[tuple] = set()
     usable: list[Quote] = []
     for q in rows:
-        if q.captured_at_utc >= q.kickoff_utc:
+        if q.captured_at_utc is None:
+            if q.price_stage not in ("opening", "closing"):
+                errors.append({"event_id": q.event_id, "reason": "capture_time_missing_without_archive_stage"})
+                continue
+        elif q.captured_at_utc >= q.kickoff_utc:
             errors.append({"event_id": q.event_id, "reason": "quote_at_or_after_kickoff"})
             continue
         if prematch_only and q.phase.lower() != "prematch":
