@@ -1,0 +1,53 @@
+name: MEGAPOWER 10+ historical research
+
+on:
+  push:
+    branches: [megapower-10plus-engine]
+    paths:
+      - "megapower10/**"
+      - "data/football_data/**"
+      - ".github/workflows/megapower10-research.yml"
+  workflow_dispatch:
+    inputs:
+      min_odds:
+        description: "Cote minimale incluse dans le bilan brut"
+        required: true
+        default: "10"
+      max_odds:
+        description: "Cote maximale exclue dans le bilan brut"
+        required: true
+        default: "1000"
+      min_support:
+        description: "Support minimal de validation par segment"
+        required: true
+        default: "30"
+
+jobs:
+  historical-study:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile engine
+        run: python -m compileall -q megapower10
+      - name: Run historical walk-forward study
+        env:
+          MIN_ODDS: ${{ inputs.min_odds || '10' }}
+          MAX_ODDS: ${{ inputs.max_odds || '1000' }}
+          MIN_SUPPORT: ${{ inputs.min_support || '30' }}
+        run: |
+          python -m megapower10.football_data_cli \
+            --root data/football_data \
+            --min-odds "$MIN_ODDS" \
+            --max-odds "$MAX_ODDS" \
+            --min-support "$MIN_SUPPORT" \
+            --output megapower10-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: megapower10-historical-report
+          path: megapower10-report.json
+          if-no-files-found: error
+          retention-days: 30
