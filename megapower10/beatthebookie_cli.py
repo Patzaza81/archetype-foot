@@ -22,6 +22,8 @@ def main() -> int:
     p.add_argument("--validation-end", default=None)
     p.add_argument("--output", default="-")
     args = p.parse_args()
+    if args.min_odds < 10.0:
+        p.error("MEGAPOWER 10+ interdit toute cote minimale inférieure à 10.00")
 
     matches, prices, source = load_beat_the_bookie(args.input)
     model_matches = [MatchResult(m.event_id, m.date, m.competition, m.home, m.away, m.home_goals, m.away_goals) for m in matches]
