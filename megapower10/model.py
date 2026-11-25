@@ -97,3 +97,38 @@ def walk_forward(matches: Iterable[MatchResult], *, window: int = 8,
                                         prior_matches=prior_matches, max_goals=max_goals))
         history.append(match)
     return predictions
+
+
+def tune_parameters(matches: Iterable[MatchResult], *, train_end: str,
+                    windows: tuple[int, ...] = (4, 6, 8, 12),
+                    priors: tuple[float, ...] = (0.0, 2.0, 4.0, 8.0),
+                    min_training_forecasts: int = 30) -> dict:
+    """Choose window/shrinkage only from walk-forward forecasts before train_end."""
+    ordered = sorted(matches, key=lambda m: (m.date, m.competition, m.event_id))
+    outcomes = {m.event_id: m for m in ordered if m.date < train_end}
+    candidates = []
+    for window in windows:
+        for prior in priors:
+            preds = walk_forward(ordered, window=window, prior_matches=prior)
+            losses = []
+            for p in preds:
+                m = outcomes.get(p["event_id"])
+                probs = p.get("probabilities")
+                if m is None or probs is None:
+                    continue
+                actual = "H" if m.home_goals > m.away_goals else "A" if m.home_goals < m.away_goals else "D"
+                loss_1x2 = sum((probs[s] - (1.0 if s == actual else 0.0))**2 for s in ("H", "D", "A")) / 3.0
+                actual_over = 1.0 if m.home_goals + m.away_goals >= 3 else 0.0
+                loss_total = (probs["over_2_5"] - actual_over)**2
+                losses.append(0.5 * (loss_1x2 + loss_total))
+            score = sum(losses)/len(losses) if losses else None
+            candidates.append({"window": window, "prior_matches": prior, "n": len(losses), "brier_composite": score})
+    eligible = [x for x in candidates if x["n"] >= min_training_forecasts and x["brier_composite"] is not None]
+    if not eligible:
+        return {"selected": {"window": 8, "prior_matches": 4.0}, "status": "fallback_insufficient_training_history",
+                "train_end_exclusive": train_end, "candidates": candidates}
+    best = min(eligible, key=lambda x: (x["brier_composite"], x["window"], x["prior_matches"]))
+    return {"selected": {"window": best["window"], "prior_matches": best["prior_matches"]},
+            "status": "selected_on_training_only", "train_end_exclusive": train_end,
+            "objective": "mean of 1X2 multiclass Brier and total-2.5 binary Brier",
+            "candidates": candidates}
