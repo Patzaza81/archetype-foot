@@ -117,6 +117,13 @@ def evaluate_edge(rows: Iterable[dict], *, min_edge: float = 0.0,
             "rule": {"min_edge": min_edge, "min_odds": min_odds, "max_odds_exclusive": max_odds}}
 
 
+def _depth_band(value) -> str:
+    if value is None: return "unknown"
+    if value < 5: return "1-4"
+    if value < 10: return "5-9"
+    return "10+"
+
+
 def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation_end: str,
                              min_support: int = 30,
                              thresholds: tuple[float, ...] = (0.0, .01, .02, .03, .05, .08, .10, .15, .20, .25)) -> dict:
@@ -126,7 +133,7 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
     validation_groups: dict[tuple, list[dict]] = defaultdict(list)
     test_groups: dict[tuple, list[dict]] = defaultdict(list)
     for r in rows:
-        key = (r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"]))
+        key = (r["competition"], r["market"], r["bookmaker"], r["price_stage"], odds_band(r["odds"]), _depth_band(r.get("bookmaker_count")))
         if r["date"] < train_end:
             train_groups[key].append(r)
         elif r["date"] < validation_end:
@@ -135,8 +142,8 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
             test_groups[key].append(r)
     keys = sorted(set(train_groups) | set(validation_groups) | set(test_groups))
     results = []
-    for competition, market, bookmaker, stage, band in keys:
-        key = (competition, market, bookmaker, stage, band)
+    for competition, market, bookmaker, stage, band, depth in keys:
+        key = (competition, market, bookmaker, stage, band, depth)
         v = validation_groups.get(key, [])
         t = test_groups.get(key, [])
         candidates = []
@@ -147,13 +154,13 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
                 candidates.append((m["roi"], threshold, m))
         if not candidates:
             results.append({"competition": competition, "market": market, "bookmaker": bookmaker,
-                            "price_stage": stage, "odds_band": band, "status": "no_validation_candidate",
+                            "price_stage": stage, "odds_band": band, "bookmaker_depth": depth, "status": "no_validation_candidate",
                             "validation": _stats(v), "test": None})
             continue
         _, chosen_threshold, vm = max(candidates, key=lambda x: (x[0], x[2]["n"], x[1]))
         tm = _stats([r for r in t if r["edge"] >= chosen_threshold])
         results.append({"competition": competition, "market": market, "bookmaker": bookmaker,
-                        "price_stage": stage, "odds_band": band, "status": "threshold_frozen_on_validation",
+                        "price_stage": stage, "odds_band": band, "bookmaker_depth": depth, "status": "threshold_frozen_on_validation",
                         "min_edge": chosen_threshold, "validation": vm, "test": tm})
     results.sort(key=lambda r: (r["status"] != "threshold_frozen_on_validation",
                                 -(r["test"]["roi"] if r.get("test") and r["test"]["roi"] is not None else -999),
