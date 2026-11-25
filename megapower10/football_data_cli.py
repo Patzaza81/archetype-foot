@@ -5,6 +5,7 @@ Usage: python -m megapower10.football_data_cli --root data/football_data
 from __future__ import annotations
 import argparse
 import json
+import math
 from pathlib import Path
 from .core import evaluate
 from .football_data import load_football_data, load_football_data_matches
@@ -22,7 +23,7 @@ def main() -> int:
     p.add_argument("--validation-end", default=None, help="date ISO exclusive; default 80%% of distinct dates")
     p.add_argument("--output", default="-")
     args = p.parse_args()
-    if args.min_odds < 10.0:
+    if not math.isfinite(args.min_odds) or args.min_odds < 10.0:
         p.error("MEGAPOWER 10+ interdit toute cote minimale inférieure à 10.00")
 
     prices, price_source = load_football_data(args.root)
