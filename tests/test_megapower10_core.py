@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import unittest
 
-from megapower10.core import from_dict, validate_quotes, odds_band, wilson, evaluate, chronological_split, decision_snapshot, discovery_report
+from megapower10.core import from_dict, validate_quotes, odds_band, wilson, evaluate, chronological_split, decision_snapshot, discovery_report, MIN_RECOMMENDATION_ODDS
 
 BASE = {
     "event_id": "e1", "kickoff_utc": "2026-12-01T20:00:00Z", "competition": "L1",
@@ -48,6 +48,19 @@ class TestMegaPower10(unittest.TestCase):
         m = evaluate([from_dict(BASE)], min_odds=10, max_odds=15)["overall"]
         self.assertAlmostEqual(m["roi"], 11.0)
         self.assertEqual(m["n"], 1)
+
+    def test_recommendation_floor_is_hard_and_inclusive(self):
+        for price in (9.99, 8.0, 1.5):
+            self.assertEqual(evaluate([from_dict(dict(BASE, odds=price))])["overall"]["n"], 0)
+        for price in (10.0, 10.01):
+            self.assertEqual(evaluate([from_dict(dict(BASE, odds=price))])["overall"]["n"], 1)
+        self.assertEqual(MIN_RECOMMENDATION_ODDS, 10.0)
+
+    def test_evaluate_cannot_weaken_floor(self):
+        with self.assertRaises(ValueError): evaluate([from_dict(BASE)], min_odds=9.0)
+
+    def test_discovery_never_promotes_sub_ten_prices(self):
+        self.assertEqual(discovery_report([from_dict(dict(BASE, odds=9.99))])["groups"], 0)
 
     def test_wilson(self):
         lo, hi = wilson(4, 10)
