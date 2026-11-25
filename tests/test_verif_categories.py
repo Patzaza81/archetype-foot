@@ -309,3 +309,10 @@ def test_page_bande_jours_passes_pas_retenus(tmp_path):
 
 def test_aucune_bande_rien_n_est_force():                         # aucun candidat : aucun pari ajouté, aucune erreur
     M = [_m("n0", "2026-11-24", _par("1", 1.40, 0.7, False))]; VC.limiter_bande(M, JOUR); assert M[0]["categories"]["paris"][0]["cote"] == 1.40
+
+def test_page_web_nom_du_marche_en_evidence():                   # 25/11/2026 : le nom du marché retenu est en gros, en haut de la carte
+    racine = pathlib.Path(v.RACINE); js = (racine / "archetype_verif.js").read_text(encoding="utf-8"); css = (racine / "af-verif.css").read_text(encoding="utf-8"); html = (racine / "pronostics_verif.html").read_text(encoding="utf-8")
+    assert "vf-cat-marches" in js and "vf-cat-chip" in js and "vf-cat-nom" in js and "vf-cat-cote" in js
+    assert ".vf-cat-chip" in css and ".vf-cat-nom" in css and ".theme-nuit .vf-cat-chip" in css
+    assert js.index("vf-cat-marches") < js.index("phraseCategories(m, p) + `<div class=\"om-bloc vf-famille vf-meilleur\">")   # le bandeau vient avant le texte
+    assert "af-verif.css?v=20261125c" in html and "archetype_verif.js?v=20261125a" in html     # la version change : le téléphone recharge les fichiers
