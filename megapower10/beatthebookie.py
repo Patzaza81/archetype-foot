@@ -57,26 +57,27 @@ def load_beat_the_bookie(path: str | Path) -> tuple[list[HistoricalMatch], list[
             matches.append(HistoricalMatch(event_id, date, competition, home, away, hg, ag,
                                             "2005-2015", f"BeatTheBookie/{source_path.name}"))
             outcomes = (
-                ("H", "home", "avg_odds_home_win", "max_odds_home_win", "top_bookie_home_win"),
-                ("D", "draw", "avg_odds_draw", "max_odds_draw", "top_bookie_draw"),
-                ("A", "away", "avg_odds_away_win", "max_odds_away_win", "top_bookie_away_win"),
+                ("H", "avg_odds_home_win", "max_odds_home_win", "top_bookie_home_win", "n_odds_home_win"),
+                ("D", "avg_odds_draw", "max_odds_draw", "top_bookie_draw", "n_odds_draw"),
+                ("A", "avg_odds_away_win", "max_odds_away_win", "top_bookie_away_win", "n_odds_away_win"),
             )
-            for selection, label, avg_col, max_col, book_col in outcomes:
+            for selection, avg_col, max_col, book_col, count_col in outcomes:
                 avg = _price(row.get(avg_col))
                 best = _price(row.get(max_col))
+                bookmaker_count = _price_score(row.get(count_col))
                 settled = selection == result
                 if avg is not None:
                     prices.append(HistoricalPrice(
                         event_id, date, competition, "2005-2015", "1X2", selection,
                         "BTB_average", "closing", avg, settled,
-                        f"BeatTheBookie/{source_path.name}", avg, "average_of_bookmakers",
+                        f"BeatTheBookie/{source_path.name}", avg, "average_of_bookmakers", bookmaker_count,
                     ))
                 if best is not None and avg is not None:
                     top_bookie = (row.get(book_col) or "").strip() or "unknown_bookmaker"
                     prices.append(HistoricalPrice(
                         event_id, date, competition, "2005-2015", "1X2", selection,
                         "BTB_best_available", "closing", best, settled,
-                        f"BeatTheBookie/{source_path.name}", avg, top_bookie,
+                        f"BeatTheBookie/{source_path.name}", avg, top_bookie, bookmaker_count,
                     ))
 
     matches.sort(key=lambda m: (m.date, m.competition, m.event_id))
