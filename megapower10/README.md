@@ -49,3 +49,19 @@ Les archives non horodatées doivent conserver leur phase opening ou closing et 
 - Les résultats sont ventilés par compétition, marché, bookmaker, phase et bande de cote.
 - Aucun seuil ne sera promu sur sa performance test ; le test final n'intervient qu'après gel des choix.
 - Une bonne performance rétrospective n'est pas une preuve de rentabilité future.
+
+
+## Deuxième archive indépendante : Beat The Bookie
+
+Le connecteur megapower10.beatthebookie lit closing_odds.csv.gz du jeu public Beat The Bookie : 479 440 matchs annoncés, 818 ligues, 2005–2015, cotes 1X2. Il sépare :
+- les cotes moyennes, utilisées pour construire la probabilité de marché corrigée de la marge ;
+- les meilleures cotes observées par issue, utilisées pour le ROI hypothétique, avec le bookmaker indiqué pour chaque issue.
+
+Les meilleures cotes d'issues différentes ne sont jamais présentées comme un arbitrage simultané. Source sous CC BY-SA 4.0 : attribution et obligations de partage à l'identique à respecter.
+
+Lancer localement :
+```bash
+python -m megapower10.beatthebookie_cli --input /chemin/closing_odds.csv.gz --min-odds 10 --max-odds 1000 --output beatthebookie-report.json
+```
+
+Le workflow GitHub MEGAPOWER 10+ — Beat The Bookie archive télécharge la source publique via KaggleHub et publie le rapport comme artefact.
