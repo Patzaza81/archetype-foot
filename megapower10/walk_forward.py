@@ -7,6 +7,7 @@ archives remain separate because exact capture times are unavailable.
 from __future__ import annotations
 
 from collections import defaultdict
+import math
 from typing import Iterable
 
 from .core import odds_band, wilson
@@ -149,7 +150,7 @@ def forecast_quality_report(rows: Iterable[dict]) -> dict:
             continue
         model_brier = sum((r["model_probability"] - int(r["result"]))**2 for r in settled) / len(settled)
         market_brier = sum((r["market_probability"] - int(r["result"]))**2 for r in settled) / len(settled)
-        model_logloss = -sum((int(r["result"]) * __import__("math").log(max(1e-12, r["model_probability"])) +
+        model_logloss = -sum((int(r["result"]) * math.log(max(1e-12, r["model_probability"])) +
                               (1-int(r["result"])) * __import__("math").log(max(1e-12, 1-r["model_probability"]))) for r in settled) / len(settled)
         market_logloss = -sum((int(r["result"]) * __import__("math").log(max(1e-12, r["market_probability"])) +
                                (1-int(r["result"])) * __import__("math").log(max(1e-12, 1-r["market_probability"]))) for r in settled) / len(settled)
