@@ -53,7 +53,7 @@ Les archives non horodatées doivent conserver leur phase opening ou closing et 
 
 ## Deuxième archive indépendante : Beat The Bookie
 
-Le connecteur megapower10.beatthebookie lit closing_odds.csv.gz du jeu public Beat The Bookie : 479 440 matchs annoncés, 818 ligues, 2005–2015, cotes 1X2. Il sépare :
+Le connecteur megapower10.beatthebookie lit closing_odds.csv.gz du [jeu public Beat The Bookie](https://www.kaggle.com/datasets/austro/beat-the-bookie-worldwide-football-dataset) : 479 440 matchs annoncés, 818 ligues, 2005–2015, cotes 1X2. Il sépare :
 - les cotes moyennes, utilisées pour construire la probabilité de marché corrigée de la marge ;
 - les meilleures cotes observées par issue, utilisées pour le ROI hypothétique, avec le bookmaker indiqué pour chaque issue.
 
