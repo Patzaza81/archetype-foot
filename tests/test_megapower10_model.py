@@ -1,6 +1,6 @@
 import unittest
 
-from megapower10.model import MatchResult, predict_one, walk_forward
+from megapower10.model import MatchResult, predict_one, walk_forward, tune_parameters
 
 
 class TestWalkForwardModel(unittest.TestCase):
