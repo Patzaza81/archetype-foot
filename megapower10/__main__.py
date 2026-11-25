@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import json
+import math
 from pathlib import Path
 from .core import load_jsonl, validate_quotes, decision_snapshot, discovery_report, evaluate
 
@@ -16,6 +17,8 @@ def main() -> int:
     p.add_argument("--min-support", type=int, default=30)
     p.add_argument("--output", default="-", help="JSON de sortie (défaut: stdout)")
     args = p.parse_args()
+    if not math.isfinite(args.min_odds) or args.min_odds < 10.0:
+        p.error("MEGAPOWER 10+ interdit toute cote minimale inférieure à 10.00")
 
     raw = load_jsonl(args.input)
     checked = validate_quotes(raw)
