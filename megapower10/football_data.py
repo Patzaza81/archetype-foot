@@ -101,7 +101,8 @@ def load_football_data(root: str | Path = "data/football_data") -> tuple[list[Hi
                     continue
                 if ftr not in ("H", "D", "A"):
                     ftr = "H" if fthg > ftag else "A" if fthg < ftag else "D"
-                competition = f"{code}:{(row.get(\"League\") or row.get(\"Div\") or code).strip()}"
+                league_name = (row.get("League") or row.get("Div") or code).strip()
+                competition = f"{code}:{league_name}"
                 event_id = f"football-data:{season}:{code}:{date}:{home}:{away}"
                 source = f"Football-Data.co.uk/{path.as_posix()}"
                 for book, cols in BOOKS_1X2.items():
@@ -197,7 +198,8 @@ def load_football_data_matches(root: str | Path = "data/football_data") -> tuple
                 if not date or not home or not away or hg is None or ag is None:
                     rejected += 1
                     continue
-                competition = (row.get("League") or row.get("Div") or code).strip()
+                league_name = (row.get("League") or row.get("Div") or code).strip()
+                competition = f"{code}:{league_name}"
                 event_id = f"football-data:{season}:{code}:{date}:{home}:{away}"
                 match = HistoricalMatch(event_id, date, competition, home, away, hg, ag, season,
                                         f"Football-Data.co.uk/{path.as_posix()}")
