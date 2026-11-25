@@ -17,12 +17,14 @@ class TestBeatTheBookieAdapter(unittest.TestCase):
                       "home_score", "away_score",
                       "avg_odds_home_win", "avg_odds_draw", "avg_odds_away_win",
                       "max_odds_home_win", "max_odds_draw", "max_odds_away_win",
-                      "top_bookie_home_win", "top_bookie_draw", "top_bookie_away_win"]
+                      "top_bookie_home_win", "top_bookie_draw", "top_bookie_away_win",
+                      "n_odds_home_win", "n_odds_draw", "n_odds_away_win"]
             row = {"match_id": "42", "league": "Test League", "match_date": "2015-06-30 20:00:00",
                    "home_team": "Alpha", "away_team": "Beta", "home_score": "0.0", "away_score": "2.0",
                    "avg_odds_home_win": "3.0", "avg_odds_draw": "3.2", "avg_odds_away_win": "2.4",
                    "max_odds_home_win": "3.4", "max_odds_draw": "3.8", "max_odds_away_win": "2.8",
-                   "top_bookie_home_win": "BookA", "top_bookie_draw": "BookB", "top_bookie_away_win": "Pinnacle"}
+                   "top_bookie_home_win": "BookA", "top_bookie_draw": "BookB", "top_bookie_away_win": "Pinnacle",
+                   "n_odds_home_win": "10", "n_odds_draw": "9", "n_odds_away_win": "8"}
             with gzip.open(path, "wt", encoding="latin1", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=fields)
                 writer.writeheader()
@@ -34,6 +36,7 @@ class TestBeatTheBookieAdapter(unittest.TestCase):
             self.assertEqual(best_away.odds, 2.8)
             self.assertEqual(best_away.reference_odds, 2.4)
             self.assertEqual(best_away.execution_bookmaker, "Pinnacle")
+            self.assertEqual(best_away.bookmaker_count, 8)
             self.assertTrue(best_away.result)
             self.assertEqual(summary["license"], "CC BY-SA 4.0; attribute source and preserve share-alike obligations")
 
@@ -46,6 +49,7 @@ class TestBeatTheBookieAdapter(unittest.TestCase):
             self.assertAlmostEqual(best_home["market_probability"], expected)
             self.assertEqual(best_home["odds"], 3.4)
             self.assertEqual(best_home["execution_bookmaker"], "BookA")
+            self.assertEqual(best_home["bookmaker_count"], 10)
 
 
 if __name__ == "__main__":
