@@ -6,9 +6,9 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from .core import evaluate, discovery_report
+from .core import evaluate
 from .football_data import load_football_data, load_football_data_matches
-from .model import MatchResult
+from .model import MatchResult, tune_parameters
 from .walk_forward import enrich_prices, chronological_edge_study
 
 
@@ -26,25 +26,30 @@ def main() -> int:
     prices, price_source = load_football_data(args.root)
     matches, match_source = load_football_data_matches(args.root)
     model_matches = [MatchResult(m.event_id, m.date, m.competition, m.home, m.away, m.home_goals, m.away_goals) for m in matches]
-    enriched, join_report = enrich_prices(model_matches, prices)
     dates = sorted({m.date for m in model_matches})
     if len(dates) < 10:
         raise SystemExit("Pas assez de dates distinctes pour un découpage chronologique exploitable.")
     train_end = args.train_end or dates[int(len(dates) * .60)]
     validation_end = args.validation_end or dates[int(len(dates) * .80)]
+
+    tuning = tune_parameters(model_matches, train_end=train_end)
+    params = tuning["selected"]
+    enriched, join_report = enrich_prices(model_matches, prices,
+                                          window=params["window"],
+                                          prior_matches=params["prior_matches"])
     edge_report = chronological_edge_study(enriched, train_end=train_end,
                                            validation_end=validation_end,
                                            min_support=args.min_support)
     report = {
         "engine": "MEGAPOWER 10+",
-        "model": join_report["model"],
+        "model_tuning": tuning,
         "match_source": match_source,
         "price_source": price_source,
         "forecast_join": join_report,
         "raw_10plus_opening": evaluate([q for q in prices if q.price_stage == "opening"], min_odds=args.min_odds, max_odds=args.max_odds),
         "raw_10plus_closing": evaluate([q for q in prices if q.price_stage == "closing"], min_odds=args.min_odds, max_odds=args.max_odds),
         "edge_study": edge_report,
-        "interpretation": "Le modèle prédit chaque match avec les seuls résultats antérieurs du même championnat. Les prix Football-Data ouverture/clôture n'ont pas d'horodatage de capture : cette étude mesure un signal historique, pas un prix exécutable à une minute précise. Les seuils sont choisis sur validation puis évalués sur un test chronologique séparé.",
+        "interpretation": "Le modèle et ses paramètres sont appris en marche avant sur le seul bloc train. Chaque match est prédit avec les seuls résultats strictement antérieurs du même championnat. Les seuils d'écart sont choisis sur validation puis évalués sur un test chronologique séparé. Les prix Football-Data ouverture/clôture n'ont pas d'horodatage de capture : cette étude mesure un signal historique, pas un prix exécutable à une minute précise.",
     }
     rendered = json.dumps(report, ensure_ascii=False, indent=2, default=str)
     if args.output == "-":
