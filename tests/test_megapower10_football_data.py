@@ -43,8 +43,8 @@ class TestFootballDataAdapter(unittest.TestCase):
             self.assertNotIn(99.0, [q.odds for q in prices])
             self.assertEqual(summary["price_stages"], ["closing", "opening"])
             self.assertEqual(summary["events"], 1)
-            self.assertEqual(evaluate(prices, min_odds=1.01)["overall"]["n"], len(prices))
-            self.assertEqual(discovery_report(prices, min_support=1)["groups"], len({(q.competition, q.market, q.price_stage, odds_band(q.odds)) for q in prices}))
+            self.assertEqual(evaluate(prices, min_odds=10.0)["overall"]["n"], sum(q.odds >= 10.0 for q in prices))
+            self.assertEqual(discovery_report(prices, min_support=1)["groups"], len({(q.competition, q.market, q.price_stage, odds_band(q.odds)) for q in prices if q.odds >= 10.0}))
 
 
 if __name__ == "__main__":
