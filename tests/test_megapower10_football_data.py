@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from megapower10.football_data import load_football_data
+from megapower10.core import evaluate, discovery_report
 
 
 class TestFootballDataAdapter(unittest.TestCase):
@@ -42,6 +43,8 @@ class TestFootballDataAdapter(unittest.TestCase):
             self.assertNotIn(99.0, [q.odds for q in prices])
             self.assertEqual(summary["price_stages"], ["closing", "opening"])
             self.assertEqual(summary["events"], 1)
+            self.assertEqual(evaluate(prices, min_odds=1.01)["overall"]["n"], len(prices))
+            self.assertEqual(discovery_report(prices, min_support=1)["groups"], len({(q.competition, q.market, q.price_stage, q.odds) for q in prices}))
 
 
 if __name__ == "__main__":
