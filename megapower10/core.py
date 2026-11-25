@@ -18,6 +18,24 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+MIN_RECOMMENDATION_ODDS = 10.0
+
+
+def is_recommendation_odds(odds: float) -> bool:
+    try:
+        value = float(odds)
+    except (TypeError, ValueError):
+        return False
+    return math.isfinite(value) and value >= MIN_RECOMMENDATION_ODDS
+
+
+def require_recommendation_floor(min_odds: float) -> float:
+    value = float(min_odds)
+    if not math.isfinite(value) or value < MIN_RECOMMENDATION_ODDS:
+        raise ValueError(f"MEGAPOWER 10+ impose une cote minimale de {MIN_RECOMMENDATION_ODDS:.2f}.")
+    return value
+
+
 @dataclass(frozen=True, slots=True)
 class Quote:
     event_id: str
@@ -199,7 +217,8 @@ def _metrics(rows: list[Quote]) -> dict[str, Any]:
 def evaluate(quotes: Iterable[Quote], *, min_odds: float = 1.01, max_odds: float = float("inf"),
              competition: str | None = None, market: str | None = None,
              min_model_edge: float | None = None) -> dict[str, Any]:
-    """Descriptive evaluation only. Selection thresholds must be learned on train, never test."""
+    """Evaluate only eligible 10+ prices; lower odds are never recommendations."""
+    min_odds = require_recommendation_floor(min_odds)
     chosen = []
     for q in quotes:
         if q.result is None or q.odds < min_odds or q.odds >= max_odds: continue
@@ -219,7 +238,7 @@ def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[
     """Rank descriptive pockets by competition × market × odds band; no automatic promotion."""
     groups: dict[tuple[str, str, str, str], list[Quote]] = defaultdict(list)
     for q in quotes:
-        if q.result is not None:
+        if q.result is not None and is_recommendation_odds(q.odds):
             groups[(q.competition, q.market, q.price_stage, odds_band(q.odds))].append(q)
     rows = []
     for (competition, market, stage, band), sample in groups.items():
