@@ -27,6 +27,18 @@ class TestMegaPower10(unittest.TestCase):
         q = from_dict(dict(BASE, phase="inplay"))
         self.assertEqual(len(validate_quotes([q])["usable"]), 0)
 
+    def test_unsettled_quote_is_valid(self):
+        q = from_dict(dict(BASE, result=None))
+        self.assertIsNone(q.result)
+
+    def test_archive_stage_may_have_no_capture_timestamp(self):
+        row = dict(BASE, price_stage="opening")
+        row.pop("captured_at_utc")
+        q = from_dict(row)
+        self.assertIsNone(q.captured_at_utc)
+        self.assertEqual(len(validate_quotes([q])["usable"]), 1)
+        self.assertEqual(decision_snapshot([q])["selected"], 0)
+
     def test_bands(self):
         self.assertEqual(odds_band(10), "10-15")
         self.assertEqual(odds_band(15), "15-20")
