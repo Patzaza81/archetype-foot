@@ -54,10 +54,12 @@ def _dt(value: Any, field: str) -> datetime:
 
 
 def from_dict(row: dict[str, Any]) -> Quote:
-    required = ("event_id", "kickoff_utc", "competition", "market", "selection", "bookmaker", "odds", "result", "source")
+    required = ("event_id", "kickoff_utc", "competition", "market", "selection", "bookmaker", "odds", "source")
     missing = [k for k in required if k not in row or row[k] is None or row[k] == ""]
     if missing:
         raise ValueError("champs manquants: " + ", ".join(missing))
+    if "result" not in row:
+        raise ValueError("champ manquant: result")
     odds = float(row["odds"])
     if not math.isfinite(odds) or odds <= 1.0:
         raise ValueError("cote décimale invalide (doit être > 1)")
@@ -114,7 +116,7 @@ def validate_quotes(quotes: Iterable[Quote], *, prematch_only: bool = True) -> d
         if prematch_only and q.phase.lower() != "prematch":
             errors.append({"event_id": q.event_id, "reason": "inplay_excluded"})
             continue
-        ident = (q.key, q.captured_at_utc, q.odds, q.source)
+        ident = (q.key, q.captured_at_utc, q.odds, q.source, q.price_stage)
         if ident in seen:
             errors.append({"event_id": q.event_id, "reason": "duplicate_quote"})
             continue
