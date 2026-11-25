@@ -2,7 +2,8 @@
 
 Canonical JSONL: one row per bookmaker quote for one event/market/selection.
 Required: event_id, kickoff_utc, competition, market, selection, bookmaker,
-captured_at_utc (required for snapshot quotes; absent only for price_stage opening/closing),\n odds, result (bool or null), source. Optional: phase,
+captured_at_utc (required for snapshot quotes; absent only for price_stage opening/closing),
+ odds, result (bool or null), source. Optional: phase,
 model_probability, closing_odds, season, quote_id.
 All timestamps must be ISO-8601 with timezone. No inferred prices/results.
 """
