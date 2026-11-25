@@ -5,6 +5,7 @@ Usage: python -m megapower10.beatthebookie_cli --input /path/closing_odds.csv.gz
 from __future__ import annotations
 import argparse
 import json
+import math
 from pathlib import Path
 from .beatthebookie import load_beat_the_bookie
 from .core import evaluate
@@ -22,7 +23,7 @@ def main() -> int:
     p.add_argument("--validation-end", default=None)
     p.add_argument("--output", default="-")
     args = p.parse_args()
-    if args.min_odds < 10.0:
+    if not math.isfinite(args.min_odds) or args.min_odds < 10.0:
         p.error("MEGAPOWER 10+ interdit toute cote minimale inférieure à 10.00")
 
     matches, prices, source = load_beat_the_bookie(args.input)
