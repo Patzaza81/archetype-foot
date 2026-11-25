@@ -19,7 +19,7 @@ class TestBeatTheBookieAdapter(unittest.TestCase):
                       "max_odds_home_win", "max_odds_draw", "max_odds_away_win",
                       "top_bookie_home_win", "top_bookie_draw", "top_bookie_away_win"]
             row = {"match_id": "42", "league": "Test League", "match_date": "2015-06-30 20:00:00",
-                   "home_team": "Alpha", "away_team": "Beta", "home_score": "0", "away_score": "2",
+                   "home_team": "Alpha", "away_team": "Beta", "home_score": "0.0", "away_score": "2.0",
                    "avg_odds_home_win": "3.0", "avg_odds_draw": "3.2", "avg_odds_away_win": "2.4",
                    "max_odds_home_win": "3.4", "max_odds_draw": "3.8", "max_odds_away_win": "2.8",
                    "top_bookie_home_win": "BookA", "top_bookie_draw": "BookB", "top_bookie_away_win": "Pinnacle"}
