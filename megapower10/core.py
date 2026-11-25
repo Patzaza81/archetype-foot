@@ -221,7 +221,7 @@ def evaluate(quotes: Iterable[Quote], *, min_odds: float = MIN_RECOMMENDATION_OD
     min_odds = require_recommendation_floor(min_odds)
     chosen = []
     for q in quotes:
-        if q.result is None or q.odds < min_odds or q.odds >= max_odds: continue
+        if q.result is None or not is_recommendation_odds(q.odds) or q.odds < min_odds or q.odds >= max_odds: continue
         if competition is not None and q.competition != competition: continue
         if market is not None and q.market != market: continue
         if min_model_edge is not None:
