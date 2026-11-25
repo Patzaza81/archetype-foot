@@ -2,7 +2,7 @@
 
 Canonical JSONL: one row per bookmaker quote for one event/market/selection.
 Required: event_id, kickoff_utc, competition, market, selection, bookmaker,
-captured_at_utc, odds, result (bool or null), source. Optional: phase,
+captured_at_utc (required for snapshot quotes; absent only for price_stage opening/closing),\n odds, result (bool or null), source. Optional: phase,
 model_probability, closing_odds, season, quote_id.
 All timestamps must be ISO-8601 with timezone. No inferred prices/results.
 """
@@ -136,7 +136,7 @@ def decision_snapshot(quotes: Iterable[Quote], *, lead_minutes: int = 60, tolera
     groups: dict[tuple, list[Quote]] = defaultdict(list)
     excluded = 0
     for q in quotes:
-        if q.phase.lower() != "prematch" or q.captured_at_utc is None or q.captured_at_utc >= q.kickoff_utc:
+        if q.price_stage != "snapshot" or q.phase.lower() != "prematch" or q.captured_at_utc is None or q.captured_at_utc >= q.kickoff_utc:
             excluded += 1
             continue
         groups[q.key].append(q)
