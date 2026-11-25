@@ -154,3 +154,59 @@ def _price_score(value: str | None) -> int | None:
         return x if x >= 0 else None
     except (TypeError, ValueError):
         return None
+
+
+@dataclass(frozen=True, slots=True)
+class HistoricalMatch:
+    event_id: str
+    date: str
+    competition: str
+    home: str
+    away: str
+    home_goals: int
+    away_goals: int
+    season: str
+    source: str
+
+
+def load_football_data_matches(root: str | Path = "data/football_data") -> tuple[list[HistoricalMatch], dict]:
+    """Load match outcomes for the walk-forward model; no odds are read here."""
+    base = Path(root)
+    paths = sorted(base.glob("snapshots/*/raw/*.csv"))
+    paths += sorted(base.glob("snapshots/*/nouvelles_ligues/raw/*.csv"))
+    paths += sorted(base.glob("raw/*/*.csv"))
+    paths += sorted(base.glob("raw/*/nouvelles_ligues/*.csv"))
+    rows: dict[tuple, HistoricalMatch] = {}
+    rejected = 0
+    for path in paths:
+        parts = path.parts
+        try:
+            i = parts.index("snapshots") if "snapshots" in parts else parts.index("raw")
+            season = parts[i + 1]
+        except (ValueError, IndexError):
+            season = "unknown"
+        code = path.stem
+        is_new = "nouvelles_ligues" in parts
+        with path.open(encoding="utf-8-sig", errors="replace", newline="") as fh:
+            for row in csv.DictReader(fh):
+                date = _date(row.get("Date", ""))
+                home = (row.get("HomeTeam") or row.get("Home") or "").strip()
+                away = (row.get("AwayTeam") or row.get("Away") or "").strip()
+                hg = _price_score(row.get("FTHG") if not is_new else row.get("HG"))
+                ag = _price_score(row.get("FTAG") if not is_new else row.get("AG"))
+                if not date or not home or not away or hg is None or ag is None:
+                    rejected += 1
+                    continue
+                competition = (row.get("League") or row.get("Div") or code).strip()
+                event_id = f"football-data:{season}:{code}:{date}:{home}:{away}"
+                match = HistoricalMatch(event_id, date, competition, home, away, hg, ag, season,
+                                        f"Football-Data.co.uk/{path.as_posix()}")
+                rows[(season, code, date, home, away)] = match
+    matches = sorted(rows.values(), key=lambda m: (m.date, m.competition, m.event_id))
+    summary = {
+        "matches": len(matches), "csv_files": len(paths), "rejected_incomplete": rejected,
+        "competitions": len({m.competition for m in matches}), "seasons": sorted({m.season for m in matches}),
+        "first_date": matches[0].date if matches else None, "last_date": matches[-1].date if matches else None,
+        "source": "Football-Data.co.uk raw results only",
+    }
+    return matches, summary
