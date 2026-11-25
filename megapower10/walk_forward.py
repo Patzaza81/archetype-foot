@@ -98,7 +98,7 @@ def evaluate_edge(rows: Iterable[dict], *, min_edge: float = 0.0,
 
 def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation_end: str,
                              min_support: int = 30,
-                             thresholds: tuple[float, ...] = (0.0, .01, .02, .03, .05, .08, .10)) -> dict:
+                             thresholds: tuple[float, ...] = (0.0, .01, .02, .03, .05, .08, .10, .15, .20, .25)) -> dict:
     """Choose edge threshold on validation only; final test is untouched until selection is frozen."""
     rows = list(rows)
     train = [r for r in rows if r["date"] < train_end]
@@ -178,5 +178,5 @@ def forecast_quality_report(rows: Iterable[dict]) -> dict:
                      "price_stage": key[3], "model_probability_decile": key[4],
                      "n": len(vals), "mean_probability": sum(x[0] for x in vals)/len(vals),
                      "observed_rate": sum(x[1] for x in vals)/len(vals)})
-    return {"method": "multiclass/binary Brier and log loss on fully priced settled events",
+    return {"method": "mean per-selection Brier and log loss on fully priced settled events",
             "by_competition_market_bookmaker_stage": quality, "model_calibration_deciles": bins}
