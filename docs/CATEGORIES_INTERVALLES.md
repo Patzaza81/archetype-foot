@@ -22,7 +22,7 @@ Le match tombe dans un intervalle favorable d'un marché (bornes « bas ≤ vale
 
 ## Seuils (Patrick) et version retenue
 Seuils donnés par Patrick le 24/11/2026 : victoire domicile 70 %, victoire extérieur 60 %, plus de 1,5 buts 80 %, X1 90 %, X2 75 %, domicile marque 90 % puis **85 %**, extérieur marque 80 % puis **75 %** (décision de Patrick, 25/11/2026 : « on suit ta proposition » ; re-gel de ces deux marchés seulement, `etudes/categories_2026_11/refreeze_marque.py`). **X1 + moins de 4,5 buts : 74 % jusqu'au 24/11 (version A, 4 intervalles, 4,6 % des matchs, aucun match à venir ce jour-là), puis 70 % version B (décision de Patrick, 24/11/2026, re-gel de ce seul marché ; `etudes/categories_2026_11/refreeze_x1m45.py`).**
-**Choix de Claude, non donnés par Patrick, à corriger si besoin** : seuils des combinés selon sa logique (produit des seuils des deux parties, arrondi à 5) : X1 + plus de 1,5 = 70 %, X2 + plus de 1,5 = 60 % ; X2 + moins de 4,5 = 65 % (ce que les données permettent) ; version B partout, sauf version A pour X1 (90 %) et la victoire à l'extérieur (60 %) où B garde trop peu de matchs ou aucun. Les seuils des combinés X1 + plus de 1,5 (70 %), X2 + plus de 1,5 (60 %) et X2 + moins de 4,5 (65 %) restent des choix de Claude, que Patrick a laissés tels quels le 24/11 (« on suit ta proposition »).
+**Moins de 3,5 buts : 75 % version B (Patrick, 25/11/2026).** **Choix de Claude, non donnés par Patrick, à corriger si besoin** : seuils des combinés selon sa logique (produit des seuils des deux parties, arrondi à 5) : X1 + plus de 1,5 = 70 %, X2 + plus de 1,5 = 60 % ; X2 + moins de 4,5 = 65 % (ce que les données permettent) ; version B partout, sauf version A pour X1 (90 %) et la victoire à l'extérieur (60 %) où B garde trop peu de matchs ou aucun. Les seuils des combinés X1 + plus de 1,5 (70 %), X2 + plus de 1,5 (60 %) et X2 + moins de 4,5 (65 %) restent des choix de Claude, que Patrick a laissés tels quels le 24/11 (« on suit ta proposition »).
 Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; « plus de 2,5 buts » a son propre onglet (+2,5 buts).
 
 | Marché | Catalogue | Seuil | Version | Intervalles | Réussite 2017-2020 | Réussite 2025-26 |
@@ -37,6 +37,7 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 | X1 + plus de 1,5 | `1N&total_plus_1.5` | 70 % | B | 1 | 72.2 % (1390, 10.9 % des matchs) | 70.4 % (1106, 9.9 % des matchs) |
 | X2 + plus de 1,5 | `N2&total_plus_1.5` | 60 % | B | 1 | 69.3 % (462, 3.6 % des matchs) | 65.9 % (293, 2.6 % des matchs) |
 | X1 + moins de 4,5 | `1N&total_moins_4.5` | 70 % | B | 1 | 71.6 % (3189, 25.1 % des matchs) | 70.5 % (2377, 21.4 % des matchs) |
+| Moins de 3,5 buts | `total_moins_3.5` | 75 % | B | 1 | 76.5 % (6564, 51.6 % des matchs) | 75.7 % (5093, 45.8 % des matchs) |
 | X2 + moins de 4,5 | `N2&total_moins_4.5` | 65 % | B | 1 | 68.3 % (665, 5.2 % des matchs) | 69.9 % (442, 4.0 % des matchs) |
 
 ## Intervalles figés
@@ -110,6 +111,14 @@ Ancienne version (80 %, B) : `EHm < -0.082 et 0.242 ≤ EAm`, 5,2 % des matchs, 
 | EA < 1.272 et 1.039 ≤ rE | 11428/15767 = 72.5 % | 2282/3189 = 71.6 % | 1676/2377 = 70.5 % |
 
 **Ensemble** : 24,1 % des matchs en 2000-2016, 25,1 % en 2017-2020, 21,4 % en 2025-26. Ancienne version (74 %, A, 4 intervalles) : 4,6 % des matchs, 74,3 % / 74,9 %. La version A à 70 % (14 intervalles, 34,6 % des matchs) ne tenait que 69,9 % / 68,1 % sur les matchs jamais vus : écartée. Le nouvel intervalle n'utilise pas la moyenne du championnat (`mu`), donc la limite des championnats lus sur peu de matchs ne le touche pas.
+
+### Moins de 3,5 buts — seuil 75 %, version B (ajouté le 25/11/2026, décision de Patrick)
+
+| Intervalle | 2000-2016 | 2017-2020 | Bloc 2025-26 |
+|---|---|---|---|
+| EH < 1.381 et EA < 1.567 | 26370/34654 = 76.1 % | 5024/6564 = 76.5 % | 3854/5093 = 75.7 % |
+
+Les deux équipes ont un xG attendu faible (domicile sous 1,38, extérieur sous 1,57). Le marché « moins de 3,5 buts » réussit 72 % des matchs en moyenne : l'intervalle gagne environ 4 points. À 80 % il ne reste que 3,8 % des matchs (version A seulement), à 85 % rien ; le seuil de 75 % est le compromis choisi (proposition de Claude, validée par Patrick). Script : `etudes/categories_2026_11/refreeze_moins35.py`.
 
 ### X2 + moins de 4,5 — seuil 65 %, version B
 

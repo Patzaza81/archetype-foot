@@ -1,5 +1,5 @@
 """Tests de verif_categories.py (onglet « Catégories » d'Analyse Verdict, 24/11/2026) :
-- les mesures de la fiche sont celles de l'étude (88 lignes de référence tirées de l'étude, valeurs et marchés calculés par le code de l'étude) ;
+- les mesures de la fiche sont celles de l'étude (96 lignes de référence tirées de l'étude, valeurs et marchés calculés par le code de l'étude) ;
 - chaque marché a >= 3 cas qui passent et >= 3 cas qui échouent ; les bornes sont « bas <= valeur < haut » ;
 - la cote vient à la fin (>= 1,26, jamais sans cote) ; aucune fuite vers l'avenir ; les autres onglets sont inchangés ; sélection gelée ; page web."""
 import json, math, os, pathlib, sys
@@ -15,7 +15,7 @@ REF = json.load(open(pathlib.Path(__file__).with_name("categories_exemples.json"
 ZONES = VC.charger()
 # seuils de Patrick (24/11/2026), un par marché
 SEUILS = {"1": 0.70, "2": 0.60, "total_plus_1.5": 0.80, "1N": 0.90, "N2": 0.75, "dom_plus_0.5": 0.85, "ext_plus_0.5": 0.75,
-          "1N&total_plus_1.5": 0.70, "N2&total_plus_1.5": 0.60, "1N&total_moins_4.5": 0.70, "N2&total_moins_4.5": 0.65}
+          "1N&total_plus_1.5": 0.70, "N2&total_plus_1.5": 0.60, "1N&total_moins_4.5": 0.70, "N2&total_moins_4.5": 0.65, "total_moins_3.5": 0.75}
 ENT = ("hM", "hC", "aM", "aC", "sMh", "sCh", "sMa", "sCa", "mu")
 
 def _fiche_ref(l):
