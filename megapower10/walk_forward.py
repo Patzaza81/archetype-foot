@@ -74,15 +74,26 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
 
 
 def _stats(rows: list[dict]) -> dict:
-    n = len(rows)
-    wins = sum(bool(r["result"]) for r in rows)
-    profit = sum((r["odds"] - 1.0) if r["result"] else -1.0 for r in rows)
+    ordered = sorted(rows, key=lambda r: (r["date"], r["event_id"]))
+    n = len(ordered)
+    wins = sum(bool(r["result"]) for r in ordered)
+    profits = [(r["odds"] - 1.0) if r["result"] else -1.0 for r in ordered]
+    profit = sum(profits)
+    cumulative = peak = max_drawdown = 0.0
+    losing_streak = max_losing_streak = 0
+    for delta in profits:
+        cumulative += delta
+        peak = max(peak, cumulative)
+        max_drawdown = max(max_drawdown, peak - cumulative)
+        losing_streak = losing_streak + 1 if delta < 0 else 0
+        max_losing_streak = max(max_losing_streak, losing_streak)
     return {
         "n": n, "wins": wins, "hit_rate": wins/n if n else None,
         "wilson_95": wilson(wins, n), "roi": profit/n if n else None,
-        "profit_units": profit,
-        "mean_odds": sum(r["odds"] for r in rows)/n if n else None,
-        "mean_edge": sum(r["edge"] for r in rows)/n if n else None,
+        "profit_units": profit, "max_drawdown_units": max_drawdown,
+        "max_losing_streak": max_losing_streak,
+        "mean_odds": sum(r["odds"] for r in ordered)/n if n else None,
+        "mean_edge": sum(r["edge"] for r in ordered)/n if n else None,
     }
 
 
