@@ -10,7 +10,7 @@ Brique indépendante d'ARCHETYPE Foot. Elle ne modifie aucun moteur existant et 
 - Modèle Poisson propre à chaque championnat, en marche avant : chaque match est prédit uniquement à partir des matchs strictement antérieurs de la même compétition.
 - Probabilités bookmaker corrigées de la marge (de-vig) par événement, bookmaker, marché et phase.
 - Mesure de l'écart modèle/marché, bandes de cotes, taux de réussite, ROI à mise constante, intervalle de Wilson et mouvement ouverture → clôture.
-- Seuil d'écart choisi sur la validation seulement, puis évalué sur une période test chronologique non utilisée pour le choix.
+- Seuil d'écart choisi sur la validation seulement, puis évalué sur une période test chronologique non utilisée pour le choix. Segmentation supplémentaire par profondeur du marché (nombre de bookmakers observés).
 - Aucun assemblage des meilleures cotes de plusieurs bookmakers.
 
 ## Lancer l'étude historique
