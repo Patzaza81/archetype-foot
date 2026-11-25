@@ -8,7 +8,7 @@ SPLIT_V, SPLIT_T = '2013-01-01', '2017-01-01'
 MARCHES = {
     'Victoire domicile': lambda h, a: h > a, 'Victoire extérieur': lambda h, a: a > h,
     'X1': lambda h, a: h >= a, 'X2': lambda h, a: a >= h,
-    'Plus de 1,5': lambda h, a: h + a >= 2, 'Moins de 3,5': lambda h, a: h + a <= 3, 'Plus de 2,5': lambda h, a: h + a >= 3,
+    'Plus de 1,5': lambda h, a: h + a >= 2, 'Moins de 3,5': lambda h, a: h + a <= 3, 'Double chance 12': lambda h, a: h != a, 'Plus de 2,5': lambda h, a: h + a >= 3,
     'Domicile marque 1+': lambda h, a: h >= 1, 'Domicile marque 2+': lambda h, a: h >= 2,
     'Extérieur marque 1+': lambda h, a: a >= 1, 'Extérieur marque 2+': lambda h, a: a >= 2,
     'X1 + plus de 1,5': lambda h, a: (h >= a) & (h + a >= 2), 'X2 + plus de 1,5': lambda h, a: (a >= h) & (h + a >= 2),

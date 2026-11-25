@@ -739,12 +739,65 @@
      "part_des_matchs": 0.4577
     }
    }
+  },
+  "Double chance 12": {
+   "marche": "12",
+   "seuil": 0.8,
+   "version": "B",
+   "intervalles": [
+    {
+     "conditions": [
+      [
+       "X1g",
+       3.352941176470588,
+       null
+      ],
+      [
+       "dE",
+       0.2964155383437534,
+       null
+      ]
+     ],
+     "stats": {
+      "recherche_2000_2016": {
+       "n": 5558,
+       "s": 4536
+      },
+      "test_2017_2020": {
+       "n": 1220,
+       "s": 1019
+      },
+      "bloc_2025_26": {
+       "n": 1027,
+       "s": 843
+      }
+     }
+    }
+   ],
+   "stats": {
+    "recherche_2000_2016": {
+     "matchs": 5558,
+     "reussis": 4536,
+     "part_des_matchs": 0.0848
+    },
+    "test_2017_2020": {
+     "matchs": 1220,
+     "reussis": 1019,
+     "part_des_matchs": 0.0959
+    },
+    "bloc_2025_26": {
+     "matchs": 1027,
+     "reussis": 843,
+     "part_des_matchs": 0.0923
+    }
+   }
   }
  },
  "regele": {
   "1N&total_moins_4.5": "2026-11-24",
   "dom_plus_0.5": "2026-11-25",
   "ext_plus_0.5": "2026-11-25",
-  "total_moins_3.5": "2026-11-25"
+  "total_moins_3.5": "2026-11-25",
+  "12": "2026-11-25"
  }
 }
