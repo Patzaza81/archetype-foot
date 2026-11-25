@@ -21,7 +21,7 @@ Le match tombe dans un intervalle favorable d'un marché (bornes « bas ≤ vale
 - **Version A** : l'ensemble des intervalles atteint le seuil avec certitude (borne basse de Wilson 95 %) sur la recherche entière. **Version B** : chaque intervalle atteint le seuil avec certitude sur chacune des deux moitiés de la recherche (élimine les intervalles fragiles).
 
 ## Seuils (Patrick) et version retenue
-Seuils donnés par Patrick le 24/11/2026 : victoire domicile 70 %, victoire extérieur 60 %, plus de 1,5 buts 80 %, X1 90 %, X2 75 %, domicile marque 90 %, extérieur marque 80 %. **X1 + moins de 4,5 buts : 74 % jusqu'au 24/11 (version A, 4 intervalles, 4,6 % des matchs, aucun match à venir ce jour-là), puis 70 % version B (décision de Patrick, 24/11/2026, re-gel de ce seul marché ; `etudes/categories_2026_11/refreeze_x1m45.py`).**
+Seuils donnés par Patrick le 24/11/2026 : victoire domicile 70 %, victoire extérieur 60 %, plus de 1,5 buts 80 %, X1 90 %, X2 75 %, domicile marque 90 % puis **85 %**, extérieur marque 80 % puis **75 %** (décision de Patrick, 25/11/2026 : « on suit ta proposition » ; re-gel de ces deux marchés seulement, `etudes/categories_2026_11/refreeze_marque.py`). **X1 + moins de 4,5 buts : 74 % jusqu'au 24/11 (version A, 4 intervalles, 4,6 % des matchs, aucun match à venir ce jour-là), puis 70 % version B (décision de Patrick, 24/11/2026, re-gel de ce seul marché ; `etudes/categories_2026_11/refreeze_x1m45.py`).**
 **Choix de Claude, non donnés par Patrick, à corriger si besoin** : seuils des combinés selon sa logique (produit des seuils des deux parties, arrondi à 5) : X1 + plus de 1,5 = 70 %, X2 + plus de 1,5 = 60 % ; X2 + moins de 4,5 = 65 % (ce que les données permettent) ; version B partout, sauf version A pour X1 (90 %) et la victoire à l'extérieur (60 %) où B garde trop peu de matchs ou aucun. Les seuils des combinés X1 + plus de 1,5 (70 %), X2 + plus de 1,5 (60 %) et X2 + moins de 4,5 (65 %) restent des choix de Claude, que Patrick a laissés tels quels le 24/11 (« on suit ta proposition »).
 Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; « plus de 2,5 buts » a son propre onglet (+2,5 buts).
 
@@ -32,8 +32,8 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 | Plus de 1,5 | `total_plus_1.5` | 80 % | B | 2 | 85.1 % (806, 6.3 % des matchs) | 85.5 % (799, 7.2 % des matchs) |
 | X1 | `1N` | 90 % | A | 1 | 91.0 % (726, 5.7 % des matchs) | 88.9 % (486, 4.4 % des matchs) |
 | X2 | `N2` | 75 % | B | 1 | 78.9 % (964, 7.6 % des matchs) | 78.8 % (655, 5.9 % des matchs) |
-| Domicile marque 1+ | `dom_plus_0.5` | 90 % | B | 1 | 91.9 % (405, 3.2 % des matchs) | 94.6 % (296, 2.7 % des matchs) |
-| Extérieur marque 1+ | `ext_plus_0.5` | 80 % | B | 1 | 84.5 % (665, 5.2 % des matchs) | 85.5 % (442, 4.0 % des matchs) |
+| Domicile marque 1+ | `dom_plus_0.5` | 85 % | B | 1 | 85.9 % (2762, 21.7 % des matchs) | 88.1 % (2385, 21.4 % des matchs) |
+| Extérieur marque 1+ | `ext_plus_0.5` | 75 % | B | 1 | 78.3 % (2798, 22.0 % des matchs) | 81.0 % (2560, 23.0 % des matchs) |
 | X1 + plus de 1,5 | `1N&total_plus_1.5` | 70 % | B | 1 | 72.2 % (1390, 10.9 % des matchs) | 70.4 % (1106, 9.9 % des matchs) |
 | X2 + plus de 1,5 | `N2&total_plus_1.5` | 60 % | B | 1 | 69.3 % (462, 3.6 % des matchs) | 65.9 % (293, 2.6 % des matchs) |
 | X1 + moins de 4,5 | `1N&total_moins_4.5` | 70 % | B | 1 | 71.6 % (3189, 25.1 % des matchs) | 70.5 % (2377, 21.4 % des matchs) |
@@ -75,17 +75,21 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 |---|---|---|---|
 | dE < -0.309 et 0.242 ≤ EAm | 3265/4227 = 77.2 % | 761/964 = 78.9 % | 516/655 = 78.8 % |
 
-### Domicile marque 1+ — seuil 90 %, version B
+### Domicile marque 1+ — seuil 85 %, version B (re-gel du 25/11/2026)
 
 | Intervalle | 2000-2016 | 2017-2020 | Bloc 2025-26 |
 |---|---|---|---|
-| 3.500 ≤ SM et 1.244 ≤ rE | 1492/1616 = 92.3 % | 372/405 = 91.9 % | 280/296 = 94.6 % |
+| 0.187 ≤ dE | 11486/13286 = 86.4 % | 2372/2762 = 85.9 % | 2101/2385 = 88.1 % |
 
-### Extérieur marque 1+ — seuil 80 %, version B
+Ancienne version (90 %, B) : `3.500 ≤ SM et 1.244 ≤ rE`, 3,2 % des matchs, 91,9 % / 94,6 %. Équivalent « l'extérieur encaisse au moins 1 but ».
+
+### Extérieur marque 1+ — seuil 75 %, version B (re-gel du 25/11/2026)
 
 | Intervalle | 2000-2016 | 2017-2020 | Bloc 2025-26 |
 |---|---|---|---|
-| EHm < -0.082 et 0.242 ≤ EAm | 2284/2762 = 82.7 % | 562/665 = 84.5 % | 378/442 = 85.5 % |
+| 1.429 ≤ EA et dE < -0.123 | 10672/14001 = 76.2 % | 2191/2798 = 78.3 % | 2073/2560 = 81.0 % |
+
+Ancienne version (80 %, B) : `EHm < -0.082 et 0.242 ≤ EAm`, 5,2 % des matchs, 84,5 % / 85,5 %. Équivalent « l'équipe à domicile encaisse au moins 1 but ». Les marchés « n'encaisse pas » (cage inviolée) ont été testés le 25/11 : aucun intervalle fiable à 55 % ou plus, non retenus. Le marché « les deux équipes marquent » plafonne vers 60 % : laissé de côté (Patrick, 25/11).
 
 ### X1 + plus de 1,5 — seuil 70 %, version B
 
@@ -121,7 +125,7 @@ Un essai à 5 matchs a été fait puis abandonné : sur les matchs réels des 7 
 |---|---|---|---|
 | Victoire extérieur | 60 % | 250/391 = 63,9 % | 122/190 = 64,2 % |
 | X2 | 75 % | 1277/1619 = 78,9 % | 1195/1524 = 78,4 % |
-| Extérieur marque 1+ | 80 % | 940/1107 = 84,9 % | 362/413 = 87,7 % |
+| Extérieur marque 1+ (ancienne version, 80 %) | 80 % | 940/1107 = 84,9 % | 362/413 = 87,7 % |
 | X2 + plus de 1,5 | 60 % | 513/755 = 67,9 % | 169/268 = 63,1 % |
 | X1 + moins de 4,5 (ancienne version, 74 %) | 74 % | 1241/1668 = 74,4 % | 1839/2568 = 71,6 % |
 | X2 + moins de 4,5 | 65 % | 763/1107 = 68,9 % | 279/413 = 67,6 % |

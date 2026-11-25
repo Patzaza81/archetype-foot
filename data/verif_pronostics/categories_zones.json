@@ -383,105 +383,100 @@
   },
   "Domicile marque 1+": {
    "marche": "dom_plus_0.5",
-   "seuil": 0.9,
+   "seuil": 0.85,
    "version": "B",
    "intervalles": [
     {
      "conditions": [
       [
-       "SM",
-       3.5,
-       null
-      ],
-      [
-       "rE",
-       1.2435903680786258,
+       "dE",
+       0.1868536122094046,
        null
       ]
      ],
      "stats": {
       "recherche_2000_2016": {
-       "n": 1616,
-       "s": 1492
+       "n": 13286,
+       "s": 11486
       },
       "test_2017_2020": {
-       "n": 405,
-       "s": 372
+       "n": 2762,
+       "s": 2372
       },
       "bloc_2025_26": {
-       "n": 296,
-       "s": 280
+       "n": 2385,
+       "s": 2101
       }
      }
     }
    ],
    "stats": {
     "recherche_2000_2016": {
-     "matchs": 1616,
-     "reussis": 1492,
-     "part_des_matchs": 0.0247
+     "matchs": 13286,
+     "reussis": 11486,
+     "part_des_matchs": 0.2027
     },
     "test_2017_2020": {
-     "matchs": 405,
-     "reussis": 372,
-     "part_des_matchs": 0.0318
+     "matchs": 2762,
+     "reussis": 2372,
+     "part_des_matchs": 0.217
     },
     "bloc_2025_26": {
-     "matchs": 296,
-     "reussis": 280,
-     "part_des_matchs": 0.0266
+     "matchs": 2385,
+     "reussis": 2101,
+     "part_des_matchs": 0.2143
     }
    }
   },
   "Extérieur marque 1+": {
    "marche": "ext_plus_0.5",
-   "seuil": 0.8,
+   "seuil": 0.75,
    "version": "B",
    "intervalles": [
     {
      "conditions": [
       [
-       "EHm",
-       null,
-       -0.0816074504644357
+       "EA",
+       1.428689038679668,
+       null
       ],
       [
-       "EAm",
-       0.2424672781049581,
-       null
+       "dE",
+       null,
+       -0.1231426051089386
       ]
      ],
      "stats": {
       "recherche_2000_2016": {
-       "n": 2762,
-       "s": 2284
+       "n": 14001,
+       "s": 10672
       },
       "test_2017_2020": {
-       "n": 665,
-       "s": 562
+       "n": 2798,
+       "s": 2191
       },
       "bloc_2025_26": {
-       "n": 442,
-       "s": 378
+       "n": 2560,
+       "s": 2073
       }
      }
     }
    ],
    "stats": {
     "recherche_2000_2016": {
-     "matchs": 2762,
-     "reussis": 2284,
-     "part_des_matchs": 0.0421
+     "matchs": 14001,
+     "reussis": 10672,
+     "part_des_matchs": 0.2136
     },
     "test_2017_2020": {
-     "matchs": 665,
-     "reussis": 562,
-     "part_des_matchs": 0.0522
+     "matchs": 2798,
+     "reussis": 2191,
+     "part_des_matchs": 0.2198
     },
     "bloc_2025_26": {
-     "matchs": 442,
-     "reussis": 378,
-     "part_des_matchs": 0.0397
+     "matchs": 2560,
+     "reussis": 2073,
+     "part_des_matchs": 0.2301
     }
    }
   },
@@ -695,6 +690,8 @@
   }
  },
  "regele": {
-  "1N&total_moins_4.5": "2026-11-24"
+  "1N&total_moins_4.5": "2026-11-24",
+  "dom_plus_0.5": "2026-11-25",
+  "ext_plus_0.5": "2026-11-25"
  }
 }
