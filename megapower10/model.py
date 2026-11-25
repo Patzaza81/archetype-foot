@@ -106,11 +106,12 @@ def tune_parameters(matches: Iterable[MatchResult], *, train_end: str,
                     min_training_forecasts: int = 30) -> dict:
     """Choose window/shrinkage only from walk-forward forecasts before train_end."""
     ordered = sorted(matches, key=lambda m: (m.date, m.competition, m.event_id))
-    outcomes = {m.event_id: m for m in ordered if m.date < train_end}
+    training_matches = [m for m in ordered if m.date < train_end]
+    outcomes = {m.event_id: m for m in training_matches}
     candidates = []
     for window in windows:
         for prior in priors:
-            preds = walk_forward(ordered, window=window, prior_matches=prior)
+            preds = walk_forward(training_matches, window=window, prior_matches=prior)
             losses = []
             for p in preds:
                 m = outcomes.get(p["event_id"])
