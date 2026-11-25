@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102c2a">
+<title>MEGAPOWER 10+ — Espace de test</title>
+<style>
+:root{color-scheme:light;--ink:#172a28;--muted:#60716d;--paper:#f7f3e9;--card:#fff;--line:#dce5df;--teal:#087f78;--gold:#c49a3a;--red:#a43e35}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#102c2a;color:#fff;padding:26px 18px 30px}header .wrap,main{max-width:980px;margin:auto}header small{color:#c5d9d2;letter-spacing:.14em;font-weight:700}h1{font-size:clamp(27px,6vw,42px);line-height:1.1;margin:9px 0}header p{max-width:680px;color:#d8e5df;margin:0}
+main{padding:18px 14px 48px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px;margin-bottom:14px}.metric{font-size:27px;font-weight:800;letter-spacing:-.04em}.muted{color:var(--muted);font-size:13px}.eyebrow{font-size:11px;letter-spacing:.12em;font-weight:800;color:var(--muted);text-transform:uppercase}.status{display:inline-block;border-radius:999px;padding:5px 10px;background:#fff1d1;color:#76500b;font-size:12px;font-weight:800}
+h2{font-size:20px;margin:0 0 10px}h3{font-size:16px;margin:0 0 5px}.rule{border-left:4px solid var(--gold);padding:10px 12px;background:#fff8e8;border-radius:8px;margin:12px 0}.actions{display:grid;gap:10px}.action{display:block;padding:14px 16px;background:var(--teal);color:white;text-decoration:none;border-radius:10px;font-weight:800;text-align:center}.action.secondary{background:#e7f1ed;color:#14544e;border:1px solid #c8ddd5}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-size:11px;text-transform:uppercase}.negative{color:var(--red);font-weight:800}.positive{color:#176b49;font-weight:800}code{overflow-wrap:anywhere;background:#edf1ed;padding:2px 5px;border-radius:4px}ol{padding-left:20px}li{margin:7px 0}.foot{font-size:12px;color:var(--muted);margin-top:20px}
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}.card{padding:14px}.metric{font-size:23px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><small>ARCHETYPE FOOT · MOTEUR INDÉPENDANT</small><h1>MEGAPOWER 10+</h1><p>Espace de test du moteur dédié aux cotes décimales de 10,00 et plus. Les moteurs existants d’ARCHETYPE Foot ne sont pas modifiés.</p></div></header>
+<main>
+<section class="card">
+<span class="status">MODE EXPÉRIMENTAL — PAS DE CONSEIL DE PARI</span>
+<h2 style="margin-top:12px">Contrat de sélection</h2>
+<div class="rule"><strong>La cote minimale est verrouillée à 10,00.</strong> Une cote de 9,99 ou moins ne peut jamais devenir une sélection. 10,00 est admissible.</div>
+<p class="muted">Couverture actuelle : 1X2 et total 2,5. Le modèle est propre à chaque championnat et fonctionne en marche avant : un match n’est prédit qu’avec les résultats antérieurs disponibles.</p>
+</section>
+<section class="grid">
+<div class="card"><div class="eyebrow">Football-Data · test gelé</div><div class="metric">9,15 %</div><div class="muted">15 gagnés / 164 sélections</div><p class="negative">ROI : +3,35 % (petit échantillon)</p></div>
+<div class="card"><div class="eyebrow">Beat The Bookie · test gelé</div><div class="metric">7,66 %</div><div class="muted">65 gagnés / 849 sélections</div><p class="negative">ROI : −2,03 %</p></div>
+<div class="card"><div class="eyebrow">Benchmark visé</div><div class="metric">40 %</div><div class="muted">Taux de réussite cible, non atteint</div></div>
+<div class="card"><div class="eyebrow">Prix testés</div><div class="metric">≥ 10,00</div><div class="muted">Aucun prix inférieur ne peut être sélectionné</div></div>
+</section>
+<section class="card">
+<h2>Résultats historiques détaillés</h2>
+<div class="table-wrap"><table><thead><tr><th>Archive</th><th>Sélections brutes ≥10</th><th>Réussite</th><th>ROI brut</th></tr></thead><tbody>
+<tr><td>Football-Data ouverture</td><td>7 444</td><td>4,81 %</td><td class="negative">−38,36 %</td></tr>
+<tr><td>Football-Data clôture</td><td>9 962</td><td>4,94 %</td><td class="negative">−36,27 %</td></tr>
+<tr><td>Beat The Bookie moyenne*</td><td>24 497</td><td>4,17 %</td><td class="negative">−48,48 %</td></tr>
+<tr><td>Beat The Bookie meilleur prix*</td><td>42 843</td><td>5,79 %</td><td class="negative">−24,48 %</td></tr>
+</tbody></table></div>
+<p class="muted">* Les prix moyens sont une référence de marché non exécutable. Les meilleurs prix par issue sont hypothétiques et ne prouvent pas une disponibilité simultanée.</p>
+</section>
+<section class="card">
+<h2>Lancer ton propre rejeu</h2>
+<p>Le rejeu s’exécute sur GitHub Actions à partir des archives du dépôt. Tu peux modifier le support minimal de validation et la borne haute ; le moteur refusera toute borne basse inférieure à 10.</p>
+<div class="actions">
+<a class="action" href="https://github.com/Patzaza81/archetype-foot/actions/workflows/megapower10-research.yml">Ouvrir le test Football-Data</a>
+<a class="action secondary" href="https://github.com/Patzaza81/archetype-foot/actions/workflows/megapower10-beatthebookie.yml">Ouvrir le test Beat The Bookie</a>
+<a class="action secondary" href="https://github.com/Patzaza81/archetype-foot/pull/196">Consulter le code et les tests du moteur</a>
+</div>
+<ol><li>Dans GitHub Actions, ouvrir le workflow puis toucher <strong>Run workflow</strong>.</li><li>Conserver la cote minimale à <strong>10</strong>. Le moteur bloque toute valeur inférieure.</li><li>Lancer le workflow et attendre sa fin.</li><li>Ouvrir le run terminé, puis télécharger l’artefact de rapport pour consulter les résultats détaillés.</li></ol>
+</section>
+<section class="card">
+<h2>Comment lire les résultats</h2>
+<ul>
+<li><strong>Taux de réussite :</strong> part des sélections gagnantes ; il doit être comparé au seuil de rentabilité correspondant à la cote moyenne.</li>
+<li><strong>ROI :</strong> résultat comptable à mise constante d’une unité, avant commissions et contraintes de liquidité.</li>
+<li><strong>Test chronologique :</strong> période tenue à l’écart du réglage des paramètres et des seuils.</li>
+<li><strong>Limite majeure :</strong> les archives historiques n’ont pas toutes l’heure exacte de capture des cotes ; elles ne prouvent donc pas qu’un prix était réellement disponible au moment du pari.</li>
+</ul>
+<p class="rule"><strong>Conclusion actuelle :</strong> le moteur fonctionne techniquement, mais les deux archives ne démontrent pas encore une rentabilité reproductible. Le résultat positif de Football-Data (+3,35 %) n’est pas confirmé par Beat The Bookie (−2,03 %). Aucun pari ne doit être considéré comme validé.</p>
+</section>
+<p class="foot">MEGAPOWER 10+ est indépendant des moteurs de production. Cette page est un tableau de test et de transparence ; elle ne modifie pas les pronostics publiés par ARCHETYPE Foot.</p>
+</main>
+</body></html>
