@@ -83,6 +83,8 @@ def load_beat_the_bookie(path: str | Path) -> tuple[list[HistoricalMatch], list[
     prices.sort(key=lambda q: (q.kickoff_date, q.competition, q.market, q.selection, q.bookmaker))
     summary = {
         "source": "Beat The Bookie — Kaggle austro/beat-the-bookie-worldwide-football-dataset",
+        "dataset_url": "https://www.kaggle.com/datasets/austro/beat-the-bookie-worldwide-football-dataset",
+        "research_paper_url": "https://arxiv.org/abs/1710.02824",
         "license": "CC BY-SA 4.0; attribute source and preserve share-alike obligations",
         "matches": len(matches), "price_rows": len(prices),
         "competitions": len({m.competition for m in matches}),
