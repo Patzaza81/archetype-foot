@@ -7,11 +7,6 @@ on:
       - "megapower10/**"
       - "data/football_data/**"
       - ".github/workflows/megapower10-research.yml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "megapower10/**"
-      - "data/football_data/**"
   workflow_dispatch:
     inputs:
       min_odds:
