@@ -25,7 +25,7 @@ class Quote:
     market: str
     selection: str
     bookmaker: str
-    captured_at_utc: datetime
+    captured_at_utc: datetime | None
     odds: float
     result: bool | None
     source: str
@@ -34,6 +34,7 @@ class Quote:
     closing_odds: float | None = None
     season: str = ""
     quote_id: str = ""
+    price_stage: str = "snapshot"
 
     @property
     def key(self) -> tuple[str, str, str, str]:
@@ -219,7 +220,7 @@ def discovery_report(quotes: Iterable[Quote], *, min_support: int = 30) -> dict[
             status = "positive_historical_roi_requires_holdout"
         else:
             status = "no_positive_evidence"
-        rows.append({"competition": competition, "market": market, "odds_band": band, **m, "status": status})
+        rows.append({"competition": competition, "market": market, "price_stage": stage, "odds_band": band, **m, "status": status})
     rows.sort(key=lambda r: (r["status"] != "positive_historical_roi_requires_holdout",
                              -(r["roi"] if r["roi"] is not None else -999), -r["n"]))
     return {"groups": len(rows), "min_support": min_support, "results": rows}
