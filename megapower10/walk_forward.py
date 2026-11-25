@@ -28,6 +28,7 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
         groups[(q.event_id, q.bookmaker, q.market, q.price_stage)].append(q)
 
     enriched = []
+    price_by_stage = {(q.event_id, q.bookmaker, q.market, q.selection, q.price_stage): q.odds for q in price_rows}
     skipped_no_forecast = skipped_incomplete_market = 0
     for key, group in groups.items():
         event_id, bookmaker, market, stage = key
@@ -57,8 +58,7 @@ def enrich_prices(matches: Iterable[MatchResult], prices: Iterable, *,
                 "season": q.season, "market": q.market, "selection": q.selection,
                 "bookmaker": q.bookmaker, "price_stage": q.price_stage, "odds": q.odds,
                 "result": q.result, "model_probability": p_model,
-                "market_probability": p_market, "edge": p_model - p_market,
-                "n_league_before_match": forecast["n_league"], "source": q.source,
+                "market_probability": p_market, "edge": p_model - p_market, "market_overround": overround,\n                "opening_to_closing_odds_change": (price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) / q.odds - 1.0) if q.price_stage == "opening" and price_by_stage.get((q.event_id, q.bookmaker, q.market, q.selection, "closing")) else None,\n                "n_league_before_match": forecast["n_league"], "source": q.source,
             })
     enriched.sort(key=lambda r: (r["date"], r["competition"], r["market"], r["event_id"], r["selection"], r["bookmaker"], r["price_stage"]))
     return enriched, {
