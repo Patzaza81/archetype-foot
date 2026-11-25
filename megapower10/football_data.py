@@ -31,6 +31,7 @@ class HistoricalPrice:
     source: str
     reference_odds: float | None = None
     execution_bookmaker: str = ""
+    bookmaker_count: int | None = None
 
 
 BOOKS_1X2 = {
