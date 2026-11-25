@@ -2,7 +2,7 @@ import unittest
 
 from megapower10.model import MatchResult
 from megapower10.football_data import HistoricalPrice
-from megapower10.walk_forward import enrich_prices, chronological_edge_study, forecast_quality_report
+from megapower10.walk_forward import enrich_prices, chronological_edge_study, forecast_quality_report, evaluate_edge
 
 
 class TestPriceJoin(unittest.TestCase):
@@ -32,6 +32,20 @@ class TestPriceJoin(unittest.TestCase):
                                           validation_end="2026-03-01", min_support=10)
         self.assertEqual(report["results"][0]["status"], "no_validation_candidate")
         self.assertIsNone(report["results"][0]["test"])
+
+    def test_edge_evaluation_rejects_below_ten_and_accepts_exact_ten(self):
+        base = {"event_id": "e", "date": "2026-01-01", "competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "closing", "edge": .2, "result": True}
+        report = evaluate_edge([dict(base, odds=9.99), dict(base, event_id="e2", odds=10.0)])
+        self.assertEqual(report["overall"]["n"], 1)
+        self.assertEqual(report["overall"]["mean_odds"], 10.0)
+        with self.assertRaises(ValueError): evaluate_edge([dict(base, odds=10)], min_odds=9.0)
+
+    def test_chronological_study_filters_every_price_below_ten(self):
+        rows = [{"event_id": f"e{i}", "date": "2026-02-01", "competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "closing", "odds": 9.99, "edge": .5, "result": True} for i in range(50)]
+        report = chronological_edge_study(rows, train_end="2026-01-01", validation_end="2026-03-01", min_support=1)
+        self.assertEqual(report["counts"]["all"], 0)
+        self.assertEqual(report["recommendation_policy"]["minimum_odds_inclusive"], 10.0)
+        self.assertEqual(report["results"], [])
 
     def test_probability_quality_compares_model_and_market(self):
         rows = [
