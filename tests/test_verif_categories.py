@@ -315,4 +315,4 @@ def test_page_web_nom_du_marche_en_evidence():                   # 25/11/2026 : 
     assert "vf-cat-marches" in js and "vf-cat-chip" in js and "vf-cat-nom" in js and "vf-cat-cote" in js
     assert ".vf-cat-chip" in css and ".vf-cat-nom" in css and ".theme-nuit .vf-cat-chip" in css
     assert js.index("vf-cat-marches") < js.index("phraseCategories(m, p) + `<div class=\"om-bloc vf-famille vf-meilleur\">")   # le bandeau vient avant le texte
-    assert "af-verif.css?v=20261125b" in html and "archetype_verif.js?v=20261125a" in html     # la version change : le téléphone recharge les fichiers
+    assert "af-verif.css?v=20261125c" in html and "archetype_verif.js?v=20261125a" in html     # la version change : le téléphone recharge les fichiers
