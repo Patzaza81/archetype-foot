@@ -57,9 +57,9 @@ class TestPriceJoin(unittest.TestCase):
              "event_id": "e1", "model_probability": .2, "market_probability": .3, "result": False},
         ]
         report = forecast_quality_report(rows)
-        self.assertEqual(report["by_competition_market_bookmaker_stage"][0]["events"], 1)
-        self.assertLess(report["by_competition_market_bookmaker_stage"][0]["model_brier"],
-                        report["by_competition_market_bookmaker_stage"][0]["market_brier"])
+        self.assertEqual(report["by_period_competition_market_bookmaker_stage"][0]["events"], 1)
+        self.assertLess(report["by_period_competition_market_bookmaker_stage"][0]["model_brier"],
+                        report["by_period_competition_market_bookmaker_stage"][0]["market_brier"])
 
     def test_validation_threshold_is_frozen_before_test(self):
         rows = []
