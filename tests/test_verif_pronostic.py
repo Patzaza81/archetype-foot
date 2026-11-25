@@ -1,5 +1,6 @@
 """Tests de verif_pronostic.py : chaque regle avec >= 3 cas qui passent et >= 3 cas qui echouent, plus controles de fuite, de journal et de determinisme."""
 import gzip, json, os, sys, tempfile, unittest
+import pytest
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import verif_pronostic as v
@@ -288,6 +289,7 @@ def test_page_valeurs_normales_inchangees():
 def test_page_numpy_nan_devient_null():
     assert _ecrit_et_relit_strict({"x": np.float64("nan"), "y": np.float64(2.5)}) == {"x": None, "y": 2.5}
 
+@pytest.mark.donnees_du_jour      # lit data/verif_pronostics/page_verif.json, réécrit chaque nuit : non bloquant dans le pipeline, erreur visible (garde du 10/11)
 def test_page_nan_dans_le_fichier_publie_absent():
     import pathlib
     texte = (pathlib.Path(v.RACINE) / "data/verif_pronostics/page_verif.json").read_text(encoding="utf-8")
