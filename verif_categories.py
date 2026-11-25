@@ -30,6 +30,8 @@ LIBELLES = {
     "X1g": "Buts marqués du domicile plus buts encaissés de l'extérieur", "X2g": "Buts marqués de l'extérieur plus buts encaissés du domicile",
     "SM": "Buts marqués par match des deux équipes réunies", "SC": "Buts encaissés par match des deux équipes réunies", "TG": "Total des quatre moyennes",
     "rM": "Rapport des buts marqués (domicile / extérieur)", "rC": "Rapport des buts encaissés (domicile / extérieur)", "rX": "Rapport X1g / X2g",
+    "F2h": "Part des matchs du domicile, à domicile, où il a marqué 2 buts ou plus", "F2a": "Part des matchs de l'extérieur, dehors, où il a marqué 2 buts ou plus",
+    "n_dom": "Matchs du domicile joués à domicile", "n_ext": "Matchs de l'extérieur joués dehors",
     "EH": "xG attendu du domicile", "EA": "xG attendu de l'extérieur", "ET": "xG attendu du match (total)", "dE": "xG attendu : domicile moins extérieur",
     "rE": "xG attendu : rapport domicile / extérieur", "mu": "Buts par équipe et par match du championnat",
     "EHm": "xG attendu du domicile moins la moyenne du championnat", "EAm": "xG attendu de l'extérieur moins la moyenne du championnat",
@@ -77,7 +79,8 @@ def mesures(lieu_dom, lieu_ext, saison_dom, saison_ext, champ, zones=None):
     sd, se = saison_dom or {}, saison_ext or {}
     xg = zones and zones.get("calibration_xg") and nc >= NCHAMP_MIN and None not in (sd.get("buts_marques"), sd.get("buts_encaisses"), se.get("buts_marques"), se.get("buts_encaisses"))
     c = caracteristiques(hM, hC, aM, aC, *( (sd["buts_marques"], sd["buts_encaisses"], se["buts_marques"], se["buts_encaisses"], tot / (2 * nc)) if xg else (None,) * 5), cal=zones.get("calibration_xg") if zones else None)
-    return {**c, "n_dom": nd, "n_ext": ne, "n_championnat": nc}
+    f2h, f2a = sum(1 for m, _ in lieu_dom if m >= 2) / nd, sum(1 for m, _ in lieu_ext if m >= 2) / ne      # part des matchs à son lieu où l'équipe a marqué 2 buts ou plus (règle de Patrick du 25/11 pour le plus de 1,5)
+    return {**c, "F2h": f2h, "F2a": f2a, "n_dom": nd, "n_ext": ne, "n_championnat": nc}
 
 def dans(c, conditions):
     """Le match est dans l'intervalle si chaque condition [variable, bas, haut] est vraie : bas <= valeur < haut (None = sans borne). Valeur absente ou non numérique = non."""

@@ -199,81 +199,73 @@
   },
   "Plus de 1,5": {
    "marche": "total_plus_1.5",
-   "seuil": 0.8,
+   "seuil": 0.77,
    "version": "B",
    "intervalles": [
     {
      "conditions": [
       [
-       "hM",
-       2.2,
+       "n_dom",
+       5.0,
        null
       ],
       [
-       "EH",
-       1.5585241180381346,
+       "n_ext",
+       5.0,
+       null
+      ],
+      [
+       "F2h",
+       0.47058823529411764,
+       null
+      ],
+      [
+       "F2a",
+       0.4375,
+       null
+      ],
+      [
+       "hC",
+       0.8571428571428571,
+       null
+      ],
+      [
+       "aC",
+       1.0,
        null
       ]
      ],
      "stats": {
       "recherche_2000_2016": {
-       "n": 3554,
-       "s": 2908
+       "n": 3075,
+       "s": 2395
       },
       "test_2017_2020": {
-       "n": 724,
-       "s": 618
+       "n": 664,
+       "s": 526
       },
       "bloc_2025_26": {
-       "n": 710,
-       "s": 610
-      }
-     }
-    },
-    {
-     "conditions": [
-      [
-       "dC",
-       -0.25,
-       0.375
-      ],
-      [
-       "EH",
-       1.5585241180381346,
-       null
-      ]
-     ],
-     "stats": {
-      "recherche_2000_2016": {
-       "n": 722,
-       "s": 596
-      },
-      "test_2017_2020": {
-       "n": 187,
-       "s": 159
-      },
-      "bloc_2025_26": {
-       "n": 245,
-       "s": 209
+       "n": 815,
+       "s": 668
       }
      }
     }
    ],
    "stats": {
     "recherche_2000_2016": {
-     "matchs": 3793,
-     "reussis": 3118,
-     "part_des_matchs": 0.0579
+     "matchs": 3075,
+     "reussis": 2395,
+     "part_des_matchs": 0.0469
     },
     "test_2017_2020": {
-     "matchs": 806,
-     "reussis": 686,
-     "part_des_matchs": 0.0633
+     "matchs": 664,
+     "reussis": 526,
+     "part_des_matchs": 0.0522
     },
     "bloc_2025_26": {
-     "matchs": 799,
-     "reussis": 683,
-     "part_des_matchs": 0.0718
+     "matchs": 815,
+     "reussis": 668,
+     "part_des_matchs": 0.0732
     }
    }
   },
@@ -798,6 +790,7 @@
   "dom_plus_0.5": "2026-11-25",
   "ext_plus_0.5": "2026-11-25",
   "total_moins_3.5": "2026-11-25",
-  "12": "2026-11-25"
+  "12": "2026-11-25",
+  "total_plus_1.5": "2026-11-25"
  }
 }

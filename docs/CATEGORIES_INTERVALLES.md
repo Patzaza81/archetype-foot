@@ -29,7 +29,7 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 |---|---|---|---|---|---|---|
 | Victoire domicile | `1` | 70 % | B | 1 | 72.8 % (1008, 7.9 % des matchs) | 71.2 % (784, 7.0 % des matchs) |
 | Victoire extérieur | `2` | 60 % | A | 4 | 64.9 % (248, 1.9 % des matchs) | 62.2 % (143, 1.3 % des matchs) |
-| Plus de 1,5 | `total_plus_1.5` | 80 % | B | 2 | 85.1 % (806, 6.3 % des matchs) | 85.5 % (799, 7.2 % des matchs) |
+| Plus de 1,5 | `total_plus_1.5` | **77 %** | B | **1** | **79.2 % (664, 5.2 % des matchs)** | **82.0 % (815, 7.3 % des matchs)** |
 | X1 | `1N` | 90 % | A | 1 | 91.0 % (726, 5.7 % des matchs) | 88.9 % (486, 4.4 % des matchs) |
 | X2 | `N2` | 75 % | B | 1 | 78.9 % (964, 7.6 % des matchs) | 78.8 % (655, 5.9 % des matchs) |
 | Domicile marque 1+ | `dom_plus_0.5` | 85 % | B | 1 | 85.9 % (2762, 21.7 % des matchs) | 88.1 % (2385, 21.4 % des matchs) |
@@ -58,12 +58,13 @@ Absents faute de seuil : « domicile marque 2+ », « extérieur marque 2+ » ; 
 | hM < 1.091 et 3.846 ≤ SM | 17/18 = 94.4 % | 3/3 = 100.0 % | 3/4 = 75.0 % |
 | 1.833 ≤ hC et 2.434 ≤ SC < 2.500 | 8/8 = 100.0 % | 0/1 = 0.0 % | 1/1 = 100.0 % |
 
-### Plus de 1,5 — seuil 80 %, version B
+### Plus de 1,5 — seuil 77 %, version B (règle des 2 buts de Patrick, re-gel du 25/11/2026)
 
 | Intervalle | 2000-2016 | 2017-2020 | Bloc 2025-26 |
 |---|---|---|---|
-| 2.200 ≤ hM et 1.559 ≤ EH | 2908/3554 = 81.8 % | 618/724 = 85.4 % | 610/710 = 85.9 % |
-| -0.250 ≤ dC < 0.375 et 1.559 ≤ EH | 596/722 = 82.5 % | 159/187 = 85.0 % | 209/245 = 85.3 % |
+| 5 ≤ n_dom, 5 ≤ n_ext, 0.4706 ≤ F2h, 0.4375 ≤ F2a, 0.857 ≤ hC, 1.000 ≤ aC | 2395/3075 = 77.9 % | 526/664 = 79.2 % | 668/815 = 82.0 % |
+
+Cette règle remplace les deux anciens intervalles (80 %, version B : 85,1 % sur 806 matchs en 2017-2020 mais seulement 36 matchs à cote ≥ 1,24 en 2025-26 et Betpawa, 75 %).
 
 ### X1 — seuil 90 %, version A
 
@@ -166,3 +167,11 @@ Dans l'onglet Catégories, le **nom de chaque marché retenu est affiché en gro
 
 ## Correctif du 25/11/2026 : page vide
 `page_verif.json` contenait un `NaN` (rapport de buts marqués domicile / extérieur quand l'extérieur n'a marqué aucun but). `NaN` n'est pas du JSON valide : le navigateur refusait tout le fichier et la page Analyse Verdict restait vide (message « Données indisponibles »). `ecrire_page` convertit maintenant tout `NaN` / infini en `null` et écrit en JSON strict (`allow_nan=False`) ; tests dans `tests/test_verif_pronostic.py`.
+
+
+## Plus de 1,5 : règle des 2 buts (25/11/2026)
+Règle de Patrick : chaque équipe doit avoir marqué **2 buts ou plus dans au moins 40 % de ses matchs à son lieu** (2 sur 5, 3 sur 6 ou 7, 4 sur 8 : le ratio suit le nombre de matchs joués), **5 matchs minimum au même lieu** (`n_dom`, `n_ext`). Mesures ajoutées à la fiche : `F2h` (domicile, à domicile) et `F2a` (extérieur, dehors) = part des matchs où l'équipe a marqué 2 buts ou plus. Croisée avec les buts encaissés de chaque équipe à son lieu (`hC`, `aC`) : 54,9 millions de scénarios à intervalles (6 jeux de variables, déciles) testés sur 72 879 matchs ; l'intervalle retenu atteint 77,6 % (2000-2012) et 78,7 % (2013-2016), puis 79,2 % (2017-2020) et 82,0 % (2025-26) sur des matchs jamais vus. Les seuils 0,4706 / 0,4375 / 0,857 / 1,0 sont appris (déciles de l'apprentissage), pas posés à la main.
+
+Mesure avec la cote ≥ 1,24 à la fin (2025-26 : cote estimée à partir des cotes 1X2 et plus/moins de 2,5 ; matchs Betpawa de septembre-novembre : cote réelle) : 102 réussis sur 125 (81,6 %, intervalle de Wilson 73,9-87,4 %), contre 71,6 % pour l'ensemble des matchs cotés 1,24 ou plus (3 982 matchs). **Échantillon petit (125 matchs) et variante choisie parmi 54,9 millions de scénarios : à confirmer sur les prochaines semaines (journal gelé « categories »).** La règle seule (sans les encaissés) donne 75,6 % sur 568 matchs à cote ≥ 1,24.
+
+Code : `verif_categories.mesures` (F2h, F2a), `etudes/categories_2026_11/refreeze_plus15_f2.py` (+ `build3_plus15.py`), tests dans `tests/test_verif_categories.py` (section « Plus de 1,5 : règle des 2 buts »).

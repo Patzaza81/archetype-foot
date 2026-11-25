@@ -14,7 +14,7 @@ import verif_pronostic as v
 REF = json.load(open(pathlib.Path(__file__).with_name("categories_exemples.json"), encoding="utf-8"))
 ZONES = VC.charger()
 # seuils de Patrick (24/11/2026), un par marché
-SEUILS = {"1": 0.70, "2": 0.60, "total_plus_1.5": 0.80, "1N": 0.90, "N2": 0.75, "dom_plus_0.5": 0.85, "ext_plus_0.5": 0.75,
+SEUILS = {"1": 0.70, "2": 0.60, "total_plus_1.5": 0.77, "1N": 0.90, "N2": 0.75, "dom_plus_0.5": 0.85, "ext_plus_0.5": 0.75,
           "1N&total_plus_1.5": 0.70, "N2&total_plus_1.5": 0.60, "1N&total_moins_4.5": 0.70, "N2&total_moins_4.5": 0.65, "total_moins_3.5": 0.75, "12": 0.80}
 ENT = ("hM", "hC", "aM", "aC", "sMh", "sCh", "sMa", "sCa", "mu")
 
@@ -52,7 +52,7 @@ def test_mesures_identiques_a_l_etude(i):
 def test_marches_identiques_a_l_etude(i):
     l = REF["lignes"][i]; assert sorted(e["marche"] for e in VC.evaluer(_fiche_ref(l), ZONES)) == sorted(l["marches"])
 
-@pytest.mark.parametrize("marche", sorted(SEUILS))
+@pytest.mark.parametrize("marche", sorted(m for m in SEUILS if m != "total_plus_1.5"))       # le plus de 1,5 (règle des 2 buts) a ses propres tests plus bas : il lit F2h, F2a, n_dom, n_ext, absents des lignes de référence
 def test_chaque_marche_au_moins_3_cas_qui_passent_et_3_qui_echouent(marche):
     oui = [l for l in REF["lignes"] if marche in l["marches"]]; non = [l for l in REF["lignes"] if marche not in l["marches"]]
     assert len(oui) >= 3 and len(non) >= 3
@@ -90,7 +90,7 @@ def test_moins_de_4_matchs_au_meme_lieu_aucune_mesure(nd, ne): assert VC.mesures
 def test_championnat_de_moins_de_10_matchs_pas_de_xg(champ):
     c = VC.mesures([(2, 0)] * 5, [(0, 1)] * 5, {"buts_marques": 2, "buts_encaisses": 0}, {"buts_marques": 0, "buts_encaisses": 1}, champ, ZONES)
     assert "EH" not in c and "mu" not in c and c["hM"] == 2                                    # les piliers restent, le xG et le championnat manquent
-    assert not any(e["marche"] in ("total_plus_1.5",) for e in VC.evaluer(c, ZONES))            # un intervalle qui demande le xG ne s'applique jamais sans lui
+    assert not any(e["marche"] in ("total_plus_1.5",) for e in VC.evaluer(c, ZONES))            # le plus de 1,5 ne demande plus le xG (règle des 2 buts), mais ces matchs n'ont pas 40 % de matchs à 2 buts de chaque côté
 
 def test_sans_saison_pas_de_xg():
     c = VC.mesures([(2, 0)] * 5, [(0, 1)] * 5, None, {"buts_marques": 0, "buts_encaisses": 1}, (300, 100), ZONES); assert "EH" not in c
@@ -200,7 +200,7 @@ def test_page_web_onglet():
 FORT3 = [(3, 0)] * 6                                          # hM 3,0 : dans un intervalle du plus de 1,5 (hM >= 2,2 et xG attendu du domicile >= 1,56)
 
 def _p15(cote, extra=None):
-    f = _fiche(FORT3, FAIBLE, {"over_under_1.5": {"plus": cote, "moins": 5.0}, **(extra or {})})
+    f = _fiche(PASSENT[1][0], PASSENT[1][1], {"over_under_1.5": {"plus": cote, "moins": 5.0}, **(extra or {})})      # deux équipes qui remplissent la règle des 2 buts (25/11)
     return [p for p in (f.get("categories") or {}).get("paris", []) if p["marche"] == "total_plus_1.5"]
 
 @pytest.mark.parametrize("cote", [1.24, 1.25, 1.26, 1.40])
@@ -209,7 +209,7 @@ def test_plus_de_1_5_retenu_des_1_24(cote): assert len(_p15(cote)) == 1 and _p15
 @pytest.mark.parametrize("cote", [1.23, 1.20, 1.10])
 def test_plus_de_1_5_sous_1_24_jamais_retenu(cote): assert _p15(cote) == []
 
-def test_plus_de_1_5_sans_cote_jamais_retenu(): assert _p15(1.5, None) != [] and "total_plus_1.5" not in [p["marche"] for p in (_fiche(FORT3, FAIBLE, {}).get("categories") or {}).get("paris", [])]
+def test_plus_de_1_5_sans_cote_jamais_retenu(): assert _p15(1.5, None) != [] and "total_plus_1.5" not in [p["marche"] for p in (_fiche(PASSENT[1][0], PASSENT[1][1], {}).get("categories") or {}).get("paris", [])]
 
 @pytest.mark.parametrize("marche, cotes", [("1", {"1x2": {"1": 1.23, "N": 4.0, "2": 9.0}}), ("1", {"1x2": {"1": 1.10, "N": 4.0, "2": 9.0}}), ("1N", {"double_chance": {"1N": 1.22, "N2": 5.0, "12": 1.2}})])
 def test_les_autres_marches_sous_1_24_jamais_retenus(marche, cotes):
@@ -316,3 +316,42 @@ def test_page_web_nom_du_marche_en_evidence():                   # 25/11/2026 : 
     assert ".vf-cat-chip" in css and ".vf-cat-nom" in css and ".theme-nuit .vf-cat-chip" in css
     assert js.index("vf-cat-marches") < js.index("phraseCategories(m, p) + `<div class=\"om-bloc vf-famille vf-meilleur\">")   # le bandeau vient avant le texte
     assert "af-verif.css?v=20261125c" in html and "archetype_verif.js?v=20261125a" in html     # la version change : le téléphone recharge les fichiers
+
+
+# ---------------------------------------------------------------- « Plus de 1,5 » : règle des 2 buts de Patrick (25/11/2026)
+SA = {"buts_marques": 1.5, "buts_encaisses": 1.0}; SB = {"buts_marques": 1.0, "buts_encaisses": 1.5}
+def _p15_regle(dom, ext, champ=(60, 20)):
+    return "total_plus_1.5" in [e["marche"] for e in VC.evaluer(VC.mesures(dom, ext, SA, SB, champ, ZONES), ZONES)]
+
+PASSENT = [   # (matchs de l'équipe à domicile chez elle, matchs de l'extérieur dehors) : 2 buts marqués dans >= 47 % / 44 % des matchs, buts encaissés >= 0,86 / 1,0
+    ([(2, 1), (2, 0), (1, 1), (0, 2), (3, 1)], [(2, 1), (3, 2), (1, 1), (2, 2), (0, 1)]),
+    ([(2, 1), (1, 1), (3, 0), (0, 2), (2, 2), (1, 0)], [(2, 2), (0, 2), (2, 1), (1, 1), (3, 1), (0, 0), (1, 1), (2, 0)]),
+    ([(2, 0), (3, 1), (1, 2), (2, 2), (0, 0), (1, 1), (2, 1)], [(3, 3), (2, 1), (0, 2), (2, 0), (1, 2)])]
+ECHOUENT = [
+    ([(2, 1)] * 4, [(2, 2)] * 4),                                                                              # 4 matchs seulement : la règle en demande 5 par lieu
+    ([(1, 1)] * 5, [(2, 1), (3, 2), (1, 1), (2, 2), (0, 1)]),                                                  # le domicile n'a jamais marqué 2 buts
+    ([(2, 1), (2, 0), (1, 1), (0, 2), (3, 1)], [(2, 0), (3, 0), (2, 0), (1, 0), (0, 0)]),                      # l'extérieur marque 2 buts mais n'encaisse rien
+    ([(2, 0), (3, 0), (2, 0), (0, 0), (1, 0)], [(2, 1), (3, 2), (1, 1), (2, 2), (0, 1)]),                      # le domicile n'encaisse rien
+    ([(2, 1), (2, 0), (1, 1), (0, 2), (3, 1)], [(2, 2), (2, 1), (1, 1), (0, 1), (1, 2)])]                      # l'extérieur : 2 sur 5 = 40 %, sous le seuil appris (43,75 %)
+
+@pytest.mark.parametrize("i", range(len(PASSENT)))
+def test_plus_15_regle_des_2_buts_cas_qui_passent(i): assert _p15_regle(*PASSENT[i])
+
+@pytest.mark.parametrize("i", range(len(ECHOUENT)))
+def test_plus_15_regle_des_2_buts_cas_qui_echouent(i): assert not _p15_regle(*ECHOUENT[i])
+
+def test_plus_15_regle_des_2_buts_ratio_et_mesures():
+    c = VC.mesures(*PASSENT[1], SA, SB, (60, 20), ZONES)
+    assert (c["F2h"], c["F2a"], c["n_dom"], c["n_ext"]) == (0.5, 0.5, 6, 8)                  # 3 matchs sur 6 ; 4 matchs sur 8 : le ratio suit le nombre de matchs joués
+    assert c["hC"] == pytest.approx(1.0) and c["aC"] == pytest.approx(1.0)
+
+def test_plus_15_les_intervalles_contiennent_la_regle_de_patrick():
+    """Chaque équipe : au moins 2 matchs à 2 buts marqués sur 5 (ratio >= 40 %), 5 matchs minimum au même lieu."""
+    for z in ZONES["marches"]["Plus de 1,5"]["intervalles"]:
+        C = {f: (lo, hi) for f, lo, hi in z["conditions"]}
+        assert C["F2h"][0] >= 0.4 and C["F2a"][0] >= 0.4 and C["n_dom"][0] >= 5 and C["n_ext"][0] >= 5
+
+def test_plus_15_cote_minimale_1_24(): assert VC.cote_min("total_plus_1.5", 1.26) == 1.24
+
+def test_plus_15_pas_de_xg_necessaire():
+    c = VC.mesures(*PASSENT[0], None, None, None, ZONES); assert "EH" not in c and _p15_regle(*PASSENT[0], champ=None)
