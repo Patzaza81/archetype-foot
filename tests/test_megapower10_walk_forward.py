@@ -23,6 +23,16 @@ class TestPriceJoin(unittest.TestCase):
         self.assertAlmostEqual(sum(r["market_probability"] for r in rows), 1.0)
         self.assertEqual(meta["priced_selections"], 3)
 
+    def test_negative_validation_does_not_select_a_test_strategy(self):
+        rows = [{"date": "2026-02-01" if i < 30 else "2026-04-01",
+                 "competition": "L1", "market": "1X2", "bookmaker": "Book",
+                 "price_stage": "opening", "odds": 1.2, "edge": .1,
+                 "result": False} for i in range(60)]
+        report = chronological_edge_study(rows, train_end="2026-01-01",
+                                          validation_end="2026-03-01", min_support=10)
+        self.assertEqual(report["results"][0]["status"], "no_validation_candidate")
+        self.assertIsNone(report["results"][0]["test"])
+
     def test_probability_quality_compares_model_and_market(self):
         rows = [
             {"competition": "L1", "market": "1X2", "bookmaker": "Book", "price_stage": "opening",
