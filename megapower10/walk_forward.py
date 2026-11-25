@@ -126,12 +126,12 @@ def chronological_edge_study(rows: Iterable[dict], *, train_end: str, validation
         for threshold in thresholds:
             scored = [r for r in v if r["edge"] >= threshold]
             m = _stats(scored)
-            if m["n"] >= min_support:
+            if m["n"] >= min_support and m["roi"] is not None and m["roi"] > 0:
                 candidates.append((m["roi"], threshold, m))
         if not candidates:
             results.append({"competition": competition, "market": market, "bookmaker": bookmaker,
                             "price_stage": stage, "odds_band": band, "status": "no_validation_candidate",
-                            "validation": _stats(v), "test": _stats(subset(test))})
+                            "validation": _stats(v), "test": None})
             continue
         _, chosen_threshold, vm = max(candidates, key=lambda x: (x[0], x[2]["n"]))
         tm = _stats([r for r in subset(test) if r["edge"] >= chosen_threshold])
