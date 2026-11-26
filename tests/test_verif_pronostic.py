@@ -43,8 +43,29 @@ class GardeFou(unittest.TestCase):
     def test_assez_de_matchs(self):
         for n in (4, 5, 6): self.assertNotEqual(v.constat(MATCH([(1, 0)] * n, [(0, 1)] * n), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
 
+class Moins35(unittest.TestCase):                  # règle de Patrick (26/11) pour l'onglet Catégories seulement : moins de 3,5 buts écarté si buts marqués domicile à domicile + extérieur dehors > 3,1
+    def _AB(self, A, B):
+        r = v.constat(MATCH(A, B), "total_moins_3.5", 1.5, CFG); return r["A"], r["B"]
+    def test_passent(self):                        # total des buts marqués <= 3,1 : la règle ne bloque pas
+        for A, B, mk in (([(2, 0)] * 6, [(1, 1)] * 6, "total_moins_3.5"),          # 2 + 1 = 3
+                         ([(2, 1)] * 5 + [(1, 1)] * 5, [(1, 1)] * 10, "total_moins_3.5"),   # 1,5 + 1 = 2,5
+                         ([(1, 0)] * 6, [(2, 1)] * 6, "1N&total_moins_3.5"),       # 1 + 2 = 3
+                         ([(2, 0)] * 9 + [(3, 0)], [(1, 1)] * 6, "total_moins_3.5")):     # 2,1 + 1 = 3,1 exactement : passe
+            self.assertFalse(v.moins35_refuse(mk, *self._AB(A, B)), (A, B, mk))
+    def test_echouent(self):                       # total > 3,1 : écarté, marché seul et combos
+        for A, B, mk in (([(2, 1)] * 6, [(2, 1)] * 6, "total_moins_3.5"),          # 2 + 2 = 4
+                         ([(3, 0)] * 6, [(1, 2)] * 6, "1&total_moins_3.5"),         # 3 + 1 = 4
+                         ([(2, 0)] * 9 + [(4, 0)], [(1, 1)] * 6, "12&total_moins_3.5"),   # 2,2 + 1 = 3,2
+                         ([(1, 1)] * 6, [(3, 0)] * 6, "N2&total_moins_3.5")):       # 1 + 3 = 4
+            self.assertTrue(v.moins35_refuse(mk, *self._AB(A, B)), (A, B, mk))
+    def test_autres_marches_jamais_touches(self):  # 2 + 2 = 4 buts marqués : seuls les marchés moins de 3,5 sont concernés
+        A, B = self._AB([(2, 1)] * 6, [(2, 1)] * 6)
+        for mk in ("total_moins_4.5", "total_moins_2.5", "total_plus_2.5", "1N&total_moins_4.5", "btts_oui"): self.assertFalse(v.moins35_refuse(mk, A, B), mk)
+    def test_verdict_des_autres_onglets_inchange(self):   # la règle ne touche pas constat() : les autres onglets gardent leur verdict
+        for A, B in (([(2, 1)] * 6, [(2, 1)] * 6), ([(3, 0)] * 6, [(1, 2)] * 6)): self.assertNotEqual(v.constat(MATCH(A, B), "total_moins_3.5", 1.5, CFG)["verdict"], "REFUSÉ")
+
 class Verdict(unittest.TestCase):
-    def test_tient(self):                          # A gagne toujours chez lui, B perd toujours dehors
+    def test_tient(self):                         # A gagne toujours chez lui, B perd toujours dehors
         self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT")
         self.assertEqual(v.constat(MATCH([(3, 2)] * 5, [(2, 3)] * 5), "total_plus_2.5", 1.5, CFG)["verdict"], "TIENT")
         self.assertEqual(v.constat(MATCH([(1, 1)] * 4, [(1, 1)] * 4), "btts_oui", 1.5, CFG)["verdict"], "TIENT")
