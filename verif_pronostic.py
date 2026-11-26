@@ -21,7 +21,11 @@ FLUX = os.path.join(RACINE, "data", "archive_test")
 Z95 = 1.96
 CAP = 10             # buts au-dela de CAP : sans effet sur aucun marche (seuils <= 5,5)
 NMIN = 4                           # regle de l'utilisateur (07/11) : au moins 4 matchs au meme lieu pour chaque equipe, sinon pari rejete ; sert aussi de minimum pour lire le xG
-MOINS35_MAX = 3.1                  # regle de Patrick (26/11/2026) : tout marche « moins de 3,5 buts » (combos compris) est refuse si buts marques par match du domicile A DOMICILE + de l'exterieur A L'EXTERIEUR depassent 3,1
+MOINS35_MAX = 3.1                  # regle de Patrick (26/11/2026), onglet Categories SEULEMENT, EN PLUS de ses intervalles : marche « moins de 3,5 buts » (combos compris) ecarte si buts marques par match du domicile A DOMICILE + de l'exterieur A L'EXTERIEUR depassent 3,1
+
+def moins35_refuse(marche, A, B):
+    """Onglet Categories (Patrick, 26/11/2026) : True si le marche est un « moins de 3,5 buts » (combos compris) et que les buts marques par match du domicile a domicile + de l'exterieur dehors depassent MOINS35_MAX (3,1 exactement passe)."""
+    return "total_moins_3.5" in marche and A.get("buts_marques") is not None and B.get("buts_marques") is not None and A["buts_marques"] + B["buts_marques"] > MOINS35_MAX
 
 # ---------------------------------------------------------------- catalogue des marches (condition sur le score home/away)
 def _catalogue():
@@ -278,8 +282,6 @@ def constat(x, marche, cote=None, cfg=None):
     A, B = res["A"], res["B"]
     d_, e_ = x["domicile"], x["exterieur"]
     if A["n"] < NMIN or B["n"] < NMIN: return {"verdict": "NON ÉVALUABLE", "phrase": f"Rejeté : moins de {NMIN} matchs au même lieu ({d_} à domicile {A['n']}, {e_} à l'extérieur {B['n']}).", "A": A, "B": B}
-    if "total_moins_3.5" in marche and A["buts_marques"] + B["buts_marques"] > MOINS35_MAX:      # règle de Patrick (26/11) : tous les marchés « moins de 3,5 buts », combos compris
-        return {"verdict": "REFUSÉ", "phrase": f"Moins de 3,5 buts refusé : {d_} marque {A['buts_marques']:.2f} à domicile et {e_} {B['buts_marques']:.2f} à l'extérieur, total {A['buts_marques'] + B['buts_marques']:.2f} > {MOINS35_MAX}."}
     pa, pb = A["reussi"] / A["n"] > 0.5, B["reussi"] / B["n"] > 0.5
     verdict = "TIENT" if pa and pb else "TIENT AVEC RÉSERVE" if pa or pb else "NE TIENT PAS"
     f = lambda v: "?" if v is None else f"{v:.1f}"
@@ -496,9 +498,7 @@ def fiche_match(x, maintenant, cfg, totaux=None):
         for mp, me, z in VE.retenus(info, etude):
             c = cotes.get(mp)
             if c is None or c < cfg["cote_min"]: continue
-            r = constat(x, mp, c, cfg)
-            if "A" not in r: continue                      # refusé (ex. moins de 3,5 buts au-delà de 3,1 buts marqués, règle de Patrick du 26/11)
-            A, B = r["A"], r["B"]
+            r = constat(x, mp, c, cfg); A, B = r["A"], r["B"]
             e = {"marche": mp, "libelle": r["libelle"], "cote": c, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"], "etude": z}
             if fini: e["gagne"] = bool(TABLE[min(sc["buts_dom"], CAP), min(sc["buts_ext"], CAP), IDX[mp]])
             EP.append(e)
@@ -543,6 +543,7 @@ def fiche_match(x, maintenant, cfg, totaux=None):
                 r = constat(x, cat["marche"], cc, {**cfg, "cote_min": min(cm, cc)})
                 if "A" not in r: continue
                 A, B = r["A"], r["B"]
+                if moins35_refuse(cat["marche"], A, B): continue          # en plus de l'intervalle de la catégorie (Patrick, 26/11/2026)
                 e = {"marche": cat["marche"], "libelle": r["libelle"], "cote": cc, "reussite_dom": [A["reussi"], A["n"]], "reussite_ext": [B["reussi"], B["n"]], "taux": round((A["reussi"] + B["reussi"]) / (A["n"] + B["n"]), 4), "verdict": r["verdict"], "lecture_xg": r["lecture_xg"],
                      "categorie": {k: cat[k] for k in ("seuil", "version", "nb_intervalles", "conditions", "vus", "taux_vu", "marge")}}
                 if bande: e["categorie"]["bande"] = True

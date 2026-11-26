@@ -1,11 +1,14 @@
 # Règle « moins de 3,5 buts » d'Analyse Verdict (Patrick, 26/11/2026)
 
-**Règle** : tout marché « moins de 3,5 buts », combos compris (1, N, 2, 1N, N2, 12 & moins de 3,5), est **refusé** si
+**Règle** : dans l'**onglet Catégories seulement**, le marché « moins de 3,5 buts » (et tout combo « & moins de 3,5 ») est **écarté** si
 buts marqués par match de l'équipe à domicile **à domicile** + buts marqués par match de l'équipe à l'extérieur **à l'extérieur** > **3,1**
 (même échantillon que le verdict : saison en cours, avant le match, 4 matchs minimum au même lieu). 3,1 exactement passe.
 
-S'applique partout dans Analyse Verdict : onglets Tous / Buts / Combos / Top 20 / Règles / Étude, et onglet **Catégories**.
-Le reste ne change pas. Code : `verif_pronostic.constat` (constante `MOINS35_MAX`, verdict « REFUSÉ »). Tests : classe `Moins35` de `tests/test_verif_pronostic.py`.
+La règle vient **en plus** de la méthode de l'onglet : le match doit d'abord tomber dans l'intervalle figé du marché (`categories_zones.json`, xG attendu du domicile < 1,38 et de l'extérieur < 1,57), puis avoir sa cote, puis passer cette règle. Elle ne remplace rien.
+Les autres onglets d'Analyse Verdict (Tous, Buts, Combos, Top 20, Règles, Étude, +1,5, +2,5) ne changent pas.
+Code : `verif_pronostic.moins35_refuse` (constante `MOINS35_MAX`), appelée dans le bloc Catégories de `fiche_match`. Tests : classe `Moins35` de `tests/test_verif_pronostic.py` et fin de `tests/test_verif_categories.py`.
+
+Effet sur la page du 26/11/2026 (814 matchs, 7 jours passés + 4 à venir) : moins de 3,5 dans Catégories 192 → 168 ; aucun autre onglet modifié.
 
 ## Test sur échantillons (26/11/2026)
 

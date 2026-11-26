@@ -355,3 +355,33 @@ def test_plus_15_cote_minimale_1_24(): assert VC.cote_min("total_plus_1.5", 1.26
 
 def test_plus_15_pas_de_xg_necessaire():
     c = VC.mesures(*PASSENT[0], None, None, None, ZONES); assert "EH" not in c and _p15_regle(*PASSENT[0], champ=None)
+
+
+# ---------------------------------------------------------------- règle de Patrick du 26/11/2026 : moins de 3,5 buts, EN PLUS de l'intervalle de la catégorie
+def _zones_m35(cond):
+    z = VC.charger(); st = {"test_2017_2020": {"s": 75, "n": 100}, "bloc_2025_26": {"s": 75, "n": 100}}
+    return {**z, "marches": {"Moins de 3,5": {"marche": "total_moins_3.5", "seuil": 0.75, "version": "B", "intervalles": [{"conditions": cond, "stats": st}]}}}
+C35 = {"over_under_3.5": {"plus": 3.0, "moins": 1.40}}
+def _m35(A, B, cond=(("TG", None, 100),)):
+    return [p["marche"] for p in (_fiche(A, B, C35, zones=_zones_m35([list(c) for c in cond])).get("categories") or {}).get("paris", [])]
+
+@pytest.mark.parametrize("A, B", [([(1, 1)] * 6, [(1, 1)] * 6),                    # 1 + 1 = 2
+                                  ([(2, 0)] * 6, [(1, 1)] * 6),                    # 2 + 1 = 3
+                                  ([(2, 0)] * 9 + [(3, 0)], [(1, 1)] * 6),         # 2,1 + 1 = 3,1 : passe
+                                  ([(0, 0)] * 6, [(3, 0)] * 6)])                   # 0 + 3 = 3
+def test_moins35_dans_l_intervalle_et_3_1_ou_moins_retenu(A, B): assert _m35(A, B) == ["total_moins_3.5"]
+
+@pytest.mark.parametrize("A, B", [([(2, 1)] * 6, [(2, 1)] * 6),                    # 2 + 2 = 4
+                                  ([(2, 0)] * 9 + [(4, 0)], [(1, 1)] * 6),         # 2,2 + 1 = 3,2
+                                  ([(3, 3)] * 6, [(1, 0)] * 6),                    # 3 + 1 = 4
+                                  ([(0, 0)] * 6, [(4, 1)] * 6)])                   # 0 + 4 = 4
+def test_moins35_dans_l_intervalle_mais_plus_de_3_1_ecarte(A, B): assert _m35(A, B) == []
+
+@pytest.mark.parametrize("A, B", [([(1, 1)] * 6, [(1, 1)] * 6), ([(0, 0)] * 6, [(1, 0)] * 6), ([(1, 0)] * 6, [(0, 2)] * 6)])
+def test_moins35_hors_intervalle_jamais_retenu_meme_sous_3_1(A, B):            # la règle vient EN PLUS : l'intervalle de la catégorie reste obligatoire
+    assert _m35(A, B, cond=(("TG", 100, None),)) == []
+
+def test_moins35_les_autres_onglets_ne_changent_pas():                         # 2 + 2 = 4 : l'onglet Catégories écarte le -3,5, les autres onglets restent identiques
+    A, B = [(2, 1)] * 6, [(2, 1)] * 6
+    a = _fiche(A, B, C35, zones=_zones_m35([["TG", None, 100]])); b = _fiche(A, B, C35, zones=None)
+    assert "categories" not in a and a == b
