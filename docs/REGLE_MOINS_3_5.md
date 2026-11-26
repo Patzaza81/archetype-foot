@@ -29,3 +29,17 @@ moins de 3,5 seul : 64,4 % (160 paris) si SM ≤ 3,1, **72,4 % (29 paris)** si S
 Le marché seul va dans l'autre sens sur ce petit échantillon réel (29 paris) : à suivre dans le journal.
 
 Scripts : `etudes/moins35_2026_11/test_echantillons.py` (tables de `etudes/categories_2026_11/build.py`), `etudes/moins35_2026_11/test_journal_reel.py`.
+
+## Comparaison ancienne / nouvelle méthode de l'onglet Catégories (26/11/2026)
+
+Intervalle seul (ancienne) contre intervalle + règle 3,1 (nouvelle), moins de 3,5 buts :
+
+| Échantillon | Ancienne | Nouvelle | Écart | Écartés par la règle |
+|---|---|---|---|---|
+| 2000-2016 (recherche de l'intervalle) | 76,1 % (34 654) | 76,4 % (31 771) | +0,3 pt | 2 883, 73,2 % gagnants |
+| 2017-2020 (jamais vus) | 76,5 % (6 564) | 76,6 % (6 038) | +0,1 pt | 526, 75,3 % gagnants |
+| 2025-26 (jamais vus) | 75,7 % (5 093) | 76,4 % (4 658) | +0,7 pt | 435, 67,8 % gagnants |
+| Matchs Betpawa du système | 72,4 % (1 107) | 72,8 % (980) | +0,4 pt | 127, 69,3 % gagnants |
+| Total | 76,0 % (47 418) | 76,3 % (43 447) | +0,3 pt | 3 971, 72,7 % gagnants |
+
+Seuil 3,1 retenu par Patrick (« Fusionne avec 3.1 »). Script : `etudes/moins35_2026_11/compare_ancienne_nouvelle.py`.
