@@ -1,6 +1,7 @@
 import sys, json, gzip, glob, os
 R = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); sys.path.insert(0, R); os.chdir(R)
 import verif_pronostic as V, p1_page_donnees as pd
+V.MOINS35_MAX = 99                 # mesure SANS la règle, pour comparer les deux groupes
 S = pd.scores(V.FLUX)
 X = {}
 for f in sorted(glob.glob(os.path.join(V.FLUX, "*.json.gz"))):

@@ -1,12 +1,13 @@
 # Règle « moins de 3,5 buts » d'Analyse Verdict (Patrick, 26/11/2026)
 
-**Règle** : dans l'**onglet Catégories seulement**, le marché « moins de 3,5 buts » (et tout combo « & moins de 3,5 ») est **écarté** si
+**Règle** (étendue le 26/11/2026 au soir à tout Analyse Verdict, sans exception) : tout marché « moins de 3,5 buts », combos compris (1, N, 2, 1N, N2, 12 & moins de 3,5), est **refusé** si
 buts marqués par match de l'équipe à domicile **à domicile** + buts marqués par match de l'équipe à l'extérieur **à l'extérieur** > **3,1**
 (même échantillon que le verdict : saison en cours, avant le match, 4 matchs minimum au même lieu). 3,1 exactement passe.
 
-La règle vient **en plus** de la méthode de l'onglet : le match doit d'abord tomber dans l'intervalle figé du marché (`categories_zones.json`, xG attendu du domicile < 1,38 et de l'extérieur < 1,57), puis avoir sa cote, puis passer cette règle. Elle ne remplace rien.
-Les autres onglets d'Analyse Verdict (Tous, Buts, Combos, Top 20, Règles, Étude, +1,5, +2,5) ne changent pas.
-Code : `verif_pronostic.moins35_refuse` (constante `MOINS35_MAX`), appelée dans le bloc Catégories de `fiche_match`. Tests : classe `Moins35` de `tests/test_verif_pronostic.py` et fin de `tests/test_verif_categories.py`.
+S'applique dans tous les onglets : Tous, Buts, Combos, Top 20, Règles, Étude, Catégories (dans Catégories, en plus de l'intervalle du marché).
+Code : `verif_pronostic.moins35_refuse` (constante `MOINS35_MAX`), appelée dans `constat()` (verdict « REFUSÉ »). Tests : classe `Moins35` de `tests/test_verif_pronostic.py` et fin de `tests/test_verif_categories.py`.
+
+Historique : le matin du 26/11 la règle ne valait que pour l'onglet Catégories (PR 203).
 
 Effet sur la page du 26/11/2026 (814 matchs, 7 jours passés + 4 à venir) : moins de 3,5 dans Catégories 192 → 168 ; aucun autre onglet modifié.
 
@@ -43,3 +44,18 @@ Intervalle seul (ancienne) contre intervalle + règle 3,1 (nouvelle), moins de 3
 | Total | 76,0 % (47 418) | 76,3 % (43 447) | +0,3 pt | 3 971, 72,7 % gagnants |
 
 Seuil 3,1 retenu par Patrick (« Fusionne avec 3.1 »). Script : `etudes/moins35_2026_11/compare_ancienne_nouvelle.py`.
+
+## Comparaison ancienne / nouvelle méthode, tous les onglets (26/11/2026 au soir)
+
+Verdict de base d'Analyse Verdict reproduit sur les grands échantillons (pari passé plus souvent que raté, des deux côtés = TIENT, d'un seul = RÉSERVE ; même lieu, saison en cours, 4 matchs minimum ; sans les ajustements xG ni les règles, pas de cote sur ces données). Moins de 3,5 seul :
+
+| Échantillon | Ancienne | Nouvelle | Écart | Écartés par la règle |
+|---|---|---|---|---|
+| 2000-2010 | 72,8 % (40 078) | 73,8 % (31 861) | +1,1 pt | 8 217, 68,7 % gagnants |
+| 2011-2020 | 72,7 % (35 593) | 74,6 % (27 907) | +1,9 pt | 7 686, 65,8 % gagnants |
+| 2025-26 (Football-Data) | 70,7 % (10 806) | 72,6 % (8 132) | +1,8 pt | 2 674, 65,1 % gagnants |
+
+Combos : 1N, N2, 12 & -3,5 gagnent +0,3 à +0,9 pt partout ; 1 & -3,5 et 2 & -3,5 restent à peu près égaux (−0,8 à +0,1 pt).
+Paris réellement gelés (journal, 07/11 → 25/11) : moins de 3,5 seul 64,4 % (160) si ≤ 3,1 contre 72,4 % (29) au-dessus ; combos 57,1 % (35) contre 0 % (3).
+Page du 26/11 au soir (814 matchs) : matchs avec un moins de 3,5 dans Tous / Buts / Combos 715 → 494 (à venir 254 → 177).
+Script : `etudes/moins35_2026_11/compare_verdict_tous_onglets.py`.

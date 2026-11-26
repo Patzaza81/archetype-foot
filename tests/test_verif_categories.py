@@ -381,7 +381,8 @@ def test_moins35_dans_l_intervalle_mais_plus_de_3_1_ecarte(A, B): assert _m35(A,
 def test_moins35_hors_intervalle_jamais_retenu_meme_sous_3_1(A, B):            # la règle vient EN PLUS : l'intervalle de la catégorie reste obligatoire
     assert _m35(A, B, cond=(("TG", 100, None),)) == []
 
-def test_moins35_les_autres_onglets_ne_changent_pas():                         # 2 + 2 = 4 : l'onglet Catégories écarte le -3,5, les autres onglets restent identiques
-    A, B = [(2, 1)] * 6, [(2, 1)] * 6
-    a = _fiche(A, B, C35, zones=_zones_m35([["TG", None, 100]])); b = _fiche(A, B, C35, zones=None)
-    assert "categories" not in a and a == b
+def test_moins35_absent_de_tous_les_onglets():                                # 2 + 2 = 4 : le -3,5 n'apparaît dans aucun onglet (règle étendue le 26/11 au soir)
+    a = _fiche([(2, 1)] * 6, [(2, 1)] * 6, C35, zones=_zones_m35([["TG", None, 100]]))
+    assert "categories" not in a
+    assert not [p for L in a["paris"].values() for p in L if "moins_3.5" in p["marche"]]
+    assert not [p for p in a.get("etude_paris") or [] if "moins_3.5" in p["marche"]]
