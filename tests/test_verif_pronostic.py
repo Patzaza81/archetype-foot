@@ -43,8 +43,27 @@ class GardeFou(unittest.TestCase):
     def test_assez_de_matchs(self):
         for n in (4, 5, 6): self.assertNotEqual(v.constat(MATCH([(1, 0)] * n, [(0, 1)] * n), "1", 1.5, CFG)["verdict"], "NON ÉVALUABLE")
 
+class Moins35(unittest.TestCase):                  # règle de Patrick (26/11) : moins de 3,5 buts (combos compris) refusé si buts marqués domicile à domicile + extérieur dehors > 3,1
+    def test_passent(self):                        # total des buts marqués <= 3,1 : la règle ne bloque pas
+        for A, B, mk in (([(2, 0)] * 6, [(1, 1)] * 6, "total_moins_3.5"),          # 2 + 1 = 3
+                         ([(2, 1)] * 5 + [(1, 1)] * 5, [(1, 1)] * 10, "total_moins_3.5"),   # 1,5 + 1 = 2,5
+                         ([(1, 0)] * 6, [(2, 1)] * 6, "1N&total_moins_3.5"),       # 1 + 2 = 3
+                         ([(2, 1), (2, 1), (2, 0), (1, 1), (2, 0)], [(1, 0)] * 5, "N2&total_moins_3.5")):   # 1,8 + 1 = 2,8
+            self.assertNotEqual(v.constat(MATCH(A, B), mk, 1.5, CFG)["verdict"], "REFUSÉ", (A, B, mk))
+    def test_limite_3_1_passe(self):               # 3,1 exactement ne dépasse pas : 2,1 + 1
+        self.assertNotEqual(v.constat(MATCH([(2, 0)] * 9 + [(3, 0)], [(1, 1)] * 6), "total_moins_3.5", 1.5, CFG)["verdict"], "REFUSÉ")
+    def test_echouent(self):                       # total > 3,1 : refusé, marché seul et combos
+        for A, B, mk in (([(2, 1)] * 6, [(2, 1)] * 6, "total_moins_3.5"),          # 2 + 2 = 4
+                         ([(3, 0)] * 6, [(1, 2)] * 6, "1&total_moins_3.5"),         # 3 + 1 = 4
+                         ([(2, 0)] * 9 + [(4, 0)], [(1, 1)] * 6, "12&total_moins_3.5"),   # 2,2 + 1 = 3,2
+                         ([(1, 1)] * 6, [(3, 0)] * 6, "N2&total_moins_3.5")):       # 1 + 3 = 4
+            r = v.constat(MATCH(A, B), mk, 1.5, CFG); self.assertEqual(r["verdict"], "REFUSÉ", (A, B, mk)); self.assertNotIn("A", r)
+    def test_autres_marches_intacts(self):         # 2 + 2 = 4 buts marqués : seuls les marchés moins de 3,5 sont touchés
+        m = MATCH([(2, 1)] * 6, [(2, 1)] * 6)
+        for mk in ("total_moins_4.5", "total_moins_2.5", "total_plus_2.5", "1N&total_moins_4.5", "btts_oui"): self.assertNotEqual(v.constat(m, mk, 1.5, CFG)["verdict"], "REFUSÉ", mk)
+
 class Verdict(unittest.TestCase):
-    def test_tient(self):                          # A gagne toujours chez lui, B perd toujours dehors
+    def test_tient(self):                         # A gagne toujours chez lui, B perd toujours dehors
         self.assertEqual(v.constat(MATCH([(2, 0)] * 6, [(0, 2)] * 6), "1", 1.5, CFG)["verdict"], "TIENT")
         self.assertEqual(v.constat(MATCH([(3, 2)] * 5, [(2, 3)] * 5), "total_plus_2.5", 1.5, CFG)["verdict"], "TIENT")
         self.assertEqual(v.constat(MATCH([(1, 1)] * 4, [(1, 1)] * 4), "btts_oui", 1.5, CFG)["verdict"], "TIENT")
