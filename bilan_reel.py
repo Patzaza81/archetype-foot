@@ -10,6 +10,7 @@ Usage : python bilan_reel.py [--solidite-min 0.78]
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 from datetime import datetime
 from pathlib import Path
@@ -18,7 +19,7 @@ ROOT = Path(__file__).resolve().parent
 ALPHA_JOURNAL = ROOT / "data" / "alpha_serie" / "journal.jsonl"
 OMEGA_JOURNAL = ROOT / "data" / "omega" / "journal.jsonl"
 DC_JOURNAL = ROOT / "data" / "dc" / "journal.jsonl"
-GAMMA_JOURNAL = ROOT / "data" / "gamma" / "journal.jsonl"      # Gamma = Omega V3 depuis le 02/11/2026
+GAMMA_JOURNAL = ROOT / "data" / "gamma" / "journal.jsonl.gz"   # Gamma = Omega V3 depuis le 02/11/2026 ; compressé depuis le 27/11/2026 (> 100 Mo)
 SANS_COTE_OK = {"multigoals", "multiscores"}
 
 
@@ -27,7 +28,8 @@ def _t(s: str) -> datetime:
 
 
 def _lire(chemin: Path) -> list[dict]:
-    return [json.loads(l) for l in chemin.read_text(encoding="utf-8").splitlines() if l.strip()]
+    texte = gzip.open(chemin, "rt", encoding="utf-8").read() if chemin.suffix == ".gz" else chemin.read_text(encoding="utf-8")
+    return [json.loads(l) for l in texte.splitlines() if l.strip()]
 
 
 def gels_valides(lignes: list[dict], ko) -> dict[str, dict]:
@@ -131,7 +133,7 @@ def paris_dc(journal: Path = DC_JOURNAL) -> list[dict]:
 
 
 def paris_gamma(journal: Path = GAMMA_JOURNAL) -> list[dict]:
-    """Moteur Gamma = Omega V3 (02/11/2026) : même règle (gel avant le coup d'envoi, match terminé, remboursés exclus), journal `data/gamma/journal.jsonl`."""
+    """Moteur Gamma = Omega V3 (02/11/2026) : même règle (gel avant le coup d'envoi, match terminé, remboursés exclus), journal `data/gamma/journal.jsonl.gz`."""
     if not journal.exists():
         return []
     L = _lire(journal)

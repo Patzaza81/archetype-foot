@@ -14,7 +14,7 @@ Autonome (aucun import d'un autre moteur), hors générateur de tickets. L'ancie
 - Sélection : g ≥ seuil du marché appris sur l'archive (protocole 70 % lissé, tranches de 5 points, PAV monotone, ≥ 30 prédictions, remboursements exclus) ; cote connue ≥ 1,26 ; jamais deux fois le même événement ; score exact jamais retenu. « AUCUN MARCHÉ RETENU » est un résultat valide.
 - Les cotes ne changent jamais l'exploration. EV = information seulement.
 - Contrôles mathématiques (§14) : un échec bloque la publication du match et fait échouer l'étape.
-- Journal gelé `data/gamma/journal.jsonl` (ajout seul, dernier gel avant le coup d'envoi compte, résultat réglé une fois). Page : `data/gamma/pronostics.json`. Recalibrage : `python -m moteur_omega_v3.calibrage`.
+- Journal gelé `data/gamma/journal.jsonl.gz` (compressé depuis le 27/11/2026, même contenu ligne pour ligne ; ajout seul, dernier gel avant le coup d'envoi compte, résultat réglé une fois). Page : `data/gamma/pronostics.json`. Recalibrage : `python -m moteur_omega_v3.calibrage`.
 
 ## Interprétations (à confirmer par Patrick)
 - « Score du scénario » = (attaque A, attaque B) ; la défense ne fait que filtrer par compatibilité.

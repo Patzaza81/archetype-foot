@@ -668,3 +668,15 @@ def test_analyse_avec_19_observations_controles_mathematiques_verts():
     A, dA, B, dB = ([random.randint(0, 4) for _ in range(19)] for _ in range(4))
     a = C.analyser(A, dA, B, dB)
     assert a["combinaisons"] == 19 ** 4 and all(v["ok"] for v in a["verifications"])
+
+
+def test_journal_compresse_ajout_seul_et_migration(tmp_path):
+    """27/11/2026 : journal Gamma en .gz (le .jsonl dépassait 100 Mo). Contenu identique, ajout seul, ancien .jsonl migré à l'identique."""
+    ancien = tmp_path / "journal.jsonl"
+    ancien.write_text('{"type":"pronostic","match_id":"a"}\n{"type":"resultat","match_id":"a"}\n', encoding="utf-8")
+    j = tmp_path / "journal.jsonl.gz"
+    assert [l["match_id"] for l in S._lire(j)] == ["a", "a"] and j.exists() and not ancien.exists()
+    S._ajouter(j, [{"type": "pronostic", "match_id": "b"}])
+    S._ajouter(j, [{"type": "pronostic", "match_id": "c"}])
+    assert [l["match_id"] for l in S._lire(j)] == ["a", "a", "b", "c"]
+    assert S._lire(tmp_path / "absent.jsonl.gz") == []

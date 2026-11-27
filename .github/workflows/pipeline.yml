@@ -240,11 +240,28 @@ jobs:
           # Capturer toutes les sorties produites par le run.
           git add -A
 
+          # 27/11/2026 : GitHub refuse tout fichier de plus de 100 Mo, et le push entier échouait (data/gamma/journal.jsonl à 104,6 Mo).
+          # Un fichier trop gros est retiré de la publication ; le reste est publié, puis l'étape échoue avec son nom (erreur visible, jamais masquée).
+          TROP_GROS=$(mktemp)
+          exclure_trop_gros() {
+            git diff --cached --name-only -z --diff-filter=AM | xargs -0 -r sh -c 'for f; do [ -f "$f" ] && [ "$(stat -c %s "$f")" -gt 99000000 ] && printf "%s\n" "$f"; done; true' sh >> "$TROP_GROS"
+            sort -u -o "$TROP_GROS" "$TROP_GROS"
+            while IFS= read -r f; do
+              [ -n "$f" ] && git reset -q -- "$f"
+            done < "$TROP_GROS"
+            true
+          }
+          exclure_trop_gros
+          while IFS= read -r f; do
+            echo "::error::$f fait $(stat -c %s "$f") octets (limite GitHub : 100 Mo) : non publié."
+          done < "$TROP_GROS"
+
           echo "--- état avant commit ---"
           git status --short
 
           if git diff --cached --quiet; then
             echo "Aucune modification à publier."
+            [ -s "$TROP_GROS" ] && exit 1
             exit 0
           fi
 
@@ -266,6 +283,7 @@ jobs:
               xargs -0 -a "$FICHIERS_DU_RUN" sh -c 'for f; do git cat-file -e "'"$MON_COMMIT"':$f" 2>/dev/null && git checkout "'"$MON_COMMIT"'" -- "$f"; done; true' sh
             fi
             git add -A
+            exclure_trop_gros
             git commit -m "Mise à jour pipeline" || true
           }
 
@@ -281,6 +299,10 @@ jobs:
 
             if git push origin HEAD:main; then
               echo "Publication réussie."
+              if [ -s "$TROP_GROS" ]; then
+                echo "::error::Publication faite SANS ces fichiers trop gros : $(tr '\n' ' ' < "$TROP_GROS")"
+                exit 1
+              fi
               exit 0
             fi
 
