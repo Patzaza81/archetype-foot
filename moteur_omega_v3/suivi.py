@@ -2,7 +2,7 @@
 
 Même mécanique que les autres moteurs, code autonome (aucun import d'un autre moteur) :
 - geler()     : pour chaque match à venir (coup d'envoi > maintenant), les quatre séquences → exploration (coeur.py) → sélection, puis AJOUT d'une ligne « pronostic »
-                horodatée au journal `data/gamma/journal.jsonl` (ajout seul). Nouvelle ligne seulement si la sélection ou les données ont changé ;
+                horodatée au journal `data/gamma/journal.jsonl.gz` (compressé depuis le 27/11/2026, ajout seul). Nouvelle ligne seulement si la sélection ou les données ont changé ;
                 la DERNIÈRE ligne écrite avant le coup d'envoi compte. Un contrôle mathématique raté (§14) EXCLUT le match et fait échouer l'étape : jamais de pari publié sur un calcul faux.
 - resultats() : pour les pronostics dont le score est connu, ajoute UNE ligne « resultat » (gagné / perdu / remboursé par pari), jamais modifiée.
 - page()      : `data/gamma/pronostics.json` (lecture seule côté navigateur) ; bilan calculé uniquement sur les pronostics gelés avant le match.
@@ -10,6 +10,7 @@ Le journal du moteur DC (`data/dc/`) n'est ni lu ni modifié : il reste l'histor
 """
 from __future__ import annotations
 
+import gzip
 import hashlib
 from collections import Counter
 import json
@@ -22,7 +23,7 @@ from . import coeur as C, donnees as D, marches as M
 
 ROOT = Path(__file__).resolve().parent.parent
 DOSSIER = ROOT / "data" / "gamma"
-JOURNAL = DOSSIER / "journal.jsonl"
+JOURNAL = DOSSIER / "journal.jsonl.gz"      # 27/11/2026 : compressé (le .jsonl a dépassé 100 Mo, limite de GitHub : le pipeline ne publiait plus) ; même contenu, ligne pour ligne
 PAGE = DOSSIER / "pronostics.json"
 PARAMS = Path(__file__).with_name("parametres.json")
 JOURS_REGLES_AFFICHES = 7
@@ -43,17 +44,35 @@ def _commit() -> str:
         return "inconnu"
 
 
+def _ancien(journal: Path) -> Path:
+    """Ancien journal en clair (`journal.jsonl`) d'un journal compressé (`journal.jsonl.gz`)."""
+    return journal.with_suffix("") if journal.suffix == ".gz" else journal
+
+
+def _migrer(journal: Path) -> None:
+    """Journal compressé absent mais ancien journal en clair présent : copie à l'identique dans le .gz, puis l'ancien est retiré."""
+    ancien = _ancien(journal)
+    if journal.suffix != ".gz" or journal.exists() or not ancien.exists():
+        return
+    with ancien.open("rb") as src, gzip.open(journal, "wb") as dst:
+        dst.write(src.read())
+    ancien.unlink()
+
+
 def _lire(journal: Path) -> list[dict[str, Any]]:
+    _migrer(journal)
     if not journal.exists():
         return []
-    return [json.loads(l) for l in journal.read_text(encoding="utf-8").splitlines() if l.strip()]
+    texte = gzip.open(journal, "rt", encoding="utf-8").read() if journal.suffix == ".gz" else journal.read_text(encoding="utf-8")
+    return [json.loads(l) for l in texte.splitlines() if l.strip()]
 
 
 def _ajouter(journal: Path, lignes: list[dict[str, Any]]) -> None:
     if not lignes:
         return
     journal.parent.mkdir(parents=True, exist_ok=True)
-    with journal.open("a", encoding="utf-8") as f:
+    _migrer(journal)
+    with (gzip.open(journal, "at", encoding="utf-8") if journal.suffix == ".gz" else journal.open("a", encoding="utf-8")) as f:   # .gz : ajout seul (nouveau bloc à la fin)
         for l in lignes:
             f.write(json.dumps(l, ensure_ascii=False, separators=(",", ":")) + "\n")
 

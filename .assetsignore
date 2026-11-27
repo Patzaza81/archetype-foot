@@ -16,3 +16,5 @@ data/journal_intelligence.json
 # 11/11/2026 : journaux gelés (.jsonl). Aucune page du site ne les charge, et data/gamma/journal.jsonl a dépassé 25 Mo le 09/11 :
 # depuis, chaque publication Cloudflare échouait et le site de secours restait figé sur une ancienne version.
 *.jsonl
+# 27/11/2026 : journal Gamma compressé (data/gamma/journal.jsonl.gz), jamais chargé par les pages.
+*.jsonl.gz
