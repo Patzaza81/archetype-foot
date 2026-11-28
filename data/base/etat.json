@@ -1,7 +1,7 @@
 {
  "version_protocole": 4,
- "calcule_le": "2026-11-27T09:52:21.995991+00:00",
- "commit_source": "1bf0a99d6f3d50c5bf5490b32cde3e418b1f49d2",
+ "calcule_le": "2026-11-28T09:52:02.889582+00:00",
+ "commit_source": "0cec5769e9342c91769ba80b936de85018491389",
  "hypothese": {
   "marche": "Moins de 3,5 buts",
   "cote_min": 1.27,
@@ -10,232 +10,233 @@
  },
  "statut_B0": "NON_CONCLUANT",
  "points_de_controle_atteints": [
-  "C1"
+  "C1",
+  "C2"
  ],
  "B0_fenetre": {
-  "matchs": 751,
-  "jours": 37,
-  "roi": -0.060533,
-  "reussite": 0.708389,
+  "matchs": 785,
+  "jours": 38,
+  "roi": -0.061847,
+  "reussite": 0.707006,
   "reussite_intervalle_95": [
-   0.674888,
-   0.739769
+   0.674221,
+   0.737775
   ],
-  "probabilite_implicite_brute_moyenne": 0.754446,
-  "cote_moyenne": 1.3265,
-  "marge_marche_moyenne": 0.079167,
+  "probabilite_implicite_brute_moyenne": 0.753963,
+  "cote_moyenne": 1.3273,
+  "marge_marche_moyenne": 0.079157,
   "niveau_intervalle": 0.997,
   "roi_intervalle_student": [
-   -0.126953,
-   0.005888
+   -0.127095,
+   0.003401
   ],
   "roi_intervalle_bootstrap": [
-   -0.119774,
-   0.011368
+   -0.119765,
+   0.008317
   ]
  },
  "tranches_information": {
   "H1-a": {
-   "matchs": 430,
-   "jours": 35,
-   "roi": -0.072209,
-   "reussite": 0.713953,
+   "matchs": 441,
+   "jours": 37,
+   "roi": -0.068685,
+   "reussite": 0.716553,
    "reussite_intervalle_95": [
-    0.669493,
-    0.754625
+    0.672762,
+    0.756605
    ],
-   "probabilite_implicite_brute_moyenne": 0.769825,
-   "cote_moyenne": 1.2993,
-   "marge_marche_moyenne": 0.08002,
+   "probabilite_implicite_brute_moyenne": 0.76972,
+   "cote_moyenne": 1.2995,
+   "marge_marche_moyenne": 0.079988,
    "niveau_intervalle": 0.95,
    "roi_intervalle_student": [
-    -0.117236,
-    -0.027182
+    -0.112856,
+    -0.024514
    ],
    "roi_intervalle_bootstrap": [
-    -0.117988,
-    -0.028483
+    -0.113311,
+    -0.0255
    ]
   },
   "H1-b": {
-   "matchs": 321,
-   "jours": 32,
-   "roi": -0.044891,
-   "reussite": 0.700935,
+   "matchs": 344,
+   "jours": 33,
+   "roi": -0.053081,
+   "reussite": 0.694767,
    "reussite_intervalle_95": [
-    0.648713,
-    0.748404
+    0.644175,
+    0.741058
    ],
-   "probabilite_implicite_brute_moyenne": 0.733844,
-   "cote_moyenne": 1.3629,
-   "marge_marche_moyenne": 0.078024,
+   "probabilite_implicite_brute_moyenne": 0.733761,
+   "cote_moyenne": 1.363,
+   "marge_marche_moyenne": 0.078091,
    "niveau_intervalle": 0.95,
    "roi_intervalle_student": [
-    -0.132043,
-    0.042261
+    -0.139139,
+    0.032976
    ],
    "roi_intervalle_bootstrap": [
-    -0.127569,
-    0.042775
+    -0.134105,
+    0.03406
    ]
   }
  },
  "exploration": {
   "B1": {
    "statut": "NON_EVALUE",
-   "admissibles": 50,
+   "admissibles": 56,
    "retenus": {
-    "matchs": 42,
-    "jours": 21,
-    "roi": 0.012143,
-    "reussite": 0.761905,
+    "matchs": 48,
+    "jours": 22,
+    "roi": -0.030208,
+    "reussite": 0.729167,
     "reussite_intervalle_95": [
-     0.614725,
-     0.86519
+     0.59003,
+     0.83434
     ],
-    "probabilite_implicite_brute_moyenne": 0.753869,
-    "cote_moyenne": 1.3274,
-    "marge_marche_moyenne": 0.078904,
+    "probabilite_implicite_brute_moyenne": 0.752837,
+    "cote_moyenne": 1.3292,
+    "marge_marche_moyenne": 0.079602,
     "niveau_intervalle": 0.95,
     "roi_intervalle_student": [
-     -0.162308,
-     0.186593
+     -0.207755,
+     0.147339
     ],
     "roi_intervalle_bootstrap": [
-     -0.18174,
-     0.157609
+     -0.209039,
+     0.12678
     ]
    },
    "non_retenus": 8,
-   "ecart_general": 0.072675,
+   "ecart_general": 0.031639,
    "ecart_general_intervalle_95": [
-    -0.13246103663980724,
-    0.2273647265102225
+    -0.15419386090836518,
+    0.19299927745233209
    ],
-   "ecart_population_egale": 0.350893,
+   "ecart_population_egale": 0.308542,
    "ecart_population_egale_intervalle_95": [
-    -0.1382051282051282,
-    0.8175932203389832
+    -0.17830609756097557,
+    0.7776856303418803
    ]
   },
   "B2": {
    "statut": "NON_EVALUE",
-   "admissibles": 579,
+   "admissibles": 607,
    "retenus": {
-    "matchs": 126,
-    "jours": 32,
-    "roi": -0.11619,
-    "reussite": 0.674603,
+    "matchs": 136,
+    "jours": 33,
+    "roi": -0.121397,
+    "reussite": 0.669118,
     "reussite_intervalle_95": [
-     0.588684,
-     0.750191
+     0.586347,
+     0.742596
     ],
-    "probabilite_implicite_brute_moyenne": 0.763084,
-    "cote_moyenne": 1.3114,
-    "marge_marche_moyenne": 0.07864,
+    "probabilite_implicite_brute_moyenne": 0.761476,
+    "cote_moyenne": 1.3143,
+    "marge_marche_moyenne": 0.078543,
     "niveau_intervalle": 0.95,
     "roi_intervalle_student": [
-     -0.248886,
-     0.016505
+     -0.244489,
+     0.001695
     ],
     "roi_intervalle_bootstrap": [
-     -0.24396,
-     0.004389
+     -0.240315,
+     -0.007181
     ]
    },
-   "non_retenus": 453,
-   "ecart_general": -0.055658,
+   "non_retenus": 471,
+   "ecart_general": -0.05955,
    "ecart_general_intervalle_95": [
-    -0.1707930093715422,
-    0.05488465372421366
+    -0.16628157815467018,
+    0.04388472109905216
    ],
-   "ecart_population_egale": -0.060319,
+   "ecart_population_egale": -0.063414,
    "ecart_population_egale_intervalle_95": [
-    -0.19797275401639577,
-    0.06933747063326226
+    -0.19231090565538747,
+    0.05795043544921198
    ]
   },
   "B3": {
    "statut": "NON_EVALUE",
-   "admissibles": 377,
+   "admissibles": 398,
    "retenus": {
-    "matchs": 38,
-    "jours": 19,
-    "roi": 0.062895,
-    "reussite": 0.789474,
+    "matchs": 41,
+    "jours": 20,
+    "roi": 0.085854,
+    "reussite": 0.804878,
     "reussite_intervalle_95": [
-     0.636542,
-     0.889252
+     0.659864,
+     0.897656
     ],
-    "probabilite_implicite_brute_moyenne": 0.742485,
-    "cote_moyenne": 1.3476,
-    "marge_marche_moyenne": 0.078076,
+    "probabilite_implicite_brute_moyenne": 0.74131,
+    "cote_moyenne": 1.3498,
+    "marge_marche_moyenne": 0.078555,
     "niveau_intervalle": 0.95,
     "roi_intervalle_student": [
-     -0.129122,
-     0.254912
+     -0.098192,
+     0.269899
     ],
     "roi_intervalle_bootstrap": [
-     -0.122326,
-     0.238
+     -0.09308,
+     0.253095
     ]
    },
-   "non_retenus": 339,
-   "ecart_general": 0.123427,
+   "non_retenus": 357,
+   "ecart_general": 0.147701,
    "ecart_general_intervalle_95": [
-    -0.04150799750833121,
-    0.28534105157194295
+    -0.016423869450720316,
+    0.30537825821905606
    ],
-   "ecart_population_egale": 0.136228,
+   "ecart_population_egale": 0.164761,
    "ecart_population_egale_intervalle_95": [
-    -0.04248515665125837,
-    0.32035386181441294
+    -0.014135648167957725,
+    0.34761196163178626
    ]
   },
   "B4": {
    "statut": "EN_COURS",
-   "admissibles": 751,
+   "admissibles": 785,
    "retenus": {
-    "matchs": 607,
-    "jours": 34,
-    "roi": -0.064893,
-    "reussite": 0.705107,
+    "matchs": 636,
+    "jours": 36,
+    "roi": -0.069544,
+    "reussite": 0.701258,
     "reussite_intervalle_95": [
-     0.667633,
-     0.740001
+     0.664564,
+     0.735535
     ],
-    "probabilite_implicite_brute_moyenne": 0.754525,
-    "cote_moyenne": 1.3263,
-    "marge_marche_moyenne": 0.078096,
+    "probabilite_implicite_brute_moyenne": 0.75403,
+    "cote_moyenne": 1.3272,
+    "marge_marche_moyenne": 0.078146,
     "niveau_intervalle": 0.95,
     "roi_intervalle_student": [
-     -0.110027,
-     -0.019759
+     -0.114458,
+     -0.02463
     ],
     "roi_intervalle_bootstrap": [
-     -0.110223,
-     -0.021646
+     -0.114677,
+     -0.02671
     ]
    },
-   "non_retenus": 144,
-   "ecart_general": -0.00436,
+   "non_retenus": 149,
+   "ecart_general": -0.007697,
    "ecart_general_intervalle_95": [
-    -0.028498684677467086,
-    0.013104164641673594
+    -0.03202124968385938,
+    0.00969947538741621
    ],
-   "ecart_population_egale": -0.02274,
+   "ecart_population_egale": -0.040551,
    "ecart_population_egale_intervalle_95": [
-    -0.13165527791225012,
-    0.07616890812852835
+    -0.1502842109248574,
+    0.0564584957721165
    ]
   }
  },
  "admission": {
   "statuts": {
    "ANNULE": 13,
-   "NON_REGLE": 182,
-   "REGLE": 951,
-   "RESULTAT_MANQUANT": 84
+   "NON_REGLE": 159,
+   "REGLE": 971,
+   "RESULTAT_MANQUANT": 87
   },
   "liste_sans_resultat": {
    "RESULTAT_MANQUANT": [
@@ -322,7 +323,10 @@
     "a10fzztp0r3y6mbd7gju57c44",
     "cl16qg9htp0ulk47y3w8n687o",
     "6lay56v3pgyuwz3eyppdhi6fo",
-    "2onp7y5z960evikrmzz8ub0no"
+    "2onp7y5z960evikrmzz8ub0no",
+    "2fwhf28f3h1lj29p7cade5n2s",
+    "2ifo19c32dm7qmldo94i105qs",
+    "2guvd71qxydbcc35xahmzqu50"
    ],
    "ANNULE": [
     "8twciinwdgueyozx5kxz2qqdw",
@@ -340,9 +344,6 @@
     "c4qdhet3m9qg0rk90f0zuqbdg"
    ],
    "NON_REGLE": [
-    "2fwhf28f3h1lj29p7cade5n2s",
-    "2ifo19c32dm7qmldo94i105qs",
-    "2guvd71qxydbcc35xahmzqu50",
     "6glabr69srtmob4lsnptmz6l0",
     "clczl6l15n74yeg23xvvei5g4",
     "ejamr1bmiltsczvpkg70b3eac",
@@ -356,32 +357,8 @@
     "2srs1nuli18bhewtdpv2frwus",
     "ctuseoehk8zkt4lii0vrgg4d0",
     "2sa7o188gqd6s6s04f39ze4no",
-    "asivqui1lhj3u4svoqneb2ql0",
-    "6jg3ifv9gshzdgjnaabce1jbo",
-    "6l3knkz6r6s9s9i3dxm0ndlp0",
-    "74e665wsvm0kbc3s1qv4rf9w",
     "l34xqfcxd6vtdx7tc4x53578",
     "9ayketq4jssb8bkrf7d6oy3h0",
-    "3c3jhw8h8o5prvhkqajsz06xg",
-    "a7svqi3smdhfjdtf4qi2l0xec",
-    "160o8dd25u2ecom867kc2azv8",
-    "3tccfbld1yarvv4doqgpjob9w",
-    "9gd4udovm0d41brfjsphiz47o",
-    "8aeyi0i0cejqw23e2pgwxmuqc",
-    "8aqqxqzv4j2q8tle5mxl2x0d0",
-    "c5ns3gcw3bhbtes0cdswgy0b8",
-    "ddv26vb7e2dks0clbooxn9d78",
-    "eg7t5eyqyqwm1w701q8ixyec4",
-    "8cdx3ac8s1ena4kzf7nfc7ml0",
-    "6e4cx8apd53ljse192rw9vi1g",
-    "e23aezzc0e0umiopdf96d91qs",
-    "1j1vj42f0w9a3pk7xea324vf8",
-    "1m87ihdz7n1rpen8itmha2rkk",
-    "a8st43npd0agye9ae87j8ctuc",
-    "d4in8zuk1oudxfml4ihm82xhw",
-    "50voo5vk1cmq1r4gjo2dwh4pg",
-    "7t60uqssrmfv1rd8xdsyelg4",
-    "8shw1msf4ug30kystckocdhjo",
     "2ut3vih8w01awoywyaikuhij8",
     "1mgrao8p3h2xan1f184rkvtas",
     "2o573nyjdi2rznar4wtcgfqxg",
@@ -391,16 +368,15 @@
     "1n1n92yczeqtl0jdp10de7klw",
     "1rna2rltqyefozilwhg3udo9g",
     "1sf6auftm5fn138qfcizhygpg",
-    "1st64to7tpu87dz0kwo02z504",
     "257ebqvce2jdaub1dm1ilkbv8",
     "25jtobzbzpqc4g6z4xrw0my38",
     "2ff57flz1cu87sidpn5l87cb8",
-    "8hvicbyjc2txkdwwjxh2xu3h0",
     "8kabsw4q1t26blwm8on7szggk",
     "dd7zezpy5ofh4n6wpf2ibg2z8",
     "deufvk7pz5u2wpwybf0xh8p3o",
     "1twpsw49aj123fym6h01qhlp0",
     "anmzpqa957r76ncjbgc2oueqc",
+    "bfapzl3lzus2mprvnbqjjd15g",
     "z1l8rz3bqjzz77cxa4kf13bo",
     "aofnmnhy4ukj6wxl4mssfmot0",
     "16olm1w3ugq264w8ha6zhm68k",
@@ -410,7 +386,6 @@
     "29us6s37hjpgkmtmjh281x7o4",
     "a6tciksh0pf29pspks6aauhhw",
     "3horhrx54trfwq7pq99i7wgk",
-    "4lm4re3lhbh9exyyd1y081x5g",
     "d450ieyhntf8tvsuuk3lit8gk",
     "9g1ngtrxkw3u4f8kt840vgw7o",
     "6hi62w1fnrh5bo0yf8v8k06qc",
@@ -418,12 +393,12 @@
     "d8r76oc6ajl9mc6nujnltb384",
     "5fxb3q5ri2q0bt5iixd40qwb8",
     "3tkzn6ynpoklw19wnrhjhgzro",
-    "4to1u1ba495vfeykn245euxas",
-    "bfm9npoe0cckup1gl2c3b2d5g",
+    "bojpakwn04swhu1arctbtq8es",
     "ea19uj22mxlmb5nrybi5xtez8",
     "eabyysgufhncjsgu7cd0xv6z8",
     "eaxdz9r2gk7akgfn9qtodcil0",
     "eusjsntwltxlkwyxl0czx2lg4",
+    "5wzksx5m3i0jfuud1mrahkcno",
     "15opcjqyv8dkye2d2vn7cdf6c",
     "25tpveyd7xoudq6q1toolbuvo",
     "282fvwqzw6cufcz7wn884dvro",
@@ -435,7 +410,6 @@
     "2brul4jtd56an8wvixqzdsil0",
     "2c8ao6xtclnz9q2zeaxp9x250",
     "3vc2d93p6kmdqlp8yvgs93is",
-    "d4ve60xj5s7x9yzvm9g3n1lhw",
     "xdtppei5vn1f3ozkmx237310",
     "4kopeh4en47c3xnzcsacs9mhg",
     "870wpf6zi87cxoeqrqhlbqgpg",
@@ -444,23 +418,24 @@
     "8g7qd36393uxt1xw3dmflmxw4",
     "bfxnihu2ggjz9k6sftzy5hfkk",
     "8b2hkk8sfq3c337mqg1xuhudw",
+    "bb7p6wk0qox9hnokbzzdwvfv8",
     "edlzz82p1k4kjuk0iiqcj1f6c",
     "eb83qnq9fp8to7ahzhfh6b4lw",
+    "3ttsb9pm8tb3n7tdd99v5l0d0",
     "6if7dw8gg9xx2hspzno028sus",
     "6jb9yrpjlogae06th20dvg2z8",
     "b2p3kwp0rt1jm8fneovtcvwgk",
     "7x7dketz4e76t5pk47rg9pvro",
     "95zcw2971koh29mnkuo241dec",
-    "evg78cmx3bf1e7p3nt3dqlzpw",
     "6xb7yu6y7wk5cpirj2kyuhhw",
     "6zo9rqghulrktqco2km69nqc4",
     "8o7m4iuah10omiklhd5wisr8",
     "10gvwnuaqga6b47zdnyli5slw",
     "470corz9p1v0r8sd392hpw07o",
     "b3bahawqa0s8k0rz4qb82o5xw",
-    "a9h4t068jd3u5nsss5uxcxno4",
     "6z030f4o6jbh8u9yaxgwm09hw",
     "49j29k7ec3zyy3ju6jj0lhqms",
+    "6e6gu4hejdp9xi4itvdzl0tg4",
     "6etkwubya3c5j2v8f8y2628lw",
     "6fh4x1dgg48oykz592pgmor9w",
     "5clm9ik0vr9935jtocailemfo",
@@ -468,7 +443,12 @@
     "awc6fa9sgjb0t7jdwpknuvuhg",
     "2ntv72y55s2lkiur1jddka9ec",
     "2oh5thuu6c3zaxnqcwzmt7dp0",
+    "5y3b1v6s5eah6rbqn493zo9p0",
+    "5xfufz0ufmrd578uhee4qzspg",
     "1uqzybfx58jkhu2poeckksa38",
+    "8id405kxgxnktkqt4b3c7hwk4",
+    "8jbnwffize6u0hqq1uu8oiihg",
+    "5x3xx37f9wzlhszu9gf6l13pw",
     "d36t9wcx9ex50xr5rwx9lm3v8",
     "dcjd4fpn736ahrfd1bx7n9ul0",
     "1k2lpx9qwz7khnxsj3k6hr0us",
@@ -478,7 +458,6 @@
     "9es5qu1sp5goddb5bm8yemql0",
     "dauu9dk6igk8ljq42bs87t53o",
     "xmvxi2jz9ed6953df5o9otuc",
-    "1s80hkfnheyqefemei77ligpg",
     "170gskttnsflf19a8bkywduz8",
     "dcvo288bge6ncez45ld28g0es",
     "1iq848bnyod4gb7drx5h9ufbo",
@@ -496,12 +475,14 @@
     "6jm3242igg2jzr4wo6rjaqv4k",
     "mlik846azqtgghrw36dfuqs4",
     "1t8e2hmcuznczrqis8wcy3spg",
+    "8c23zga8fozm7kfkalrvl2hhw",
     "91lvzm2i8yn8awayzu5yiyx3o",
     "47yejonkx20xff2rf7yq8o6c4",
     "e9qnopz2wefxy898y8nnbt1xw",
     "2ywir0oiixqjxbqbdq8ss8qvo",
     "a9t9w548tvhfutu2zvzparfo4",
     "4jr20d7ojbn4or0jmjlts3jmc",
+    "87nxaklkl2792bg2dubasrhn8",
     "48wbpo38o1fuwlqq3vfimauc4",
     "5rf1w8kxnbv6of748l9k6y8lw",
     "be3o0jajdp1pglmpb5x73qtck",
@@ -520,13 +501,13 @@
     "d93ldgzc4svdb6s2qauxxn6l0",
     "eams0a98yd4gq6uutwtr853pw",
     "7v1indse0cqvt4pdx8grfe3v8",
-    "daif9fcpu30gutnbvip292hhw",
-    "47n0lqzg9l0frgilc5pet82z8"
+    "47n0lqzg9l0frgilc5pet82z8",
+    "378yjvtswbdr3i61txt9dysk4"
    ]
   },
   "exclusions": {
    "RELEVE_APRES_COUP_D_ENVOI": 36,
-   "HORODATAGE_ABSENT": 28,
+   "HORODATAGE_ABSENT": 29,
    "MODIFICATION_DETECTEE": 154
   },
   "liste_exclusions": {
@@ -588,6 +569,7 @@
     "9f0pgjuq7oygyw3yal7peef4k",
     "acoa2cvfjbkbl2044uwju7cpg",
     "asa5bsuhuna7lxyy3smuhdbtg",
+    "bg8jsh6oqnu69omeq8kho6djo",
     "c4q373q3au7g8vmhdadthv66s",
     "c7e6vckcuevx66a4r1d17vuac",
     "cltokboun5k4k9nxr3ro0p89g",
@@ -1044,42 +1026,42 @@
    {
     "match_id": "5rf1w8kxnbv6of748l9k6y8lw",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "1mgrao8p3h2xan1f184rkvtas",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "2ntv72y55s2lkiur1jddka9ec",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "2oh5thuu6c3zaxnqcwzmt7dp0",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "f3b0vz5jiv0vhqjt6hzamxudw",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "5sqq3x08snzf7qrrgelcxstn8",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "bc47jme5g4c6cmb9xtpijn5ec",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    },
    {
     "match_id": "bd3n5xj6newfrpmyt3vyyjk0k",
     "releves": 2,
-    "garde": "2026-11-27T08:26:00+00:00"
+    "garde": "2026-11-28T04:31:00+00:00"
    }
   ]
  },

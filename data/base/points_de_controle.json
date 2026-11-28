@@ -201,5 +201,208 @@
   },
   "calcule_le": "2026-11-08T09:50:22.064317+00:00",
   "commit_source": "da37aab4b522a369d8fed621299199207fe8eab1"
+ },
+ {
+  "point": "C2",
+  "version_protocole": 4,
+  "jours": 40,
+  "premier_jour": "2026-10-13",
+  "dernier_jour": "2026-11-21",
+  "statut_B0": "NON_CONCLUANT",
+  "motifs_non_concluant": [
+   "plus de 5 % sans résultat",
+   "le contrôle de sensibilité change la conclusion"
+  ],
+  "B0": {
+   "matchs": 785,
+   "jours": 38,
+   "roi": -0.061847,
+   "reussite": 0.707006,
+   "reussite_intervalle_95": [
+    0.674221,
+    0.737775
+   ],
+   "probabilite_implicite_brute_moyenne": 0.753963,
+   "cote_moyenne": 1.3273,
+   "marge_marche_moyenne": 0.079157,
+   "niveau_intervalle": 0.997,
+   "roi_intervalle_student": [
+    -0.127095,
+    0.003401
+   ],
+   "roi_intervalle_bootstrap": [
+    -0.118517,
+    0.008949
+   ]
+  },
+  "sensibilite": {
+   "manquants_perdus": "DEFAVORABLE",
+   "manquants_gagnes": "NEUTRE"
+  },
+  "part_sans_resultat": 0.099771,
+  "simulation": {
+   "risque": 0.00433,
+   "intervalle_95": [
+    0.004046941055647764,
+    0.004627569654728518
+   ],
+   "simulations": 200000
+  },
+  "jours_simules": [
+   20,
+   40
+  ],
+  "exploration": {
+   "B1": {
+    "statut": "NON_EVALUE",
+    "admissibles": 56,
+    "retenus": {
+     "matchs": 48,
+     "jours": 22,
+     "roi": -0.030208,
+     "reussite": 0.729167,
+     "reussite_intervalle_95": [
+      0.59003,
+      0.83434
+     ],
+     "probabilite_implicite_brute_moyenne": 0.752837,
+     "cote_moyenne": 1.3292,
+     "marge_marche_moyenne": 0.079602,
+     "niveau_intervalle": 0.95,
+     "roi_intervalle_student": [
+      -0.207755,
+      0.147339
+     ],
+     "roi_intervalle_bootstrap": [
+      -0.210227,
+      0.127181
+     ]
+    },
+    "non_retenus": 8,
+    "ecart_general": 0.031639,
+    "ecart_general_intervalle_95": [
+     -0.15580434603604432,
+     0.19266903888676232
+    ],
+    "ecart_population_egale": 0.308542,
+    "ecart_population_egale_intervalle_95": [
+     -0.18121959459459458,
+     0.7845014991181657
+    ]
+   },
+   "B2": {
+    "statut": "NON_EVALUE",
+    "admissibles": 607,
+    "retenus": {
+     "matchs": 136,
+     "jours": 33,
+     "roi": -0.121397,
+     "reussite": 0.669118,
+     "reussite_intervalle_95": [
+      0.586347,
+      0.742596
+     ],
+     "probabilite_implicite_brute_moyenne": 0.761476,
+     "cote_moyenne": 1.3143,
+     "marge_marche_moyenne": 0.078543,
+     "niveau_intervalle": 0.95,
+     "roi_intervalle_student": [
+      -0.244489,
+      0.001695
+     ],
+     "roi_intervalle_bootstrap": [
+      -0.239638,
+      -0.006978
+     ]
+    },
+    "non_retenus": 471,
+    "ecart_general": -0.05955,
+    "ecart_general_intervalle_95": [
+     -0.16630931256110826,
+     0.045056943895224064
+    ],
+    "ecart_population_egale": -0.063414,
+    "ecart_population_egale_intervalle_95": [
+     -0.19177689052977034,
+     0.05890659956871362
+    ]
+   },
+   "B3": {
+    "statut": "NON_EVALUE",
+    "admissibles": 398,
+    "retenus": {
+     "matchs": 41,
+     "jours": 20,
+     "roi": 0.085854,
+     "reussite": 0.804878,
+     "reussite_intervalle_95": [
+      0.659864,
+      0.897656
+     ],
+     "probabilite_implicite_brute_moyenne": 0.74131,
+     "cote_moyenne": 1.3498,
+     "marge_marche_moyenne": 0.078555,
+     "niveau_intervalle": 0.95,
+     "roi_intervalle_student": [
+      -0.098192,
+      0.269899
+     ],
+     "roi_intervalle_bootstrap": [
+      -0.092401,
+      0.252882
+     ]
+    },
+    "non_retenus": 357,
+    "ecart_general": 0.147701,
+    "ecart_general_intervalle_95": [
+     -0.015756531545365843,
+     0.30521479723401856
+    ],
+    "ecart_population_egale": 0.164761,
+    "ecart_population_egale_intervalle_95": [
+     -0.01297765420296111,
+     0.34714215589862807
+    ]
+   },
+   "B4": {
+    "statut": "SANS_SIGNAL",
+    "admissibles": 785,
+    "retenus": {
+     "matchs": 636,
+     "jours": 36,
+     "roi": -0.069544,
+     "reussite": 0.701258,
+     "reussite_intervalle_95": [
+      0.664564,
+      0.735535
+     ],
+     "probabilite_implicite_brute_moyenne": 0.75403,
+     "cote_moyenne": 1.3272,
+     "marge_marche_moyenne": 0.078146,
+     "niveau_intervalle": 0.95,
+     "roi_intervalle_student": [
+      -0.114458,
+      -0.02463
+     ],
+     "roi_intervalle_bootstrap": [
+      -0.114469,
+      -0.026557
+     ]
+    },
+    "non_retenus": 149,
+    "ecart_general": -0.007697,
+    "ecart_general_intervalle_95": [
+     -0.03197949164927699,
+     0.009643264986134572
+    ],
+    "ecart_population_egale": -0.040551,
+    "ecart_population_egale_intervalle_95": [
+     -0.1499270394211175,
+     0.0559880146445231
+    ]
+   }
+  },
+  "calcule_le": "2026-11-28T09:52:02.889582+00:00",
+  "commit_source": "0cec5769e9342c91769ba80b936de85018491389"
  }
 ]
